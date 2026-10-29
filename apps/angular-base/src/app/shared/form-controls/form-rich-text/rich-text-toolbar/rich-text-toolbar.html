@@ -1,0 +1,26 @@
+<div
+  class="rich-text-toolbar"
+  [attr.aria-controls]="controlsId()"
+  [attr.aria-label]="'form.richText.toolbar' | t"
+  role="group"
+>
+  @for (group of _groups; track $index) {
+    <div class="rich-text-toolbar__group">
+      @for (button of group; track button.command) {
+        <button
+          [disabled]="_unavailable(button.command)"
+          [variant]="_pressed(button.command) ? 'secondary' : 'ghost'"
+          [attr.aria-label]="button.label | t"
+          [attr.aria-pressed]="_pressed(button.command) ?? null"
+          [attr.title]="button.label | t"
+          (click)="execute.emit(button.command)"
+          appUiButton
+          size="icon-sm"
+          type="button"
+        >
+          <app-ui-icon [name]="button.icon" />
+        </button>
+      }
+    </div>
+  }
+</div>

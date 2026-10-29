@@ -16,7 +16,13 @@
     "target": "ES2022",
     "module": "preserve",
     "moduleResolution": "bundler",
-    "paths": {}
+    "paths": {
+      "@api/*": ["./apps/angular-base/src/api/*"],
+      "@core/*": ["./apps/angular-base/src/app/core/*"],
+      "@features/*": ["./apps/angular-base/src/app/features/*"],
+      "@shared/*": ["./apps/angular-base/src/app/shared/*"],
+      "@spartan-ng/helm/*": ["./packages/shared/helm-vega/*/src/index.ts"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -1,0 +1,21 @@
+.note-editor {
+  margin-top: 2rem;
+  max-width: 40rem;
+}
+
+.note-editor__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.note-editor__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.note-editor__images {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}

@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+.form-control-shell__required {
+  color: var(--destructive);
+}
+
+.form-control-shell__errors {
+  color: var(--destructive);
+  font-size: 0.875rem;
+}

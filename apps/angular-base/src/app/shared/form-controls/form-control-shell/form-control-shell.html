@@ -1,0 +1,43 @@
+<ng-template #control><ng-content /></ng-template>
+
+<ng-template #labelling>
+  <label [id]="labelId()" [for]="controlId()" hlmFieldLabel>
+    {{ label() }}
+    @if (required()) {
+      <span class="form-control-shell__required" aria-hidden="true">*</span>
+    }
+  </label>
+</ng-template>
+
+<ng-template #hints>
+  @if (description(); as description) {
+    <p [id]="_descriptionId()" hlmFieldDescription>{{ description }}</p>
+  }
+  @if (_invalid()) {
+    <ul class="form-control-shell__errors" [id]="_errorId()" role="alert">
+      @for (error of errors(); track error) {
+        <li>{{ error }}</li>
+      }
+    </ul>
+  }
+</ng-template>
+
+<div
+  class="gap-1"
+  [attr.data-disabled]="disabled() ? 'true' : null"
+  [forceInvalid]="_invalid()"
+  [orientation]="orientation()"
+  hlmField
+>
+  @if (orientation() === 'horizontal') {
+    <ng-container [ngTemplateOutlet]="control" />
+    <div hlmFieldContent>
+      <ng-container [ngTemplateOutlet]="labelling" />
+      <ng-container [ngTemplateOutlet]="hints" />
+    </div>
+  } @else {
+    <ng-container [ngTemplateOutlet]="labelling" />
+    <ng-container [ngTemplateOutlet]="control" />
+    <ng-container [ngTemplateOutlet]="hints" />
+  }
+</div>

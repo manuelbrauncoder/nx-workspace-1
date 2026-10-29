@@ -1,0 +1,21 @@
+<footer class="app-footer">
+  <div class="page-container app-footer__bar">
+    <p>© {{ _year }} {{ _appName }}</p>
+    <nav [attr.aria-label]="'layout.legalNavigation' | t">
+      <ul class="app-footer__links">
+        @for (item of _items; track item.path) {
+          <li>
+            <a
+              class="app-footer__link"
+              [routerLink]="item.path"
+              routerLinkActive
+              ariaCurrentWhenActive="page"
+            >
+              {{ item.labelKey | t }}
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </div>
+</footer>

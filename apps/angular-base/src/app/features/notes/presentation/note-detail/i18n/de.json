@@ -1,0 +1,12 @@
+{
+  "title": "Notiz",
+  "createdAt": "Erstellt am",
+  "updatedAt": "Geändert am",
+  "noContent": "Kein Inhalt",
+  "images": {
+    "heading": "Bilder",
+    "alt": "Bild {{ number }}",
+    "open": "Bild {{ number }} in voller Größe öffnen"
+  },
+  "deleteFailed": "Löschen fehlgeschlagen"
+}

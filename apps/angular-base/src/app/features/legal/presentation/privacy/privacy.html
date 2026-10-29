@@ -1,0 +1,16 @@
+<app-legal-page [heading]="'legalPrivacy.heading' | t">
+  <section class="mt-10">
+    <h2 appUiText="h2">{{ 'legalPrivacy.controller.heading' | t }}</h2>
+    <p appUiText="p">{{ 'legalPrivacy.controller.text' | t }}</p>
+    <app-legal-owner-contact class="mt-4" />
+  </section>
+
+  @for (section of _sections; track section.headingKey) {
+    <section class="mt-10">
+      <h2 appUiText="h2">{{ section.headingKey | t }}</h2>
+      <p appUiText="p">{{ section.textKey | t }}</p>
+    </section>
+  }
+
+  <p class="mt-10" appUiText="muted">{{ 'legalPrivacy.updated' | t }}</p>
+</app-legal-page>

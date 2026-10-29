@@ -1,0 +1,5 @@
+<div [variant]="variant()" hlmAlert>
+  <h2 hlmAlertTitle>{{ heading() }}</h2>
+  <div hlmAlertDescription><ng-content /></div>
+  <ng-content select="[appUiAlertAction]" />
+</div>

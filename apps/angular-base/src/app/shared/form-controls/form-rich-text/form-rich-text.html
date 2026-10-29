@@ -1,0 +1,32 @@
+<app-form-control-shell
+  #shell
+  [controlId]="_id"
+  [description]="description()"
+  [disabled]="disabled()"
+  [errors]="_errorMessages()"
+  [label]="label()"
+  [required]="required()"
+>
+  <div class="form-rich-text" (focusout)="_leave($event)">
+    <app-rich-text-toolbar
+      [controlsId]="_id"
+      [disabled]="_locked()"
+      [state]="_toolbarState()"
+      (execute)="_run($event)"
+    />
+    <!-- The editor mounts on this element and fills it. -->
+    <div
+      class="rich-text form-rich-text__content"
+      #content
+      [id]="_id"
+      [attr.aria-describedby]="shell.describedBy()"
+      [attr.aria-disabled]="disabled() ? 'true' : null"
+      [attr.aria-invalid]="_errorMessages().length > 0 ? 'true' : null"
+      [attr.aria-labelledby]="shell.labelId()"
+      [attr.aria-readonly]="readonly() ? 'true' : null"
+      [attr.aria-required]="required() ? 'true' : null"
+      aria-multiline="true"
+      role="textbox"
+    ></div>
+  </div>
+</app-form-control-shell>

@@ -1,0 +1,18 @@
+{
+  "title": "Accessibility",
+  "heading": "Accessibility statement",
+  "lead": "This website is meant to be usable by everyone. The benchmark is the Web Content Accessibility Guidelines (WCAG) 2.1 at level AA.",
+  "status": {
+    "heading": "Conformance status",
+    "text": "The website is developed with the aim of meeting these requirements. This includes keyboard operation, support for screen readers and sufficient contrast in the light and the dark color scheme."
+  },
+  "limitations": {
+    "heading": "Known limitations",
+    "text": "[Enter known limitations]"
+  },
+  "feedback": {
+    "heading": "Report a barrier",
+    "text": "Did you run into a barrier or do you need content in another form? Send an email to"
+  },
+  "updated": "Last updated: October 2026"
+}

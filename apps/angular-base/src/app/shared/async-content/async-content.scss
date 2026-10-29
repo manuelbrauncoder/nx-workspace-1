@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.async-content__loading {
+  display: flex;
+  justify-content: center;
+  padding-block: 3rem;
+  color: var(--muted-foreground);
+}
+
+.async-content__skeleton {
+  display: grid;
+  gap: 1rem;
+}
+
+.async-content__spinner {
+  font-size: 1.5rem;
+}

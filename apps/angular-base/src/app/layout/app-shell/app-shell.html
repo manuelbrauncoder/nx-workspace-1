@@ -1,0 +1,11 @@
+<a class="skip-link" (click)="_skipToMain($event)" href="#main">{{ 'layout.skipToContent' | t }}</a>
+
+<app-header [(drawerOpen)]="_drawerOpen" />
+
+<main class="page-container app-main" id="main" #main tabindex="-1">
+  <router-outlet />
+</main>
+
+<app-footer />
+
+<app-drawer [(open)]="_drawerOpen" />

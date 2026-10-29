@@ -1,0 +1,16 @@
+<div class="border border-dashed" hlmEmpty>
+  <div hlmEmptyHeader>
+    @if (icon(); as name) {
+      <div hlmEmptyMedia variant="icon">
+        <app-ui-icon [name]="name" />
+      </div>
+    }
+    <div [attr.aria-level]="headingLevel()" hlmEmptyTitle role="heading">{{ heading() }}</div>
+    @if (description(); as text) {
+      <p hlmEmptyDescription>{{ text }}</p>
+    }
+  </div>
+  <div hlmEmptyContent>
+    <ng-content />
+  </div>
+</div>

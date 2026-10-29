@@ -1,0 +1,29 @@
+<button
+  [appUiMenuTrigger]="menu"
+  [attr.aria-label]="'language.choose' | t"
+  appUiButton
+  variant="ghost"
+  size="icon"
+  type="button"
+  align="end"
+>
+  <app-ui-icon name="languages" />
+</button>
+
+<ng-template #menu>
+  <app-ui-menu class="w-40">
+    <app-ui-menu-group>
+      @for (option of _options; track option.language) {
+        <button
+          [attr.lang]="option.language"
+          [checked]="_i18n.language() === option.language"
+          (triggered)="_i18n.setLanguage(option.language)"
+          appUiMenuRadio
+          type="button"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </app-ui-menu-group>
+  </app-ui-menu>
+</ng-template>

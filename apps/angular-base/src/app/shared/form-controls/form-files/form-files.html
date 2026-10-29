@@ -1,0 +1,71 @@
+<app-form-control-shell
+  #shell
+  [controlId]="_id"
+  [description]="description()"
+  [disabled]="disabled()"
+  [errors]="_errorMessages()"
+  [label]="label()"
+  [required]="required()"
+>
+  <div class="form-files">
+    <div
+      class="form-files__zone"
+      [attr.data-dragging]="_dragging() ? 'true' : null"
+      [attr.data-invalid]="_errorMessages().length > 0 ? 'true' : null"
+      [attr.data-locked]="_locked() ? 'true' : null"
+      (dragleave)="_dragging.set(false)"
+      (dragover)="_onDragOver($event)"
+      (drop)="_onDrop($event)"
+    >
+      <!-- Covers the zone invisibly, so a click anywhere opens the file dialog and the keyboard reaches it. -->
+      <input
+        class="form-files__input"
+        #control
+        [id]="_id"
+        [attr.accept]="accept().length > 0 ? accept().join(',') : null"
+        [attr.aria-describedby]="shell.describedBy()"
+        [attr.aria-invalid]="_errorMessages().length > 0 ? 'true' : null"
+        [attr.name]="name() || null"
+        [disabled]="_locked()"
+        [multiple]="maxFiles() > 1"
+        [required]="required() && value().length === 0"
+        (blur)="touch.emit()"
+        (change)="_onSelect(control)"
+        type="file"
+      />
+      <app-ui-icon class="form-files__icon" name="upload" />
+      <p>{{ 'form.files.prompt' | t }}</p>
+      <p class="form-files__count">
+        {{ 'form.files.count' | t: { count: value().length, max: maxFiles() } }}
+      </p>
+    </div>
+
+    <!-- Always in the DOM, so a screen reader announces messages that appear in it. -->
+    <div role="status">
+      @if (_rejections().length > 0) {
+        <ul class="form-files__rejections">
+          @for (rejection of _rejections(); track rejection) {
+            <li>{{ rejection }}</li>
+          }
+        </ul>
+      }
+    </div>
+
+    @if (_selected().length > 0) {
+      <ul class="form-files__list" [attr.aria-label]="'form.files.selected' | t">
+        @for (selected of _selected(); track selected.file) {
+          <li>
+            <app-ui-attachment
+              [description]="selected.size"
+              [imageSrc]="selected.previewUrl"
+              [removable]="!disabled() && !readonly()"
+              [removeLabel]="'form.files.remove' | t: { name: selected.file.name }"
+              [title]="selected.file.name"
+              (remove)="_remove(selected.file)"
+            />
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</app-form-control-shell>

@@ -1,0 +1,21 @@
+<app-form-control-shell
+  #shell
+  [controlId]="_id"
+  [description]="description()"
+  [disabled]="disabled()"
+  [errors]="_errorMessages()"
+  [label]="label()"
+  [required]="required()"
+  orientation="horizontal"
+>
+  <hlm-checkbox
+    [aria-describedby]="shell.describedBy()"
+    [checked]="checked()"
+    [disabled]="disabled()"
+    [inputId]="_id"
+    [name]="name() || null"
+    [required]="required()"
+    (checkedChange)="checked.set($event)"
+    (focusout)="touch.emit()"
+  />
+</app-form-control-shell>

@@ -1,0 +1,91 @@
+:host {
+  display: block;
+}
+
+// Horizontal bar. Links and group triggers share one look, Helm styles them differently.
+.nav-menu__list {
+  gap: 0.25rem;
+}
+
+.nav-menu__item {
+  height: 2rem;
+  padding: 0 0.75rem;
+  border-radius: var(--radius);
+  background-color: transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &:hover,
+  &[aria-current='page'],
+  &[data-current],
+  &[aria-expanded='true'] {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
+
+.nav-menu__panel {
+  display: grid;
+  gap: 0.125rem;
+  min-width: 12rem;
+}
+
+.nav-menu__panel-link {
+  &:hover,
+  &[aria-current='page'] {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
+
+// Vertical list.
+.nav-list {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.nav-list--nested {
+  margin-top: 0.25rem;
+  padding-left: 0.75rem;
+}
+
+.nav-list__item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: start;
+
+  &:hover,
+  &[aria-current='page'] {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}
+
+.nav-list__trigger {
+  justify-content: space-between;
+  gap: 0.5rem;
+
+  app-ui-icon {
+    transition: rotate 0.2s;
+  }
+
+  &[aria-expanded='true'] app-ui-icon {
+    rotate: 180deg;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    app-ui-icon {
+      transition: none;
+    }
+  }
+}

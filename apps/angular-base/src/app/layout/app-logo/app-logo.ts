@@ -1,0 +1,15 @@
+import { NgOptimizedImage } from '@angular/common';
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { APP_NAME } from '@core/app-name';
+
+/** The logo as a link to the start page, shown in the header and in the mobile drawer. */
+@Component({
+  selector: 'app-logo',
+  imports: [NgOptimizedImage, RouterLink],
+  styleUrl: './app-logo.scss',
+  templateUrl: './app-logo.html',
+})
+export class AppLogo {
+  private readonly _appName = APP_NAME;
+}

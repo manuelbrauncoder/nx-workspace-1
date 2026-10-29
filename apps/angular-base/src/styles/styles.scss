@@ -1,0 +1,8 @@
+// Global SCSS entry. Tailwind lives in tailwind.css.
+// Component SCSS sits next to the component, only global styles here.
+@use 'themes';
+@use 'base/fonts';
+@use 'base/global';
+@use 'base/typography';
+@use 'base/rich-text';
+@use 'layout';

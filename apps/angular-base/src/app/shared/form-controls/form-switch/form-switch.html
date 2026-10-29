@@ -1,0 +1,18 @@
+<app-form-control-shell
+  #shell
+  [controlId]="_id"
+  [description]="description()"
+  [disabled]="disabled()"
+  [errors]="_errorMessages()"
+  [label]="label()"
+  orientation="horizontal"
+>
+  <hlm-switch
+    [aria-describedby]="shell.describedBy()"
+    [checked]="checked()"
+    [disabled]="disabled()"
+    [inputId]="_id"
+    (checkedChange)="checked.set($event)"
+    (focusout)="touch.emit()"
+  />
+</app-form-control-shell>

@@ -1,0 +1,29 @@
+<article class="note-card" appUiCard>
+  <div appUiCardHeader>
+    <h2 appUiCardTitle>
+      <a class="note-card__link" [routerLink]="[note().id]">{{ note().title }}</a>
+    </h2>
+    <p appUiCardDescription>
+      {{ 'notesList.card.updatedAt' | t }}
+      <time [attr.datetime]="note().updatedAt.toISOString()">{{
+        note().updatedAt | localDate: 'dateTime'
+      }}</time>
+    </p>
+  </div>
+
+  <app-ui-rich-text class="note-card__content" [html]="note().description" appUiCardContent />
+
+  <div class="note-card__actions" appUiCardFooter>
+    <a
+      [routerLink]="[note().id, 'edit']"
+      [attr.aria-label]="'notes.editNamed' | t: { title: note().title }"
+      appUiButton
+      variant="outline"
+      size="sm"
+    >
+      {{ 'notes.edit' | t }}
+    </a>
+
+    <app-note-delete-button [title]="note().title" (confirmed)="remove.emit()" />
+  </div>
+</article>

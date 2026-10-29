@@ -1,0 +1,31 @@
+<app-form-control-shell
+  [controlId]="_id"
+  [description]="description()"
+  [disabled]="disabled()"
+  [errors]="_errorMessages()"
+  [label]="label()"
+  [required]="required()"
+>
+  <hlm-select
+    [disabled]="disabled()"
+    [itemToString]="_optionLabel"
+    [value]="value()"
+    (closed)="touch.emit()"
+    (focusout)="_leave()"
+    (stateChanged)="_open.set($event === 'open')"
+    (valueChange)="value.set($event ?? null)"
+  >
+    <hlm-select-trigger class="w-full" [buttonId]="_id">
+      <hlm-select-value [placeholder]="_resolvedPlaceholder()" />
+    </hlm-select-trigger>
+    <hlm-select-content *hlmSelectPortal>
+      <hlm-select-group>
+        @for (option of options(); track option.value) {
+          <hlm-select-item [disabled]="option.disabled ?? false" [value]="option.value">
+            {{ option.label }}
+          </hlm-select-item>
+        }
+      </hlm-select-group>
+    </hlm-select-content>
+  </hlm-select>
+</app-form-control-shell>

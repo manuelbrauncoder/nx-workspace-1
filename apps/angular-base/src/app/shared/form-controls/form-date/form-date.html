@@ -1,0 +1,24 @@
+<app-form-control-shell
+  [controlId]="_id"
+  [description]="description()"
+  [disabled]="disabled()"
+  [errors]="_errorMessages()"
+  [label]="label()"
+  [required]="required()"
+>
+  <hlm-date-picker
+    #picker
+    [date]="value() ?? undefined"
+    [disabled]="disabled()"
+    [formatDate]="_formatDate()"
+    [maxDate]="max()"
+    [minDate]="min()"
+    (dateChange)="value.set($event)"
+    (focusout)="_leave(picker)"
+    autoCloseOnSelect
+  >
+    <hlm-date-picker-trigger class="w-full" [buttonId]="_id">
+      {{ _resolvedPlaceholder() }}
+    </hlm-date-picker-trigger>
+  </hlm-date-picker>
+</app-form-control-shell>

@@ -1,0 +1,21 @@
+{
+  "overview": "Übersicht",
+  "pages": {
+    "typography": {
+      "title": "Typografie",
+      "description": "Schriftfamilien, Überschriften, Fließtext und Schriftgrade."
+    },
+    "colors": {
+      "title": "Farben",
+      "description": "Alle Theme-Tokens für Light und Dark mit ihren aktuellen Werten."
+    },
+    "forms": {
+      "title": "Formulare",
+      "description": "Form Controls für Signal Forms mit Label, Beschreibung und Fehlermeldungen."
+    },
+    "components": {
+      "title": "Komponenten",
+      "description": "UI-Wrapper aus shared/ui: Buttons, Cards, Dialoge, Toasts und mehr."
+    }
+  }
+}

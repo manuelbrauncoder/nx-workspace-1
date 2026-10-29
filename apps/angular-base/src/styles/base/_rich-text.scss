@@ -1,0 +1,77 @@
+// Formatted text written with `app-form-rich-text` and shown by `app-ui-rich-text`. Both render
+// HTML that carries no component scope, so the styles are global. Covers exactly the formats
+// listed in `src/app/shared/ui/rich-text/rich-text-rules.ts`.
+@layer components {
+  .rich-text {
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+
+    > * + * {
+      margin-top: 0.75em;
+    }
+
+    h2,
+    h3 {
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+    }
+
+    > h2:not(:first-child),
+    > h3:not(:first-child) {
+      margin-top: 1.5em;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.5rem;
+    }
+
+    ul {
+      list-style: disc;
+    }
+
+    ol {
+      list-style: decimal;
+    }
+
+    li + li,
+    li > ul,
+    li > ol {
+      margin-top: 0.25em;
+    }
+
+    blockquote {
+      border-left: 2px solid var(--border);
+      padding-left: 1rem;
+      color: var(--muted-foreground);
+
+      > * + * {
+        margin-top: 0.75em;
+      }
+    }
+
+    strong {
+      font-weight: 600;
+    }
+
+    a {
+      border-radius: 0.125rem;
+      color: var(--primary);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+
+      &:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+      }
+    }
+  }
+}

@@ -1,0 +1,88 @@
+@if (orientation() === 'horizontal') {
+  <nav [(value)]="_openItem" [attr.aria-label]="label()" hlmNavigationMenu openOn="click">
+    <ul class="nav-menu__list" hlmNavigationMenuList>
+      @for (entry of _entries(); track $index) {
+        <li hlmNavigationMenuItem>
+          @if (entry.kind === 'link') {
+            <a
+              class="nav-menu__item"
+              [routerLink]="entry.link.path"
+              [active]="entry.active()"
+              hlmNavigationMenuLink
+            >
+              {{ entry.link.labelKey | t }}
+            </a>
+          } @else {
+            <button
+              class="nav-menu__item"
+              [attr.data-current]="entry.active() ? '' : null"
+              hlmNavigationMenuTrigger
+              type="button"
+            >
+              {{ entry.group.labelKey | t }}
+            </button>
+            <ng-template hlmNavigationMenuPortal>
+              <hlm-navigation-menu-content>
+                <ul class="nav-menu__panel">
+                  @for (child of entry.children; track $index) {
+                    <li>
+                      <a
+                        class="nav-menu__panel-link"
+                        [routerLink]="child.link.path"
+                        [active]="child.active()"
+                        (click)="_openItem.set(undefined)"
+                        hlmNavigationMenuLink
+                      >
+                        {{ child.link.labelKey | t }}
+                      </a>
+                    </li>
+                  }
+                </ul>
+              </hlm-navigation-menu-content>
+            </ng-template>
+          }
+        </li>
+      }
+    </ul>
+  </nav>
+} @else {
+  <nav [attr.aria-label]="label()">
+    <ul class="nav-list">
+      @for (entry of _entries(); track $index) {
+        <li>
+          @if (entry.kind === 'link') {
+            <a
+              class="nav-list__item"
+              [routerLink]="entry.link.path"
+              [attr.aria-current]="entry.active() ? 'page' : null"
+            >
+              {{ entry.link.labelKey | t }}
+            </a>
+          } @else {
+            <hlm-collapsible [expanded]="entry.active()">
+              <button class="nav-list__item nav-list__trigger" hlmCollapsibleTrigger>
+                {{ entry.group.labelKey | t }}
+                <app-ui-icon name="chevronDown" />
+              </button>
+              <hlm-collapsible-content>
+                <ul class="nav-list nav-list--nested">
+                  @for (child of entry.children; track $index) {
+                    <li>
+                      <a
+                        class="nav-list__item"
+                        [routerLink]="child.link.path"
+                        [attr.aria-current]="child.active() ? 'page' : null"
+                      >
+                        {{ child.link.labelKey | t }}
+                      </a>
+                    </li>
+                  }
+                </ul>
+              </hlm-collapsible-content>
+            </hlm-collapsible>
+          }
+        </li>
+      }
+    </ul>
+  </nav>
+}

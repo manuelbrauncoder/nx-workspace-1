@@ -1,0 +1,20 @@
+{
+  "title": "Sign in",
+  "lead": "Sign in to see your notes.",
+  "fields": {
+    "email": "Email",
+    "password": "Password"
+  },
+  "validation": {
+    "emailRequired": "Please enter your email address.",
+    "emailInvalid": "Please enter a valid email address.",
+    "passwordRequired": "Please enter your password."
+  },
+  "submit": "Sign in",
+  "submitting": "Signing in",
+  "signedIn": "You are signed in",
+  "failed": "Signing in failed",
+  "invalidCredentials": "The email address or the password is wrong.",
+  "noAccount": "No account yet?",
+  "toSignUp": "Sign up now"
+}

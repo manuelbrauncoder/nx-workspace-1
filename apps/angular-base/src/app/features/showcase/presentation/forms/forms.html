@@ -1,0 +1,79 @@
+<h1 appUiText="h1">{{ 'showcaseForms.heading' | t }}</h1>
+<p class="mt-2" appUiText="lead">
+  {{ 'showcaseForms.lead' | t }}
+</p>
+
+<div class="mt-12 flex flex-col gap-16">
+  <app-showcase-section
+    [heading]="'showcaseForms.controls.heading' | t"
+    [description]="'showcaseForms.controls.description' | t"
+  >
+    <form class="showcase-form" (submit)="_save($event)" novalidate>
+      <app-form-text
+        [formField]="_profileForm.name"
+        [label]="'showcaseForms.fields.name' | t"
+        autocomplete="name"
+      />
+      <app-form-text
+        [formField]="_profileForm.email"
+        [label]="'showcaseForms.fields.email' | t"
+        [description]="'showcaseForms.fields.emailDescription' | t"
+        type="email"
+        autocomplete="email"
+      />
+      <app-form-textarea
+        [formField]="_profileForm.about"
+        [label]="'showcaseForms.fields.about' | t"
+        rows="4"
+      />
+      <app-form-rich-text
+        [formField]="_profileForm.notes"
+        [label]="'showcaseForms.fields.notes' | t"
+        [description]="'showcaseForms.fields.notesDescription' | t"
+      />
+      <app-form-files
+        [formField]="_profileForm.attachments"
+        [label]="'showcaseForms.fields.attachments' | t"
+        [description]="'showcaseForms.fields.attachmentsDescription' | t"
+        [maxFiles]="3"
+      />
+      <app-form-date
+        [formField]="_profileForm.birthday"
+        [label]="'showcaseForms.fields.birthday' | t"
+      />
+      <app-form-select
+        [formField]="_profileForm.role"
+        [options]="_roles()"
+        [label]="'showcaseForms.fields.role' | t"
+      />
+      <app-form-switch
+        [formField]="_profileForm.newsletter"
+        [label]="'showcaseForms.fields.newsletter' | t"
+        [description]="'showcaseForms.fields.newsletterDescription' | t"
+      />
+      <app-form-checkbox
+        [formField]="_profileForm.terms"
+        [label]="'showcaseForms.fields.terms' | t"
+      />
+      <app-form-text
+        [formField]="_profileForm.customerNumber"
+        [label]="'showcaseForms.fields.customerNumber' | t"
+        [description]="'showcaseForms.fields.customerNumberDescription' | t"
+      />
+
+      <div>
+        <button appUiButton type="submit">{{ 'showcaseForms.submit' | t }}</button>
+      </div>
+      @if (_submitted()) {
+        <p role="status">{{ 'showcaseForms.valid' | t }}</p>
+      }
+    </form>
+  </app-showcase-section>
+
+  <app-showcase-section
+    [heading]="'showcaseForms.value.heading' | t"
+    [description]="'showcaseForms.value.description' | t"
+  >
+    <pre class="showcase-form__value">{{ _profile() | json }}</pre>
+  </app-showcase-section>
+</div>

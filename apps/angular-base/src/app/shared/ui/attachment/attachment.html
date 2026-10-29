@@ -1,0 +1,39 @@
+<div [variant]="imageSrc() ? 'image' : 'icon'" hlmAttachmentMedia>
+  @if (imageSrc(); as src) {
+    <img [alt]="imageAlt()" [src]="src" decoding="async" loading="lazy" />
+  } @else {
+    <app-ui-icon [name]="icon()" />
+  }
+</div>
+
+@if (title(); as title) {
+  <div hlmAttachmentContent>
+    <span hlmAttachmentTitle>{{ title }}</span>
+    @if (description(); as description) {
+      <span hlmAttachmentDescription>{{ description }}</span>
+    }
+  </div>
+}
+
+@if (href(); as href) {
+  <a
+    [attr.aria-label]="linkLabel() ?? null"
+    [href]="href"
+    hlmAttachmentTrigger
+    rel="noopener noreferrer"
+    target="_blank"
+  ></a>
+}
+
+@if (removable()) {
+  <div hlmAttachmentActions>
+    <button
+      class="ui-attachment__remove"
+      [attr.aria-label]="removeLabel() ?? null"
+      (click)="remove.emit()"
+      hlmAttachmentAction
+    >
+      <app-ui-icon name="x" />
+    </button>
+  </div>
+}

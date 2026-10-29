@@ -1,0 +1,21 @@
+{
+  "overview": "Overview",
+  "pages": {
+    "typography": {
+      "title": "Typography",
+      "description": "Font families, headings, body text and font sizes."
+    },
+    "colors": {
+      "title": "Colors",
+      "description": "All theme tokens for light and dark with their current values."
+    },
+    "forms": {
+      "title": "Forms",
+      "description": "Form controls for Signal Forms with label, description and error messages."
+    },
+    "components": {
+      "title": "Components",
+      "description": "UI wrappers from shared/ui: buttons, cards, dialogs, toasts and more."
+    }
+  }
+}
