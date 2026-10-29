@@ -14,53 +14,69 @@ An arrow means "may import from". Nothing points back: the API layer does not kn
 
 The point of the split is that each kind of change has one place:
 
-- The backend changes its wire format: only `src/api` changes
+- The backend changes its wire format: only `apps/angular-base/src/api` changes
 - A feature needs data from two backends: only its use case changes
 - A screen is redesigned: only `presentation` changes
 
 ## Folder map
 
+The app lives in an Nx workspace. Everything another app can reuse is a lib in `packages/shared/`, everything specific to this app stays in `apps/angular-base/`.
+
 ```text
-src/
+packages/shared/
+├── core/src/                 @core/*: app-wide infrastructure
+│   ├── config/               runtime config
+│   ├── failure/              the Failure type
+│   ├── http/                 HTTP interceptor, status of the server response
+│   ├── i18n/                 translations, language, date format
+│   ├── log/                  logging
+│   ├── seo/                  title, meta tags, canonical URL
+│   ├── state/                AsyncState, mutation, patchResource
+│   ├── testing/              test setup shared by every project
+│   ├── theme/                light and dark mode
+│   └── app-name.ts           the APP_NAME token every app sets
+├── ui/src/                   @shared/*: UI used by several features
+│   ├── async-content/
+│   ├── failure-alert/
+│   ├── form-controls/
+│   ├── i18n/                 shared texts of the UI lib
+│   ├── language-toggle/
+│   ├── theme-toggle/
+│   └── ui/
+├── helm-vega/                @spartan-ng/helm/*: Spartan components, style vega
+└── styles/                   global SCSS: abstracts, base styles, layout
+
+apps/angular-base/src/
 ├── api/                      API layer, one folder per backend resource
 │   ├── dto-mapper.ts
 │   └── notes/
 ├── app/
-│   ├── core/                 app-wide infrastructure
-│   │   ├── config/           runtime config
-│   │   ├── failure/          the Failure type
-│   │   ├── http/             HTTP interceptor, status of the server response
-│   │   ├── i18n/             translations, language, date format
-│   │   ├── log/              logging
-│   │   ├── seo/              title, meta tags, canonical URL
-│   │   ├── state/            AsyncState, mutation, patchResource
-│   │   └── theme/            light and dark mode
-│   ├── shared/               UI and utilities used by several features
-│   │   ├── async-content/
-│   │   ├── failure-alert/
-│   │   ├── form-controls/
-│   │   ├── i18n/             translations of the shared scope
-│   │   └── ui/
+│   ├── i18n/                 shared texts of this app
 │   ├── layout/               app shell: header, main, footer, mobile drawer
 │   ├── features/
 │   │   ├── legal/            imprint, privacy policy, accessibility statement
 │   │   ├── notes/            reference feature
 │   │   └── showcase/
+│   ├── site-owner.ts         operator of the site, for the legal pages
 │   ├── app.config.ts
 │   └── app.routes.ts
 ├── server/                   parts of the Express server (SEO routes, config, log)
 ├── server.ts                 Express entry (SSR, SEO routes, static files)
-└── styles/                   global styles and theme tokens
+└── styles/                   Tailwind entry, theme tokens and fonts of this app
 ```
 
-| Folder                        | Responsibility                         | Must not know       |
-| ----------------------------- | -------------------------------------- | ------------------- |
-| `src/app/core/`               | Infrastructure every feature relies on | features, `src/api` |
-| `src/app/shared/`             | Reusable UI and helpers                | features, `src/api` |
-| `src/app/layout/`             | The frame around every page            | features, `src/api` |
-| `src/app/features/<feature>/` | One vertical slice of the product      | other features      |
-| `src/api/<resource>/`         | Talking to the backend                 | features            |
-| `src/server/`                 | Parts of the Express server            |                     |
+| Folder                                          | Responsibility                         | Must not know                         |
+| ----------------------------------------------- | -------------------------------------- | ------------------------------------- |
+| `packages/shared/core/src/`                     | Infrastructure every feature relies on | apps, `ui`, the UI library            |
+| `packages/shared/ui/src/`                       | Reusable UI and helpers                | apps                                  |
+| `packages/shared/helm-<style>/`                 | Spartan components in one style        | everything else                       |
+| `packages/shared/styles/`                       | Global SCSS                            | everything else                       |
+| `apps/angular-base/src/app/layout/`             | The frame around every page            | features, `apps/angular-base/src/api` |
+| `apps/angular-base/src/app/features/<feature>/` | One vertical slice of the product      | other features                        |
+| `apps/angular-base/src/api/<resource>/`         | Talking to the backend                 | features                              |
+| `apps/angular-base/src/server/`                 | Parts of the Express server            |                                       |
+
+Features and the API layer still live in the app. They become libs once a second app needs them.
 
 ## Inside a feature
 
@@ -86,7 +102,7 @@ The use case of the feature and its models. This is the only place in a feature 
 
 Models are defined in the API layer and re-exported, so the rest of the feature never names the API layer:
 
-[src/app/features/notes/domain/note.ts](../src/app/features/notes/domain/note.ts)
+[apps/angular-base/src/app/features/notes/domain/note.ts](../apps/angular-base/src/app/features/notes/domain/note.ts)
 
 ```ts
 export { NOTE_TITLE_MAX_LENGTH } from '@api/notes/note';
@@ -95,7 +111,7 @@ export type { Note, NoteDraft } from '@api/notes/note';
 
 The use case currently passes the repository through. That looks like an empty layer, and it is kept on purpose: it is the seam where a feature combines several repositories or adds rules that are not tied to one endpoint, without the store learning about HTTP.
 
-[src/app/features/notes/domain/notes.usecase.ts](../src/app/features/notes/domain/notes.usecase.ts)
+[apps/angular-base/src/app/features/notes/domain/notes.usecase.ts](../apps/angular-base/src/app/features/notes/domain/notes.usecase.ts)
 
 ```ts
 @Service({ autoProvided: false })
@@ -123,7 +139,7 @@ Pages and components. They use `application` and `domain` and get everything vis
 
 The routes of the feature and the place where its use case and store are provided. Both are created when the user enters the feature and destroyed when they leave it:
 
-[src/app/features/notes/notes.routes.ts](../src/app/features/notes/notes.routes.ts)
+[apps/angular-base/src/app/features/notes/notes.routes.ts](../apps/angular-base/src/app/features/notes/notes.routes.ts)
 
 ```ts
 export const notesRoutes: Routes = [
@@ -146,31 +162,47 @@ export const notesRoutes: Routes = [
 ];
 ```
 
-Features are lazy loaded from [src/app/app.routes.ts](../src/app/app.routes.ts) through `loadChildren`, pages inside a feature through `loadComponent`. Each page brings its own translations, loaded by `loadI18nScope`, see [Internationalization](i18n.md).
+Features are lazy loaded from [apps/angular-base/src/app/app.routes.ts](../apps/angular-base/src/app/app.routes.ts) through `loadChildren`, pages inside a feature through `loadComponent`. Each page brings its own translations, loaded by `loadI18nScope`, see [Internationalization](i18n.md).
 
 A feature does not need every layer. `showcase` and `legal` only render static content, so they consist of `presentation/` and their routes.
 
 ## Import rules
 
-| From                           | May import                                         | Must not import                                       |
-| ------------------------------ | -------------------------------------------------- | ----------------------------------------------------- |
-| `presentation`                 | own `application` and `domain`, `@core`, `@shared` | `@api`, other features, the UI library                |
-| `application`                  | own `domain`, `@core`                              | `presentation`, `@api`, other features                |
-| `domain`                       | `@api`                                             | `application`, `presentation`, `@angular/common/http` |
-| `src/api`                      | `@core`                                            | `@features`                                           |
-| `core`, `shared`               | each other                                         | `@features`, `@api`                                   |
-| `layout`                       | `@core`, `@shared`, `@features/auth/public-api`    | other `@features`, `@api`, the UI library             |
-| everything except the wrappers | `@shared/ui`, `@shared/form-controls`              | `@spartan-ng/*`, `@ng-icons/*`                        |
+| From                        | May import                                         | Must not import                                       |
+| --------------------------- | -------------------------------------------------- | ----------------------------------------------------- |
+| `presentation`              | own `application` and `domain`, `@core`, `@shared` | `@api`, other features, the UI library                |
+| `application`               | own `domain`, `@core`                              | `presentation`, `@api`, other features                |
+| `domain`                    | `@api`                                             | `application`, `presentation`, `@angular/common/http` |
+| `apps/angular-base/src/api` | `@core`                                            | `@features`                                           |
+| `core` lib                  | itself                                             | `@shared`, apps, the UI library                       |
+| `ui` lib                    | `@core`, `@spartan-ng/helm/*`, the UI library      | apps                                                  |
+| `layout`                    | `@core`, `@shared`, `@features/auth/public-api`    | other `@features`, `@api`, the UI library             |
+| everything except `ui`      | `@shared/ui`, `@shared/form-controls`              | `@spartan-ng/*`, `@ng-icons/*`, `@tiptap/*`           |
 
 Two more rules:
 
-- Features never import each other. If two features need the same thing, it moves to `shared` (UI, helpers) or to `src/api` (data)
+- Features never import each other. If two features need the same thing, it moves to `shared` (UI, helpers) or to `apps/angular-base/src/api` (data)
 - The one exception is `@features/auth/public-api`. Who is signed in concerns every page, so the auth feature opens exactly that file to the app shell and to other features, see [Authentication](auth.md#public-api)
 - Inside a feature use relative imports. Across the boundaries use the aliases `@core/*`, `@shared/*`, `@api/*`
+- Inside a lib use relative imports too. Nx reports an alias that points into the lib itself
 
 ### How it is enforced
 
-The boundaries are `no-restricted-imports` rules in [eslint.config.js](../eslint.config.js), one block per folder pattern:
+Two mechanisms, both run by `pnpm nx run-many -t lint`.
+
+**Between projects**: Nx tags and `@nx/enforce-module-boundaries` in the root [eslint.config.mjs](../eslint.config.mjs). Each project carries one tag in its `project.json`:
+
+| Tag           | Projects       | May depend on                                      |
+| ------------- | -------------- | -------------------------------------------------- |
+| `type:app`    | `angular-base` | `type:ui`, `type:core`, `type:styles`              |
+| `type:ui`     | `ui`           | `type:ui`, `type:core`, `type:helm`, `type:styles` |
+| `type:core`   | `core`         | `type:core`                                        |
+| `type:helm`   | `helm-vega`, … | `type:helm`                                        |
+| `type:styles` | `styles`       | `type:styles`                                      |
+
+`type:app` and `type:core` may not import `@spartan-ng/*`, `@ng-icons/*` or `@tiptap/*` (`bannedExternalImports`). Nx also rejects cycles between projects and relative imports into another project.
+
+**Inside the app**: `no-restricted-imports` rules in [apps/angular-base/eslint.config.mjs](../apps/angular-base/eslint.config.mjs), one block per folder pattern:
 
 ```js
 restrictImports(
@@ -178,7 +210,7 @@ restrictImports(
   [
     CROSS_FEATURE,
     API_LAYER,
-    UI_LIBRARY,
+    I18N_LIBRARY,
     { regex: '(^|/)presentation/', message: 'application must not depend on presentation.' },
   ],
 ),
@@ -188,12 +220,13 @@ A later block replaces the rule of an earlier one for the files it matches, so e
 
 ## App-wide setup
 
-[src/app/app.config.ts](../src/app/app.config.ts) wires the infrastructure from `core`:
+[apps/angular-base/src/app/app.config.ts](../apps/angular-base/src/app/app.config.ts) wires the infrastructure from `core`:
 
 ```ts
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    { provide: APP_NAME, useValue: 'angular-base' },
     { provide: ErrorHandler, useClass: AppErrorHandler },
     provideRouter(
       routes,
@@ -211,27 +244,29 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAppConfig(),
     provideAuth(),
-    provideI18n(),
+    provideI18n({ shared: [uiI18n, appI18n] }),
     provideSeo(),
     provideDeveloperGreeting(),
   ],
 };
 ```
 
+- `APP_NAME` is the name of the app in the header, the footer, the page title and the developer greeting. `core` has no default, every app sets it
+
 - `withComponentInputBinding()` binds route parameters to component inputs, which is how `NoteDetail` receives its `id`
 - `withInMemoryScrolling()` starts a new page at the top, restores the scroll position when going back and scrolls to the target of a `#fragment` link
 - `failureInterceptor` turns failed requests into a `Failure`, see [Error handling](error-handling.md). A response runs through the list backwards, so it comes last and the others see a `Failure`
 - `credentialsInterceptor`, `sessionExpiredInterceptor` and `provideAuth()` belong to [Authentication](auth.md)
 - `provideAppConfig()` loads the runtime config before the first render, see [API and runtime config](api-and-config.md)
-- `provideI18n()` loads the shared translations before the first render, `languageInterceptor` tells the backend the active language, see [Internationalization](i18n.md)
+- `provideI18n()` loads the shared texts of the `ui` lib and of the app before the first render, `languageInterceptor` tells the backend the active language, see [Internationalization](i18n.md)
 - `provideSeo()` keeps title and meta tags in step with the active route, see [SEO](seo.md)
 - `AppErrorHandler` and `provideDeveloperGreeting()` belong to [Logging](logging.md)
 
 ## App shell
 
-Every page is rendered inside the `AppShell` from [src/app/layout/](../src/app/layout/). It is the parent route of all features:
+Every page is rendered inside the `AppShell` from [apps/angular-base/src/app/layout/](../apps/angular-base/src/app/layout/). It is the parent route of all features:
 
-[src/app/app.routes.ts](../src/app/app.routes.ts)
+[apps/angular-base/src/app/app.routes.ts](../apps/angular-base/src/app/app.routes.ts)
 
 ```ts
 export const routes: Routes = [
@@ -256,7 +291,7 @@ layout/
 ├── app-header/       logo, navigation from `md` up, theme toggle, menu button below `md`
 ├── app-footer/       copyright and the links to the legal pages
 ├── app-drawer/       logo and navigation for small screens, built on `app-ui-sheet`
-├── app-logo/         `public/logo.svg` as a link to the start page, used by header and drawer
+├── app-logo/         `apps/angular-base/public/logo.svg` as a link to the start page, used by header and drawer
 ├── not-found/        page of the `**` route, answers with status 404
 └── app-nav-items.ts  the navigation entries of header and drawer, the legal links of the footer
 ```
@@ -272,10 +307,20 @@ layout/
 
 `notes` is the reference for CRUD. A new feature follows the same structure, built from the bottom up:
 
-1. **API layer** in `src/api/<resource>/`: DTO, model, mapper, repository. See [API and runtime config](api-and-config.md#adding-an-api-resource)
+1. **API layer** in `apps/angular-base/src/api/<resource>/`: DTO, model, mapper, repository. See [API and runtime config](api-and-config.md#adding-an-api-resource)
 2. **Domain** in `features/<feature>/domain/`: re-export the models, add the use case with `@Service({ autoProvided: false })`
 3. **Store** in `features/<feature>/application/`. See [State management](state-management.md)
 4. **Pages and components** in `features/<feature>/presentation/`, built from the wrappers in `@shared`. Each page gets its translations in `i18n/de.json` and `i18n/en.json` and a `<page>.i18n.ts`. See [Internationalization](i18n.md#adding-a-page-scope)
 5. **Routes** in `features/<feature>/<feature>.routes.ts`, providing use case and store and loading the scope of each page with `loadI18nScope`
-6. **Register** the feature in `src/app/app.routes.ts` with `loadChildren`, as a child of the `AppShell` route. Add it to `APP_NAV_ITEMS` if it belongs in the navigation, with its label in the shared scope
-7. Run `pnpm lint`. A boundary violation shows up there
+6. **Register** the feature in `apps/angular-base/src/app/app.routes.ts` with `loadChildren`, as a child of the `AppShell` route. Add it to `APP_NAV_ITEMS` if it belongs in the navigation, with its label in the shared texts of the app (`apps/angular-base/src/app/i18n/`)
+7. Run `pnpm nx run-many -t lint`. A boundary violation shows up there
+
+## Adding an app
+
+A new app reuses the libs and brings only what is its own:
+
+1. Generate it with `pnpm nx g @nx/angular:application` and tag it `type:app`. Take `project.json`, `vite.config.mts`, `tsconfig*.json` and `eslint.config.mjs` of `angular-base` as the reference, with `packages/shared` in `stylePreprocessorOptions.includePaths` and `implicitDependencies: ["styles"]`
+2. In `app.config.ts` set `APP_NAME` and hand `uiI18n` and the app's own shared texts to `provideI18n()`. The app's texts must contain `seo.defaultDescription` and `seo.imageAlt`, which `SeoService` expects
+3. Give it its own `src/styles/` with `tailwind.css` (`@source` on its `src` and on `packages/shared`), `styles.scss`, `themes/` and fonts, see [Styling](styling.md)
+4. Its `src/test-setup.ts` calls `setupTestEnvironment()` from `@core/testing/setup-test-environment` with `APP_NAME` and `provideI18nTesting()`
+5. To use another Spartan style than vega, see [UI components](ui-components.md#spartan-styles)

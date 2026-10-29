@@ -2,11 +2,11 @@
 
 Every public site in Germany needs an imprint and a privacy policy. The base ships both plus an accessibility statement, linked from the footer of every page.
 
-| Page                    | Path                | Component                                                                              |
-| ----------------------- | ------------------- | -------------------------------------------------------------------------------------- |
-| Imprint                 | `/impressum`        | [Imprint](../src/app/features/legal/presentation/imprint/imprint.ts)                   |
-| Privacy policy          | `/datenschutz`      | [Privacy](../src/app/features/legal/presentation/privacy/privacy.ts)                   |
-| Accessibility statement | `/barrierefreiheit` | [Accessibility](../src/app/features/legal/presentation/accessibility/accessibility.ts) |
+| Page                    | Path                | Component                                                                                                |
+| ----------------------- | ------------------- | -------------------------------------------------------------------------------------------------------- |
+| Imprint                 | `/impressum`        | [Imprint](../apps/angular-base/src/app/features/legal/presentation/imprint/imprint.ts)                   |
+| Privacy policy          | `/datenschutz`      | [Privacy](../apps/angular-base/src/app/features/legal/presentation/privacy/privacy.ts)                   |
+| Accessibility statement | `/barrierefreiheit` | [Accessibility](../apps/angular-base/src/app/features/legal/presentation/accessibility/accessibility.ts) |
 
 The paths are German in both languages. The language of a page comes from the cookie, not from the URL, see [Internationalization](i18n.md).
 
@@ -14,7 +14,7 @@ The paths are German in both languages. The language of a page comes from the co
 
 Name and contact details stand in one place:
 
-[src/app/core/site-owner.ts](../src/app/core/site-owner.ts)
+[apps/angular-base/src/app/site-owner.ts](../apps/angular-base/src/app/site-owner.ts)
 
 ```ts
 export const SITE_OWNER: SiteOwner = {
@@ -42,4 +42,4 @@ The three routes carry `routeSeo({ index: false })`, so they are reachable but s
 
 ## Footer
 
-The links come from `APP_FOOTER_ITEMS` in [src/app/layout/app-nav-items.ts](../src/app/layout/app-nav-items.ts), their labels from `layout.footer.*` in the shared scope.
+The links come from `APP_FOOTER_ITEMS` in [apps/angular-base/src/app/layout/app-nav-items.ts](../apps/angular-base/src/app/layout/app-nav-items.ts), their labels from `layout.footer.*` in the shared texts of the app.

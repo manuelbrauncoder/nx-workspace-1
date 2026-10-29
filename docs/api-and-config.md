@@ -1,10 +1,10 @@
 # API and runtime config
 
-How the app talks to a backend: the API layer in `src/api`, and the runtime config that tells it where the backend is.
+How the app talks to a backend: the API layer in `apps/angular-base/src/api`, and the runtime config that tells it where the backend is.
 
 ## The API layer
 
-`src/api` stands on its own. It knows `core`, but no feature, and it is the only place in the project that makes HTTP calls. Each backend resource gets a folder with four parts:
+`apps/angular-base/src/api` stands on its own. It knows `core`, but no feature, and it is the only place in the project that makes HTTP calls. Each backend resource gets a folder with four parts:
 
 | File                  | Role                                                     |
 | --------------------- | -------------------------------------------------------- |
@@ -17,7 +17,7 @@ How the app talks to a backend: the API layer in `src/api`, and the runtime conf
 
 Keeping the two apart means a change in the wire format stops at the mapper. In `notes` the differences are the timestamps, ISO strings on the wire and `Date` objects in the app, and the images, which only get their `url` in the model.
 
-[src/api/notes/note.dto.ts](../src/api/notes/note.dto.ts)
+[apps/angular-base/src/api/notes/note.dto.ts](../apps/angular-base/src/api/notes/note.dto.ts)
 
 ```ts
 /** Wire format of a note. Timestamps are ISO 8601 strings. */
@@ -36,7 +36,7 @@ export interface NoteResponseDto {
 }
 ```
 
-[src/api/notes/note.ts](../src/api/notes/note.ts)
+[apps/angular-base/src/api/notes/note.ts](../apps/angular-base/src/api/notes/note.ts)
 
 ```ts
 export interface NoteImage {
@@ -68,9 +68,9 @@ The limits of the backend (`NOTE_TITLE_MAX_LENGTH`, `NOTE_IMAGES_MAX`, ...) sit 
 
 ### Mapper
 
-A mapper is a class that extends `DtoMapper` from [src/api/dto-mapper.ts](../src/api/dto-mapper.ts). Both directions are mandatory, `toModel` and `toDto`. The list variants `toModels` and `toDtos` come from the base class.
+A mapper is a class that extends `DtoMapper` from [apps/angular-base/src/api/dto-mapper.ts](../apps/angular-base/src/api/dto-mapper.ts). Both directions are mandatory, `toModel` and `toDto`. The list variants `toModels` and `toDtos` come from the base class.
 
-[src/api/notes/note-dto.mapper.ts](../src/api/notes/note-dto.mapper.ts)
+[apps/angular-base/src/api/notes/note-dto.mapper.ts](../apps/angular-base/src/api/notes/note-dto.mapper.ts)
 
 ```ts
 @Service()
@@ -106,7 +106,7 @@ Additional shapes such as the draft or the images get their own method on the sa
 
 The repository builds its URL from the runtime config, unwraps the envelope of the response and maps it before it leaves the layer:
 
-[src/api/notes/notes.repository.ts](../src/api/notes/notes.repository.ts)
+[apps/angular-base/src/api/notes/notes.repository.ts](../apps/angular-base/src/api/notes/notes.repository.ts)
 
 ```ts
 @Service()
@@ -152,17 +152,17 @@ Repositories return observables and do no error handling. Failed requests are al
 
 ### Adding an API resource
 
-1. Create `src/api/<resource>/` with the DTO, the model, a mapper extending `DtoMapper` and the repository
+1. Create `apps/angular-base/src/api/<resource>/` with the DTO, the model, a mapper extending `DtoMapper` and the repository
 2. Read the base URL from `AppConfigService.apiBaseUrl`, never hard-code it
 3. Return models from every repository method
-4. Add specs for the mapper and the repository, following [note-dto.mapper.spec.ts](../src/api/notes/note-dto.mapper.spec.ts) and [notes.repository.spec.ts](../src/api/notes/notes.repository.spec.ts)
+4. Add specs for the mapper and the repository, following [note-dto.mapper.spec.ts](../apps/angular-base/src/api/notes/note-dto.mapper.spec.ts) and [notes.repository.spec.ts](../apps/angular-base/src/api/notes/notes.repository.spec.ts)
 5. Consume the repository from the use case of a feature. Features reach the API layer only through their `domain` folder, see [Architecture](architecture.md#domain)
 
 ## Runtime config
 
 The backend URL is not part of the build. The app loads `/config/app-config.json` when it starts, so the same build runs in every environment and only the mounted file differs.
 
-- Locally the file is [config/app-config.json](../config/app-config.json). The build copies the `config/` folder into the output
+- Locally the file is [config/app-config.json](../apps/angular-base/config/app-config.json). The build copies the `apps/angular-base/config/` folder into the output
 - In a container the file is mounted over the one in the image
 
 ```json
@@ -185,7 +185,7 @@ The backend URL is not part of the build. The app loads `/config/app-config.json
 
 ### Reading the config
 
-Access goes through `AppConfigService` in [src/app/core/config/app-config.ts](../src/app/core/config/app-config.ts) only:
+Access goes through `AppConfigService` in [packages/shared/core/src/config/app-config.ts](../packages/shared/core/src/config/app-config.ts) only:
 
 ```ts
 private readonly _config = inject(AppConfigService);
@@ -204,7 +204,7 @@ private get _url(): string {
 1. Add the property to the `AppConfig` interface
 2. Check it in the `isAppConfig` type guard and extend the error message in `load()`
 3. Add a getter to `AppConfigService`
-4. Add the value to `config/app-config.json` and to the config of every deployment
+4. Add the value to `apps/angular-base/config/app-config.json` and to the config of every deployment
 
 ### Caching
 

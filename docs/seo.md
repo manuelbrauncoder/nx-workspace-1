@@ -2,23 +2,23 @@
 
 Every page is rendered on the server, so a crawler receives the finished HTML. This doc covers what goes into the `<head>` of that HTML, which HTTP status a page answers with, and the two files crawlers ask for: `robots.txt` and `sitemap.xml`.
 
-The code lives in [src/app/core/seo/](../src/app/core/seo/). Nothing outside of it writes the title or a meta tag.
+The code lives in [packages/shared/core/src/seo/](../packages/shared/core/src/seo/). Nothing outside of it writes the title or a meta tag.
 
 ## What every page gets
 
 `SeoService` writes these tags after every navigation, on the server and in the browser, and again when the language changes:
 
-| Tag                                    | Value                                                                    |
-| -------------------------------------- | ------------------------------------------------------------------------ |
-| `<title>`                              | `<page title> \| angular-base`. The name comes from `APP_NAME`           |
-| `meta description`                     | Description of the route, else the default `seo.defaultDescription`      |
-| `meta robots`                          | `index, follow` or `noindex, nofollow`, see [Indexing](#indexing)        |
-| `link rel="canonical"`                 | `siteUrl` plus the path, without query and fragment                      |
-| `og:title`, `og:description`, `og:url` | Same values as above                                                     |
-| `og:type`, `og:site_name`, `og:locale` | `website`, the app name, the active locale                               |
-| `og:image` with width, height and alt  | [public/og-image.png](../public/og-image.png) (1200×630) as absolute URL |
-| `twitter:card`                         | `summary_large_image`                                                    |
-| `twitter:image`                        | Same image as `og:image`                                                 |
+| Tag                                    | Value                                                                                            |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `<title>`                              | `<page title> \| angular-base`. The name comes from the token `APP_NAME`, set in `app.config.ts` |
+| `meta description`                     | Description of the route, else the default `seo.defaultDescription`                              |
+| `meta robots`                          | `index, follow` or `noindex, nofollow`, see [Indexing](#indexing)                                |
+| `link rel="canonical"`                 | `siteUrl` plus the path, without query and fragment                                              |
+| `og:title`, `og:description`, `og:url` | Same values as above                                                                             |
+| `og:type`, `og:site_name`, `og:locale` | `website`, the app name, the active locale                                                       |
+| `og:image` with width, height and alt  | [public/og-image.png](../apps/angular-base/public/og-image.png) (1200×630) as absolute URL       |
+| `twitter:card`                         | `summary_large_image`                                                                            |
+| `twitter:image`                        | Same image as `og:image`                                                                         |
 
 Absolute URLs need the public address of the app. It is not part of the build, it comes from `siteUrl` in the [runtime config](api-and-config.md#runtime-config).
 
@@ -26,7 +26,7 @@ Absolute URLs need the public address of the app. It is not part of the build, i
 
 The title stays in the `title` of the route and is a translation key. Everything else goes through `routeSeo()`:
 
-[src/app/features/notes/notes.routes.ts](../src/app/features/notes/notes.routes.ts)
+[apps/angular-base/src/app/features/notes/notes.routes.ts](../apps/angular-base/src/app/features/notes/notes.routes.ts)
 
 ```ts
 {
@@ -56,7 +56,7 @@ A public page names its description instead: `data: routeSeo({ description: 'pro
 
 A page that shows one entry should carry the title of that entry, not a generic one. `injectPageSeo()` takes a function that returns title and description once the data is there:
 
-[src/app/features/notes/presentation/note-detail/note-detail.ts](../src/app/features/notes/presentation/note-detail/note-detail.ts)
+[apps/angular-base/src/app/features/notes/presentation/note-detail/note-detail.ts](../apps/angular-base/src/app/features/notes/presentation/note-detail/note-detail.ts)
 
 ```ts
 constructor() {
@@ -84,9 +84,9 @@ Two things decide whether a page may be indexed:
 
 Without help every server-rendered page answers with 200, also the one that says "not found". Search engines then index an error page.
 
-- The `**` route in [src/app/app.routes.ts](../src/app/app.routes.ts) renders [NotFound](../src/app/layout/not-found/not-found.ts), which sets status 404
+- The `**` route in [apps/angular-base/src/app/app.routes.ts](../apps/angular-base/src/app/app.routes.ts) renders [NotFound](../apps/angular-base/src/app/layout/not-found/not-found.ts), which sets status 404
 - `app-async-content` passes the status of a `Failure` on to the response. `/notes/<unknown id>` therefore answers with 404, a page whose backend is down with 503. Pages do not have to do anything for it
-- Anything else sets the status with `injectResponseStatus()` from [src/app/core/http/response-status.ts](../src/app/core/http/response-status.ts). It does nothing in the browser
+- Anything else sets the status with `injectResponseStatus()` from [packages/shared/core/src/http/response-status.ts](../packages/shared/core/src/http/response-status.ts). It does nothing in the browser
 
 ```ts
 private readonly _setResponseStatus = injectResponseStatus();
@@ -96,10 +96,10 @@ this._setResponseStatus(410);
 
 ## robots.txt and sitemap.xml
 
-Both are generated by the Express server in [src/server/seo-routes.ts](../src/server/seo-routes.ts), since they contain the public URL.
+Both are generated by the Express server in [apps/angular-base/src/server/seo-routes.ts](../apps/angular-base/src/server/seo-routes.ts), since they contain the public URL.
 
 - `/robots.txt` allows everything and names the sitemap, or disallows everything when `allowIndexing` is `false`
-- `/sitemap.xml` lists the pages that [src/server.ts](../src/server.ts) passes in. The list is empty for now: notes are private, the other pages are not meant to be indexed
+- `/sitemap.xml` lists the pages that [apps/angular-base/src/server.ts](../apps/angular-base/src/server.ts) passes in. The list is empty for now: notes are private, the other pages are not meant to be indexed
 
 A feature with public pages adds its entries in `server.ts`:
 
@@ -111,7 +111,7 @@ The function is asked on every request. Entries that depend on data, e.g. one pa
 
 ## Icons and manifest
 
-The files are in [public/](../public/) and linked in [src/index.html](../src/index.html): `favicon.ico`, `logo.svg`, `apple-touch-icon.png` and `manifest.webmanifest`, which refers to `logo-512.png`. Their names carry no hash, so the server delivers them with a cache time of one hour instead of one year.
+The files are in [public/](../apps/angular-base/public/) and linked in [apps/angular-base/src/index.html](../apps/angular-base/src/index.html): `favicon.ico`, `logo.svg`, `apple-touch-icon.png` and `manifest.webmanifest`, which refers to `logo-512.png`. Their names carry no hash, so the server delivers them with a cache time of one hour instead of one year.
 
 ## Not included
 

@@ -1,25 +1,25 @@
 # Documentation
 
-Long-form documentation for `angular-base`. The short rule set that tooling and AI agents work from lives in [CLAUDE.md](../CLAUDE.md). These docs explain the same rules with the reasoning behind them and with examples taken from the code.
+Long-form documentation for the workspace: the app `angular-base` and the shared libs in `packages/shared/` that every app builds on. The short rule set that tooling and AI agents work from lives in [CLAUDE.md](../CLAUDE.md). These docs explain the same rules with the reasoning behind them and with examples taken from the code.
 
 ## Reading order
 
-| Doc                                         | What it covers                                                                    |
-| ------------------------------------------- | --------------------------------------------------------------------------------- |
-| [Getting started](getting-started.md)       | Install, scripts, dev server, tooling                                             |
-| [Architecture](architecture.md)             | Layers, folder map, import rules, the `notes` reference feature, adding a feature |
-| [API and runtime config](api-and-config.md) | DTOs, models, mappers, repositories, `app-config.json`                            |
-| [State management](state-management.md)     | Feature stores, `AsyncState`, `mutation()`, `patchResource()`                     |
-| [Error handling](error-handling.md)         | `Failure`, the HTTP interceptor, how failures reach the user                      |
-| [Authentication](auth.md)                   | Session cookie, `AuthStore`, guards, sign-in and sign-up, server rendering        |
-| [Forms](forms.md)                           | Signal Forms and the `app-form-*` controls                                        |
-| [UI components](ui-components.md)           | The `app-ui-*` wrappers around the UI library                                     |
-| [Styling](styling.md)                       | Tailwind, component SCSS, theme tokens, light and dark mode                       |
-| [Internationalization](i18n.md)             | Translations, page scopes, language switch, dates                                 |
-| [Logging](logging.md)                       | `AppLog`, `ServerLog`, log levels                                                 |
-| [SEO](seo.md)                               | Title and meta tags, indexing, HTTP status, `robots.txt`, sitemap                 |
-| [Legal pages](legal-pages.md)               | Imprint, privacy policy, accessibility statement, what a project has to fill in   |
-| [CI and deployment](ci-and-deployment.md)   | GitHub Actions pipeline, container image, settings of a deployment                |
+| Doc                                         | What it covers                                                                                 |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [Getting started](getting-started.md)       | Install, Nx commands, dev server, tooling                                                      |
+| [Architecture](architecture.md)             | Apps and libs, layers, import rules, the `notes` reference feature, adding a feature or an app |
+| [API and runtime config](api-and-config.md) | DTOs, models, mappers, repositories, `app-config.json`                                         |
+| [State management](state-management.md)     | Feature stores, `AsyncState`, `mutation()`, `patchResource()`                                  |
+| [Error handling](error-handling.md)         | `Failure`, the HTTP interceptor, how failures reach the user                                   |
+| [Authentication](auth.md)                   | Session cookie, `AuthStore`, guards, sign-in and sign-up, server rendering                     |
+| [Forms](forms.md)                           | Signal Forms and the `app-form-*` controls                                                     |
+| [UI components](ui-components.md)           | The `app-ui-*` wrappers around the UI library, Spartan styles per app                          |
+| [Styling](styling.md)                       | Tailwind, component SCSS, theme tokens, light and dark mode                                    |
+| [Internationalization](i18n.md)             | Translations, page scopes, language switch, dates                                              |
+| [Logging](logging.md)                       | `AppLog`, `ServerLog`, log levels                                                              |
+| [SEO](seo.md)                               | Title and meta tags, indexing, HTTP status, `robots.txt`, sitemap                              |
+| [Legal pages](legal-pages.md)               | Imprint, privacy policy, accessibility statement, what a project has to fill in                |
+| [CI and deployment](ci-and-deployment.md)   | GitHub Actions pipeline, container image, settings of a deployment                             |
 
 New to the project: read _Getting started_ and _Architecture_ first, then open the `notes` feature next to _State management_.
 

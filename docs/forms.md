@@ -1,6 +1,6 @@
 # Forms
 
-Forms are built with Signal Forms (`@angular/forms/signals`) and the form controls in [src/app/shared/form-controls/](../src/app/shared/form-controls/). Each control is a complete field: it brings its label, description and error messages, so a form in a feature is a list of one-liners.
+Forms are built with Signal Forms (`@angular/forms/signals`) and the form controls in [packages/shared/ui/src/form-controls/](../packages/shared/ui/src/form-controls/). Each control is a complete field: it brings its label, description and error messages, so a form in a feature is a list of one-liners.
 
 ```html
 <app-form-text [formField]="_noteForm.title" label="Titel" />
@@ -10,7 +10,7 @@ Forms are built with Signal Forms (`@angular/forms/signals`) and the form contro
 
 The note editor is the reference.
 
-[src/app/features/notes/presentation/note-editor/note-editor.ts](../src/app/features/notes/presentation/note-editor/note-editor.ts)
+[apps/angular-base/src/app/features/notes/presentation/note-editor/note-editor.ts](../apps/angular-base/src/app/features/notes/presentation/note-editor/note-editor.ts)
 
 ```ts
 /** Starts empty and is replaced by the loaded note once it arrives. */
@@ -44,7 +44,7 @@ private readonly _noteForm = form(
 );
 ```
 
-[src/app/features/notes/presentation/note-editor/note-editor.html](../src/app/features/notes/presentation/note-editor/note-editor.html)
+[apps/angular-base/src/app/features/notes/presentation/note-editor/note-editor.html](../apps/angular-base/src/app/features/notes/presentation/note-editor/note-editor.html)
 
 <!-- prettier-ignore -->
 ```html
@@ -97,7 +97,7 @@ Errors are shown once the field is touched: after the user left it, or after a s
 
 Where the form element cannot carry `[formRoot]`, call `submit()` yourself. It behaves the same way: all fields are marked as touched and the callback only runs for a valid form.
 
-[src/app/features/showcase/presentation/forms/forms.ts](../src/app/features/showcase/presentation/forms/forms.ts)
+[apps/angular-base/src/app/features/showcase/presentation/forms/forms.ts](../apps/angular-base/src/app/features/showcase/presentation/forms/forms.ts)
 
 ```ts
 private async _save(event: Event): Promise<void> {
@@ -159,7 +159,7 @@ An editor for formatted text: bold, italic, two heading levels (`h2`, `h3`), bul
 - The editor exists in the browser only. The server renders the empty frame, the content appears after hydration
 - Show a stored value with `app-ui-rich-text`, never with `innerHTML` directly. See [UI components](ui-components.md#rich-text) for why the stored HTML is untrusted
 
-The editor library (Tiptap) is wrapped by [rich-text-editor.ts](../src/app/shared/form-controls/form-rich-text/rich-text-editor.ts), the only file that imports it. The allowed formats are listed once in [rich-text-rules.ts](../src/app/shared/ui/rich-text/rich-text-rules.ts). Adding a format means: the list there, the editor schema, the toolbar and the styles in [\_rich-text.scss](../src/styles/base/_rich-text.scss).
+The editor library (Tiptap) is wrapped by [rich-text-editor.ts](../packages/shared/ui/src/form-controls/form-rich-text/rich-text-editor.ts), the only file that imports it. The allowed formats are listed once in [rich-text-rules.ts](../packages/shared/ui/src/ui/rich-text/rich-text-rules.ts). Adding a format means: the list there, the editor schema, the toolbar and the styles in [\_rich-text.scss](../packages/shared/styles/base/_rich-text.scss).
 
 ### `FormFiles`
 
@@ -230,7 +230,7 @@ disabled(path.customerNumber);
 
 The controls are custom controls of Signal Forms. Knowing the contract matters when you add one.
 
-[src/app/shared/form-controls/form-text/form-text.ts](../src/app/shared/form-controls/form-text/form-text.ts)
+[packages/shared/ui/src/form-controls/form-text/form-text.ts](../packages/shared/ui/src/form-controls/form-text/form-text.ts)
 
 ```ts
 export class FormText implements FormValueControl<string> {
@@ -267,9 +267,9 @@ export class FormText implements FormValueControl<string> {
 
 ### `FormControlShell`
 
-Label, description and errors are rendered in exactly one place, [form-control-shell/](../src/app/shared/form-controls/form-control-shell/). Every control projects its input element into it:
+Label, description and errors are rendered in exactly one place, [form-control-shell/](../packages/shared/ui/src/form-controls/form-control-shell/). Every control projects its input element into it:
 
-[src/app/shared/form-controls/form-text/form-text.html](../src/app/shared/form-controls/form-text/form-text.html)
+[packages/shared/ui/src/form-controls/form-text/form-text.html](../packages/shared/ui/src/form-controls/form-text/form-text.html)
 
 ```html
 <app-form-control-shell
@@ -310,11 +310,11 @@ Controls whose Spartan component takes `aria-describedby` as an input (checkbox,
 
 ## Adding a control
 
-1. Create `src/app/shared/form-controls/form-<name>/` with `form-<name>.ts`, `.html`, `.scss` and a spec. Selector `app-form-<name>`, class `Form<Name>`
+1. Create `packages/shared/ui/src/form-controls/form-<name>/` with `form-<name>.ts`, `.html`, `.scss` and a spec. Selector `app-form-<name>`, class `Form<Name>`
 2. Implement `FormValueControl<T>` or `FormCheckboxControl` and declare the state inputs the control needs
 3. Wrap the template in `app-form-control-shell` and pass `controlId`, `label`, `description`, `errors`, `required`, `disabled`
 4. Emit `touch` when the user leaves the control and add a `focus()` method
-5. Add the control to the showcase page [forms.html](../src/app/features/showcase/presentation/forms/forms.html)
+5. Add the control to the showcase page [forms.html](../apps/angular-base/src/app/features/showcase/presentation/forms/forms.html)
 6. Add the name to the list in [CLAUDE.md](../CLAUDE.md)
 
 `shared/form-controls` is one of the two folders that may import Spartan and Tiptap. See [UI components](ui-components.md#why-wrappers).

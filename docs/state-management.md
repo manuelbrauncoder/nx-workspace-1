@@ -2,13 +2,13 @@
 
 State lives in plain signals. There is no state library and no store base class. Each feature has one store that reads through `rxResource`, writes through `mutation()` and exposes every asynchronous operation in the same shape, `AsyncState`.
 
-The building blocks are in [src/app/core/state/](../src/app/core/state/). The reference store is [notes.store.ts](../src/app/features/notes/application/notes.store.ts).
+The building blocks are in [packages/shared/core/src/state/](../packages/shared/core/src/state/). The reference store is [notes.store.ts](../apps/angular-base/src/app/features/notes/application/notes.store.ts).
 
 ## `AsyncState`
 
 Every read and every write is described by the same two fields:
 
-[src/app/core/state/async-state.ts](../src/app/core/state/async-state.ts)
+[packages/shared/core/src/state/async-state.ts](../packages/shared/core/src/state/async-state.ts)
 
 ```ts
 export type LoadingState = 'idle' | 'loading' | 'success' | 'failure';
@@ -79,7 +79,7 @@ Points to note:
 
 Writes are `async` methods that send their operation through a `Mutation`:
 
-[src/app/core/state/mutation.ts](../src/app/core/state/mutation.ts)
+[packages/shared/core/src/state/mutation.ts](../packages/shared/core/src/state/mutation.ts)
 
 ```ts
 export interface Mutation {
@@ -110,7 +110,7 @@ async create(draft: NoteDraft): Promise<Note | undefined> {
 
 The caller gets the result back and decides what happens next:
 
-[src/app/features/notes/presentation/note-editor/note-editor.ts](../src/app/features/notes/presentation/note-editor/note-editor.ts)
+[apps/angular-base/src/app/features/notes/presentation/note-editor/note-editor.ts](../apps/angular-base/src/app/features/notes/presentation/note-editor/note-editor.ts)
 
 ```ts
 private async _save(): Promise<void> {
@@ -146,7 +146,7 @@ Call `reset()` when an old failure should no longer be shown. `NotesStore.select
 
 After a successful write, update the loaded data locally instead of fetching it again:
 
-[src/app/core/state/patch-resource.ts](../src/app/core/state/patch-resource.ts)
+[packages/shared/core/src/state/patch-resource.ts](../packages/shared/core/src/state/patch-resource.ts)
 
 ```ts
 export function patchResource<T>(resource: WritableResource<T>, change: (value: T) => T): void {
@@ -171,7 +171,7 @@ The change function must be pure and return a new array. Signals are never mutat
 
 Components inject the store, read its signals and call its methods. They hold no copy of the store's state.
 
-[src/app/features/notes/presentation/notes-list/notes-list.html](../src/app/features/notes/presentation/notes-list/notes-list.html)
+[apps/angular-base/src/app/features/notes/presentation/notes-list/notes-list.html](../apps/angular-base/src/app/features/notes/presentation/notes-list/notes-list.html)
 
 <!-- prettier-ignore -->
 ```html
@@ -208,4 +208,4 @@ private readonly _saving = computed(() => this._store.mutationState().loadingSta
 - After a successful write call `patchResource()` instead of reloading
 - Create `AsyncState` values only through `idle()`, `loading()`, `success()`, `failed()`
 - Use `set` and `update` on signals, never mutate their value
-- No store base class. Shared behavior becomes a function in `src/app/core/state/`
+- No store base class. Shared behavior becomes a function in `packages/shared/core/src/state/`
