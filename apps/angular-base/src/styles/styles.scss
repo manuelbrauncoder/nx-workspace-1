@@ -1,8 +1,9 @@
 // Global SCSS entry. Tailwind lives in tailwind.css.
 // Component SCSS sits next to the component, only global styles here.
+// Themes and fonts belong to this app, everything under `styles/` comes from packages/shared/styles.
 @use 'themes';
 @use 'base/fonts';
-@use 'base/global';
-@use 'base/typography';
-@use 'base/rich-text';
-@use 'layout';
+@use 'styles/base/global';
+@use 'styles/base/typography';
+@use 'styles/base/rich-text';
+@use 'styles/layout';

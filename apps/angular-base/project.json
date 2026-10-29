@@ -40,7 +40,7 @@
           "entry": "apps/angular-base/src/server.ts"
         },
         "stylePreprocessorOptions": {
-          "includePaths": ["apps/angular-base/src"]
+          "includePaths": ["packages/shared"]
         }
       },
       "configurations": {
@@ -96,5 +96,6 @@
         "command": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit"
       }
     }
-  }
+  },
+  "implicitDependencies": ["styles"]
 }
