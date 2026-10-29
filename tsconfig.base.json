@@ -18,9 +18,9 @@
     "moduleResolution": "bundler",
     "paths": {
       "@api/*": ["./apps/angular-base/src/api/*"],
-      "@core/*": ["./apps/angular-base/src/app/core/*"],
+      "@core/*": ["./packages/shared/core/src/*"],
       "@features/*": ["./apps/angular-base/src/app/features/*"],
-      "@shared/*": ["./apps/angular-base/src/app/shared/*"],
+      "@shared/*": ["./packages/shared/ui/src/*"],
       "@spartan-ng/helm/*": ["./packages/shared/helm-vega/*/src/index.ts"]
     }
   },

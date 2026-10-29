@@ -5,6 +5,8 @@ import angular from 'angular-eslint';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
+const UI_LIBRARIES = ['@spartan-ng/*', '@ng-icons/*', '@tiptap/*'];
+
 /**
  * Rules for every project of the workspace. Project configs extend this file and add their own
  * restrictions, e.g. the layer rules of the features in `apps/angular-base/eslint.config.mjs`.
@@ -23,11 +25,20 @@ export default defineConfig([
         'error',
         {
           enforceBuildableLibDependency: true,
-          allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
+          allow: [
+            '^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$',
+            // Features and the API layer still live inside apps/angular-base. The aliases stay,
+            // because the layer rules of the app match on them. Remove these once they are libs.
+            '^@features/.*',
+            '^@api/.*',
+          ],
           depConstraints: [
+            // The UI and icon libraries are only used inside the `ui` lib, so swapping them
+            // stays local to it.
             {
               sourceTag: 'type:app',
               onlyDependOnLibsWithTags: ['type:ui', 'type:core', 'type:styles'],
+              bannedExternalImports: UI_LIBRARIES,
             },
             {
               sourceTag: 'type:ui',
@@ -36,6 +47,7 @@ export default defineConfig([
             {
               sourceTag: 'type:core',
               onlyDependOnLibsWithTags: ['type:core'],
+              bannedExternalImports: UI_LIBRARIES,
             },
             {
               sourceTag: 'type:helm',

@@ -3,7 +3,9 @@ import { defineConfig } from 'eslint/config';
 import baseConfig from '../../eslint.config.mjs';
 
 /**
- * Architecture boundaries: presentation -> application -> domain -> api.
+ * Architecture boundaries inside the app: presentation -> application -> domain -> api. The
+ * boundaries between the app and the shared libs, and the ban on the UI libraries outside of
+ * `ui`, are set through Nx tags in the root `eslint.config.mjs`.
  * A later block replaces the rule of an earlier one, so each block lists every restriction
  * that applies to its files.
  */
@@ -22,19 +24,10 @@ const API_LAYER = {
   regex: '^@api/',
   message: 'Only the domain layer of a feature may import from the API layer.',
 };
-// The UI and icon libraries are only used inside the wrappers, so swapping them stays local.
-const UI_LIBRARY = {
-  regex: '^(@spartan-ng|@ng-icons|@tiptap)/',
-  message: 'Use the wrappers from @shared/ui and @shared/form-controls instead.',
-};
 // The translation library stays behind `core/i18n`, so swapping it stays local as well.
 const I18N_LIBRARY = {
   regex: '^@jsverse/',
   message: 'Use I18nService and the pipes from @core/i18n instead.',
-};
-const CORE_SHARED = {
-  regex: '^@(features|api)/',
-  message: 'core and shared must not depend on features or the API layer.',
 };
 /**
  * @param {string[]} files
@@ -48,47 +41,10 @@ const restrictImports = (files, patterns) => ({
 
 export default defineConfig([
   ...baseConfig,
-  {
-    // The one place that may write to the console. Everything else uses AppLog or ServerLog.
-    files: ['src/app/core/log/log.ts', 'src/app/core/log/*.spec.ts'],
-    rules: { 'no-console': 'off' },
-  },
-  restrictImports(['src/app/*.ts'], [UI_LIBRARY, I18N_LIBRARY]),
-  restrictImports(
-    ['src/app/core/**/*.ts', 'src/app/shared/**/*.ts'],
-    [CORE_SHARED, UI_LIBRARY, I18N_LIBRARY],
-  ),
-  // The one place that may import the translation library.
-  restrictImports(['src/app/core/i18n/**/*.ts'], [CORE_SHARED, UI_LIBRARY]),
+  restrictImports(['src/app/*.ts'], [I18N_LIBRARY]),
   // The app shell frames every page, so it knows neither features nor the API layer. The one
   // exception is the public API of the auth feature, for the account menu in the header.
-  restrictImports(['src/app/layout/**/*.ts'], [LAYOUT, UI_LIBRARY, I18N_LIBRARY]),
-  // The wrappers themselves are the one place that may import the UI and icon libraries.
-  restrictImports(
-    ['src/app/shared/ui/**/*.ts', 'src/app/shared/form-controls/**/*.ts'],
-    [CORE_SHARED, I18N_LIBRARY],
-  ),
-  {
-    // Wrappers also sit on native elements (`button[appUiButton]`) or are element directives
-    // (`app-ui-menu`), so both selector kinds are allowed here.
-    files: ['src/app/shared/ui/**/*.ts'],
-    rules: {
-      '@angular-eslint/directive-selector': [
-        'error',
-        [
-          { type: 'attribute', prefix: 'app', style: 'camelCase' },
-          { type: 'element', prefix: 'app', style: 'kebab-case' },
-        ],
-      ],
-      '@angular-eslint/component-selector': [
-        'error',
-        [
-          { type: 'element', prefix: 'app', style: 'kebab-case' },
-          { type: 'attribute', prefix: 'app', style: 'camelCase' },
-        ],
-      ],
-    },
-  },
+  restrictImports(['src/app/layout/**/*.ts'], [LAYOUT, I18N_LIBRARY]),
   restrictImports(
     ['src/api/**/*.ts'],
     [
@@ -98,20 +54,16 @@ export default defineConfig([
       },
     ],
   ),
-  restrictImports(
-    ['src/app/features/**/*.ts'],
-    [CROSS_FEATURE, API_LAYER, UI_LIBRARY, I18N_LIBRARY],
-  ),
+  restrictImports(['src/app/features/**/*.ts'], [CROSS_FEATURE, API_LAYER, I18N_LIBRARY]),
   restrictImports(
     ['src/app/features/*/presentation/**/*.ts'],
-    [CROSS_FEATURE, API_LAYER, UI_LIBRARY, I18N_LIBRARY],
+    [CROSS_FEATURE, API_LAYER, I18N_LIBRARY],
   ),
   restrictImports(
     ['src/app/features/*/application/**/*.ts'],
     [
       CROSS_FEATURE,
       API_LAYER,
-      UI_LIBRARY,
       I18N_LIBRARY,
       { regex: '(^|/)presentation/', message: 'application must not depend on presentation.' },
     ],
@@ -120,7 +72,6 @@ export default defineConfig([
     ['src/app/features/*/domain/**/*.ts'],
     [
       CROSS_FEATURE,
-      UI_LIBRARY,
       I18N_LIBRARY,
       {
         regex: '(^|/)(application|presentation)/',
