@@ -26,7 +26,7 @@ export const routes: Routes = [
         loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
       },
       {
-        // Legal pages sit at the top level, e.g. `/impressum`.
+        // Legal pages sit at the top level, e.g. `/imprint`.
         path: '',
         loadChildren: () => import('./features/legal/legal.routes').then((m) => m.legalRoutes),
       },

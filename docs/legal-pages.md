@@ -2,11 +2,11 @@
 
 Every public site in Germany needs an imprint and a privacy policy. The base ships both plus an accessibility statement, linked from the footer of every page.
 
-| Page                    | Path                | Component                                                                                                |
-| ----------------------- | ------------------- | -------------------------------------------------------------------------------------------------------- |
-| Imprint                 | `/impressum`        | [Imprint](../apps/angular-base/src/app/features/legal/presentation/imprint/imprint.ts)                   |
-| Privacy policy          | `/datenschutz`      | [Privacy](../apps/angular-base/src/app/features/legal/presentation/privacy/privacy.ts)                   |
-| Accessibility statement | `/barrierefreiheit` | [Accessibility](../apps/angular-base/src/app/features/legal/presentation/accessibility/accessibility.ts) |
+| Page                    | Path             | Component                                                                                                |
+| ----------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- |
+| Imprint                 | `/imprint`       | [Imprint](../apps/angular-base/src/app/features/legal/presentation/imprint/imprint.ts)                   |
+| Privacy policy          | `/privacy`       | [Privacy](../apps/angular-base/src/app/features/legal/presentation/privacy/privacy.ts)                   |
+| Accessibility statement | `/accessibility` | [Accessibility](../apps/angular-base/src/app/features/legal/presentation/accessibility/accessibility.ts) |
 
 The paths are German in both languages. The language of a page comes from the cookie, not from the URL, see [Internationalization](i18n.md).
 
