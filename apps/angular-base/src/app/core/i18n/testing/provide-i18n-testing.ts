@@ -7,27 +7,38 @@ import {
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TranslocoService } from '@jsverse/transloco';
-import shared from '@shared/i18n/de.json';
-import type { I18nScope } from '../i18n-scope';
+import type { I18nScope, I18nSharedSource } from '../i18n-scope';
+import { I18N_SHARED_SOURCES } from '../i18n-shared-sources';
 import { I18nService } from '../i18n.service';
 import { DEFAULT_LANGUAGE, LANGUAGE_COOKIE } from '../languages';
 import { provideI18nLibrary } from '../provide-i18n';
 
+export interface I18nTestingOptions {
+  /** Shared texts as handed to `provideI18n()`, loaded on a language switch like in the app. */
+  shared?: readonly I18nSharedSource[];
+  /** The German files of the shared texts, set synchronously so every test renders right away. */
+  sharedDe?: readonly object[];
+}
+
 /**
- * The German shared scope for tests, available synchronously. Set for every test through
- * `src/test-setup.ts`.
+ * The German shared texts for tests, available synchronously. Set for every test through the
+ * `src/test-setup.ts` of each project.
  *
  * Every test starts in German. A language switch leaves a cookie and `<html lang>` behind in the
  * document that all specs of a worker share, so both are reset here.
  */
-export function provideI18nTesting(): EnvironmentProviders {
+export function provideI18nTesting(options: I18nTestingOptions = {}): EnvironmentProviders {
   return makeEnvironmentProviders([
     provideI18nLibrary(),
+    { provide: I18N_SHARED_SOURCES, useValue: options.shared ?? [] },
     provideEnvironmentInitializer(() => {
       const document = inject(DOCUMENT);
       document.cookie = `${LANGUAGE_COOKIE}=; Max-Age=0; Path=/`;
       document.documentElement.lang = DEFAULT_LANGUAGE;
-      inject(TranslocoService).setTranslation(shared, DEFAULT_LANGUAGE, { emitChange: false });
+      const transloco = inject(TranslocoService);
+      for (const texts of options.sharedDe ?? []) {
+        transloco.setTranslation(texts, DEFAULT_LANGUAGE, { emitChange: false });
+      }
     }),
   ]);
 }

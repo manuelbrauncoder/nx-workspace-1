@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { TranslationKey } from '@core/i18n/translation-key';
+import { ThemeMode, ThemeService } from '@core/theme/theme.service';
 import { UiButton } from '@shared/ui/button/button';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiMenuImports } from '@shared/ui/menu/menu';
-import { ThemeMode, ThemeService } from '../theme.service';
 
 @Component({
   selector: 'app-theme-toggle',

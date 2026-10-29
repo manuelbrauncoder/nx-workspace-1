@@ -6,6 +6,13 @@ import { I18nService } from '@core/i18n/i18n.service';
 import { TranslationKey } from '@core/i18n/translation-key';
 import { RouteSeo } from './route-seo';
 
+declare module '../i18n/translation-key' {
+  interface I18nSharedTexts {
+    /** Every app provides these in its shared texts. */
+    seo: { defaultDescription: string; imageAlt: string };
+  }
+}
+
 /** Preview image for shared links, used unless a route or page names another one. */
 const DEFAULT_IMAGE = { path: '/og-image.png', width: 1200, height: 630 };
 
@@ -38,6 +45,7 @@ export class SeoService {
   private readonly _document = inject(DOCUMENT);
   private readonly _i18n = inject(I18nService);
   private readonly _config = inject(AppConfigService);
+  private readonly _appName = inject(APP_NAME);
 
   private readonly _route = signal<ActiveRouteSeo | undefined>(undefined);
   private readonly _page = signal<PageSeo | undefined>(undefined);
@@ -76,7 +84,7 @@ export class SeoService {
       page?.title ??
       // A route title is a plain string, the keys are checked where the scope is defined.
       (route.titleKey ? this._i18n.translate(route.titleKey as TranslationKey) : undefined);
-    const title = pageTitle ? `${pageTitle} | ${APP_NAME}` : APP_NAME;
+    const title = pageTitle ? `${pageTitle} | ${this._appName}` : this._appName;
     const description =
       page?.description || this._i18n.translate(route.seo.description ?? 'seo.defaultDescription');
     const url = this._config.siteUrl + route.path;
@@ -89,7 +97,7 @@ export class SeoService {
     this._setName('robots', indexable ? 'index, follow' : 'noindex, nofollow');
     this._setName('twitter:card', 'summary_large_image');
     this._setProperty('og:type', 'website');
-    this._setProperty('og:site_name', APP_NAME);
+    this._setProperty('og:site_name', this._appName);
     this._setProperty('og:locale', this._i18n.locale().replace('-', '_'));
     this._setProperty('og:title', title);
     this._setProperty('og:description', description);

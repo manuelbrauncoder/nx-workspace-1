@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { I18nService } from '@core/i18n/i18n.service';
-import { LanguageToggle } from '@core/i18n/language-toggle/language-toggle';
 import { LocalDatePipe } from '@core/i18n/local-date.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { TranslationKey, TranslationParams } from '@core/i18n/translation-key';
+import { LanguageToggle } from '@shared/language-toggle/language-toggle';
 import { UiAlert, UiAlertAction } from '@shared/ui/alert/alert';
 import { UiAttachmentImports } from '@shared/ui/attachment/attachment';
 import { UiButton, UiButtonSize, UiButtonVariant } from '@shared/ui/button/button';

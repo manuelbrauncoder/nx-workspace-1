@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { SITE_OWNER } from '@core/site-owner';
+import { SITE_OWNER } from '../../../../site-owner';
 
 /** Contact details of the site owner. Address and phone only show once they are set. */
 @Component({

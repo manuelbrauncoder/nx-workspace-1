@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { SITE_OWNER } from '@core/site-owner';
 import { UiText } from '@shared/ui/text/text';
+import { SITE_OWNER } from '../../../../site-owner';
 import { LegalPage } from '../legal-page/legal-page';
 
 @Component({

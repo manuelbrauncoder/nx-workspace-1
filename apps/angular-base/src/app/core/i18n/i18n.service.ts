@@ -1,15 +1,10 @@
 import { computed, DOCUMENT, inject, Service, signal } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
-import type { I18nScope, TranslationLoaders } from './i18n-scope';
+import type { I18nScope } from './i18n-scope';
+import { I18N_SHARED_SOURCES } from './i18n-shared-sources';
 import { injectInitialLanguage } from './initial-language';
 import { APP_LANGUAGES, AppLanguage, LANGUAGE_COOKIE } from './languages';
-import { SharedTranslation, TranslationKey, TranslationParams } from './translation-key';
-
-/** The shared scope: everything that is not specific to a page. Loaded before the first render. */
-const SHARED_LOADERS: TranslationLoaders<SharedTranslation> = {
-  de: () => import('@shared/i18n/de.json'),
-  en: () => import('@shared/i18n/en.json'),
-};
+import { TranslationKey, TranslationParams } from './translation-key';
 
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 
@@ -21,6 +16,8 @@ const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 export class I18nService {
   private readonly _transloco = inject(TranslocoService);
   private readonly _document = inject(DOCUMENT);
+  /** Shared texts: everything that is not specific to a page. Loaded before the first render. */
+  private readonly _sharedSources = inject(I18N_SHARED_SOURCES);
 
   private readonly _activeLanguage = signal<AppLanguage>(injectInitialLanguage());
   /** Counts loaded translation files, so texts read before a file arrived are rendered again. */
@@ -76,8 +73,13 @@ export class I18nService {
     this._document.documentElement.lang = language;
   }
 
-  private _loadShared(language: AppLanguage): Promise<void> {
-    return this._loadFile(language, SHARED_LOADERS[language]);
+  private async _loadShared(language: AppLanguage): Promise<void> {
+    // Every source is merged into the language itself, so their top-level keys must not overlap.
+    await Promise.all(
+      this._sharedSources.map((source, index) =>
+        this._loadFile(language, source[language], `shared-${index}/${language}`),
+      ),
+    );
   }
 
   private _load(scope: I18nScope, language: AppLanguage): Promise<void> {
@@ -85,8 +87,13 @@ export class I18nService {
     return this._loadFile(`${scope.name}/${language}`, scope.loaders[language]);
   }
 
-  private _loadFile(path: string, loader: () => Promise<{ default: object }>): Promise<void> {
-    let load = this._loads.get(path);
+  /** `id` tells loads apart that write to the same `path`, like the shared sources. */
+  private _loadFile(
+    path: string,
+    loader: () => Promise<{ default: object }>,
+    id = path,
+  ): Promise<void> {
+    let load = this._loads.get(id);
     if (!load) {
       load = loader().then(
         ({ default: translation }) => {
@@ -95,11 +102,11 @@ export class I18nService {
         },
         (error: unknown) => {
           // Not kept, so the next navigation or language switch tries again.
-          this._loads.delete(path);
+          this._loads.delete(id);
           throw error;
         },
       );
-      this._loads.set(path, load);
+      this._loads.set(id, load);
     }
     return load;
   }

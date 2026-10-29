@@ -1,0 +1,60 @@
+{
+  "auth": {
+    "account": "Account",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signOut": "Sign out",
+    "signedOut": "You are signed out",
+    "signOutFailed": "Signing out failed"
+  },
+  "layout": {
+    "legalNavigation": "Legal",
+    "mainNavigation": "Main navigation",
+    "navigation": "Navigation",
+    "openMenu": "Open menu",
+    "skipToContent": "Skip to content",
+    "footer": {
+      "imprint": "Imprint",
+      "privacy": "Privacy",
+      "accessibility": "Accessibility"
+    },
+    "nav": {
+      "notes": "Notes",
+      "showcase": "Showcase",
+      "showcaseOverview": "Overview",
+      "showcaseTypography": "Typography",
+      "showcaseColors": "Colors",
+      "showcaseForms": "Forms",
+      "showcaseComponents": "Components"
+    }
+  },
+  "legal": {
+    "email": "Email",
+    "phone": "Phone"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "heading": "Page not found",
+    "description": "This page does not exist or has been moved.",
+    "backHome": "Go to the start page"
+  },
+  "seo": {
+    "defaultDescription": "Base for Angular applications with server-side rendering, clean architecture and a reference feature for CRUD.",
+    "imageAlt": "Logo of angular-base"
+  },
+  "notes": {
+    "backToList": "Back to overview",
+    "deleted": "Note deleted",
+    "edit": "Edit",
+    "editNamed": "Edit: {{ title }}",
+    "loading": "Loading note",
+    "loadFailed": "The note could not be loaded",
+    "delete": {
+      "label": "Delete",
+      "labelNamed": "Delete: {{ title }}",
+      "heading": "Delete note?",
+      "description": "“{{ title }}” will be deleted permanently. This cannot be undone.",
+      "confirm": "Delete"
+    }
+  }
+}

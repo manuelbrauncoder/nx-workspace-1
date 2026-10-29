@@ -1,8 +1,8 @@
 import { Component, model } from '@angular/core';
-import { LanguageToggle } from '@core/i18n/language-toggle/language-toggle';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ThemeToggle } from '@core/theme/theme-toggle/theme-toggle';
 import { AccountMenu } from '@features/auth/public-api';
+import { LanguageToggle } from '@shared/language-toggle/language-toggle';
+import { ThemeToggle } from '@shared/theme-toggle/theme-toggle';
 import { UiButton } from '@shared/ui/button/button';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiNavMenu } from '@shared/ui/nav-menu/nav-menu';

@@ -39,6 +39,31 @@ export function defineI18nScope<K extends keyof I18nScopes & string>(
   return { name, loaders };
 }
 
+/** Shared texts of the UI library or the app, handed to `provideI18n()`. */
+export type I18nSharedSource = TranslationLoaders<object>;
+
+/**
+ * Defines shared texts. Their keys have to be registered in `I18nSharedTexts`, and every language
+ * file must match the shape of the German one.
+ *
+ * @example
+ * declare module '@core/i18n/translation-key' {
+ *   interface I18nSharedTexts {
+ *     layout: (typeof de)['layout'];
+ *   }
+ * }
+ *
+ * export const appI18n = defineI18nSharedTexts<typeof de>({
+ *   de: () => import('./de.json'),
+ *   en: () => import('./en.json'),
+ * });
+ */
+export function defineI18nSharedTexts<T extends object>(
+  loaders: TranslationLoaders<T>,
+): I18nSharedSource {
+  return loaders;
+}
+
 /**
  * Route guard that loads a scope before the page renders, on the server and in the browser.
  *

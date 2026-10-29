@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
-import { SITE_OWNER } from '@core/site-owner';
+import { SITE_OWNER } from '../../../../site-owner';
 import { Imprint } from './imprint';
 import { legalImprintI18n } from './imprint.i18n';
 

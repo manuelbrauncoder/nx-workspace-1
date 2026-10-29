@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { I18nService } from '../i18n.service';
+import { I18nService } from '@core/i18n/i18n.service';
 import { LanguageToggle } from './language-toggle';
 
 describe('LanguageToggle', () => {

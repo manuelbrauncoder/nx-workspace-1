@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { APP_BOOTSTRAP_LISTENER, inject, PLATFORM_ID, Provider } from '@angular/core';
+import { APP_NAME } from '../app-name';
 import { AppConfigService } from '../config/app-config';
 import { AppLog } from './app-log';
 
@@ -12,6 +13,7 @@ export function provideDeveloperGreeting(): Provider {
     provide: APP_BOOTSTRAP_LISTENER,
     multi: true,
     useFactory: () => {
+      const appName = inject(APP_NAME);
       const config = inject(AppConfigService);
       const log = inject(AppLog);
       const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -19,7 +21,7 @@ export function provideDeveloperGreeting(): Provider {
       return () => {
         if (isBrowser) {
           log.info(
-            `👋 Hello developer, welcome to angular-base! ` +
+            `👋 Hello developer, welcome to ${appName}! ` +
               `Environment: ${config.environment}, log level: ${config.logLevel}.`,
           );
         }

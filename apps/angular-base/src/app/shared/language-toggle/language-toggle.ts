@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
+import { I18nService } from '@core/i18n/i18n.service';
+import { APP_LANGUAGE_CODES, APP_LANGUAGES } from '@core/i18n/languages';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { UiButton } from '@shared/ui/button/button';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiMenuImports } from '@shared/ui/menu/menu';
-import { I18nService } from '../i18n.service';
-import { APP_LANGUAGE_CODES, APP_LANGUAGES } from '../languages';
-import { TranslatePipe } from '../translate.pipe';
 
 @Component({
   selector: 'app-language-toggle',

@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { APP_NAME } from '@core/app-name';
 
@@ -11,5 +11,5 @@ import { APP_NAME } from '@core/app-name';
   templateUrl: './app-logo.html',
 })
 export class AppLogo {
-  private readonly _appName = APP_NAME;
+  private readonly _appName = inject(APP_NAME);
 }
