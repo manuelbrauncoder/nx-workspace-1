@@ -1,0 +1,9 @@
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: true
+  lmdb: true
+  msgpackr-extract: true
+  nx: true
+  # Only a postinstall check for its native binary, which the optional dependencies already ship.
+  unrs-resolver: false
