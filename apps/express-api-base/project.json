@@ -1,0 +1,45 @@
+{
+  "name": "express-api-base",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/express-api-base/src",
+  "tags": ["type:api-app"],
+  "targets": {
+    "build": {
+      "outputs": ["{workspaceRoot}/dist/apps/express-api-base"]
+    },
+    "serve": {
+      "continuous": true,
+      "command": "tsx watch --env-file=.env src/index.ts",
+      "options": { "cwd": "{projectRoot}" }
+    },
+    "start": {
+      "continuous": true,
+      "dependsOn": ["build"],
+      "command": "node --env-file-if-exists=.env ../../dist/apps/express-api-base/index.js",
+      "options": { "cwd": "{projectRoot}" }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^default"],
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "tsc -p tsconfig.json"
+      }
+    },
+    "db:generate": {
+      "command": "drizzle-kit generate",
+      "options": { "cwd": "{projectRoot}" }
+    },
+    "db:migrate": {
+      "command": "tsx --env-file=.env src/scripts/migrate.ts",
+      "options": { "cwd": "{projectRoot}" }
+    },
+    "db:studio": {
+      "continuous": true,
+      "command": "node --env-file=.env ../../node_modules/drizzle-kit/bin.cjs studio",
+      "options": { "cwd": "{projectRoot}" }
+    }
+  }
+}

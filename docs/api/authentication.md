@@ -1,0 +1,104 @@
+# Authentication
+
+Users sign up with email and password. There is no email verification and no password reset. A signed-in user is identified by a session cookie.
+
+## Endpoints
+
+| Endpoint              | What it does                                                        |
+| --------------------- | ------------------------------------------------------------------- |
+| `POST /auth/sign-up`  | Creates the user (email, password, optional name) and signs them in |
+| `POST /auth/sign-in`  | Signs in                                                            |
+| `POST /auth/sign-out` | Ends the session and clears the cookie                              |
+| `GET /auth/me`        | Returns the signed-in user, or 401                                  |
+
+Request and response details are in the API reference at `/docs`.
+
+## How a session works
+
+1. On sign-up or sign-in the server creates a session row in the `session` table in Postgres and sends its id in a signed cookie.
+2. The browser sends the cookie with every request. The session middleware looks up the row and makes `req.session.userId` available.
+3. On sign-out the row is deleted, so the cookie is worthless from that moment on.
+
+Because sessions live in the database, a session survives an API restart, and it can be revoked by deleting its row (see [Roles and admin](#roles-and-admin)).
+
+The cookie is set with:
+
+- **`HttpOnly`:** JavaScript in the browser cannot read it.
+- **`SameSite=Lax`:** it is not sent on cross-site POST requests.
+- **`Secure`:** HTTPS only, controlled by `session.secureCookie`.
+
+On sign-in a new session id is always issued, which prevents session fixation.
+
+## Passwords
+
+- Hashed with argon2; the plain password is never stored or logged.
+- Length between 8 and 128 characters.
+- Emails are trimmed and lowercased before storing and comparing.
+- A wrong email and a wrong password give the same 401 message, and both take the same time, so sign-in does not reveal which emails are registered. Sign-up does reveal it (409 for a taken email), which is hard to avoid without email verification.
+
+## Rate limiting
+
+Sign-up and sign-in share a limit per client IP: `rateLimit.authMaxRequests` requests per `rateLimit.authWindowMinutes`. Beyond that the API answers 429. The counter is kept in memory, so it resets on restart and is per instance.
+
+## CSRF protection
+
+With cookie auth, another website could try to make the user's browser send a request to the API. Two things prevent that:
+
+- `SameSite=Lax` stops the cookie from being sent on POST requests from other sites.
+- The [origin check](../src/shared/middleware/origin-check.ts) rejects every state-changing request (anything except GET, HEAD, OPTIONS) whose `Origin` header is neither in `cors.origins` nor the API's own origin. This also covers requests from sibling subdomains, which `SameSite` treats as the same site.
+
+Requests without an `Origin` header are allowed. They come from tools like curl, which carry no browser cookies.
+
+## Protecting routes
+
+```ts
+import { currentUserId, requireAuth } from '../auth/auth.middleware.js';
+
+notesRouter.use(requireAuth); // every route below needs a session
+
+notesRouter.get('/', async (req, res) => {
+  res.json({ notes: await listNotes(currentUserId(req)) });
+});
+```
+
+`requireAuth` answers 401 without a session. `currentUserId(req)` returns the user id as a string.
+
+## Roles and admin
+
+Every user has a role, `user` (the default) or `admin`. It is part of the user object, so `GET /auth/me` tells a frontend whether to show admin screens.
+
+### The first admin
+
+At every start the API checks whether an admin exists. If none does, it creates one from `admin.email` and `admin.password` in the JSON config file ([`admin.seed.ts`](../src/features/admin/admin.seed.ts)). This happens before the server accepts requests, so nobody can sign up with that email first.
+
+- Once an admin exists, the two settings are no longer used. Changing `admin.password` later does not change the account's password.
+- If the email already belongs to a normal user, that user is not promoted; the API logs a warning and starts without an admin.
+
+### Admin endpoints
+
+| Endpoint                           | What it does                                                 |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `GET /admin/users`                 | Lists all users, oldest first                                |
+| `PATCH /admin/users/:id`           | Sets the role: `{ "role": "admin" }` or `{ "role": "user" }` |
+| `DELETE /admin/users/:id`          | Deletes the user with their sessions, notes and images       |
+| `DELETE /admin/users/:id/sessions` | Signs the user out on all devices                            |
+
+- Without a session they answer 401, for a normal user 403.
+- An admin cannot change their own role or delete their own account (409). At least one admin therefore always remains.
+- The role is read from the database on every request. Removing admin rights takes effect immediately; the user's sessions stay valid.
+
+To protect other routes the same way:
+
+```ts
+import { requireAdmin } from '../auth/auth.middleware.js';
+
+adminRouter.use(requireAdmin); // 401 without a session, 403 without the admin role
+```
+
+## Frontend integration
+
+- **Send credentials with every request.** In Angular: `withCredentials: true` (for example in an HTTP interceptor). With fetch: `credentials: "include"`.
+- **Add the frontend's origin to `cors.origins`.**
+- **Frontend and API must be on the same site**, meaning the same registrable domain: `app.example.com` and `api.example.com` work. Locally, `localhost:4200` and `localhost:3000` count as the same site.
+- **Shared hosting domains do not work** for this setup. Subdomains of `vercel.app`, `herokuapp.com` or `github.io` count as different sites, and browsers then block the cookie as third-party. Use your own domain.
+- To find out whether the user is signed in when the app starts, call `GET /auth/me`.
