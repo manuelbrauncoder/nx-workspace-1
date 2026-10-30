@@ -28,17 +28,21 @@ Two routes exist out of the box:
 
 ## Commands
 
-| Command                                         | What it does                                                              |
-| ----------------------------------------------- | ------------------------------------------------------------------------- |
-| `pnpm nx serve angular-base`                    | Dev server with SSR on port 4000                                          |
-| `pnpm nx build angular-base`                    | Production build into `dist/apps/angular-base` (`browser/` and `server/`) |
-| `pnpm nx serve-ssr angular-base`                | Builds and runs the built server                                          |
-| `pnpm nx test <project>`                        | Unit tests of one project with Vitest, e.g. `core`, `ui`, `angular-base`  |
-| `pnpm nx run-many -t lint typecheck test`       | Lint, type check and tests of every project                               |
-| `pnpm nx affected -t lint typecheck test build` | The same, only for the projects a change affects                          |
-| `pnpm nx graph`                                 | The projects and their dependencies in the browser                        |
-| `pnpm format:check`                             | Prettier check over the whole repo                                        |
-| `pnpm format:fix`                               | Prettier write over the whole repo                                        |
+| Command                                         | What it does                                                                                  |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `pnpm nx serve angular-base`                    | Dev server with SSR on port 4000                                                              |
+| `pnpm nx build angular-base`                    | Production build into `dist/apps/angular-base` (`browser/` and `server/`)                     |
+| `pnpm nx serve-ssr angular-base`                | Builds and runs the built server                                                              |
+| `pnpm nx build angular-base -c watch`           | Development build into `dist/apps/angular-base` that rebuilds on change                       |
+| `pnpm nx server angular-base`                   | Runs the built server with `node --watch`, restarts after each rebuild. Pairs with `-c watch` |
+| `pnpm nx test <project>`                        | Unit tests of one project with Vitest, e.g. `core`, `ui`, `angular-base`                      |
+| `pnpm nx run-many -t lint typecheck test`       | Lint, type check and tests of every project                                                   |
+| `pnpm nx affected -t lint typecheck test build` | The same, only for the projects a change affects                                              |
+| `pnpm nx graph`                                 | The projects and their dependencies in the browser                                            |
+| `pnpm format:check`                             | Prettier check over the whole repo                                                            |
+| `pnpm format:fix`                               | Prettier write over the whole repo                                                            |
+
+`nx serve` is the quicker loop for UI work, with hot module replacement. `build -c watch` plus `server` runs the built Express server from `server.ts` as in the container, which matters when you work on the server, the SEO routes or the config delivery. Run them in two terminals.
 
 To run the production build the way a container would:
 

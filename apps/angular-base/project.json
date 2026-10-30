@@ -63,6 +63,12 @@
           "optimization": false,
           "extractLicenses": false,
           "sourceMap": true
+        },
+        "watch": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "watch": true
         }
       }
     },
@@ -86,6 +92,10 @@
       "continuous": true,
       "dependsOn": ["build"],
       "command": "node dist/apps/angular-base/server/server.mjs"
+    },
+    "server": {
+      "continuous": true,
+      "command": "node --watch dist/apps/angular-base/server/server.mjs"
     },
     "typecheck": {
       "executor": "nx:run-commands",
