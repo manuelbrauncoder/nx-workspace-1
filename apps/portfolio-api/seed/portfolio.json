@@ -1,0 +1,432 @@
+{
+  "hero": {
+    "name": "Manuel Braun",
+    "description": {
+      "de": "Hey, ich bin Manuel, Frontend Developer aus dem äußeren Spessart. Intuitive Web-Apps und sorgfältiges Design treiben mich an.",
+      "en": "Hey there, I’m Manuel, a frontend developer from the outer Spessart. Intuitive web apps and careful design are what keep me building."
+    },
+    "mapPlace": {
+      "de": "Partenstein",
+      "en": "Partenstein"
+    },
+    "mapCoordinates": "50°03′ N  9°31′ E"
+  },
+  "about": {
+    "headline": {
+      "de": "Über mich",
+      "en": "About me"
+    },
+    "description": {
+      "de": "Ich lebe im Spessart, zwischen Würzburg und Aschaffenburg. Begeistert davon, was Software kann, habe ich meinen Schwerpunkt auf das Frontend gelegt.",
+      "en": "I live in the Spessart, between Würzburg and Aschaffenburg. Fascinated by what software can do, I decided to focus on the frontend."
+    },
+    "facts": {
+      "de": [
+        "Remote von zuhause oder vor Ort: Ich arbeite von überall effektiv.",
+        "Ich bin offen für neue Technologien und sehe jede Herausforderung als Chance, dazuzulernen.",
+        "Programmieren ist für mich mehr als Code schreiben. Es ist ein kreativer Weg, aus Ideen funktionierende Produkte zu machen."
+      ],
+      "en": [
+        "Remote from home or on-site: I work well from anywhere.",
+        "I’m open to new technologies and treat every challenge as a chance to learn something.",
+        "Programming is more than writing code for me. It’s a creative way to turn ideas into working products."
+      ]
+    },
+    "image": {
+      "file": "images/portrait.webp",
+      "alt": {
+        "de": "Porträt von Manuel Braun",
+        "en": "Portrait of Manuel Braun"
+      }
+    }
+  },
+  "projects": {
+    "headline": {
+      "de": "Projekte",
+      "en": "Projects"
+    },
+    "description": {
+      "de": "Eine Auswahl meiner Arbeit. Alle laufen live, du kannst sie selbst ausprobieren.",
+      "en": "A selection of my work. Each one runs live, so you can try it yourself."
+    },
+    "items": [
+      {
+        "title": "Kochwelt",
+        "description": {
+          "de": "Kochwelt läuft auf Angular 21 und Node.js mit SSR und einer Postgres-Datenbank. n8n-Agents und OpenAI-Modelle digitalisieren analoge Rezepte oder Screenshots in Sekunden. Ein sicheres Auth-System und Bildspeicher über Firebase runden die Full-Stack-App ab.",
+          "en": "Kochwelt runs on Angular 21 and Node.js with SSR and a Postgres database. n8n agents and OpenAI models digitize analog recipes or screenshots in seconds. Secure auth and Firebase image storage round out the full-stack app."
+        },
+        "stack": [
+          "Angular",
+          "TypeScript",
+          "Node.js",
+          "SSR",
+          "n8n",
+          "OpenAI",
+          "Firebase",
+          "PostgreSQL",
+          "REST API",
+          "PrimeNG",
+          "Docker",
+          "SCSS"
+        ],
+        "testUrl": "https://cooking-world.manuel-braun.net/",
+        "image": {
+          "file": "images/kochwelt.webp",
+          "alt": {
+            "de": "Screenshot von Kochwelt",
+            "en": "Screenshot of Kochwelt"
+          }
+        }
+      },
+      {
+        "title": "DABubble",
+        "description": {
+          "de": "Ein Messenger wie Slack. Schreib deinem Team in Channels oder per Direktnachricht. Eine globale Suche findet Nachrichten, Personen und Channels, Bilder und PDFs teilst du direkt im Chat.",
+          "en": "A messenger like Slack. Talk to your team in channels or send private messages. A global search finds messages, people and channels, and you can share images or PDFs right in the chat."
+        },
+        "stack": ["Angular", "TypeScript", "Firebase", "HTML", "SCSS"],
+        "githubUrl": "https://github.com/manuelbrauncoder/my-da-bubble",
+        "testUrl": "https://da-bubble.manuel-braun.net/login",
+        "image": {
+          "file": "images/dabubble.webp",
+          "alt": {
+            "de": "Screenshot von DABubble",
+            "en": "Screenshot of DABubble"
+          }
+        }
+      },
+      {
+        "title": "Join",
+        "description": {
+          "de": "Ein Aufgabenmanager nach dem Kanban-Prinzip. Erstelle und organisiere Aufgaben per Drag and Drop und weise Personen und Kategorien zu.",
+          "en": "A task manager inspired by Kanban. Create and organize tasks with drag and drop, then assign people and categories."
+        },
+        "stack": ["Angular", "TypeScript", "Firebase", "HTML", "SCSS"],
+        "githubUrl": "https://github.com/manuelbrauncoder/Join-2.0",
+        "testUrl": "https://join.manuel-braun.net/",
+        "image": {
+          "file": "images/join.webp",
+          "alt": {
+            "de": "Screenshot von Join",
+            "en": "Screenshot of Join"
+          }
+        }
+      },
+      {
+        "title": "manuel-braun.net",
+        "description": {
+          "de": "Meine persönliche Website, auf der ich meine Projekte und Skills zeige. Gebaut mit Angular 22, Server-Side Rendering und Spartan UI.",
+          "en": "My personal website, where I show my projects and skills. Built with Angular 22, server-side rendering and Spartan UI."
+        },
+        "stack": ["Angular", "TypeScript", "Node.js", "SSR", "Spartan UI", "Tailwind", "Docker"],
+        "testUrl": "https://manuel-braun.net/",
+        "image": {
+          "file": "images/manuel-braun-net.webp",
+          "alt": {
+            "de": "Screenshot von manuel-braun.net",
+            "en": "Screenshot of manuel-braun.net"
+          }
+        }
+      }
+    ]
+  },
+  "skills": {
+    "headline": {
+      "de": "Skill Set",
+      "en": "Skill set"
+    },
+    "description": {
+      "de": "Mein Schwerpunkt ist die Web-Frontend-Entwicklung mit Angular. Serverseitig baue ich APIs mit Node.js und betreibe meinen eigenen Server, aufgesetzt als Code. Ich teste mit Vitest und Playwright und arbeite mit Agentic-Coding-Tools wie Claude Code und Cursor.",
+      "en": "My main focus is web frontend development with Angular. On the server side I build Node.js APIs, and I run my own server, set up as code. I test with Vitest and Playwright and build with agentic coding tools like Claude Code and Cursor."
+    },
+    "sets": [
+      {
+        "title": {
+          "de": "Frontend",
+          "en": "Frontend"
+        },
+        "skills": [
+          {
+            "name": {
+              "de": "Angular",
+              "en": "Angular"
+            },
+            "points": {
+              "de": [
+                "Zoneless, Signals, Signal Forms und Signal Stores, Lazy Loading mit Guards, SSR"
+              ],
+              "en": [
+                "Zoneless, signals, signal forms and signal stores, lazy loading with guards, SSR"
+              ]
+            }
+          },
+          {
+            "name": {
+              "de": "Architektur",
+              "en": "Architecture"
+            },
+            "points": {
+              "de": ["Clean Architecture mit klaren Feature-Grenzen"],
+              "en": ["Clean architecture with clear feature boundaries"]
+            }
+          },
+          {
+            "name": {
+              "de": "TypeScript",
+              "en": "TypeScript"
+            },
+            "points": {
+              "de": ["Streng typisierter App-Code"],
+              "en": ["Strictly typed app code"]
+            }
+          },
+          {
+            "name": {
+              "de": "HTML und SCSS",
+              "en": "HTML and SCSS"
+            },
+            "points": {
+              "de": ["Semantisches, barrierearmes Markup, Styles nach BEM"],
+              "en": ["Semantic, accessible markup, styles following BEM"]
+            }
+          },
+          {
+            "name": {
+              "de": "UI-Komponentenbibliotheken",
+              "en": "UI component libraries"
+            },
+            "points": {
+              "de": ["PrimeNG und Spartan UI"],
+              "en": ["PrimeNG and Spartan UI"]
+            }
+          },
+          {
+            "name": {
+              "de": "i18n",
+              "en": "i18n"
+            },
+            "points": {
+              "de": ["Internationalisierung mit Transloco"],
+              "en": ["Internationalization with Transloco"]
+            }
+          },
+          {
+            "name": {
+              "de": "a11y",
+              "en": "a11y"
+            },
+            "points": {
+              "de": ["Barrierefreiheit, Ziel WCAG 2.2 AA"],
+              "en": ["Accessibility, aiming for WCAG 2.2 AA"]
+            }
+          },
+          {
+            "name": {
+              "de": "Testing",
+              "en": "Testing"
+            },
+            "points": {
+              "de": ["Vitest für Unit-Tests, Playwright für End-to-End"],
+              "en": ["Vitest for unit tests, Playwright for end-to-end"]
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "de": "Backend",
+          "en": "Backend"
+        },
+        "skills": [
+          {
+            "name": {
+              "de": "Node.js und Express",
+              "en": "Node.js and Express"
+            },
+            "points": {
+              "de": [
+                "Eigene REST-APIs, Validierung mit Zod, Auth mit Sessions, Datei-Uploads, Logging"
+              ],
+              "en": [
+                "Own REST APIs, validation with Zod, session-based auth, file uploads, logging"
+              ]
+            }
+          },
+          {
+            "name": {
+              "de": "REST APIs",
+              "en": "REST APIs"
+            },
+            "points": {
+              "de": ["Mit OpenAPI dokumentieren und im Frontend typsicher anbinden"],
+              "en": ["Documented with OpenAPI, consumed type-safe in the frontend"]
+            }
+          },
+          {
+            "name": {
+              "de": "PostgreSQL",
+              "en": "PostgreSQL"
+            },
+            "points": {
+              "de": ["Relationale Daten und Abfragen mit Drizzle ORM"],
+              "en": ["Relational data and queries with Drizzle ORM"]
+            }
+          },
+          {
+            "name": {
+              "de": "Firebase und Appwrite",
+              "en": "Firebase and Appwrite"
+            },
+            "points": {
+              "de": ["Auth, Echtzeit-Daten und Dateispeicher"],
+              "en": ["Auth, realtime data and file storage"]
+            }
+          },
+          {
+            "name": {
+              "de": "n8n",
+              "en": "n8n"
+            },
+            "points": {
+              "de": ["Workflow-Automatisierung und KI-Agents"],
+              "en": ["Workflow automation and AI agents"]
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "de": "Infrastruktur",
+          "en": "Infrastructure"
+        },
+        "skills": [
+          {
+            "name": {
+              "de": "Infrastructure as Code",
+              "en": "Infrastructure as code"
+            },
+            "points": {
+              "de": ["Mein eigener Server, als Code aufgesetzt und verwaltet"],
+              "en": ["My own server, set up and managed in code"]
+            }
+          },
+          {
+            "name": {
+              "de": "Self-hosted Deployments",
+              "en": "Self-hosted deployments"
+            },
+            "points": {
+              "de": ["Ich deploye und betreibe meine Apps selbst"],
+              "en": ["I ship and run my apps myself"]
+            }
+          },
+          {
+            "name": {
+              "de": "Docker",
+              "en": "Docker"
+            },
+            "points": {
+              "de": ["Container für jede App"],
+              "en": ["Containers for every app"]
+            }
+          },
+          {
+            "name": {
+              "de": "CI / CD",
+              "en": "CI / CD"
+            },
+            "points": {
+              "de": ["Automatisierte Builds und Releases"],
+              "en": ["Automated builds and releases"]
+            }
+          },
+          {
+            "name": {
+              "de": "Open-Source-Pakete",
+              "en": "Open source packages"
+            },
+            "points": {
+              "de": ["Im Einsatz in meinen Projekten und auf meinem Server"],
+              "en": ["Put to work in my projects and on my server"]
+            }
+          },
+          {
+            "name": {
+              "de": "Git",
+              "en": "Git"
+            },
+            "points": {
+              "de": ["Versionskontrolle und Branching"],
+              "en": ["Version control and branching"]
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "de": "Agentic Coding",
+          "en": "Agentic coding"
+        },
+        "skills": [
+          {
+            "name": {
+              "de": "Claude Code",
+              "en": "Claude Code"
+            },
+            "points": {
+              "de": ["Agentic Coding im Terminal und in der IDE"],
+              "en": ["Agentic coding in the terminal and IDE"]
+            }
+          },
+          {
+            "name": {
+              "de": "Cursor",
+              "en": "Cursor"
+            },
+            "points": {
+              "de": ["KI-gestütztes Editieren und Refactoring"],
+              "en": ["AI-assisted editing and refactoring"]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "headline": {
+      "de": "Lust auf einen Austausch?",
+      "en": "Interested in a chat?"
+    },
+    "description": {
+      "de": "Schreib mir eine Nachricht oder vernetze dich mit mir auf LinkedIn oder GitHub.",
+      "en": "Write me a message, or connect with me on LinkedIn or GitHub."
+    }
+  },
+  "settings": {
+    "name": "Manuel Braun",
+    "email": "mail@manuel-braun.net",
+    "address": ["Grafen-von-Rieneck-Str. 18", "97846 Partenstein"],
+    "profiles": {
+      "github": "https://github.com/manuelbrauncoder",
+      "linkedin": "https://www.linkedin.com/in/manuel-braun-developer/"
+    }
+  },
+  "seo": {
+    "title": {
+      "de": "Frontend Developer aus dem Spessart",
+      "en": "Frontend developer from the Spessart"
+    },
+    "description": {
+      "de": "Manuel Braun, Frontend Developer aus Partenstein im Spessart. Angular-Projekte, Skills und Kontakt.",
+      "en": "Manuel Braun, frontend developer from Partenstein in the Spessart. Angular projects, skills and contact."
+    },
+    "ogImage": {
+      "file": "images/og-image.png",
+      "alt": {
+        "de": "Wegweiser-Logo von Manuel Braun",
+        "en": "Signpost logo of Manuel Braun"
+      }
+    }
+  }
+}

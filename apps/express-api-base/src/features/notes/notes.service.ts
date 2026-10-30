@@ -130,7 +130,9 @@ export async function addImages(userId: string, noteId: string, uploads: Buffer[
     throw badRequest(`A note can have at most ${config.uploads.maxImagesPerNote} images`);
   }
 
-  const processed = await Promise.all(uploads.map(processImage));
+  // one after another, so a request holds only one decoded image in memory at a time
+  const processed = [];
+  for (const upload of uploads) processed.push(await processImage(upload));
 
   const filenames: string[] = [];
   try {
