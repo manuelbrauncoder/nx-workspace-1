@@ -1,7 +1,7 @@
+import { updateUserSchema, userParamsSchema } from '@contracts/auth';
 import { Router } from 'express';
 import { parse } from '../../shared/validate.js';
 import { currentUserId, requireAdmin } from '../auth/auth.middleware.js';
-import { updateUserSchema, userParamsSchema } from './admin.schemas.js';
 import { deleteUser, listUsers, revokeUserSessions, setRole } from './admin.service.js';
 
 export const adminRouter = Router();

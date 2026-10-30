@@ -1,9 +1,6 @@
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { z } from 'zod';
+import { signInSchema, signUpSchema, userResponseSchema } from '@contracts/auth';
 import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '../../shared/openapi.js';
-import { signInSchema, signUpSchema, userSchema } from './auth.schemas.js';
-
-const userResponse = z.object({ user: userSchema });
 
 export function registerAuthDocs(registry: OpenAPIRegistry) {
   registry.registerPath({
@@ -14,7 +11,7 @@ export function registerAuthDocs(registry: OpenAPIRegistry) {
     description: 'Creates the user and signs them in: the response sets the session cookie.',
     request: { body: jsonContent(signUpSchema) },
     responses: {
-      201: jsonResponse('Account created and signed in', userResponse),
+      201: jsonResponse('Account created and signed in', userResponseSchema),
       ...errorResponses(400, 403, 409, 429),
     },
   });
@@ -27,7 +24,7 @@ export function registerAuthDocs(registry: OpenAPIRegistry) {
     description: 'Sets the session cookie. A wrong email and a wrong password give the same 401.',
     request: { body: jsonContent(signInSchema) },
     responses: {
-      200: jsonResponse('Signed in', userResponse),
+      200: jsonResponse('Signed in', userResponseSchema),
       ...errorResponses(400, 401, 403, 429),
     },
   });
@@ -51,7 +48,7 @@ export function registerAuthDocs(registry: OpenAPIRegistry) {
     summary: 'Current user',
     security: sessionAuth,
     responses: {
-      200: jsonResponse('The signed-in user', userResponse),
+      200: jsonResponse('The signed-in user', userResponseSchema),
       ...errorResponses(401),
     },
   });

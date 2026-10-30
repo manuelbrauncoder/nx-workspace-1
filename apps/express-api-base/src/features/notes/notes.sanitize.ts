@@ -1,31 +1,16 @@
+import { RICH_TEXT_LINK_REL, RICH_TEXT_LINK_TARGET, RICH_TEXT_TAGS } from '@contracts/rich-text';
 import sanitizeHtml from 'sanitize-html';
 
+// The same formats the editor of the frontend can produce.
 const options: sanitizeHtml.IOptions = {
-  allowedTags: [
-    'p',
-    'br',
-    'hr',
-    'h1',
-    'h2',
-    'h3',
-    'blockquote',
-    'pre',
-    'code',
-    'strong',
-    'b',
-    'em',
-    'i',
-    'u',
-    's',
-    'ul',
-    'ol',
-    'li',
-    'a',
-  ],
+  allowedTags: [...RICH_TEXT_TAGS],
   allowedAttributes: { a: ['href', 'target', 'rel'] },
   allowedSchemes: ['http', 'https', 'mailto'],
   transformTags: {
-    a: sanitizeHtml.simpleTransform('a', { target: '_blank', rel: 'noopener noreferrer' }),
+    a: sanitizeHtml.simpleTransform('a', {
+      target: RICH_TEXT_LINK_TARGET,
+      rel: RICH_TEXT_LINK_REL,
+    }),
   },
 };
 

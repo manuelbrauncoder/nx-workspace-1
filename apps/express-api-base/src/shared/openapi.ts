@@ -1,14 +1,7 @@
 import { OpenAPIRegistry, type ResponseConfig } from '@asteasolutions/zod-to-openapi';
+import { errorSchema } from '@contracts/errors';
 import { z } from 'zod';
 import { config } from '../config/index.js';
-
-/** Shape of every error response, see middleware/error-handler.ts. */
-export const errorSchema = z.object({
-  error: z.object({
-    message: z.string(),
-    details: z.array(z.object({ path: z.string(), message: z.string() })).optional(),
-  }),
-});
 
 const ERROR_DESCRIPTIONS = {
   400: 'Invalid input; `details` lists the failing fields',

@@ -21,7 +21,8 @@
       "@core/*": ["./packages/shared/core/src/*"],
       "@features/*": ["./apps/angular-base/src/app/features/*"],
       "@shared/*": ["./packages/shared/ui/src/*"],
-      "@spartan-ng/helm/*": ["./packages/shared/helm-vega/*/src/index.ts"]
+      "@spartan-ng/helm/*": ["./packages/shared/helm-vega/*/src/index.ts"],
+      "@contracts/*": ["./packages/contracts/src/*"]
     }
   },
   "angularCompilerOptions": {

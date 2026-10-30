@@ -1,10 +1,10 @@
+import type { CreateNoteInput, UpdateNoteInput } from '@contracts/notes';
 import { and, asc, count, desc, eq, inArray } from 'drizzle-orm';
 import { config } from '../../config/index.js';
 import { db } from '../../db/index.js';
 import { badRequest, notFound } from '../../shared/errors.js';
 import { imagePath, processImage, removeImages, saveImage } from './notes.images.js';
 import { sanitizeDescription } from './notes.sanitize.js';
-import type { CreateNoteInput, UpdateNoteInput } from './notes.schemas.js';
 import { noteImages, notes } from './notes.table.js';
 
 const noteColumns = {

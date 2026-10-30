@@ -134,7 +134,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 - Label, Beschreibung und Fehler rendert ausschließlich `FormControlShell` (`form-control-shell/`), jedes Control setzt sich per Content-Projection hinein. Fehler erscheinen erst, wenn das Feld `touched` ist (`visibleErrorMessages`)
 - Die Hülle stellt Spartan `aria-describedby` und den Invalid-Zustand bereit (`BrnFieldA11yService`, eigener `NgControl`-Ersatz). Controls binden deshalb kein `aria-invalid` und kein `forceInvalid` selbst. Ausnahme ist `FormRichText`: sein editierbares `div` ist kein Spartan-Control und bindet die ARIA-Attribute über `shell.labelId()` und `shell.describedBy()`
 - `FormFiles` ist eine Drop-Zone und liefert `File[]`. `maxFiles`, `accept` (MIME-Types) und `maxFileSize` begrenzen die Auswahl, abgelehnte Dateien meldet das Control selbst. Das Hochladen übernimmt das Formular
-- `FormRichText` liefert einen HTML-String (leer `''`). Die erlaubten Formate stehen einmal in `packages/shared/ui/src/ui/rich-text/rich-text-rules.ts`, Tiptap wird nur in `form-rich-text/rich-text-editor.ts` importiert
+- `FormRichText` liefert einen HTML-String (leer `''`). Die erlaubten Formate stehen einmal in `packages/contracts/src/rich-text.ts`, Tiptap wird nur in `form-rich-text/rich-text-editor.ts` importiert
 
 #### Spartan-Styles
 

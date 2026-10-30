@@ -25,6 +25,11 @@ const API_LAYER = {
   regex: '^@api/',
   message: 'Only the domain layer of a feature may import from the API layer.',
 };
+// The wire format of the API is known to the API layer only, the rest of the app uses models.
+const CONTRACTS = {
+  regex: '^@contracts/',
+  message: 'Only the API layer may import from @contracts. Use the models of the domain instead.',
+};
 // The translation library stays behind `core/i18n`, so swapping it stays local as well.
 const I18N_LIBRARY = {
   regex: '^@jsverse/',
@@ -43,10 +48,10 @@ const restrictImports = (files, patterns) => ({
 export default defineConfig([
   ...baseConfig,
   ...angularConfig,
-  restrictImports(['src/app/*.ts'], [I18N_LIBRARY]),
+  restrictImports(['src/app/*.ts'], [CONTRACTS, I18N_LIBRARY]),
   // The app shell frames every page, so it knows neither features nor the API layer. The one
   // exception is the public API of the auth feature, for the account menu in the header.
-  restrictImports(['src/app/layout/**/*.ts'], [LAYOUT, I18N_LIBRARY]),
+  restrictImports(['src/app/layout/**/*.ts'], [LAYOUT, CONTRACTS, I18N_LIBRARY]),
   restrictImports(
     ['src/api/**/*.ts'],
     [
@@ -56,16 +61,20 @@ export default defineConfig([
       },
     ],
   ),
-  restrictImports(['src/app/features/**/*.ts'], [CROSS_FEATURE, API_LAYER, I18N_LIBRARY]),
+  restrictImports(
+    ['src/app/features/**/*.ts'],
+    [CROSS_FEATURE, API_LAYER, CONTRACTS, I18N_LIBRARY],
+  ),
   restrictImports(
     ['src/app/features/*/presentation/**/*.ts'],
-    [CROSS_FEATURE, API_LAYER, I18N_LIBRARY],
+    [CROSS_FEATURE, API_LAYER, CONTRACTS, I18N_LIBRARY],
   ),
   restrictImports(
     ['src/app/features/*/application/**/*.ts'],
     [
       CROSS_FEATURE,
       API_LAYER,
+      CONTRACTS,
       I18N_LIBRARY,
       { regex: '(^|/)presentation/', message: 'application must not depend on presentation.' },
     ],
@@ -74,6 +83,7 @@ export default defineConfig([
     ['src/app/features/*/domain/**/*.ts'],
     [
       CROSS_FEATURE,
+      CONTRACTS,
       I18N_LIBRARY,
       {
         regex: '(^|/)(application|presentation)/',

@@ -1,9 +1,9 @@
+import { signInSchema, signUpSchema } from '@contracts/auth';
 import { Router } from 'express';
 import { unauthorized } from '../../shared/errors.js';
 import { authRateLimit } from '../../shared/middleware/rate-limit.js';
 import { parse } from '../../shared/validate.js';
 import { currentUserId, requireAuth } from './auth.middleware.js';
-import { signInSchema, signUpSchema } from './auth.schemas.js';
 import { getUser, signIn, signUp } from './auth.service.js';
 import { endSession, sessionCookie, startSession } from './auth.session.js';
 

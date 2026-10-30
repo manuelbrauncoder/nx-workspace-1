@@ -1,10 +1,10 @@
-import { Editor } from '@tiptap/core';
-import StarterKit from '@tiptap/starter-kit';
 import {
   isAllowedRichTextHref,
   RICH_TEXT_LINK_REL,
   RICH_TEXT_LINK_TARGET,
-} from '../../ui/rich-text/rich-text-rules';
+} from '@contracts/rich-text';
+import { Editor } from '@tiptap/core';
+import StarterKit from '@tiptap/starter-kit';
 
 /** Formats that are either on or off at the cursor. */
 export type RichTextToggle =
@@ -50,7 +50,7 @@ interface RichTextEditorOptions {
 
 /**
  * The editor behind `app-form-rich-text`. Everything specific to the editor library stays in
- * this file. The schema is limited to the formats of `rich-text-rules.ts`, so HTML that is set
+ * this file. The schema is limited to the formats of `@contracts/rich-text`, so HTML that is set
  * or pasted loses everything else while it is parsed.
  */
 export class RichTextEditor {

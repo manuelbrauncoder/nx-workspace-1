@@ -1,8 +1,8 @@
+import type { SignInInput, SignUpInput } from '@contracts/auth';
 import argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
 import { db } from '../../db/index.js';
 import { conflict, unauthorized } from '../../shared/errors.js';
-import type { SignInInput, SignUpInput } from './auth.schemas.js';
 import { users } from './users.table.js';
 
 export const publicUser = {

@@ -1,7 +1,7 @@
 /**
- * What rich text may contain. The editor and the display follow this list, so a format added
- * here has to be added to the editor schema and the styles in `_rich-text.scss`. The backend
- * sanitizes on its own and has to allow the format too.
+ * What rich text may contain. The editor, the display and the sanitizer of the API follow this
+ * list, so a format added here has to be added to the editor schema and the styles in
+ * `_rich-text.scss` as well.
  */
 export const RICH_TEXT_TAGS: readonly string[] = [
   'p',

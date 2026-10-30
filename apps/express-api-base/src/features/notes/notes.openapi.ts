@@ -1,17 +1,16 @@
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { z } from 'zod';
-import { config } from '../../config/index.js';
-import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '../../shared/openapi.js';
 import {
   createNoteSchema,
   imageParamsSchema,
-  noteImageSchema,
+  noteImagesResponseSchema,
   noteParamsSchema,
-  noteSchema,
+  noteResponseSchema,
+  notesResponseSchema,
   updateNoteSchema,
-} from './notes.schemas.js';
+} from '@contracts/notes';
+import { config } from '../../config/index.js';
+import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '../../shared/openapi.js';
 
-const noteResponse = z.object({ note: noteSchema });
 const { maxFileSizeMb, maxImagesPerNote, maxImageWidth } = config.uploads;
 
 export function registerNotesDocs(registry: OpenAPIRegistry) {
@@ -24,7 +23,7 @@ export function registerNotesDocs(registry: OpenAPIRegistry) {
     summary: 'List own notes',
     description: 'Newest first, each with its image records.',
     responses: {
-      200: jsonResponse("The user's notes", z.object({ notes: z.array(noteSchema) })),
+      200: jsonResponse("The user's notes", notesResponseSchema),
       ...errorResponses(401),
     },
   });
@@ -39,7 +38,7 @@ export function registerNotesDocs(registry: OpenAPIRegistry) {
       'lists and links are kept, everything else is removed. Images are uploaded separately.',
     request: { body: jsonContent(createNoteSchema) },
     responses: {
-      201: jsonResponse('Note created', noteResponse),
+      201: jsonResponse('Note created', noteResponseSchema),
       ...errorResponses(400, 401, 403),
     },
   });
@@ -51,7 +50,7 @@ export function registerNotesDocs(registry: OpenAPIRegistry) {
     summary: 'Get a note',
     request: { params: noteParamsSchema },
     responses: {
-      200: jsonResponse('The note', noteResponse),
+      200: jsonResponse('The note', noteResponseSchema),
       ...errorResponses(400, 401, 404),
     },
   });
@@ -64,7 +63,7 @@ export function registerNotesDocs(registry: OpenAPIRegistry) {
     description: 'Send only the fields to change, at least one. Images are not affected.',
     request: { params: noteParamsSchema, body: jsonContent(updateNoteSchema) },
     responses: {
-      200: jsonResponse('The updated note', noteResponse),
+      200: jsonResponse('The updated note', noteResponseSchema),
       ...errorResponses(400, 401, 403, 404),
     },
   });
@@ -108,10 +107,7 @@ export function registerNotesDocs(registry: OpenAPIRegistry) {
       },
     },
     responses: {
-      201: jsonResponse(
-        'The created image records',
-        z.object({ images: z.array(noteImageSchema) }),
-      ),
+      201: jsonResponse('The created image records', noteImagesResponseSchema),
       ...errorResponses(400, 401, 403, 404, 413),
     },
   });

@@ -49,8 +49,8 @@ describe('notes', () => {
       .expect(201);
 
     expect(res.body.note.description).toBe(
-      '<p>Hi</p><a target="_blank" rel="noopener noreferrer">bad</a>' +
-        '<a href="https://example.com" target="_blank" rel="noopener noreferrer">good</a>',
+      '<p>Hi</p><a target="_blank" rel="noopener noreferrer nofollow">bad</a>' +
+        '<a href="https://example.com" target="_blank" rel="noopener noreferrer nofollow">good</a>',
     );
   });
 

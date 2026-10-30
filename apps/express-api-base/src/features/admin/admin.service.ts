@@ -1,7 +1,7 @@
+import type { Role } from '@contracts/auth';
 import { asc, eq } from 'drizzle-orm';
 import { db } from '../../db/index.js';
 import { conflict, notFound } from '../../shared/errors.js';
-import type { Role } from '../auth/auth.schemas.js';
 import { publicUser } from '../auth/auth.service.js';
 import { revokeSessions } from '../auth/auth.session.js';
 import { users } from '../auth/users.table.js';

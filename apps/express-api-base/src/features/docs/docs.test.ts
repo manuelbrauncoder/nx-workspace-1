@@ -1,3 +1,5 @@
+import { userSchema } from '@contracts/auth';
+import { noteImageSchema, noteSchema } from '@contracts/notes';
 import type { Router } from 'express';
 import sharp from 'sharp';
 import request from 'supertest';
@@ -5,9 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { adminAgent, app, signedUpAgent } from '../../test/helpers.js';
 import { adminRouter } from '../admin/admin.routes.js';
 import { authRouter } from '../auth/auth.routes.js';
-import { userSchema } from '../auth/auth.schemas.js';
 import { notesRouter } from '../notes/notes.routes.js';
-import { noteImageSchema, noteSchema } from '../notes/notes.schemas.js';
 import { buildOpenApiDocument } from './docs.document.js';
 
 /** "POST /notes/{id}/images" for every route registered on the router. */

@@ -1,13 +1,13 @@
-import { Router } from 'express';
-import { parse } from '../../shared/validate.js';
-import { currentUserId, requireAuth } from '../auth/auth.middleware.js';
-import { uploadImages } from './notes.images.js';
 import {
   createNoteSchema,
   imageParamsSchema,
   noteParamsSchema,
   updateNoteSchema,
-} from './notes.schemas.js';
+} from '@contracts/notes';
+import { Router } from 'express';
+import { parse } from '../../shared/validate.js';
+import { currentUserId, requireAuth } from '../auth/auth.middleware.js';
+import { uploadImages } from './notes.images.js';
 import {
   addImages,
   createNote,

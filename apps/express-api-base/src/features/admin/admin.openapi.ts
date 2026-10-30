@@ -1,8 +1,11 @@
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { z } from 'zod';
+import {
+  updateUserSchema,
+  userParamsSchema,
+  userResponseSchema,
+  usersResponseSchema,
+} from '@contracts/auth';
 import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '../../shared/openapi.js';
-import { userSchema } from '../auth/auth.schemas.js';
-import { updateUserSchema, userParamsSchema } from './admin.schemas.js';
 
 export function registerAdminDocs(registry: OpenAPIRegistry) {
   const base = { tags: ['Admin'], security: sessionAuth };
@@ -14,7 +17,7 @@ export function registerAdminDocs(registry: OpenAPIRegistry) {
     summary: 'List all users',
     description: 'Oldest first. Like every admin endpoint, it answers 403 to non-admins.',
     responses: {
-      200: jsonResponse('All users', z.object({ users: z.array(userSchema) })),
+      200: jsonResponse('All users', usersResponseSchema),
       ...errorResponses(401, 403),
     },
   });
@@ -29,7 +32,7 @@ export function registerAdminDocs(registry: OpenAPIRegistry) {
       'so at least one admin always remains.',
     request: { params: userParamsSchema, body: jsonContent(updateUserSchema) },
     responses: {
-      200: jsonResponse('The updated user', z.object({ user: userSchema })),
+      200: jsonResponse('The updated user', userResponseSchema),
       ...errorResponses(400, 401, 403, 404, 409),
     },
   });
