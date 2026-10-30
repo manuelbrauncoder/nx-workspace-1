@@ -265,6 +265,7 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 - `packages/server/core/src/` (Lib `server-core`, Alias `@server/core/*`): `config` und `extendConfig()`, `logger`, `errors`, `validate`, Middleware (Error-Handler, Origin-Check), `db/db` und `db/migrate`, OpenAPI-Helfer mit `buildOpenApiDocument()`, `createServer()` und `startServer()`, `testing/global-setup`. Kennt keine Features
 - `packages/server/auth/src/` (Lib `server-auth`, Alias `@server/auth/*`): Tabellen `users` und `session`, Registrieren, Anmelden, Abmelden, `/auth/me`, Session-Middleware, Guards `requireAuth`/`requireAdmin`, `currentUserId(req)`, Rate-Limit, Admin-Endpunkte, `seedAdmin()`, `onUserDeleted()`, Test-Helfer. Kennt keine Features
 - `apps/express-api-base/`: die Features (`notes`, `docs`), die App-Config-Erweiterung (`uploads`), `config/`, `drizzle/`, `Dockerfile`, `docker-compose.prod.example.yml`
+- Der Workspace ist ESM (`"type": "module"` in der Root-`package.json`). Sonst lädt `tsx` im Dev-Modus die Server-Libs als CommonJS, und Top-Level-Await bricht
 - Die App wird gebündelt, Imports brauchen keine `.js`-Endung (ältere Dateien haben sie noch, beides geht). Die npm-Pakete bleiben extern und stehen in `apps/express-api-base/package.json`, die das Image installiert. Ein neues Runtime-Paket dort und in der Root-`package.json` eintragen
 
 ### Konfiguration
