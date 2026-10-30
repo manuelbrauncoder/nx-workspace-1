@@ -1,0 +1,266 @@
+<h1 appUiText="h1">{{ 'showcaseComponents.heading' | t }}</h1>
+<p class="mt-2" appUiText="lead">{{ 'showcaseComponents.lead' | t }}</p>
+
+<div class="mt-12 flex flex-col gap-16">
+  <app-showcase-section
+    [description]="'showcaseComponents.button.description' | t"
+    heading="Button"
+  >
+    <div class="demo-stack">
+      <div class="demo-row">
+        @for (variant of _variants; track variant) {
+          <button [variant]="variant" appUiButton type="button">{{ variant }}</button>
+        }
+      </div>
+      <div class="demo-row">
+        @for (size of _sizes; track size) {
+          <button [size]="size" appUiButton variant="outline" type="button">{{ size }}</button>
+        }
+        <button
+          [attr.aria-label]="'showcaseComponents.button.add' | t"
+          appUiButton
+          variant="outline"
+          size="icon"
+          type="button"
+        >
+          <app-ui-icon name="plus" />
+        </button>
+      </div>
+      <div class="demo-row">
+        <button
+          [loading]="_loading()"
+          [loadingLabel]="'showcaseComponents.button.saving' | t"
+          (click)="_simulateLoading()"
+          appUiButton
+          type="button"
+        >
+          {{ 'showcaseComponents.button.save' | t }}
+        </button>
+        <button appUiButton type="button" disabled>
+          {{ 'showcaseComponents.button.disabled' | t }}
+        </button>
+      </div>
+    </div>
+  </app-showcase-section>
+
+  <app-showcase-section [description]="'showcaseComponents.icon.description' | t" heading="Icon">
+    <ul class="icon-grid">
+      @for (icon of _icons; track icon) {
+        <li>
+          <app-ui-icon class="text-2xl" [name]="icon" />
+          <code appUiText="code">{{ icon }}</code>
+        </li>
+      }
+    </ul>
+  </app-showcase-section>
+
+  <app-showcase-section [description]="'showcaseComponents.card.description' | t" heading="Card">
+    <article class="max-w-sm" appUiCard>
+      <div appUiCardHeader>
+        <h3 appUiCardTitle>{{ 'showcaseComponents.card.title' | t }}</h3>
+        <p appUiCardDescription>
+          {{ 'showcaseComponents.card.updatedAt' | t: { date: _sampleDate | localDate } }}
+        </p>
+      </div>
+      <p appUiCardContent>{{ 'showcaseComponents.card.content' | t }}</p>
+      <div appUiCardFooter>
+        <button appUiButton variant="outline" size="sm" type="button">
+          {{ 'showcaseComponents.card.edit' | t }}
+        </button>
+      </div>
+    </article>
+  </app-showcase-section>
+
+  <app-showcase-section [description]="'showcaseComponents.alert.description' | t" heading="Alert">
+    <div class="demo-stack">
+      <app-ui-alert [heading]="'showcaseComponents.alert.noteHeading' | t">
+        {{ 'showcaseComponents.alert.noteText' | t }}
+      </app-ui-alert>
+      <app-ui-alert [heading]="'showcaseComponents.alert.failureHeading' | t" variant="destructive">
+        {{ 'showcaseComponents.alert.failureText' | t }}
+        <button appUiAlertAction appUiButton variant="outline" size="sm" type="button">
+          {{ 'common.retry' | t }}
+        </button>
+      </app-ui-alert>
+    </div>
+  </app-showcase-section>
+
+  <app-showcase-section [description]="'showcaseComponents.empty.description' | t" heading="Empty">
+    <app-ui-empty
+      [headingLevel]="3"
+      [heading]="'showcaseComponents.empty.heading' | t"
+      [description]="'showcaseComponents.empty.text' | t"
+      icon="notebookPen"
+    >
+      <button appUiButton type="button">{{ 'showcaseComponents.empty.action' | t }}</button>
+    </app-ui-empty>
+  </app-showcase-section>
+
+  <app-showcase-section
+    [heading]="'showcaseComponents.loading.heading' | t"
+    [description]="'showcaseComponents.loading.description' | t"
+  >
+    <div class="demo-stack">
+      <app-ui-spinner class="text-2xl" [label]="'showcaseComponents.loading.label' | t" />
+      <div class="demo-skeleton" aria-hidden="true">
+        <div class="h-8 w-1/3" appUiSkeleton></div>
+        <div class="h-24" appUiSkeleton></div>
+      </div>
+    </div>
+  </app-showcase-section>
+
+  <app-showcase-section [description]="'showcaseComponents.menu.description' | t" heading="Menu">
+    <button [appUiMenuTrigger]="menu" appUiButton variant="outline" type="button" align="start">
+      {{ 'showcaseComponents.menu.choose' | t }}
+    </button>
+    <ng-template #menu>
+      <app-ui-menu class="w-48">
+        <app-ui-menu-group>
+          @for (option of _densities; track option.value) {
+            <button
+              [checked]="_density() === option.value"
+              (triggered)="_density.set(option.value)"
+              appUiMenuRadio
+              type="button"
+            >
+              {{ option.labelKey | t }}
+            </button>
+          }
+        </app-ui-menu-group>
+        <app-ui-menu-group>
+          <button (triggered)="_density.set('comfortable')" appUiMenuItem type="button">
+            {{ 'showcaseComponents.menu.reset' | t }}
+          </button>
+        </app-ui-menu-group>
+      </app-ui-menu>
+    </ng-template>
+    <p class="mt-3" appUiText="muted">
+      {{ 'showcaseComponents.menu.chosen' | t: { value: _density() } }}
+    </p>
+  </app-showcase-section>
+
+  <app-showcase-section
+    [description]="'showcaseComponents.navMenu.description' | t"
+    heading="Nav menu"
+  >
+    <div class="demo-stack">
+      <app-ui-nav-menu [items]="_navItems" [label]="'showcaseComponents.navMenu.horizontal' | t" />
+      <app-ui-nav-menu
+        class="max-w-xs"
+        [items]="_navItems"
+        [label]="'showcaseComponents.navMenu.vertical' | t"
+        orientation="vertical"
+      />
+    </div>
+  </app-showcase-section>
+
+  <app-showcase-section [description]="'showcaseComponents.sheet.description' | t" heading="Sheet">
+    <button (click)="_sheetOpen.set(true)" appUiButton variant="outline" type="button">
+      {{ 'showcaseComponents.sheet.open' | t }}
+    </button>
+    <app-ui-sheet
+      [(open)]="_sheetOpen"
+      [heading]="'showcaseComponents.sheet.heading' | t"
+      side="right"
+    >
+      <p appUiText="muted">{{ 'showcaseComponents.sheet.content' | t }}</p>
+    </app-ui-sheet>
+  </app-showcase-section>
+
+  <app-showcase-section
+    [heading]="'showcaseComponents.overlays.heading' | t"
+    [description]="'showcaseComponents.overlays.description' | t"
+  >
+    <div class="demo-stack">
+      <div class="demo-row">
+        <button (click)="_openDialog()" appUiButton variant="outline" type="button">
+          {{ 'showcaseComponents.overlays.openDialog' | t }}
+        </button>
+        <button (click)="_confirm()" appUiButton variant="outline" type="button">
+          {{ 'showcaseComponents.overlays.confirmDelete' | t }}
+        </button>
+      </div>
+      <p appUiText="muted" role="status">{{ _lastAction().key | t: _lastAction().params }}</p>
+      <div class="demo-row">
+        <button (click)="_showToast('success')" appUiButton variant="outline" type="button">
+          {{ 'showcaseComponents.overlays.toastSuccess' | t }}
+        </button>
+        <button (click)="_showToast('info')" appUiButton variant="outline" type="button">
+          {{ 'showcaseComponents.overlays.toastInfo' | t }}
+        </button>
+        <button (click)="_showToast('warning')" appUiButton variant="outline" type="button">
+          {{ 'showcaseComponents.overlays.toastWarning' | t }}
+        </button>
+        <button (click)="_showToast('error')" appUiButton variant="outline" type="button">
+          {{ 'showcaseComponents.overlays.toastError' | t }}
+        </button>
+        <button (click)="_showToastAtBottom()" appUiButton variant="outline" type="button">
+          {{ 'showcaseComponents.overlays.toastBottom' | t }}
+        </button>
+      </div>
+    </div>
+  </app-showcase-section>
+
+  <app-showcase-section
+    [description]="'showcaseComponents.attachment.description' | t"
+    heading="Attachment"
+  >
+    <div class="demo-stack">
+      <div appUiAttachmentGroup role="list">
+        @for (number of [1, 2, 3]; track number) {
+          <app-ui-attachment
+            [imageAlt]="'showcaseComponents.attachment.image' | t: { number }"
+            [linkLabel]="'showcaseComponents.attachment.open' | t: { number }"
+            href="/og-image.png"
+            imageSrc="/og-image.png"
+            orientation="vertical"
+            role="listitem"
+          />
+        }
+      </div>
+      <div class="demo-row">
+        @if (!_attachmentRemoved()) {
+          <app-ui-attachment
+            [description]="'showcaseComponents.attachment.size' | t"
+            [removeLabel]="'showcaseComponents.attachment.remove' | t"
+            (remove)="_attachmentRemoved.set(true)"
+            title="bericht.pdf"
+            removable
+          />
+        }
+        <app-ui-attachment
+          [description]="'showcaseComponents.attachment.uploading' | t"
+          state="uploading"
+          title="foto.png"
+          icon="upload"
+        />
+      </div>
+    </div>
+  </app-showcase-section>
+
+  <app-showcase-section
+    [description]="'showcaseComponents.richText.description' | t"
+    heading="Rich text"
+  >
+    <app-ui-rich-text class="max-w-xl" [html]="'showcaseComponents.richText.sample' | t" />
+  </app-showcase-section>
+
+  <app-showcase-section
+    [heading]="'showcaseComponents.i18n.heading' | t"
+    [description]="'showcaseComponents.i18n.description' | t"
+  >
+    <div class="demo-stack">
+      <div class="demo-row">
+        <app-language-toggle />
+      </div>
+      <p appUiText="muted">
+        <code appUiText="code">{{ 'showcaseComponents.i18n.date' | t }}</code>
+        {{ _sampleDate | localDate }}
+      </p>
+      <p appUiText="muted">
+        <code appUiText="code">{{ 'showcaseComponents.i18n.dateTime' | t }}</code>
+        {{ _sampleDate | localDate: 'dateTime' }}
+      </p>
+    </div>
+  </app-showcase-section>
+</div>

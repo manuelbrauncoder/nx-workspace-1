@@ -23,6 +23,7 @@ node_modules
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/mcp.json
 
 # misc
 /.sass-cache
@@ -53,4 +54,4 @@ vitest.config.*.timestamp*
 
 .nx/polygraph
 .nx/self-healing
-.nx/migrate-runs
+.nx/migrate-runs.vitest

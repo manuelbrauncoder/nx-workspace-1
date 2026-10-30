@@ -1,0 +1,60 @@
+{
+  "auth": {
+    "account": "Konto",
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "signOut": "Abmelden",
+    "signedOut": "Du bist abgemeldet",
+    "signOutFailed": "Abmelden fehlgeschlagen"
+  },
+  "layout": {
+    "legalNavigation": "Rechtliches",
+    "mainNavigation": "Hauptnavigation",
+    "navigation": "Navigation",
+    "openMenu": "Menü öffnen",
+    "skipToContent": "Zum Inhalt springen",
+    "footer": {
+      "imprint": "Impressum",
+      "privacy": "Datenschutz",
+      "accessibility": "Barrierefreiheit"
+    },
+    "nav": {
+      "notes": "Notizen",
+      "showcase": "Showcase",
+      "showcaseOverview": "Übersicht",
+      "showcaseTypography": "Typografie",
+      "showcaseColors": "Farben",
+      "showcaseForms": "Formulare",
+      "showcaseComponents": "Komponenten"
+    }
+  },
+  "legal": {
+    "email": "E-Mail",
+    "phone": "Telefon"
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "heading": "Seite nicht gefunden",
+    "description": "Die Seite gibt es nicht oder sie wurde verschoben.",
+    "backHome": "Zur Startseite"
+  },
+  "seo": {
+    "defaultDescription": "Basis für Angular-Anwendungen mit serverseitigem Rendering, Clean Architecture und einem Referenz-Feature für CRUD.",
+    "imageAlt": "Logo von angular-base"
+  },
+  "notes": {
+    "backToList": "Zurück zur Übersicht",
+    "deleted": "Notiz gelöscht",
+    "edit": "Bearbeiten",
+    "editNamed": "Bearbeiten: {{ title }}",
+    "loading": "Notiz wird geladen",
+    "loadFailed": "Die Notiz konnte nicht geladen werden",
+    "delete": {
+      "label": "Löschen",
+      "labelNamed": "Löschen: {{ title }}",
+      "heading": "Notiz löschen?",
+      "description": "„{{ title }}“ wird dauerhaft gelöscht. Das lässt sich nicht rückgängig machen.",
+      "confirm": "Löschen"
+    }
+  }
+}

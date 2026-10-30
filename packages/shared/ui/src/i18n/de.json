@@ -1,0 +1,62 @@
+{
+  "common": {
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "loading": "Wird geladen …",
+    "retry": "Erneut versuchen"
+  },
+  "failure": {
+    "network": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",
+    "bad-request": "Die Anfrage war ungültig.",
+    "unauthorized": "Du bist nicht angemeldet.",
+    "forbidden": "Dir fehlt die Berechtigung für diese Aktion.",
+    "not-found": "Der Eintrag wurde nicht gefunden.",
+    "conflict": "Das steht im Widerspruch zu vorhandenen Daten.",
+    "too-many-requests": "Zu viele Versuche. Bitte warte einen Moment und versuche es dann erneut.",
+    "server": "Auf dem Server ist ein Fehler aufgetreten.",
+    "unknown": "Es ist ein unbekannter Fehler aufgetreten."
+  },
+  "form": {
+    "datePlaceholder": "Datum wählen",
+    "nextMonth": "Nächster Monat",
+    "previousMonth": "Vorheriger Monat",
+    "selectPlaceholder": "Bitte wählen",
+    "files": {
+      "prompt": "Dateien hierher ziehen oder klicken, um sie auszuwählen",
+      "count": "{{ count }} von {{ max }} ausgewählt",
+      "selected": "Ausgewählte Dateien",
+      "remove": "Entfernen: {{ name }}",
+      "rejectedType": "{{ name }}: Dieser Dateityp ist nicht erlaubt.",
+      "rejectedSize": "{{ name }}: Die Datei ist größer als {{ max }}.",
+      "rejectedCount": "Es sind höchstens {{ max }} Dateien möglich, {{ count }} wurden nicht übernommen."
+    },
+    "richText": {
+      "toolbar": "Formatierung",
+      "bold": "Fett",
+      "italic": "Kursiv",
+      "heading2": "Überschrift",
+      "heading3": "Zwischenüberschrift",
+      "bulletList": "Aufzählung",
+      "orderedList": "Nummerierte Liste",
+      "blockquote": "Zitat",
+      "link": "Link",
+      "undo": "Rückgängig",
+      "redo": "Wiederholen",
+      "linkHeading": "Link",
+      "linkUrl": "Adresse",
+      "linkUrlDescription": "Eine Webadresse oder mailto:name@example.org.",
+      "linkInvalid": "Bitte gib eine gültige Webadresse ein.",
+      "linkApply": "Übernehmen",
+      "linkRemove": "Link entfernen"
+    }
+  },
+  "language": {
+    "choose": "Sprache wählen"
+  },
+  "theme": {
+    "choose": "Farbschema wählen",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System"
+  }
+}

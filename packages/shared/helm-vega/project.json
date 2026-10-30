@@ -1,0 +1,9 @@
+{
+  "name": "helm-vega",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/shared/helm-vega",
+  "prefix": "hlm",
+  "tags": ["type:helm"],
+  "targets": {}
+}

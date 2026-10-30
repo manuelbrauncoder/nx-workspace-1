@@ -1,0 +1,18 @@
+.account-menu__identity {
+  display: grid;
+  gap: 0.125rem;
+  padding: 0.375rem 0.5rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.account-menu__name {
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.account-menu__email {
+  color: var(--muted-foreground);
+  overflow-wrap: anywhere;
+}

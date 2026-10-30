@@ -1,0 +1,15 @@
+.sign-in {
+  margin-inline: auto;
+  max-width: 24rem;
+}
+
+.sign-in__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.sign-in__switch {
+  margin-top: 1.5rem;
+}

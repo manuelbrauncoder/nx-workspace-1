@@ -1,0 +1,15 @@
+// SCSS helpers (mixins/functions). Emits no CSS output on its own.
+// In component SCSS: @use 'styles/abstracts' as *;
+// Breakpoints match the Tailwind defaults.
+$breakpoints: (
+  sm: 40rem,
+  md: 48rem,
+  lg: 64rem,
+  xl: 80rem,
+);
+
+@mixin up($name) {
+  @media (min-width: map-get($breakpoints, $name)) {
+    @content;
+  }
+}

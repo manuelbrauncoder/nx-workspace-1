@@ -1,0 +1,8 @@
+<div hlmDialogHeader>
+  <h2 hlmDialogTitle>{{ heading() }}</h2>
+  @if (description(); as text) {
+    <p #descriptionElement hlmDialogDescription>{{ text }}</p>
+  }
+</div>
+<ng-content />
+<ng-content select="[appUiDialogFooter]" />

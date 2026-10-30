@@ -1,0 +1,17 @@
+<nav class="showcase-nav" aria-label="Showcase">
+  <a
+    [routerLinkActiveOptions]="{ exact: true }"
+    routerLink="/showcase"
+    routerLinkActive
+    ariaCurrentWhenActive="page"
+  >
+    {{ 'showcaseShell.overview' | t }}
+  </a>
+  @for (page of _pages; track page.path) {
+    <a [routerLink]="['/showcase', page.path]" routerLinkActive ariaCurrentWhenActive="page">
+      {{ page.titleKey | t }}
+    </a>
+  }
+</nav>
+
+<router-outlet />

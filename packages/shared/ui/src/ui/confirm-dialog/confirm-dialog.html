@@ -1,0 +1,15 @@
+<app-ui-dialog [heading]="_options.heading" [description]="_options.description">
+  <div appUiDialogFooter>
+    <button (click)="_dialogRef.close(false)" appUiButton variant="outline" type="button">
+      {{ _options.cancelLabel ?? ('common.cancel' | t) }}
+    </button>
+    <button
+      [variant]="_options.variant ?? 'default'"
+      (click)="_dialogRef.close(true)"
+      appUiButton
+      type="button"
+    >
+      {{ _options.confirmLabel }}
+    </button>
+  </div>
+</app-ui-dialog>

@@ -1,0 +1,21 @@
+// On a vertical tile the button sits on top of the preview, where a transparent one could
+// disappear in the image.
+:host([data-orientation='vertical']) .ui-attachment__remove {
+  background: var(--background);
+  color: var(--foreground);
+
+  &:hover {
+    background: var(--muted);
+  }
+}
+
+.ui-attachment__remove:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+
+// The link covers the tile and has no outline of its own.
+:host:has(a:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}

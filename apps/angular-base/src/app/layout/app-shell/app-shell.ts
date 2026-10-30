@@ -1,0 +1,46 @@
+import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { filter, skip } from 'rxjs';
+import { AppDrawer } from '../app-drawer/app-drawer';
+import { AppFooter } from '../app-footer/app-footer';
+import { AppHeader } from '../app-header/app-header';
+
+/** Frame around every page: header, main area with the routed page, footer and mobile drawer. */
+@Component({
+  selector: 'app-shell',
+  imports: [RouterOutlet, TranslatePipe, AppDrawer, AppFooter, AppHeader],
+  styleUrl: './app-shell.scss',
+  templateUrl: './app-shell.html',
+})
+export class AppShell {
+  private readonly _drawerOpen = signal(false);
+  private readonly _main = viewChild.required<ElementRef<HTMLElement>>('main');
+
+  constructor() {
+    // Closes the drawer and moves focus to the new page after each client-side navigation, so
+    // keyboard and screen reader users start at its content. The initial navigation is skipped.
+    inject(Router)
+      .events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        skip(1),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => {
+        this._drawerOpen.set(false);
+        // The router decides where the new page scrolls to, e.g. back to the restored position.
+        this._focusMain({ preventScroll: true });
+      });
+  }
+
+  /** A plain `href="#main"` would resolve against the base href and leave the current page. */
+  private _skipToMain(event: Event): void {
+    event.preventDefault();
+    this._focusMain();
+  }
+
+  private _focusMain(options?: FocusOptions): void {
+    this._main().nativeElement.focus(options);
+  }
+}

@@ -1,0 +1,29 @@
+<hlm-sheet
+  [state]="open() ? 'open' : 'closed'"
+  [side]="side()"
+  (stateChanged)="open.set($event === 'open')"
+>
+  <hlm-sheet-content
+    *hlmSheetPortal
+    [attr.data-full-width]="fullWidth() ? '' : null"
+    [showCloseButton]="false"
+  >
+    <div class="sheet-header">
+      <ng-content select="[appUiSheetHeader]" />
+      <h2 [class.sr-only]="hideHeading()" hlmSheetTitle>{{ heading() }}</h2>
+      <button
+        [attr.aria-label]="'common.close' | t"
+        appUiButton
+        hlmSheetClose
+        variant="ghost"
+        size="icon-sm"
+        type="button"
+      >
+        <app-ui-icon name="x" />
+      </button>
+    </div>
+    <div class="sheet-body">
+      <ng-content />
+    </div>
+  </hlm-sheet-content>
+</hlm-sheet>

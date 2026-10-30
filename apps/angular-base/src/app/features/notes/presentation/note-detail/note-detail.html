@@ -1,0 +1,75 @@
+<a class="px-0" appUiButton variant="link" size="sm" routerLink="/notes">{{
+  'notes.backToList' | t
+}}</a>
+
+<app-async-content
+  class="note-detail"
+  [state]="_store.detailState()"
+  [failureHeading]="'notes.loadFailed' | t"
+  [loadingLabel]="'notes.loading' | t"
+>
+  <ng-template>
+    @if (_store.selected(); as note) {
+      <article>
+        <h1 appUiText="h1">{{ note.title }}</h1>
+        <p class="note-detail__meta">
+          {{ 'noteDetail.createdAt' | t }}
+          <time [attr.datetime]="note.createdAt.toISOString()">{{
+            note.createdAt | localDate: 'dateTime'
+          }}</time>
+          · {{ 'noteDetail.updatedAt' | t }}
+          <time [attr.datetime]="note.updatedAt.toISOString()">{{
+            note.updatedAt | localDate: 'dateTime'
+          }}</time>
+        </p>
+
+        @if (note.description) {
+          <app-ui-rich-text class="note-detail__content" [html]="note.description" />
+        } @else {
+          <p class="note-detail__content note-detail__content--empty">
+            {{ 'noteDetail.noContent' | t }}
+          </p>
+        }
+
+        @if (note.images.length > 0) {
+          <section class="note-detail__images" aria-labelledby="note-detail-images">
+            <h2 id="note-detail-images" appUiText="h4">{{ 'noteDetail.images.heading' | t }}</h2>
+            <div class="mt-2" appUiAttachmentGroup role="list">
+              @for (image of note.images; track image.id; let index = $index) {
+                <app-ui-attachment
+                  [href]="image.url"
+                  [imageAlt]="'noteDetail.images.alt' | t: { number: index + 1 }"
+                  [imageSrc]="image.url"
+                  [linkLabel]="'noteDetail.images.open' | t: { number: index + 1 }"
+                  orientation="vertical"
+                  role="listitem"
+                />
+              }
+            </div>
+          </section>
+        }
+
+        @if (_store.mutationState().failure; as failure) {
+          <app-failure-alert
+            class="mt-6"
+            [failure]="failure"
+            [heading]="'noteDetail.deleteFailed' | t"
+          />
+        }
+
+        <div class="note-detail__actions">
+          <a
+            [routerLink]="['/notes', note.id, 'edit']"
+            [attr.aria-label]="'notes.editNamed' | t: { title: note.title }"
+            appUiButton
+            variant="outline"
+            size="sm"
+          >
+            {{ 'notes.edit' | t }}
+          </a>
+          <app-note-delete-button [title]="note.title" (confirmed)="_remove()" />
+        </div>
+      </article>
+    }
+  </ng-template>
+</app-async-content>

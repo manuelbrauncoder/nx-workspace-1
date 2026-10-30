@@ -1,0 +1,23 @@
+<app-form-control-shell
+  [controlId]="_id"
+  [description]="description()"
+  [disabled]="disabled()"
+  [errors]="_errorMessages()"
+  [label]="label()"
+  [required]="required()"
+>
+  <textarea
+    #control
+    [id]="_id"
+    [attr.name]="name() || null"
+    [attr.placeholder]="placeholder() ?? null"
+    [disabled]="disabled()"
+    [readOnly]="readonly()"
+    [required]="required()"
+    [rows]="rows()"
+    [value]="value()"
+    (blur)="touch.emit()"
+    (input)="value.set(control.value)"
+    hlmTextarea
+  ></textarea>
+</app-form-control-shell>

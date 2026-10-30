@@ -1,0 +1,15 @@
+<app-ui-alert [heading]="heading()" variant="destructive">
+  {{ _text() }}
+  @if (retryable()) {
+    <button
+      (click)="retry.emit()"
+      appUiAlertAction
+      appUiButton
+      variant="outline"
+      size="sm"
+      type="button"
+    >
+      {{ 'common.retry' | t }}
+    </button>
+  }
+</app-ui-alert>

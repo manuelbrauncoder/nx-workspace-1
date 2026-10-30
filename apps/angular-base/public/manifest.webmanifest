@@ -1,0 +1,12 @@
+{
+  "name": "angular-base",
+  "short_name": "angular-base",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "logo.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "logo-512.png", "type": "image/png", "sizes": "512x512" }
+  ]
+}

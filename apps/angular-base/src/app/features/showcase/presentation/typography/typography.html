@@ -1,0 +1,157 @@
+<h1 appUiText="h1">{{ 'showcaseTypography.heading' | t }}</h1>
+<p class="mt-2" appUiText="lead">{{ 'showcaseTypography.lead' | t }}</p>
+
+<div class="mt-12 flex flex-col gap-16">
+  <app-showcase-section
+    [heading]="'showcaseTypography.families.heading' | t"
+    [description]="'showcaseTypography.families.description' | t"
+  >
+    <div class="flex flex-col gap-10">
+      @for (family of _families; track family.name) {
+        <div class="specimen">
+          <div class="specimen__label">
+            <p class="specimen__name">{{ family.name }}</p>
+            <p>{{ family.roleKey | t }}</p>
+            <p>
+              <code>{{ family.utility }}</code>
+            </p>
+          </div>
+          <div [style.font-family]="'var(' + family.token + ')'">
+            <p class="text-2xl">{{ 'showcaseTypography.pangram' | t }}</p>
+            <p class="mt-2 break-all">
+              ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz ÄÖÜäöüß 0123456789
+            </p>
+            <ul class="weights">
+              @for (weight of family.weights; track weight) {
+                <li [style.font-weight]="weight">{{ weight }}</li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
+    </div>
+  </app-showcase-section>
+
+  <!-- Specimens are not real headings, so the document outline stays intact. -->
+  <app-showcase-section
+    [heading]="'showcaseTypography.headings.heading' | t"
+    [description]="'showcaseTypography.headings.description' | t"
+  >
+    <div class="flex flex-col gap-8">
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="h1"</code></p>
+        <div>
+          <p class="font-heading" appUiText="h1">{{ 'showcaseTypography.headings.sample' | t }}</p>
+        </div>
+      </div>
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="h2"</code></p>
+        <div>
+          <p class="font-heading" appUiText="h2">{{ 'showcaseTypography.headings.sample' | t }}</p>
+        </div>
+      </div>
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="h3"</code></p>
+        <div>
+          <p class="font-heading" appUiText="h3">{{ 'showcaseTypography.headings.sample' | t }}</p>
+        </div>
+      </div>
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="h4"</code></p>
+        <div>
+          <p class="font-heading" appUiText="h4">{{ 'showcaseTypography.headings.sample' | t }}</p>
+        </div>
+      </div>
+    </div>
+  </app-showcase-section>
+
+  <app-showcase-section
+    [heading]="'showcaseTypography.body.heading' | t"
+    [description]="'showcaseTypography.body.description' | t"
+  >
+    <div class="flex flex-col gap-8">
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="lead"</code></p>
+        <div>
+          <p appUiText="lead">
+            {{ 'showcaseTypography.body.lead' | t }}
+          </p>
+        </div>
+      </div>
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="p"</code></p>
+        <div>
+          <p appUiText="p">
+            {{ 'showcaseTypography.body.first' | t }}
+          </p>
+          <p appUiText="p">
+            {{ 'showcaseTypography.body.second' | t }}
+          </p>
+        </div>
+      </div>
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="large"</code></p>
+        <div>
+          <p appUiText="large">{{ 'showcaseTypography.body.large' | t }}</p>
+        </div>
+      </div>
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="small"</code></p>
+        <div>
+          <p appUiText="small">{{ 'showcaseTypography.body.small' | t }}</p>
+        </div>
+      </div>
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="muted"</code></p>
+        <div>
+          <p appUiText="muted">{{ 'showcaseTypography.body.muted' | t }}</p>
+        </div>
+      </div>
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="blockquote"</code></p>
+        <div>
+          <blockquote appUiText="blockquote">
+            {{ 'showcaseTypography.body.quote' | t }}
+          </blockquote>
+        </div>
+      </div>
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="list"</code></p>
+        <div>
+          <ul appUiText="list">
+            <li>{{ 'showcaseTypography.body.listFirst' | t }}</li>
+            <li>{{ 'showcaseTypography.body.listSecond' | t }}</li>
+            <li>{{ 'showcaseTypography.body.listThird' | t }}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="specimen">
+        <p class="specimen__label"><code>appUiText="code"</code></p>
+        <div>
+          <p>
+            {{ 'showcaseTypography.body.codeBefore' | t }}
+            <code appUiText="code">pnpm install</code>
+            {{ 'showcaseTypography.body.codeAfter' | t }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </app-showcase-section>
+
+  <app-showcase-section
+    [heading]="'showcaseTypography.sizes.heading' | t"
+    [description]="'showcaseTypography.sizes.description' | t"
+  >
+    <div class="flex flex-col gap-6">
+      @for (size of _sizes; track size.utility) {
+        <div class="specimen">
+          <p class="specimen__label">
+            <code>{{ size.utility }}</code>
+            <span class="block">{{ size.rem }}</span>
+          </p>
+          <p class="truncate" [class]="size.utility">{{ 'showcaseTypography.pangram' | t }}</p>
+        </div>
+      }
+    </div>
+  </app-showcase-section>
+</div>

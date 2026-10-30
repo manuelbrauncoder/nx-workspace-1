@@ -1,0 +1,33 @@
+{
+  "titleNew": "New note",
+  "titleEdit": "Edit note",
+  "fields": {
+    "title": "Title",
+    "description": "Description",
+    "newImages": "Add images"
+  },
+  "validation": {
+    "titleRequired": "Please enter a title.",
+    "titleBlank": "The title must not consist of spaces only.",
+    "titleTooLong": "The title must not be longer than {{ max }} characters.",
+    "descriptionTooLong": "The description is too long. Please shorten it."
+  },
+  "images": {
+    "existing": "Existing images",
+    "alt": "Image {{ number }}",
+    "remove": "Delete image {{ number }}",
+    "description": "JPEG, PNG, WebP, AVIF or GIF with at most {{ size }} MB. A note has at most {{ max }} images.",
+    "full": "The note already has {{ max }} images. Delete one to add a new one.",
+    "uploadFailed": "The note is saved, but the images were not uploaded",
+    "invalid": "At least one file is not a valid image, so none was saved.",
+    "removeHeading": "Delete image {{ number }}?",
+    "removeDescription": "The image is deleted right away and permanently, even if you do not save the note afterwards.",
+    "removeConfirm": "Delete",
+    "removed": "Image deleted",
+    "removeFailed": "The image could not be deleted"
+  },
+  "save": "Save",
+  "saving": "Saving",
+  "saved": "Note saved",
+  "saveFailed": "Saving failed"
+}

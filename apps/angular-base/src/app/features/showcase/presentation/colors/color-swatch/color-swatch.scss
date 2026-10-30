@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+.swatch__color {
+  display: flex;
+  align-items: flex-end;
+  height: 5rem;
+  padding: 0.5rem 0.75rem;
+  // Keeps swatches visible that match the page background.
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  // Large text, so every token pair only needs a 3:1 contrast.
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.swatch__name {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.swatch__meta {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}

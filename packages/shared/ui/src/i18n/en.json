@@ -1,0 +1,62 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "loading": "Loading …",
+    "retry": "Try again"
+  },
+  "failure": {
+    "network": "The server cannot be reached. Please check your connection.",
+    "bad-request": "The request was invalid.",
+    "unauthorized": "You are not signed in.",
+    "forbidden": "You do not have permission for this action.",
+    "not-found": "The entry was not found.",
+    "conflict": "This conflicts with existing data.",
+    "too-many-requests": "Too many attempts. Please wait a moment and try again.",
+    "server": "An error occurred on the server.",
+    "unknown": "An unknown error occurred."
+  },
+  "form": {
+    "datePlaceholder": "Pick a date",
+    "nextMonth": "Next month",
+    "previousMonth": "Previous month",
+    "selectPlaceholder": "Please select",
+    "files": {
+      "prompt": "Drag files here or click to choose them",
+      "count": "{{ count }} of {{ max }} selected",
+      "selected": "Selected files",
+      "remove": "Remove: {{ name }}",
+      "rejectedType": "{{ name }}: This file type is not allowed.",
+      "rejectedSize": "{{ name }}: The file is larger than {{ max }}.",
+      "rejectedCount": "At most {{ max }} files are possible, {{ count }} were left out."
+    },
+    "richText": {
+      "toolbar": "Formatting",
+      "bold": "Bold",
+      "italic": "Italic",
+      "heading2": "Heading",
+      "heading3": "Subheading",
+      "bulletList": "Bullet list",
+      "orderedList": "Numbered list",
+      "blockquote": "Quote",
+      "link": "Link",
+      "undo": "Undo",
+      "redo": "Redo",
+      "linkHeading": "Link",
+      "linkUrl": "Address",
+      "linkUrlDescription": "A web address or mailto:name@example.org.",
+      "linkInvalid": "Please enter a valid web address.",
+      "linkApply": "Apply",
+      "linkRemove": "Remove link"
+    }
+  },
+  "language": {
+    "choose": "Choose language"
+  },
+  "theme": {
+    "choose": "Choose color scheme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  }
+}

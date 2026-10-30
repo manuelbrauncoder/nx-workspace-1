@@ -1,0 +1,11 @@
+<app-ui-sheet
+  [(open)]="open"
+  [heading]="'layout.navigation' | t"
+  side="right"
+  fullWidth
+  hideHeading
+>
+  <!-- A click on the logo on the start page triggers no navigation that would close the drawer. -->
+  <app-logo (click)="open.set(false)" appUiSheetHeader />
+  <app-ui-nav-menu [items]="_items" [label]="'layout.mainNavigation' | t" orientation="vertical" />
+</app-ui-sheet>

@@ -1,0 +1,24 @@
+/* Tailwind entry (CSS only, no SCSS). Must come BEFORE styles.scss in angular.json,
+   so the layer order is declared first. */
+@layer theme, base, components, utilities;
+
+/* Scan only this app and the shared libs, not the other apps of the workspace. */
+@import 'tailwindcss' source(none);
+@source '..';
+@source '../../../../packages/shared';
+@import '@spartan-ng/brain/hlm-tailwind-preset.css';
+
+/* Custom design tokens. Colors come from themes/ and are exposed to utilities here,
+   e.g. `--color-success: var(--success)` -> `bg-success`.
+   `static`: always emit the variables, even if they are only used in SCSS via var(). */
+@theme inline static {
+  --font-sans:
+    'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-heading: 'Space Grotesk', var(--font-sans);
+  --font-mono:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+  --color-input-background: var(--input-background);
+}

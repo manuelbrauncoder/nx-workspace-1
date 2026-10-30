@@ -1,0 +1,18 @@
+{
+  "title": "Barrierefreiheit",
+  "heading": "Erklärung zur Barrierefreiheit",
+  "lead": "Diese Website soll für alle Menschen nutzbar sein. Maßstab sind die Web Content Accessibility Guidelines (WCAG) 2.1 auf Stufe AA.",
+  "status": {
+    "heading": "Stand der Umsetzung",
+    "text": "Die Website wird mit dem Ziel entwickelt, diese Anforderungen zu erfüllen. Dazu gehören die Bedienung per Tastatur, die Unterstützung von Screenreadern und ausreichende Kontraste im hellen und im dunklen Farbschema."
+  },
+  "limitations": {
+    "heading": "Bekannte Einschränkungen",
+    "text": "[Bekannte Einschränkungen eintragen]"
+  },
+  "feedback": {
+    "heading": "Barriere melden",
+    "text": "Du bist auf eine Barriere gestoßen oder brauchst einen Inhalt in anderer Form? Schreib eine E-Mail an"
+  },
+  "updated": "Stand: Oktober 2026"
+}

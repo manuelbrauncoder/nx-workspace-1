@@ -1,0 +1,42 @@
+<div class="notes-header">
+  <div>
+    <h1 appUiText="h1">{{ 'notesList.heading' | t }}</h1>
+    <p class="mt-2" appUiText="lead">{{ 'notesList.lead' | t }}</p>
+  </div>
+  <a appUiButton routerLink="new">
+    <app-ui-icon name="plus" />
+    {{ 'notesList.new' | t }}
+  </a>
+</div>
+
+@if (_store.mutationState().failure; as failure) {
+  <app-failure-alert class="mt-6" [failure]="failure" [heading]="'notesList.actionFailed' | t" />
+}
+
+<app-async-content
+  class="notes-body"
+  [state]="_store.listState()"
+  [failureHeading]="'notesList.loadFailed' | t"
+  [loadingLabel]="'notesList.loading' | t"
+  (retry)="_store.reload()"
+  loadingIndicator="skeleton"
+  retryable
+>
+  <ng-template>
+    @if (_store.isEmpty()) {
+      <app-ui-empty
+        [heading]="'notesList.empty.heading' | t"
+        [description]="'notesList.empty.description' | t"
+        icon="notebookPen"
+      >
+        <a appUiButton routerLink="new">{{ 'notesList.new' | t }}</a>
+      </app-ui-empty>
+    } @else {
+      <ul class="notes-grid">
+        @for (note of _store.notes(); track note.id) {
+          <li><app-note-card [note]="note" (remove)="_remove(note.id)" /></li>
+        }
+      </ul>
+    }
+  </ng-template>
+</app-async-content>

@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+.rich-text-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  padding: 0.25rem;
+}
+
+.rich-text-toolbar__group {
+  display: flex;
+  gap: 0.125rem;
+
+  & + & {
+    border-left: 1px solid var(--border);
+    padding-left: 0.5rem;
+  }
+}

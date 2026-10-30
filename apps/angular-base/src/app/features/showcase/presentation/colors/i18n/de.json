@@ -1,0 +1,27 @@
+{
+  "title": "Farben · Showcase",
+  "heading": "Farben",
+  "lead": "Alle Theme-Tokens mit ihrem Wert im aktuellen Farbschema ({{ scheme }}).",
+  "groups": {
+    "surfaces": {
+      "title": "Flächen",
+      "description": "Hintergründe für Seite, Karten und Overlays mit ihrer Textfarbe."
+    },
+    "actions": {
+      "title": "Aktionen und Zustände",
+      "description": "Farben für Buttons, Hervorhebungen und Fehler."
+    },
+    "borders": {
+      "title": "Rahmen und Fokus",
+      "description": "Linien, Eingabefelder und Fokusring."
+    },
+    "charts": {
+      "title": "Diagramme",
+      "description": "Datenreihen in Charts."
+    },
+    "sidebar": {
+      "title": "Sidebar",
+      "description": "Eigene Palette für die Seitenleiste."
+    }
+  }
+}

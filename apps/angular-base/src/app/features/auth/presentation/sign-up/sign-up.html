@@ -1,0 +1,55 @@
+<div class="sign-up">
+  <h1 appUiText="h1">{{ 'signUp.title' | t }}</h1>
+  <p class="mt-2" appUiText="lead">{{ 'signUp.lead' | t }}</p>
+
+  <form class="sign-up__form" [formRoot]="_signUpForm">
+    <app-form-text
+      [description]="'signUp.fields.nameDescription' | t"
+      [formField]="_signUpForm.name"
+      [label]="'signUp.fields.name' | t"
+      autocomplete="name"
+    />
+    <app-form-text
+      [formField]="_signUpForm.email"
+      [label]="'signUp.fields.email' | t"
+      type="email"
+      autocomplete="username"
+    />
+    <app-form-text
+      [description]="'signUp.fields.passwordDescription' | t: { min: _passwordMinLength }"
+      [formField]="_signUpForm.password"
+      [label]="'signUp.fields.password' | t"
+      type="password"
+      autocomplete="new-password"
+    />
+
+    @if (_store.mutationState().failure; as failure) {
+      <app-failure-alert
+        [failure]="failure"
+        [heading]="'signUp.failed' | t"
+        [message]="_emailTaken() ? ('signUp.emailTaken' | t) : undefined"
+      />
+    }
+
+    <button
+      [loading]="_submitting()"
+      [loadingLabel]="'signUp.submitting' | t"
+      appUiButton
+      type="submit"
+    >
+      {{ 'signUp.submit' | t }}
+    </button>
+  </form>
+
+  <p class="sign-up__switch" appUiText="muted">
+    {{ 'signUp.hasAccount' | t }}
+    <a
+      class="px-0"
+      appUiButton
+      variant="link"
+      routerLink="/sign-in"
+      queryParamsHandling="preserve"
+      >{{ 'signUp.toSignIn' | t }}</a
+    >
+  </p>
+</div>

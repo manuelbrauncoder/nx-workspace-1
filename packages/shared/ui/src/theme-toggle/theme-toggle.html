@@ -1,0 +1,28 @@
+<button
+  [appUiMenuTrigger]="menu"
+  [attr.aria-label]="'theme.choose' | t"
+  appUiButton
+  variant="ghost"
+  size="icon"
+  type="button"
+  align="end"
+>
+  <app-ui-icon [name]="_theme.resolved() === 'dark' ? 'moon' : 'sun'" />
+</button>
+
+<ng-template #menu>
+  <app-ui-menu class="w-40">
+    <app-ui-menu-group>
+      @for (option of _options; track option.mode) {
+        <button
+          [checked]="_theme.mode() === option.mode"
+          (triggered)="_theme.setMode(option.mode)"
+          appUiMenuRadio
+          type="button"
+        >
+          {{ option.labelKey | t }}
+        </button>
+      }
+    </app-ui-menu-group>
+  </app-ui-menu>
+</ng-template>

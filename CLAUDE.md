@@ -21,3 +21,214 @@
 - The `nx-generate` skill handles generator discovery internally - don't call nx_docs just to look up generator syntax
 
 <!-- nx configuration end-->
+
+You are an expert in TypeScript, Angular, and scalable web application development. You write functional, maintainable, performant, and accessible code following Angular and TypeScript best practices.
+
+## TypeScript Best Practices
+
+- Use strict type checking
+- Prefer type inference when the type is obvious
+- Avoid the `any` type; use `unknown` when type is uncertain
+- Private methods and properties start with an underscore: `private readonly _me = signal(...)` next to the public `readonly me`. ESLint enforces it (`@typescript-eslint/naming-convention`)
+- `protected` is for class inheritance only (e.g. `Log` and its subclasses). Everything else is `private` or public
+
+## Angular Best Practices
+
+- Always use standalone components over NgModules
+- Must NOT set `standalone: true` inside Angular decorators. It's the default in Angular v20+.
+- Do NOT set `changeDetection: ChangeDetectionStrategy.OnPush` explicitly. `OnPush` is the default in Angular v22+.
+- Use signals for state management
+- Implement lazy loading for feature routes
+- Do NOT use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead
+- Use `NgOptimizedImage` for all static images.
+  - `NgOptimizedImage` does not work for inline base64 images.
+
+## Accessibility Requirements
+
+- It MUST pass all AXE checks.
+- It MUST follow all WCAG AA minimums, including focus management, color contrast, and ARIA attributes.
+
+### Components
+
+- Keep components small and focused on a single responsibility
+- Use `input()` and `output()` functions instead of decorators
+- Use `model()` for two-way bound properties with `[(prop)]` syntax instead of pairing `input()` with `output()`
+- Use `computed()` for derived state
+- Members that only the class and its template use are `private` (`_saving`, `_store`). Templates can read private members since Angular v22.2. Inputs, outputs and models stay public
+- Use `linkedSignal()` for state derived from multiple reactive sources that must stay synchronized
+- Never use inline `template` or `styles`. Every component lives in its own folder with three files: `name.ts`, `name.html`, `name.scss`
+- Prefer Signal Forms (`@angular/forms/signals`) for new forms. They are stable in Angular v22+ and provide signal-based state, type-safe field access, and schema-based validation
+- When not using Signal Forms, prefer Reactive forms instead of Template-driven ones
+- Do NOT use `ngClass`, use `class` bindings instead
+- Do NOT use `ngStyle`, use `style` bindings instead
+- Do NOT import `CommonModule`, import only the directives and pipes the template uses, such as `AsyncPipe` or `DatePipe`
+- When using external templates/styles, use paths relative to the component TS file.
+
+## Styling
+
+- Struktur pro App: `src/styles/tailwind.css` (nur Tailwind + Spartan-Preset, `@source` auf die App und `packages/shared`, in `project.json` zuerst), `src/styles/styles.scss` (Entry, nur `@use`), dazu `themes/` und `base/_fonts.scss` der App
+- Geteiltes SCSS liegt in der Lib `packages/shared/styles/` (`abstracts/`, `base/`, `layout/`) und wird als `styles/...` eingebunden. Farben, Radius und Schriften bleiben in der App, weil sie zur Marke und zum Spartan-Style gehören
+- Bis ca. 3 Tailwind-Klassen im Template, darüber oder bei Zuständen/Varianten eigenes `*.scss` an der Komponente
+- SCSS nutzt nur Theme-Tokens (`var(--background)`, `var(--primary)`), kein `@apply`, keine hartcodierten Farben
+- Globales SCSS in `@layer base` bzw. `@layer components`, damit Tailwind-Utilities es überschreiben können
+- Light/Dark: Tokens in `themes/_light.scss` und `themes/_dark.scss` (`:root.dark`) der App. Neue Tokens in beiden definieren und in `tailwind.css` per `@theme inline` freigeben. Umschalten über `ThemeService` (`packages/shared/core/src/theme/`)
+- In Komponenten-SCSS Helfer via `@use 'styles/abstracts' as *;` (Include-Path `packages/shared`)
+
+## Architektur
+
+Nx-Workspace: Apps in `apps/`, die Libs, die jede App nutzt, in `packages/shared/`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
+
+Die Grenzen erzwingt ESLint an zwei Stellen: zwischen Projekten über Nx-Tags (`@nx/enforce-module-boundaries` in der Root-`eslint.config.mjs`), innerhalb der App über `no-restricted-imports` in `apps/angular-base/eslint.config.mjs`.
+
+| Tag           | Projekte       | Darf abhängen von                                  |
+| ------------- | -------------- | -------------------------------------------------- |
+| `type:app`    | `angular-base` | `type:ui`, `type:core`, `type:styles`              |
+| `type:ui`     | `ui`           | `type:ui`, `type:core`, `type:helm`, `type:styles` |
+| `type:core`   | `core`         | `type:core`                                        |
+| `type:helm`   | `helm-vega`, … | `type:helm`                                        |
+| `type:styles` | `styles`       | `type:styles`                                      |
+
+Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Einstieg: `docs/README.md`). Ändert sich eine Regel hier, das passende Doc mit anpassen.
+
+- `packages/shared/core/src/` (Lib `core`, Alias `@core/*`): App-weite Infrastruktur (Runtime-Config, HTTP-Fehlerbehandlung, i18n, SEO, Theme, Test-Setup). Kennt weder Apps noch `ui` noch die UI-Library. Enthält keine App-spezifischen Werte: den App-Namen setzt jede App über den Token `APP_NAME` in `app.config.ts`
+- `packages/shared/ui/src/` (Lib `ui`, Alias `@shared/*`): UI-Wrapper, Form-Controls, `app-async-content`, `app-failure-alert`, Theme- und Language-Toggle und deren Texte. Kennt keine Apps
+- `packages/shared/helm-<style>/` (Alias `@spartan-ng/helm/*`): von der Spartan-CLI erzeugte Komponenten, eine Lib pro Spartan-Style, heute nur `helm-vega`. Generierter Code, Prettier und ESLint lassen ihn aus
+- `packages/shared/styles/` (Lib `styles`): geteiltes globales SCSS
+- `apps/angular-base/`: die App mit Features, Layout, API-Layer, Themes, `public/`, `config/` und eigenem `Dockerfile`. Features und API-Layer werden Libs, sobald eine zweite App sie braucht. Bis dahin zeigen `@features/*` und `@api/*` in die App
+- Innerhalb einer Lib relative Imports, Nx meldet einen Alias, der in die eigene Lib zeigt
+- `apps/angular-base/src/app/layout/`: die `AppShell` mit Header, `<main>` samt `<router-outlet>`, Footer und Drawer für Mobile. Sie ist die Eltern-Route aller Seiten in `app.routes.ts`, eine Route ohne Rahmen (z. B. Login im Vollbild) steht daneben. Kennt weder Features noch `apps/angular-base/src/api`, einzige Ausnahme ist `@features/auth/public-api` für das Account-Menü im Header. Navigationspunkte stehen in `app-nav-items.ts`, Header und Drawer rendern sie mit `app-ui-nav-menu`, die Footer-Links zu den Legal Pages dort in `APP_FOOTER_ITEMS`
+- `apps/angular-base/src/app/features/<feature>/`: ein Ordner pro Feature, lazy über `<feature>.routes.ts` geladen
+  - `domain/`: UseCase des Features und Re-Export der Models aus dem API-Layer. Einziger Ort im Feature, der `@api/*` importiert. Der UseCase reicht aktuell das Repository durch und ist die Stelle, an der ein Feature mehrere API-Layer kombiniert. Kein HTTP
+  - `application/`: Store des Features. Nutzt nur `domain`
+  - `presentation/`: Pages und Komponenten. Nutzt nur `application` und `domain`
+  - `<feature>.routes.ts`: stellt UseCase und Store bereit, beide leben so lange wie das Feature
+- `apps/angular-base/src/api/<feature>/`: eigenständiger API-Layer, kennt keine Features. Enthält das DTO (Wire-Format, z. B. `NoteDto`), das Model (z. B. `Note`), den Mapper und das Repository mit den HTTP-Calls. Das Repository gibt nur Models heraus, nie DTOs
+- Mapper sind Klassen, die `DtoMapper` (`apps/angular-base/src/api/dto-mapper.ts`) implementieren, z. B. `NoteDtoMapper`. Pflicht sind beide Richtungen: `toModel` und `toDto`
+- `apps/angular-base/src/server/`: Teile des Express-Servers (SEO-Routen, Config, Log), eingehängt in `apps/angular-base/src/server.ts`. Keine Mock-API, die App spricht mit dem echten Backend. Dessen Beschreibung liegt unter `<apiBaseUrl>/docs/openapi.json`
+- Features importieren sich nie gegenseitig, einzige Ausnahme ist `@features/auth/public-api`. Innerhalb eines Features relative Imports, sonst die Aliase `@core/*`, `@shared/*`, `@api/*`, `@features/*`
+- `notes` ist das Referenz-Feature für CRUD. Ein neues Feature folgt demselben Aufbau
+- `legal` enthält Impressum (`/imprint`), Datenschutz (`/privacy`) und Barrierefreiheit (`/accessibility`), alle mit `index: false`. Die Betreiberangaben stehen einmal in `SITE_OWNER` (`apps/angular-base/src/app/site-owner.ts`), Anschrift und Telefon erscheinen erst, wenn sie dort gesetzt sind. Details in `docs/legal-pages.md`
+- `auth` enthält Anmelden (`/sign-in`), Registrieren (`/sign-up`) und den Zustand „wer ist angemeldet“. `AuthStore` und `AuthUseCase` sind app-weit bereitgestellt (`@Service()`), nicht in den Feature-Routen, weil Header und Guards sie auf jeder Seite brauchen. Die App-Shell und andere Features greifen nur über `apps/angular-base/src/app/features/auth/public-api.ts` zu (`AuthStore`, `authGuard`, `guestGuard`, `adminGuard`, `AccountMenu`, Typ `Me`). Details in `docs/auth.md`
+- Eine Route hinter dem Login bekommt `canActivate: [authGuard]`. Der Guard leitet auf `/sign-in?returnUrl=…` um, auf dem Server als Redirect
+- Der Router scrollt bei einer neuen Seite nach oben und stellt bei „Zurück“ die Position wieder her (`withInMemoryScrolling` in `app.config.ts`). Kein eigenes `scrollTo` nach einer Navigation
+
+### API und Runtime-Config
+
+- Die Backend-URL steht nicht im Build, sondern in `/config/app-config.json`. Lokal liegt die Datei in `apps/angular-base/config/`, im Container wird sie gemountet
+- Zugriff nur über `AppConfigService` (`packages/shared/core/src/config/`), geladen per App-Initializer vor dem ersten Rendern. Neue Config-Werte im Interface `AppConfig`, im Type Guard und in `apps/angular-base/config/app-config.json` ergänzen. Vorhanden: `apiBaseUrl`, `environment`, `logLevel`, `siteUrl`, `allowIndexing`
+- HTTP-Calls stehen ausschließlich in `apps/angular-base/src/api`
+- Die Session ist ein HTTP-only-Cookie des Backends (`sid`), die App speichert kein Token. `credentialsInterceptor` (`packages/shared/core/src/http/`) schickt das Cookie an Requests auf `apiBaseUrl` mit, auf dem Server reicht er das Cookie des eingehenden Requests weiter. `provideAuth()` lädt `/auth/me` per App-Initializer vor dem ersten Rendern
+- Das Backend meldet Fehler als `{ "error": { "message": "...", "details": [...] } }`, auf Englisch und ohne Codes. Unterschieden wird nur über den Status, `details` wertet die App nicht aus
+- Antworten sind in ein Objekt verpackt (`{ note }`, `{ notes }`, `{ images }`), das Repository packt sie aus
+- Dateien gehen als `FormData` ans Backend. Eine Notiz mit Bildern wird in zwei Schritten gespeichert: erst die Notiz als JSON, dann die Dateien an `/notes/{id}/images`. Bilder zeigt ein `<img>` direkt über `NoteImage.url` an, der Browser schickt das Cookie mit
+- Es gibt genau einen Fehlertyp: `Failure` (`packages/shared/core/src/failure/`) mit den Kinds `network`, `bad-request`, `unauthorized`, `forbidden`, `not-found`, `conflict` (409), `too-many-requests` (429), `server`, `unknown`. `failureInterceptor` wandelt jeden fehlgeschlagenen Request um, alles andere läuft über `toFailure()`. Stores und Komponenten arbeiten nie mit rohen Fehlern
+- Einen `AsyncState` im Template immer über `app-async-content` (`packages/shared/ui/src/async-content/`) rendern, kein eigenes `@switch` über `loadingState`. Die Komponente zeigt den Ladezustand (Spinner als Default, `loadingIndicator="skeleton"` für ein Skeleton) und Fehler, der Inhalt steht in einem `<ng-template>` und wird erst erzeugt, wenn er angezeigt wird
+- Fehler außerhalb davon (z. B. fehlgeschlagenes Speichern) über `app-failure-alert` (`packages/shared/ui/src/failure-alert/`) anzeigen. Der Text ist der übersetzte zu `failure.<kind>`. Hat ein Status auf einer Page eine genauere Bedeutung (401 beim Anmelden, 409 beim Registrieren), gibt sie den eigenen Text über `[message]` mit
+
+### Form Controls und UI-Wrapper
+
+- Spartan, `@ng-icons` und Tiptap (`@tiptap/*`) werden nur in der Lib `ui` importiert (`packages/shared/ui/src/ui/` und `packages/shared/ui/src/form-controls/`). Apps und `core` nutzen ausschließlich die Wrapper, so bleibt ein Tausch der UI-Library auf diese Lib begrenzt. Die Nx-Tags erzwingen das (`bannedExternalImports` für `type:app` und `type:core`, `type:helm` nur für `type:ui`)
+- Namensschema: Ordner `form-<name>/`, Selector `app-form-<name>`, Klasse `Form<Name>`. Vorhanden: `FormText`, `FormTextarea`, `FormRichText`, `FormFiles`, `FormDate`, `FormSelect`, `FormCheckbox`, `FormSwitch`
+- Jedes Control ist ein komplettes Feld mit Label, Beschreibung und Fehlermeldungen: `<app-form-text [formField]="_noteForm.title" label="Titel" />`
+- Die Controls sind Custom Controls von Signal Forms: `FormValueControl<T>` mit `value = model()` bzw. `FormCheckboxControl` mit `checked = model()`. Zustand (`errors`, `touched`, `disabled`, `required` usw.) kommt nur über die Inputs, die die `FormField`-Direktive bindet. Verlassen des Controls meldet der Output `touch`
+- Label, Beschreibung und Fehler rendert ausschließlich `FormControlShell` (`form-control-shell/`), jedes Control setzt sich per Content-Projection hinein. Fehler erscheinen erst, wenn das Feld `touched` ist (`visibleErrorMessages`)
+- Die Hülle stellt Spartan `aria-describedby` und den Invalid-Zustand bereit (`BrnFieldA11yService`, eigener `NgControl`-Ersatz). Controls binden deshalb kein `aria-invalid` und kein `forceInvalid` selbst. Ausnahme ist `FormRichText`: sein editierbares `div` ist kein Spartan-Control und bindet die ARIA-Attribute über `shell.labelId()` und `shell.describedBy()`
+- `FormFiles` ist eine Drop-Zone und liefert `File[]`. `maxFiles`, `accept` (MIME-Types) und `maxFileSize` begrenzen die Auswahl, abgelehnte Dateien meldet das Control selbst. Das Hochladen übernimmt das Formular
+- `FormRichText` liefert einen HTML-String (leer `''`). Die erlaubten Formate stehen einmal in `packages/shared/ui/src/ui/rich-text/rich-text-rules.ts`, Tiptap wird nur in `form-rich-text/rich-text-editor.ts` importiert
+
+#### Spartan-Styles
+
+- Der Spartan-Style (`nova`, `vega`, `lyra`, `maia`, `mira`, `luma`) steckt fest im generierten Helm-Code, die CLI ersetzt beim Generieren Platzhalter-Klassen durch die Tailwind-Klassen des Styles. Er ist kein Laufzeit-Theme
+- Deshalb eine Helm-Lib pro Style mit derselben API (`helm-vega`, `helm-nova` …). Die Wrapper in `ui` importieren nur `@spartan-ng/helm/*` und kennen den Style nicht
+- Default ist `helm-vega` über `tsconfig.base.json`. Eine App mit anderem Style überschreibt in ihrer `tsconfig.json` alle `paths` (TypeScript führt sie nicht zusammen) mit `@spartan-ng/helm/*` auf ihre Lib und trägt die Lib in `implicitDependencies` ihrer `project.json` ein
+- Neue Style-Lib: `node tools/scripts/add-helm-style.mjs <style>`. Neue Komponente: `pnpm nx g @spartan-ng/cli:ui <name> --angularCli=true --directory=packages/shared/helm-vega`, den Pfad, den die CLI in `tsconfig.base.json` einträgt, wieder entfernen und die Komponente in jeder Style-Lib erzeugen
+- Eigene Klassen in Wrappern und Form-Controls nutzen nur Theme-Tokens, damit sie zu jedem Style passen. Details in `docs/ui-components.md`
+
+#### UI-Wrapper (`packages/shared/ui/src/ui/`)
+
+- Namensschema: Ordner `<name>/`, Klasse `Ui<Name>`, Selector `app-ui-<name>` (Element) bzw. `appUi<Name>` (Attribut auf einem nativen Element)
+- Vorhanden: `UiButton` (`button[appUiButton]`, `a[appUiButton]`), `UiText` (`appUiText`), `UiIcon`, `UiSpinner`, `UiSkeleton`, `UiCardImports`, `UiAlert`, `UiEmpty`, `UiAttachmentImports`, `UiRichText`, `UiMenuImports`, `UiNavMenu`, `UiSheet`, `UiDialog` mit `UiDialogService`, `UiConfirmDialogService`, `UiToastService` mit `UiToaster`
+- Jeder Wrapper trägt ein englisches JSDoc an der Klasse: ein Satz zum Zweck und ein `@example` mit der Benutzung (Template-Snippet, bei Services TypeScript). Inputs mit nicht offensichtlicher Bedeutung bekommen eine eigene Zeile
+- Dünne Wrapper setzen die Helm-Direktive über `hostDirectives` auf und reichen nur die benötigten Inputs durch. Spartan-Typen tauchen in der öffentlichen API nicht auf
+- Typografie nur über `appUiText` mit Variante: `<h1 appUiText="h1">`, `<p appUiText="lead">`. Das Element bestimmt die Semantik, die Variante nur die Optik
+- Icons nur über `<app-ui-icon name="plus" />`. Neue Icons in `icon/ui-icons.ts` registrieren, der Schlüssel ist der Name
+- Ladezustand eines Buttons über `[loading]`, nicht über einen eigenen Spinner im Inhalt
+- Dialoge sind Komponenten, die `UiDialogService.open()` öffnet. Sie bauen ihren Inhalt mit `app-ui-dialog`, lesen Daten mit `injectUiDialogData()` und schließen sich über `injectUiDialogRef()`. Ja/Nein-Fragen laufen über `UiConfirmDialogService.confirm()`
+- Eine Navigation aus Einträgen über `<app-ui-nav-menu [items]="_items" [label]="...">`, keine eigene Linkliste. Ein Eintrag mit `children` wird horizontal zum Dropdown, mit `orientation="vertical"` zum aufklappbaren Abschnitt. Nur eine Ebene
+- Ein Panel vom Bildschirmrand (mobile Navigation, Filter) über `<app-ui-sheet [(open)]="_open" heading="Filter">`, der Inhalt wird hineinprojiziert
+- Gespeicherten Rich Text nur über `<app-ui-rich-text [html]="note.description" />` anzeigen. Das HTML ist nicht vertrauenswürdig, der Wrapper reduziert es auf die erlaubten Formate. Kein eigenes `[innerHTML]` dafür, kein `bypassSecurityTrust*` (per ESLint verboten). Das Backend bereinigt das HTML beim Speichern zusätzlich
+- Dateien und Bilder als Kachel über `<app-ui-attachment>`, mehrere in einer `appUiAttachmentGroup`. Link und Entfernen-Button haben keinen sichtbaren Text und brauchen `linkLabel` bzw. `removeLabel`
+- Kurze Rückmeldung nach einer Aktion über `UiToastService`. `app-ui-toaster` steht genau einmal in `app.html`. Fehler, auf die der Nutzer reagieren muss, bleiben bei `app-failure-alert`
+- Jeder neue Wrapper bekommt einen Eintrag auf der Showcase-Seite `/showcase/components`
+
+### i18n
+
+- Laufzeit-Übersetzung mit Transloco, Deutsch (Default) und Englisch. `@jsverse/*` wird nur in `packages/shared/core/src/i18n/` importiert, ESLint (`no-restricted-imports` in den Configs von App, `core` und `ui`) erzwingt das. Alle anderen nutzen `I18nService`, die Pipe `t` (`TranslatePipe`) und die Pipe `localDate` (`LocalDatePipe`)
+- Kein harter UI-Text in Templates oder TypeScript. Im Template `{{ 'notesList.heading' | t }}` bzw. `| t: { title }`, in TypeScript `i18n.translate('notes.deleted')`
+- Ein Scope pro Page, lazy geladen: `i18n/de.json` und `i18n/en.json` im Ordner der Page, daneben `<page>.i18n.ts` mit `defineI18nScope()` und dem `declare module`-Block, der die Keys anmeldet. An der Route `canActivate: [loadI18nScope(<scope>)]`. Keys tragen den Scope-Namen als Präfix (`notesList.heading`). `notes` ist die Referenz
+- Übergreifendes steht in den Shared-Texten, die vor dem ersten Rendern laden: die der Lib `ui` in `packages/shared/ui/src/i18n/` (`common`, `failure`, `form`, `language`, `theme`, `uiI18n`) und die der App in `apps/angular-base/src/app/i18n/` (`layout`, `notFound`, `seo`, Feature-Texte, `appI18n`). Beide melden ihre Keys per `declare module` in `I18nSharedTexts` an und gehen an `provideI18n({ shared: [uiI18n, appI18n] })`. Top-Level-Keys dürfen sich nicht überschneiden
+- Texte einer Komponente, die mehrere Pages eines Features nutzen, stehen in den Shared-Texten der App unter dem Feature-Namen (`notes.delete.heading`). Jede App liefert `seo.defaultDescription` und `seo.imageAlt`, die `SeoService` erwartet
+- Keys sind typisiert (`TranslationKey`), ein Tippfehler ist ein Compile-Fehler. Jeder Key steht in jeder Sprachdatei
+- Routen-`title` ist ein Translation-Key, `SeoService` übersetzt ihn
+- Texte, die stehen bleiben (Navigation, Optionen, Statuszeilen), als Key halten und im Template übersetzen, nicht als fertigen String speichern. Validierungsmeldungen als Funktion: `message: () => this._i18n.translate(...)`
+- Datum über `localDate` (`'date'`, `'dateTime'`), nicht über `DatePipe`. Die Locale kommt aus `I18nService.locale()`
+- Die Sprache steht im Cookie `lang`. Der Server liest Cookie und `Accept-Language` und rendert `<html lang>`, der Browser übernimmt das. Umschalten über `I18nService.setLanguage()` bzw. `app-language-toggle`
+- `Failure.message` ist englisch und fürs Log, auch wenn sie vom Backend kommt. Dem Nutzer zeigt `app-failure-alert` den übersetzten Text zu `failure.<kind>` oder den eigenen Text der Page
+- In Specs sind die deutschen Shared-Texte des Projekts immer da: `src/test-setup.ts` jedes Projekts ruft `setupTestEnvironment()` (`@core/testing/setup-test-environment`) mit `provideI18nTesting({ shared, sharedDe })` auf. `core` nutzt eigene Testtexte, ein Lib-Spec, der App-Texte bräuchte, bringt einen eigenen Scope mit. Der Spec einer Page lädt ihren Scope mit `await loadI18nScopes(<scope>)` vor `createComponent`
+
+### SEO
+
+- Titel und Meta-Tags schreibt ausschließlich `SeoService` (`packages/shared/core/src/seo/`): `<title>` mit Suffix `| APP_NAME`, Description, Robots, Canonical, `og:*`, `twitter:card`. Kein `Title` oder `Meta` in Features, `shared` oder im Layout
+- Jede Route trägt ihre Angaben über `data: routeSeo({ ... })`: öffentliche Seiten eine `description` (Translation-Key im Scope der Page), Formulare und interne Seiten `index: false`. Kind-Routen übernehmen die Angaben der Eltern
+- Meta-Daten aus geladenen Daten über `injectPageSeo(() => ...)` im Konstruktor der Page, Rich Text dafür mit `toMetaDescription()` kürzen. `NoteDetail` ist die Referenz
+- `siteUrl` und `allowIndexing` stehen in `apps/angular-base/config/app-config.json`. `allowIndexing` ist nur in Produktion `true`, sonst bekommt jede Seite `noindex` und `robots.txt` sperrt alles
+- Eine Seite, die „nicht gefunden“ zeigt, antwortet mit 404. `app-async-content` übernimmt den Status eines `Failure` automatisch, alles andere setzt ihn über `injectResponseStatus()` (`packages/shared/core/src/http/response-status.ts`). Unbekannte Pfade landen auf der `**`-Route mit `NotFound` (`apps/angular-base/src/app/layout/not-found/`)
+- `robots.txt` und `sitemap.xml` erzeugt der Express-Server (`apps/angular-base/src/server/seo-routes.ts`). Ein Feature mit öffentlichen Seiten ergänzt seine Sitemap-Einträge in `apps/angular-base/src/server.ts`. Notizen sind privat, ihre Routen tragen `index: false` und stehen nicht in der Sitemap
+- Das Vorschaubild für geteilte Links ist `apps/angular-base/public/og-image.png` (1200×630), Icons und `manifest.webmanifest` liegen ebenfalls in `apps/angular-base/public/`
+
+### CI und Deployment
+
+- Pipeline in `.github/workflows/ci.yml`: Format-Check und `nx affected -t lint typecheck test build` bei Push auf `main` und bei Pull Requests, `nx run-many` bei Release-Tags. Dieselben Befehle vor dem Push lokal ausführen (`pnpm format:check`, `pnpm nx affected -t lint typecheck test build`)
+- Vitest mit Analog prüft keine Typen, deshalb gibt es pro Projekt das Target `typecheck`, das auch die Specs mit `tsc` prüft
+- Jede App hat ihr eigenes Release-Tag. `angular-base-v*` baut `apps/angular-base/Dockerfile` aus dem Workspace-Root und schiebt das Image als `ghcr.io/<owner>/angular-base` nach GHCR. Node-Version steht in `.nvmrc`, pnpm-Version in `packageManager`
+- Nichts Umgebungsspezifisches im Image. Das Deployment mountet seine Config über `/app/dist/angular-base/browser/config/app-config.json` (das Image kopiert die Ausgabe aus `dist/apps/angular-base` dorthin) und setzt `NG_ALLOWED_HOSTS` auf die öffentlichen Hostnamen, sonst lehnt Angular SSR die Requests mit 400 ab
+- Details in `docs/ci-and-deployment.md`
+
+### Logging
+
+- Kein `console.*` im Code, das verbietet `no-console`. In der App über `AppLog` (`packages/shared/core/src/log/`) loggen, im Express-Server über `ServerLog` (`apps/angular-base/src/server/server-log.ts`)
+- Beide erben von `Log` und schreiben dasselbe Format. Das Level (`debug | info | warn | error | off`) kommt aus `logLevel` in `apps/angular-base/config/app-config.json`
+- Unbehandelte Fehler der App landen über `AppErrorHandler` in `AppLog`
+- `notice()` nur für Zeilen, die sagen, was läuft (Port, Environment beim Serverstart). Sie erscheinen bei jedem Level außer `off`
+- Log-Meldungen immer auf Englisch, auch wenn die UI-Texte deutsch sind
+
+### Store-Muster
+
+- Reine Signals, keine State-Library. Ein Store pro Feature mit `@Service({ autoProvided: false })`, bereitgestellt in den Feature-Routen. Ausnahme ist `AuthStore`, der app-weit lebt
+- Jeder asynchrone Vorgang wird als `AsyncState` (`{ loadingState, failure }`, `packages/shared/core/src/state/async-state.ts`) nach außen gegeben, `loadingState` ist `'idle' | 'loading' | 'success' | 'failure'`. Zustände nur über `idle()`, `loading()`, `success()`, `failed()` erzeugen
+- Lesen über `rxResource`, der Zustand dazu über `asyncState(resource)`. Daten als readonly Signals und `computed`. `value()` einer fehlgeschlagenen Resource wirft, daher mit `hasValue()` absichern
+- Schreiben über `async`-Methoden, die den Vorgang durch `mutation().run()` (`packages/shared/core/src/state/mutation.ts`) schicken. `run()` setzt den `AsyncState` der Mutation und liefert bei einem Fehler `undefined`, statt zu werfen. Kein eigenes `try/catch` im Store
+- Ein Store hat im Normalfall eine `mutation()` und gibt deren `state` als `mutationState` heraus. Schreibvorgänge, die parallel laufen können, bekommen je eine eigene
+- Nach einem erfolgreichen Schreiben die geladene Liste über `patchResource()` (`packages/shared/core/src/state/patch-resource.ts`) lokal aktualisieren statt neu zu laden
+- Keine Store-Basisklasse. Gemeinsames Verhalten kommt als Funktion nach `packages/shared/core/src/state/`
+
+## State Management
+
+- Use signals for local component state
+- Use `computed()` for derived state
+- Keep state transformations pure and predictable
+- Do NOT use `mutate` on signals, use `update` or `set` instead
+
+## Templates
+
+- Keep templates simple and avoid complex logic
+- Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
+- Use the async pipe to handle observables
+- Do not assume globals like (`new Date()`) are available.
+
+## Services
+
+- Design services around a single responsibility
+- Use the `providedIn: 'root'` option for singleton services
+- Prefer the `@Service` decorator over `@Injectable({providedIn: 'root'})` for new singleton services (Angular v22+)
+- Use the `inject()` function instead of constructor injection
