@@ -13,7 +13,7 @@ this._log.info('Notes loaded', notes.length);
 this._log.error('Unhandled error', error);
 ```
 
-In the Express server, use the `ServerLog` instance created in [apps/angular-base/src/server.ts](../apps/angular-base/src/server.ts):
+In the Express server, use the `ServerLog` instance created in [apps/angular-base/src/server.ts](../../apps/angular-base/src/server.ts):
 
 ```ts
 serverLog.info(`Node Express server listening on http://localhost:${port}`);
@@ -58,11 +58,11 @@ Levels in order: `debug`, `info`, `warn`, `error`, `off`. Entries below the conf
 
 ## How it is built
 
-[packages/shared/core/src/log/log.ts](../packages/shared/core/src/log/log.ts) contains the abstract base class `Log`. It owns the format, the level filter and the colors, and it is the only place in the project that talks to `console`.
+[packages/shared/core/src/log/log.ts](../../packages/shared/core/src/log/log.ts) contains the abstract base class `Log`. It owns the format, the level filter and the colors, and it is the only place in the project that talks to `console`.
 
 A concrete logger only says who it is and where its level comes from:
 
-[packages/shared/core/src/log/app-log.ts](../packages/shared/core/src/log/app-log.ts)
+[packages/shared/core/src/log/app-log.ts](../../packages/shared/core/src/log/app-log.ts)
 
 ```ts
 @Service()
@@ -78,7 +78,7 @@ export class AppLog extends Log {
 }
 ```
 
-[apps/angular-base/src/server/server-log.ts](../apps/angular-base/src/server/server-log.ts)
+[apps/angular-base/src/server/server-log.ts](../../apps/angular-base/src/server/server-log.ts)
 
 ```ts
 export class ServerLog extends Log {
@@ -95,7 +95,7 @@ export class ServerLog extends Log {
 
 `no-console` is an error for all TypeScript files. The one exception is the `Log` class and the specs next to it:
 
-[eslint.config.mjs](../eslint.config.mjs)
+[eslint.config.mjs](../../eslint.config.mjs)
 
 ```js
 {
@@ -111,7 +111,7 @@ A `console.log` left over from debugging therefore fails `pnpm nx lint <project>
 
 `AppErrorHandler` replaces Angular's default `ErrorHandler` and routes every unhandled error through `AppLog`:
 
-[packages/shared/core/src/log/app-error-handler.ts](../packages/shared/core/src/log/app-error-handler.ts)
+[packages/shared/core/src/log/app-error-handler.ts](../../packages/shared/core/src/log/app-error-handler.ts)
 
 ```ts
 handleError(error: unknown): void {

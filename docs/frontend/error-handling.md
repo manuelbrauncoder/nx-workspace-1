@@ -4,7 +4,7 @@ The app has exactly one error type, `Failure`. Everything that can go wrong is c
 
 ## `Failure`
 
-[packages/shared/core/src/failure/failure.ts](../packages/shared/core/src/failure/failure.ts)
+[packages/shared/core/src/failure/failure.ts](../../packages/shared/core/src/failure/failure.ts)
 
 ```ts
 export type FailureKind =
@@ -44,7 +44,7 @@ export class Failure extends Error {
 
 ## From a response to a `Failure`
 
-`toFailure()` in [packages/shared/core/src/failure/to-failure.ts](../packages/shared/core/src/failure/to-failure.ts) is the single place where a thrown value becomes a `Failure`:
+`toFailure()` in [packages/shared/core/src/failure/to-failure.ts](../../packages/shared/core/src/failure/to-failure.ts) is the single place where a thrown value becomes a `Failure`:
 
 | Input                                   | Result                                            |
 | --------------------------------------- | ------------------------------------------------- |
@@ -72,14 +72,14 @@ The backend reports errors as `{ "error": { "message": "...", "details": [...] }
 
 `failureInterceptor` runs `toFailure()` on every failed request:
 
-[packages/shared/core/src/http/failure.interceptor.ts](../packages/shared/core/src/http/failure.interceptor.ts)
+[packages/shared/core/src/http/failure.interceptor.ts](../../packages/shared/core/src/http/failure.interceptor.ts)
 
 ```ts
 export const failureInterceptor: HttpInterceptorFn = (req, next) =>
   next(req).pipe(catchError((error: unknown) => throwError(() => toFailure(error))));
 ```
 
-It is registered in [app.config.ts](../apps/angular-base/src/app/app.config.ts). Repositories therefore need no error handling of their own.
+It is registered in [app.config.ts](../../apps/angular-base/src/app/app.config.ts). Repositories therefore need no error handling of their own.
 
 ### Into the state
 
@@ -106,7 +106,7 @@ Three places, each for a different situation:
 
 Renders an `AsyncState`: a loading indicator, a failure alert, or the content. Always use it for a loading state in a template. Do not write your own `@switch` over `loadingState`.
 
-[apps/angular-base/src/app/features/notes/presentation/notes-list/notes-list.html](../apps/angular-base/src/app/features/notes/presentation/notes-list/notes-list.html)
+[apps/angular-base/src/app/features/notes/presentation/notes-list/notes-list.html](../../apps/angular-base/src/app/features/notes/presentation/notes-list/notes-list.html)
 
 ```html
 <app-async-content
@@ -143,7 +143,7 @@ During server rendering a failure also becomes the HTTP status of the page: the 
 
 Inline presentation of a `Failure`, for errors outside a loading state. The typical case is a failed write:
 
-[apps/angular-base/src/app/features/notes/presentation/note-editor/note-editor.html](../apps/angular-base/src/app/features/notes/presentation/note-editor/note-editor.html)
+[apps/angular-base/src/app/features/notes/presentation/note-editor/note-editor.html](../../apps/angular-base/src/app/features/notes/presentation/note-editor/note-editor.html)
 
 <!-- prettier-ignore -->
 ```html
@@ -156,7 +156,7 @@ It takes `heading`, `failure`, and optionally `retryable` with `(retry)`. The al
 
 The text for a kind is generic. Where a status means something specific on a page, the page passes its own text through `message`. The backend answers a wrong password with 401, for which "Du bist nicht angemeldet." would be the wrong thing to say:
 
-[apps/angular-base/src/app/features/auth/presentation/sign-in/sign-in.html](../apps/angular-base/src/app/features/auth/presentation/sign-in/sign-in.html)
+[apps/angular-base/src/app/features/auth/presentation/sign-in/sign-in.html](../../apps/angular-base/src/app/features/auth/presentation/sign-in/sign-in.html)
 
 <!-- prettier-ignore -->
 ```html
@@ -175,7 +175,7 @@ A toast disappears on its own, so it is for confirmations (`'Notiz gespeichert'`
 
 Errors that are not a `Failure` are bugs: a thrown exception in a component, a rejected promise nobody awaited. They end up in `AppErrorHandler`, which writes them to `AppLog` and shows nothing to the user:
 
-[packages/shared/core/src/log/app-error-handler.ts](../packages/shared/core/src/log/app-error-handler.ts)
+[packages/shared/core/src/log/app-error-handler.ts](../../packages/shared/core/src/log/app-error-handler.ts)
 
 ```ts
 handleError(error: unknown): void {

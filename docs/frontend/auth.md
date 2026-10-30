@@ -10,7 +10,7 @@ Users sign up and sign in with email and password. The backend keeps the session
 
 ### Sending the cookie
 
-[packages/shared/core/src/http/credentials.interceptor.ts](../packages/shared/core/src/http/credentials.interceptor.ts)
+[packages/shared/core/src/http/credentials.interceptor.ts](../../packages/shared/core/src/http/credentials.interceptor.ts)
 
 ```ts
 export const credentialsInterceptor: HttpInterceptorFn = (req, next) => {
@@ -56,7 +56,7 @@ The signed-in user is called `Me`, not `User`. `User` stays free for the list of
 
 ### `AuthStore`
 
-[apps/angular-base/src/app/features/auth/application/auth.store.ts](../apps/angular-base/src/app/features/auth/application/auth.store.ts)
+[apps/angular-base/src/app/features/auth/application/auth.store.ts](../../apps/angular-base/src/app/features/auth/application/auth.store.ts)
 
 | Member                              | Meaning                                                           |
 | ----------------------------------- | ----------------------------------------------------------------- |
@@ -80,7 +80,7 @@ A backend that cannot be reached must not keep the app from starting. `getMe()` 
 
 Features never import each other and the app shell knows no features. The auth feature is the one exception, limited to a single file:
 
-[apps/angular-base/src/app/features/auth/public-api.ts](../apps/angular-base/src/app/features/auth/public-api.ts)
+[apps/angular-base/src/app/features/auth/public-api.ts](../../apps/angular-base/src/app/features/auth/public-api.ts)
 
 ```ts
 export { adminGuard, authGuard, guestGuard } from './application/auth.guards';

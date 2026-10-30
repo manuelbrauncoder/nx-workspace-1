@@ -7,7 +7,7 @@ Configuration comes from two places:
 
 This split lets the JSON file live on the server as a plain mounted file, while secrets come from the stack's environment.
 
-The shared keys of every API app are described in [Configuration](../../api/configuration.md). This page lists the whole file of `portfolio-api`, including its own keys (`publicUrl`, `rateLimit.contact*`, `mail`, `uploads.maxImagesPerNote`, Env `SMTP_PASSWORD`), which [`src/config/index.ts`](../../../apps/portfolio-api/src/config/index.ts) adds with `extendConfig()`.
+The shared keys of every API app are described in [Configuration](../../backend/configuration.md). This page lists the whole file of `portfolio-api`, including its own keys (`publicUrl`, `rateLimit.contact*`, `mail`, `uploads.maxImagesPerNote`, Env `SMTP_PASSWORD`), which [`src/config/index.ts`](../../../apps/portfolio-api/src/config/index.ts) adds with `extendConfig()`.
 
 Both are loaded and validated once at startup. If a value is missing or invalid, the process prints what is wrong and exits. The rest of the code imports the typed `config` object and never reads `process.env` itself.
 
@@ -66,7 +66,7 @@ Every setting is required; there are no hidden defaults.
 
 - The values in `development.json` and `test.json` are committed and only for local use. Never reuse them.
 - In production, set a strong password in the mounted config file before the first start, and keep that file readable only by the deploy user.
-- It is used once, to create the first admin (see [Authentication](../../api/authentication.md#roles-and-admin)). After that the value can be replaced by any placeholder of valid length.
+- It is used once, to create the first admin (see [Authentication](../../backend/authentication.md#roles-and-admin)). After that the value can be replaced by any placeholder of valid length.
 
 ### Settings that must match your deployment
 

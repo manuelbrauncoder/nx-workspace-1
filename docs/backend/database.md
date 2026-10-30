@@ -44,7 +44,7 @@ Never edit a migration that has already been applied somewhere. Create a new one
 
 ## Migrations in production
 
-The Docker image contains the `apps/express-api-base/drizzle/` folder and the compiled script `dist/scripts/migrate.js`. The production stack runs it in a separate one-off container before the API starts (see [Deployment](deployment.md)). The script only needs `DATABASE_URL`, not the JSON config file.
+The Docker image contains the `apps/express-api-base/drizzle/` folder and the compiled script `dist/scripts/migrate.js`. The production stack runs it in a separate one-off container before the API starts (see [Deployment](../deployment.md)). The script only needs `DATABASE_URL`, not the JSON config file.
 
 Drizzle records applied migrations in its own table, so running the script again is safe: it only applies what is new.
 

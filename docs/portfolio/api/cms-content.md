@@ -4,12 +4,12 @@ The API stores the editorial content of the start page (`/`, feature `portfolio`
 
 Four features implement it. All endpoint paths in this guide are under `/api/v1`: `GET /portfolio` is `GET /api/v1/portfolio`.
 
-| Feature                                                            | Endpoints    | What it does                                                |
-| ------------------------------------------------------------------ | ------------ | ----------------------------------------------------------- |
-| [`portfolio`](../../../apps/portfolio-api/src/features/portfolio/) | `/portfolio` | The page content, one singleton per section                 |
-| [`media`](../../../apps/portfolio-api/src/features/media/)         | `/media`     | Image uploads, served publicly                              |
-| [`contact`](../../../apps/portfolio-api/src/features/contact/)     | `/contact`   | The contact form: stores messages and forwards them by mail |
-| [`legal`](../../../apps/portfolio-api/src/features/legal/)         | `/legal`     | Imprint, privacy, accessibility and cookie policy as HTML   |
+| Feature                                                           | Endpoints    | What it does                                                |
+| ----------------------------------------------------------------- | ------------ | ----------------------------------------------------------- |
+| [`portfolio`](../../../apps/portfolio-api/src/features/portfolio) | `/portfolio` | The page content, one singleton per section                 |
+| [`media`](../../../apps/portfolio-api/src/features/media)         | `/media`     | Image uploads, served publicly                              |
+| [`contact`](../../../apps/portfolio-api/src/features/contact)     | `/contact`   | The contact form: stores messages and forwards them by mail |
+| [`legal`](../../../apps/portfolio-api/src/features/legal)         | `/legal`     | Imprint, privacy, accessibility and cookie policy as HTML   |
 
 ## Conventions
 
@@ -204,7 +204,7 @@ In the web app (`portfolio-web`, feature `legal`) the page loads the fragment as
 
 ## Seed
 
-The initial content is in [`seed/portfolio.json`](../../../apps/portfolio-api/seed/portfolio.json) with the images in [`seed/images/`](../../../apps/portfolio-api/seed/images/), the legal pages in [`seed/legal/`](../../../apps/portfolio-api/seed/legal/) as `<page>.<lang>.html`. It was converted once from the web app (`portfolio-home/i18n/de.json`, `en.json`, `projects.ts`, `skill-groups.ts`, `site-owner.ts`, and the `seo.imageAlt` text for the og image). In that file an image is `{ "file": "images/portrait.webp", "alt": { … } }`.
+The initial content is in [`seed/portfolio.json`](../../../apps/portfolio-api/seed/portfolio.json) with the images in [`seed/images/`](../../../apps/portfolio-api/seed/images), the legal pages in [`seed/legal/`](../../../apps/portfolio-api/seed/legal) as `<page>.<lang>.html`. It was converted once from the web app (`portfolio-home/i18n/de.json`, `en.json`, `projects.ts`, `skill-groups.ts`, `site-owner.ts`, and the `seo.imageAlt` text for the og image). In that file an image is `{ "file": "images/portrait.webp", "alt": { … } }`.
 
 ```bash
 pnpm nx run portfolio-api:db:seed   # locally, after db:migrate

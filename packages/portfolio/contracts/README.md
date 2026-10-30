@@ -5,3 +5,5 @@ The contract between `portfolio-api` and `portfolio-web`: Zod schemas of the por
 The sections of the start page are built with a helper that types them as `z.ZodType`, so no DTO types can be derived for them. `portfolio-web` keeps its hand-written `portfolio.dto.ts` for those.
 
 Imported through `@portfolio/contracts/*`, e.g. `@portfolio/contracts/media`. Only the portfolio apps may use it (`scope:portfolio`).
+
+Details: [docs/libs/portfolio-contracts.md](../../../docs/libs/portfolio-contracts.md)

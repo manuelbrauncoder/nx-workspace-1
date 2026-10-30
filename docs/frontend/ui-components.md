@@ -1,6 +1,6 @@
 # UI components
 
-The visual building blocks of the app are the wrappers in [packages/shared/ui/src/ui/](../packages/shared/ui/src/ui/). They sit between the app and the UI libraries (Spartan with `@ng-icons`, Tiptap for the rich text editor). Features, `core` and the app shell use the wrappers only.
+The visual building blocks of the app are the wrappers in [packages/shared/ui/src/ui/](../../packages/shared/ui/src/ui). They sit between the app and the UI libraries (Spartan with `@ng-icons`, Tiptap for the rich text editor). Features, `core` and the app shell use the wrappers only.
 
 Every wrapper is shown live on `/showcase/components`. The JSDoc on each class has a usage example, which your editor shows on hover.
 
@@ -8,7 +8,7 @@ The wrappers take finished texts and know nothing about translation keys. The sa
 
 ## Why wrappers
 
-- **The UI library can be swapped.** Spartan, `@ng-icons` and Tiptap are imported in the `ui` lib only ([packages/shared/ui/](../packages/shared/ui/)). Replacing the library touches that lib and nothing else
+- **The UI library can be swapped.** Spartan, `@ng-icons` and Tiptap are imported in the `ui` lib only ([packages/shared/ui/](../../packages/shared/ui)). Replacing the library touches that lib and nothing else
 - **A small, stable API.** A wrapper passes through the inputs the app needs, not everything the library offers. Spartan types do not appear in the public API of a wrapper
 - **Accessibility in one place.** Loading labels, decorative icons, dialog descriptions and focus handling are solved once
 
@@ -43,7 +43,7 @@ The wrappers in `ui` import `@spartan-ng/helm/*` and do not know the style. Whic
   }
   ```
 
-- **New style lib**: `node tools/scripts/add-helm-style.mjs nova` ([add-helm-style.mjs](../tools/scripts/add-helm-style.mjs)). It switches `style` and `componentsPath` in `components.json` for the run, generates every component that `helm-vega` has, creates `project.json` and the tsconfig files and restores `components.json` and `tsconfig.base.json`
+- **New style lib**: `node tools/scripts/add-helm-style.mjs nova` ([add-helm-style.mjs](../../tools/scripts/add-helm-style.mjs)). It switches `style` and `componentsPath` in `components.json` for the run, generates every component that `helm-vega` has, creates `project.json` and the tsconfig files and restores `components.json` and `tsconfig.base.json`
 - **Tokens**: colors, radius and fonts belong to the app's themes, since they have to match the style, see [Styling](styling.md)
 
 Keep the own classes of wrappers and form controls to theme tokens, so they fit every style.
@@ -136,7 +136,7 @@ The element decides the semantics, the variant only the look. An `h2` may look l
 - The size follows the font size of the context, so `class="text-2xl"` makes it larger
 - Only icons from the registry can be used. `name` is typed as `UiIconName`
 
-To add an icon, register it in [icon/ui-icons.ts](../packages/shared/ui/src/ui/icon/ui-icons.ts). The key is the name:
+To add an icon, register it in [icon/ui-icons.ts](../../packages/shared/ui/src/ui/icon/ui-icons.ts). The key is the name:
 
 ```ts
 export const UI_ICONS = {
@@ -256,7 +256,7 @@ A file or an image as a tile. Import `UiAttachmentImports`.
 <app-ui-rich-text [html]="note.description" /> <app-ui-rich-text [html]="html" profile="page" />
 ```
 
-Shows rich text that was written with `app-form-rich-text` and stored as HTML. Stored HTML is untrusted: anyone can send it to the API without going through the editor. The wrapper therefore reduces it to the formats listed in [rich-text-rules.ts](../packages/contracts/src/rich-text.ts) before it is rendered:
+Shows rich text that was written with `app-form-rich-text` and stored as HTML. Stored HTML is untrusted: anyone can send it to the API without going through the editor. The wrapper therefore reduces it to the formats listed in [rich-text-rules.ts](../../packages/contracts/src/rich-text.ts) before it is rendered:
 
 - unknown elements lose their tag, scripts, styles, frames and embedded content are removed with what is inside
 - every attribute is removed, so stored HTML cannot use the classes of the app or carry an event handler
@@ -264,7 +264,7 @@ Shows rich text that was written with `app-form-rich-text` and stored as HTML. S
 
 The result is bound to `innerHTML`, where Angular's sanitizer runs as well. Never bind stored HTML to `innerHTML` yourself, and never call `bypassSecurityTrust*`, which ESLint forbids.
 
-The typography lives in [\_rich-text.scss](../packages/shared/styles/base/_rich-text.scss) as the global class `.rich-text`, because rendered HTML carries no component scope. The editor uses the same class, so a text looks the same while it is written and when it is shown.
+The typography lives in [\_rich-text.scss](../../packages/shared/styles/base/_rich-text.scss) as the global class `.rich-text`, because rendered HTML carries no component scope. The editor uses the same class, so a text looks the same while it is written and when it is shown.
 
 This is one of three layers. The backend sanitizes the HTML too when a note is saved. A Content Security Policy as the third layer is not set up yet.
 
@@ -291,7 +291,7 @@ This is one of three layers. The backend sanitizes the HTML too when a note is s
 
 - The trigger takes `align` and `side` for the placement of the panel
 - Listen to `(triggered)` on items instead of `(click)`, so keyboard activation is covered
-- `appUiMenuRadio` is a single-choice item with a check mark: `[checked]` marks the current choice. Radio items need an `app-ui-menu-group` around them. The theme toggle uses it, see [theme-toggle.html](../packages/shared/ui/src/theme-toggle/theme-toggle.html)
+- `appUiMenuRadio` is a single-choice item with a check mark: `[checked]` marks the current choice. Radio items need an `app-ui-menu-group` around them. The theme toggle uses it, see [theme-toggle.html](../../packages/shared/ui/src/theme-toggle/theme-toggle.html)
 
 ### Nav menu
 
@@ -326,7 +326,7 @@ private readonly _items: UiNavMenuItem[] = [
 - It is built on Spartan's `navigation-menu`, not on `menubar`. A menubar is an application menu (`role="menubar"`, "File / Edit"), a site navigation is a list of links and disclosure buttons
 - The vertical list uses `collapsible` and not the vertical mode of `navigation-menu`, which opens its panels to the side and does not fit a narrow drawer
 
-Header and drawer both use it with `APP_NAV_ITEMS`, see [app-header.html](../apps/angular-base/src/app/layout/app-header/app-header.html) and [app-drawer.html](../apps/angular-base/src/app/layout/app-drawer/app-drawer.html).
+Header and drawer both use it with `APP_NAV_ITEMS`, see [app-header.html](../../apps/angular-base/src/app/layout/app-header/app-header.html) and [app-drawer.html](../../apps/angular-base/src/app/layout/app-drawer/app-drawer.html).
 
 - `fragment` links to a section of a page, e.g. `{ path: '/', fragment: 'projects', labelKey: '...' }` for `/#projects`. Such a link is never marked as current, all sections share the path of their page. The section needs an `id`, and `tabindex="-1"` so the shell can move focus to it after the jump
 
@@ -367,12 +367,12 @@ A panel that slides in from an edge of the screen and covers the page as a modal
 - `heading` is shown at the top and becomes the accessible name of the dialog
 - `side` is `top`, `right` (default), `bottom` or `left`
 - `fullWidth` lets a panel on the left or right cover the whole width below `sm`. Without it the panel takes 3/4 of the width there
-- `hideHeading` hides the heading visually, it stays the accessible name. Use it with own content in the header, projected via `appUiSheetHeader`. The mobile drawer shows the logo this way, see [app-drawer.html](../apps/angular-base/src/app/layout/app-drawer/app-drawer.html)
+- `hideHeading` hides the heading visually, it stays the accessible name. Use it with own content in the header, projected via `appUiSheetHeader`. The mobile drawer shows the logo this way, see [app-drawer.html](../../apps/angular-base/src/app/layout/app-drawer/app-drawer.html)
 - Focus is trapped inside while it is open and returns to the triggering element afterwards
 
-The mobile navigation uses it, see [app-drawer.html](../apps/angular-base/src/app/layout/app-drawer/app-drawer.html).
+The mobile navigation uses it, see [app-drawer.html](../../apps/angular-base/src/app/layout/app-drawer/app-drawer.html).
 
-- `(closed)` emits once the panel is gone and the page scrolls again. While it is open the page is locked, so the router cannot scroll to a section. The drawer waits for this before it jumps to the section of a link, see [app-drawer.ts](../apps/portfolio-web/src/app/layout/app-drawer/app-drawer.ts)
+- `(closed)` emits once the panel is gone and the page scrolls again. While it is open the page is locked, so the router cannot scroll to a section. The drawer waits for this before it jumps to the section of a link, see [app-drawer.ts](../../apps/portfolio-web/src/app/layout/app-drawer/app-drawer.ts)
 
 ### Dialog
 
@@ -391,7 +391,7 @@ private async _openDialog(): Promise<void> {
 
 The dialog component:
 
-[apps/angular-base/src/app/features/showcase/presentation/components/example-dialog/example-dialog.ts](../apps/angular-base/src/app/features/showcase/presentation/components/example-dialog/example-dialog.ts)
+[apps/angular-base/src/app/features/showcase/presentation/components/example-dialog/example-dialog.ts](../../apps/angular-base/src/app/features/showcase/presentation/components/example-dialog/example-dialog.ts)
 
 ```ts
 export class ExampleDialog {
@@ -429,7 +429,7 @@ export class ExampleDialog {
 
 Yes/no questions go through `UiConfirmDialogService.confirm()`, not through a dialog of your own:
 
-[apps/angular-base/src/app/features/notes/presentation/note-delete-button/note-delete-button.ts](../apps/angular-base/src/app/features/notes/presentation/note-delete-button/note-delete-button.ts)
+[apps/angular-base/src/app/features/notes/presentation/note-delete-button/note-delete-button.ts](../../apps/angular-base/src/app/features/notes/presentation/note-delete-button/note-delete-button.ts)
 
 ```ts
 const confirmed = await this._confirmDialog.confirm({
@@ -458,13 +458,13 @@ this._toast.info('Entwurf wiederhergestellt', { position: 'bottom-center' });
 
 Methods: `success`, `info`, `warning`, `error`. Options: `description` for a second line, `position` to override the default corner (top right).
 
-`app-ui-toaster` is the outlet. It is placed exactly once, in [app.html](../apps/angular-base/src/app/app.html) next to the outermost router outlet, bound to the resolved theme.
+`app-ui-toaster` is the outlet. It is placed exactly once, in [app.html](../../apps/angular-base/src/app/app.html) next to the outermost router outlet, bound to the resolved theme.
 
 A failure the user has to act on does not belong in a toast. It stays on screen in an `app-failure-alert`. See [Error handling](error-handling.md#showing-failures).
 
 ## Adding a wrapper
 
-1. Check whether the Helm component exists in `packages/shared/helm-vega`. If not, generate it with the Spartan CLI (configured in [components.json](../components.json)): `pnpm nx g @spartan-ng/cli:ui <name> --angularCli=true --directory=packages/shared/helm-vega`. `--angularCli` keeps it a folder of the lib instead of a project of its own. Remove the path the CLI adds to `tsconfig.base.json`, the wildcard `@spartan-ng/helm/*` covers it. Every other style lib needs the component too, generated the same way with that lib's style
+1. Check whether the Helm component exists in `packages/shared/helm-vega`. If not, generate it with the Spartan CLI (configured in [components.json](../../components.json)): `pnpm nx g @spartan-ng/cli:ui <name> --angularCli=true --directory=packages/shared/helm-vega`. `--angularCli` keeps it a folder of the lib instead of a project of its own. Remove the path the CLI adds to `tsconfig.base.json`, the wildcard `@spartan-ng/helm/*` covers it. Every other style lib needs the component too, generated the same way with that lib's style
 2. Create `packages/shared/ui/src/ui/<name>/`. A component gets `name.ts`, `name.html` and `name.scss`. A directive without a template is a single `name.ts`
 3. Follow the naming scheme: class `Ui<Name>`, selector `app-ui-<name>` or `appUi<Name>`
 4. Keep it thin. Where the wrapper adds nothing but a name, set the Helm directive through `hostDirectives` and pass through only the inputs that are needed:
@@ -479,8 +479,8 @@ A failure the user has to act on does not belong in a toast. It stays on screen 
 
 5. Define your own types for inputs (`UiButtonVariant`). No Spartan type in the public API
 6. Write the JSDoc in English: one sentence on the purpose and an `@example` with the usage (a template snippet, TypeScript for services). Inputs whose meaning is not obvious get their own comment line
-7. Add an entry on the showcase page [components.html](../apps/angular-base/src/app/features/showcase/presentation/components/components.html)
-8. Add the wrapper to the list in [CLAUDE.md](../CLAUDE.md)
+7. Add an entry on the showcase page [components.html](../../apps/angular-base/src/app/features/showcase/presentation/components/components.html)
+8. Add the wrapper to the list in [CLAUDE.md](../../CLAUDE.md)
 
 ## Rules in short
 

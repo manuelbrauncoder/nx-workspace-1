@@ -76,7 +76,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 
 ## Architektur
 
-Nx-Workspace mit zwei Seiten: Angular-Apps (`apps/angular-base`, Libs in `packages/shared/`) und API-Apps (`apps/express-api-base`, Libs in `packages/server/`, siehe Abschnitt „API-Apps“). Beide teilen das Wire-Format über `packages/contracts`. Das Portfolio (`apps/portfolio-web`, `apps/portfolio-api`, `packages/portfolio/contracts`) ist genauso gebaut, Details in `docs/portfolio/`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
+Nx-Workspace mit zwei Seiten: Angular-Apps (`apps/angular-base`, Libs in `packages/shared/`) und API-Apps (`apps/express-api-base`, Libs in `packages/server/`, siehe Abschnitt „API-Apps“). Beide teilen das Wire-Format über `packages/contracts`. Das Portfolio (`apps/portfolio-web`, `apps/portfolio-api`, `packages/portfolio/contracts`) ist genauso gebaut, Details in `docs/apps/` und `docs/portfolio/`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
 
 Die Grenzen erzwingt ESLint an zwei Stellen: zwischen Projekten über Nx-Tags (`@nx/enforce-module-boundaries` in der Root-`eslint.config.mjs`), innerhalb der App über `no-restricted-imports` in `apps/angular-base/eslint.config.mjs`.
 
@@ -95,7 +95,7 @@ Zweites Tag pro Projekt ist der Scope: `scope:shared` (alle Libs in `packages/sh
 
 `type:app` und `type:ui` dürfen zusätzlich von `type:contract` abhängen. Browser- und Server-Projekte importieren sich nie gegenseitig.
 
-Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Einstieg: `docs/README.md`). Ändert sich eine Regel hier, das passende Doc mit anpassen.
+Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Einstieg: `docs/README.md`, lokaler Start in `README.md`). Ändert sich eine Regel hier, das passende Doc mit anpassen.
 
 - `packages/shared/core/src/` (Lib `core`, Alias `@core/*`): App-weite Infrastruktur (Runtime-Config, HTTP-Fehlerbehandlung, i18n, SEO, Theme, Test-Setup). Kennt weder Apps noch `ui` noch die UI-Library. Enthält keine App-spezifischen Werte: den App-Namen setzt jede App über den Token `APP_NAME` in `app.config.ts`
 - `packages/shared/ui/src/` (Lib `ui`, Alias `@shared/*`): UI-Wrapper, Form-Controls, `app-async-content`, `app-failure-alert`, Theme- und Language-Toggle und deren Texte. Kennt keine Apps
@@ -116,8 +116,8 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 - `apps/angular-base/src/server/`: Teile des Express-Servers (SEO-Routen, Config, Log), eingehängt in `apps/angular-base/src/server.ts`. Keine Mock-API, die App spricht mit dem echten Backend. Dessen Beschreibung liegt unter `<apiBaseUrl>/docs/openapi.json`
 - Features importieren sich nie gegenseitig, einzige Ausnahme ist `@features/auth/public-api`. Innerhalb eines Features relative Imports, sonst die Aliase `@core/*`, `@shared/*`, `@api/*`, `@features/*`
 - `notes` ist das Referenz-Feature für CRUD. Ein neues Feature folgt demselben Aufbau
-- `legal` enthält Impressum (`/imprint`), Datenschutz (`/privacy`) und Barrierefreiheit (`/accessibility`), alle mit `index: false`. Die Betreiberangaben stehen einmal in `SITE_OWNER` (`apps/angular-base/src/app/site-owner.ts`), Anschrift und Telefon erscheinen erst, wenn sie dort gesetzt sind. Details in `docs/legal-pages.md`
-- `auth` enthält Anmelden (`/sign-in`), Registrieren (`/sign-up`) und den Zustand „wer ist angemeldet“. `AuthStore` und `AuthUseCase` sind app-weit bereitgestellt (`@Service()`), nicht in den Feature-Routen, weil Header und Guards sie auf jeder Seite brauchen. Die App-Shell und andere Features greifen nur über `apps/angular-base/src/app/features/auth/public-api.ts` zu (`AuthStore`, `authGuard`, `guestGuard`, `adminGuard`, `AccountMenu`, Typ `Me`). Details in `docs/auth.md`
+- `legal` enthält Impressum (`/imprint`), Datenschutz (`/privacy`) und Barrierefreiheit (`/accessibility`), alle mit `index: false`. Die Betreiberangaben stehen einmal in `SITE_OWNER` (`apps/angular-base/src/app/site-owner.ts`), Anschrift und Telefon erscheinen erst, wenn sie dort gesetzt sind. Details in `docs/frontend/legal-pages.md`
+- `auth` enthält Anmelden (`/sign-in`), Registrieren (`/sign-up`) und den Zustand „wer ist angemeldet“. `AuthStore` und `AuthUseCase` sind app-weit bereitgestellt (`@Service()`), nicht in den Feature-Routen, weil Header und Guards sie auf jeder Seite brauchen. Die App-Shell und andere Features greifen nur über `apps/angular-base/src/app/features/auth/public-api.ts` zu (`AuthStore`, `authGuard`, `guestGuard`, `adminGuard`, `AccountMenu`, Typ `Me`). Details in `docs/frontend/auth.md`
 - Eine Route hinter dem Login bekommt `canActivate: [authGuard]`. Der Guard leitet auf `/sign-in?returnUrl=…` um, auf dem Server als Redirect
 - Der Router scrollt bei einer neuen Seite nach oben und stellt bei „Zurück“ die Position wieder her (`withInMemoryScrolling` in `app.config.ts`). Kein eigenes `scrollTo` nach einer Navigation
 
@@ -151,7 +151,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 - Deshalb eine Helm-Lib pro Style mit derselben API (`helm-vega`, `helm-nova` …). Die Wrapper in `ui` importieren nur `@spartan-ng/helm/*` und kennen den Style nicht
 - Default ist `helm-vega` über `tsconfig.base.json`. Eine App mit anderem Style überschreibt in ihrer `tsconfig.json` alle `paths` (TypeScript führt sie nicht zusammen) mit `@spartan-ng/helm/*` auf ihre Lib und trägt die Lib in `implicitDependencies` ihrer `project.json` ein
 - Neue Style-Lib: `node tools/scripts/add-helm-style.mjs <style>`. Neue Komponente: `pnpm nx g @spartan-ng/cli:ui <name> --angularCli=true --directory=packages/shared/helm-vega`, den Pfad, den die CLI in `tsconfig.base.json` einträgt, wieder entfernen und die Komponente in jeder Style-Lib erzeugen
-- Eigene Klassen in Wrappern und Form-Controls nutzen nur Theme-Tokens, damit sie zu jedem Style passen. Details in `docs/ui-components.md`
+- Eigene Klassen in Wrappern und Form-Controls nutzen nur Theme-Tokens, damit sie zu jedem Style passen. Details in `docs/frontend/ui-components.md`
 
 #### UI-Wrapper (`packages/shared/ui/src/ui/`)
 
@@ -201,9 +201,9 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 - Pipeline in `.github/workflows/ci.yml`: Format-Check und `nx affected -t lint typecheck test build` bei Push auf `main` und bei Pull Requests, `nx run-many` bei Release-Tags. Dieselben Befehle vor dem Push lokal ausführen (`pnpm format:check`, `pnpm nx affected -t lint typecheck test build`)
 - Vitest mit Analog prüft keine Typen, deshalb gibt es pro Projekt das Target `typecheck`, das auch die Specs mit `tsc` prüft
 - Der Job `checks` startet einen Postgres-Service für die Tests der API-Projekte
-- Jede App hat ihr eigenes Release-Tag. `express-api-base-v*` baut `apps/express-api-base/Dockerfile`, `angular-base-v*` baut `apps/angular-base/Dockerfile` aus dem Workspace-Root und schiebt das Image als `ghcr.io/<owner>/angular-base` nach GHCR. Node-Version steht in `.nvmrc`, pnpm-Version in `packageManager`
+- Jede App hat ihr eigenes Release-Tag `nx1-<app>-v*` (z. B. `nx1-portfolio-web-v1.2.0`). Es baut `apps/<app>/Dockerfile` aus dem Workspace-Root und schiebt das Image als `ghcr.io/<owner>/nx1-<app>` nach GHCR, getaggt mit der Version ohne Präfix, `latest` und `sha-<kurz>`. Node-Version steht in `.nvmrc`, pnpm-Version in `packageManager`
 - Nichts Umgebungsspezifisches im Image. Das Deployment mountet seine Config über `/app/dist/angular-base/browser/config/app-config.json` (das Image kopiert die Ausgabe aus `dist/apps/angular-base` dorthin) und setzt `NG_ALLOWED_HOSTS` auf die öffentlichen Hostnamen, sonst lehnt Angular SSR die Requests mit 400 ab
-- Details in `docs/ci-and-deployment.md`
+- Details in `docs/deployment.md`
 
 ### Logging
 
@@ -247,7 +247,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 
 ## API-Apps (Express)
 
-Express 5, Drizzle ORM auf Postgres, Zod 4. Ausführlich in `docs/api/` (Einstieg in `docs/README.md`).
+Express 5, Drizzle ORM auf Postgres, Zod 4. Ausführlich in `docs/backend/` (Einstieg in `docs/README.md`).
 
 ### Befehle
 
@@ -312,4 +312,4 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 
 ### Neue API-App
 
-`apps/express-api-base` ist die Referenz für `project.json` (Tag `type:api-app`), `package.json`, `tsconfig.json`, `rolldown.config.ts`, `vitest.config.ts`, `drizzle.config.ts` (mit `../../packages/server/auth/src/*.table.ts`), `eslint.config.mjs` und `Dockerfile`. Eigene Datenbank (Eintrag in `tools/postgres/init-databases.sql`) und Test-Datenbank, eigenes Release-Tag und Publish-Job in der CI. Details in `docs/api/architecture.md`
+`apps/express-api-base` ist die Referenz für `project.json` (Tag `type:api-app`), `package.json`, `tsconfig.json`, `rolldown.config.ts`, `vitest.config.ts`, `drizzle.config.ts` (mit `../../packages/server/auth/src/*.table.ts`), `eslint.config.mjs` und `Dockerfile`. Eigene Datenbank (Eintrag in `tools/postgres/init-databases.sql`) und Test-Datenbank, eigenes Release-Tag und Publish-Job in der CI. Details in `docs/workspace.md`

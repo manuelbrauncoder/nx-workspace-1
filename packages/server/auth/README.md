@@ -7,3 +7,5 @@ An app mounts `sessionMiddleware`, `authRouter` and `adminRouter` through `creat
 `drizzle/` holds migrations of the auth tables alone, for the tests of this lib. After changing a table run `pnpm nx run server-auth:db:generate` and `db:generate` of every API app.
 
 Imported through `@server/auth/*`, e.g. `@server/auth/auth.middleware`.
+
+Details: [docs/libs/server-auth.md](../../../docs/libs/server-auth.md)

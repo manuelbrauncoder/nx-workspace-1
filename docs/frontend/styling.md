@@ -46,7 +46,7 @@ Tailwind only scans the app and the shared libs, not the other apps of the works
 @source '../../../../packages/shared';
 ```
 
-[apps/angular-base/project.json](../apps/angular-base/project.json) loads `tailwind.css` before `styles.scss`. The order matters: `tailwind.css` declares the cascade layers first.
+[apps/angular-base/project.json](../../apps/angular-base/project.json) loads `tailwind.css` before `styles.scss`. The order matters: `tailwind.css` declares the cascade layers first.
 
 ```css
 @layer theme, base, components, utilities;
@@ -64,7 +64,7 @@ Tailwind only scans the app and the shared libs, not the other apps of the works
 
 The limit keeps templates readable. A long class list hides the structure of the markup and is hard to review. Once an element needs more, give it a class and move the styles:
 
-[apps/angular-base/src/app/features/notes/presentation/notes-list/notes-list.scss](../apps/angular-base/src/app/features/notes/presentation/notes-list/notes-list.scss)
+[apps/angular-base/src/app/features/notes/presentation/notes-list/notes-list.scss](../../apps/angular-base/src/app/features/notes/presentation/notes-list/notes-list.scss)
 
 ```scss
 @use 'styles/abstracts' as *;
@@ -91,7 +91,7 @@ Every component has its own `name.scss` next to `name.ts` and `name.html`. Inlin
 - **No `@apply`.** Write the CSS property. `@apply` ties SCSS to Tailwind internals for no gain
 - **Global SCSS lives in a layer.** Element defaults go into `@layer base`, global classes into `@layer components`. Tailwind utilities are in the later `utilities` layer and can therefore always override them
 
-[packages/shared/styles/layout/\_index.scss](../packages/shared/styles/layout/_index.scss)
+[packages/shared/styles/layout/\_index.scss](../../packages/shared/styles/layout/_index.scss)
 
 ```scss
 @layer components {
@@ -118,7 +118,7 @@ The path works because `packages/shared` is an include path (`stylePreprocessorO
 
 Tokens are CSS custom properties, defined once per theme:
 
-[apps/angular-base/src/styles/themes/\_light.scss](../apps/angular-base/src/styles/themes/_light.scss)
+[apps/angular-base/src/styles/themes/\_light.scss](../../apps/angular-base/src/styles/themes/_light.scss)
 
 ```scss
 :root {
@@ -132,7 +132,7 @@ Tokens are CSS custom properties, defined once per theme:
 }
 ```
 
-[apps/angular-base/src/styles/themes/\_dark.scss](../apps/angular-base/src/styles/themes/_dark.scss) defines the same names on `:root.dark`.
+[apps/angular-base/src/styles/themes/\_dark.scss](../../apps/angular-base/src/styles/themes/_dark.scss) defines the same names on `:root.dark`.
 
 Surface tokens come in pairs: `--primary` is a background, `--primary-foreground` the text color with enough contrast on it. Use them together to stay within WCAG AA.
 
@@ -159,8 +159,8 @@ Besides the colors, a theme can set:
 ### Adding a token
 
 1. Define it in `themes/_light.scss` and in `themes/_dark.scss`. A token that exists in one theme only breaks the other
-2. Expose it to Tailwind in the `@theme` block of [tailwind.css](../apps/angular-base/src/styles/tailwind.css), e.g. `--color-success: var(--success);` gives you `bg-success` and `text-success`
-3. Add it to [color-tokens.ts](../apps/angular-base/src/app/features/showcase/presentation/colors/color-tokens.ts), so it appears on the colors page
+2. Expose it to Tailwind in the `@theme` block of [tailwind.css](../../apps/angular-base/src/styles/tailwind.css), e.g. `--color-success: var(--success);` gives you `bg-success` and `text-success`
+3. Add it to [color-tokens.ts](../../apps/angular-base/src/app/features/showcase/presentation/colors/color-tokens.ts), so it appears on the colors page
 4. Check the contrast in both themes
 
 ### Fonts
@@ -175,7 +175,7 @@ The fonts are self-hosted variable fonts in `apps/angular-base/public/fonts`, de
 
 ## Light and dark mode
 
-The theme is the class `dark` on the `<html>` element. `ThemeService` in [packages/shared/core/src/theme/](../packages/shared/core/src/theme/) sets it:
+The theme is the class `dark` on the `<html>` element. `ThemeService` in [packages/shared/core/src/theme/](../../packages/shared/core/src/theme) sets it:
 
 ```ts
 readonly mode = signal<ThemeMode>(this._readStoredMode()); // 'light' | 'dark' | 'system'
@@ -188,7 +188,7 @@ setMode(mode: ThemeMode): void
 - `resolved` is what is actually shown, always `light` or `dark`. Bind to this when a component needs to know the theme, as the toaster in `app.html` does
 - The choice is stored in `localStorage` under the key `theme`
 
-An inline script in [index.html](../apps/angular-base/src/index.html) sets the class before the first paint, so a dark page does not flash white on load. It duplicates the logic of the service on purpose. If you change the storage key or the logic, change both.
+An inline script in [index.html](../../apps/angular-base/src/index.html) sets the class before the first paint, so a dark page does not flash white on load. It duplicates the logic of the service on purpose. If you change the storage key or the logic, change both.
 
 The user switches the theme with `app-theme-toggle` in the app header.
 

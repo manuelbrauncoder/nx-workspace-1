@@ -6,25 +6,25 @@ The start page (`/`) shows content an admin writes in the editor (`/admin/portfo
 
 `GET /portfolio` is public and answers with seven sections, each `null` until it has been created:
 
-| Section    | Holds                                                         | Shown in                          |
-| ---------- | ------------------------------------------------------------- | --------------------------------- |
-| `hero`     | Name, introduction, place and coordinates on the map          | `HeroSection`                     |
-| `about`    | Heading, introduction, facts, portrait                        | `AboutSection`                    |
-| `projects` | Heading, introduction, projects with screenshot, stack, links | `ProjectsSection`                 |
-| `skills`   | Heading, introduction, signposts with skills and their points | `SkillsSection`                   |
-| `contact`  | Heading and introduction above the contact form               | `ContactSection`                  |
-| `settings` | Name, email, phone, address, GitHub and LinkedIn profile      | Contact channels                  |
-| `seo`      | Title, description and preview image of the start page        | `<head>`, see [SEO](../../seo.md) |
+| Section    | Holds                                                         | Shown in                                   |
+| ---------- | ------------------------------------------------------------- | ------------------------------------------ |
+| `hero`     | Name, introduction, place and coordinates on the map          | `HeroSection`                              |
+| `about`    | Heading, introduction, facts, portrait                        | `AboutSection`                             |
+| `projects` | Heading, introduction, projects with screenshot, stack, links | `ProjectsSection`                          |
+| `skills`   | Heading, introduction, signposts with skills and their points | `SkillsSection`                            |
+| `contact`  | Heading and introduction above the contact form               | `ContactSection`                           |
+| `settings` | Name, email, phone, address, GitHub and LinkedIn profile      | Contact channels                           |
+| `seo`      | Title, description and preview image of the start page        | `<head>`, see [SEO](../../frontend/seo.md) |
 
 The models are in [src/api/portfolio/portfolio.ts](../../../apps/portfolio-web/src/api/portfolio/portfolio.ts), a missing section is `undefined`. The limits of the backend are in `PORTFOLIO_LIMITS`, the forms validate against them.
 
-- Without `?lang` every text comes in both languages as `Localized<T>` (`{ de, en }`). The app always loads both and picks the active language while rendering, see [Internationalization](../../i18n.md#texts-from-the-backend). A language switch therefore needs no request, and the editor works with the same models
+- Without `?lang` every text comes in both languages as `Localized<T>` (`{ de, en }`). The app always loads both and picks the active language while rendering, see [Internationalization](../../frontend/i18n.md#texts-from-the-backend). A language switch therefore needs no request, and the editor works with the same models
 - `GET /portfolio` is not wrapped, the writes answer with the section wrapped in its name (`{ hero }`)
 - The logo reads only the name from `SITE_OWNER` ([site-owner.ts](../../../apps/portfolio-web/src/app/site-owner.ts)), the app shell knows no API. The legal pages come from the backend, see [Legal pages](legal-pages.md)
 
 ## The start page
 
-[src/app/features/portfolio/](../../../apps/portfolio-web/src/app/features/portfolio/)
+[src/app/features/portfolio/](../../../apps/portfolio-web/src/app/features/portfolio)
 
 - `PortfolioStore` loads the content. The route guard `loadPortfolio` waits for it on the first visit, so a `/#projects` link from another page finds its section. Later visits show what is loaded and refresh it in the background, so changes from the editor show up without a full reload
 - `PortfolioHome` renders the content through `app-async-content` and leaves out every section that does not exist. Its SEO texts come from the `seo` section through `injectPageSeo()`, the route's own `title` and `description` apply until then
@@ -33,7 +33,7 @@ The models are in [src/api/portfolio/portfolio.ts](../../../apps/portfolio-web/s
 
 ## The editor
 
-[src/app/features/portfolio-editor/](../../../apps/portfolio-web/src/app/features/portfolio-editor/)
+[src/app/features/portfolio-editor/](../../../apps/portfolio-web/src/app/features/portfolio-editor)
 
 `/admin/portfolio` is part of the admin area and behind its `adminGuard`: signed out it leads to the sign-in page, a user without admin rights lands on the start page. Admins reach it from the hub at `/admin`, see [Admin area](admin.md).
 

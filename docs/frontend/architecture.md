@@ -20,7 +20,7 @@ The point of the split is that each kind of change has one place:
 
 ## Folder map
 
-The Angular apps live in an Nx workspace: `apps/angular-base` and `apps/portfolio-web`, which is built the same way (see [Portfolio](portfolio/README.md)). Everything another app can reuse is a lib in `packages/shared/`, everything specific to one app stays in its folder. The tree below shows `angular-base`.
+The Angular apps live in an Nx workspace: `apps/angular-base` and `apps/portfolio-web`, which is built the same way (see [Portfolio](../apps/portfolio-web.md)). Everything another app can reuse is a lib in `packages/shared/`, everything specific to one app stays in its folder. The tree below shows `angular-base`.
 
 ```text
 packages/shared/
@@ -104,7 +104,7 @@ The use case of the feature and its models. This is the only place in a feature 
 
 Models are defined in the API layer and re-exported, so the rest of the feature never names the API layer:
 
-[apps/angular-base/src/app/features/notes/domain/note.ts](../apps/angular-base/src/app/features/notes/domain/note.ts)
+[apps/angular-base/src/app/features/notes/domain/note.ts](../../apps/angular-base/src/app/features/notes/domain/note.ts)
 
 ```ts
 export { NOTE_TITLE_MAX_LENGTH } from '@api/notes/note';
@@ -113,7 +113,7 @@ export type { Note, NoteDraft } from '@api/notes/note';
 
 The use case currently passes the repository through. That looks like an empty layer, and it is kept on purpose: it is the seam where a feature combines several repositories or adds rules that are not tied to one endpoint, without the store learning about HTTP.
 
-[apps/angular-base/src/app/features/notes/domain/notes.usecase.ts](../apps/angular-base/src/app/features/notes/domain/notes.usecase.ts)
+[apps/angular-base/src/app/features/notes/domain/notes.usecase.ts](../../apps/angular-base/src/app/features/notes/domain/notes.usecase.ts)
 
 ```ts
 @Service({ autoProvided: false })
@@ -141,7 +141,7 @@ Pages and components. They use `application` and `domain` and get everything vis
 
 The routes of the feature and the place where its use case and store are provided. Both are created when the user enters the feature and destroyed when they leave it:
 
-[apps/angular-base/src/app/features/notes/notes.routes.ts](../apps/angular-base/src/app/features/notes/notes.routes.ts)
+[apps/angular-base/src/app/features/notes/notes.routes.ts](../../apps/angular-base/src/app/features/notes/notes.routes.ts)
 
 ```ts
 export const notesRoutes: Routes = [
@@ -164,7 +164,7 @@ export const notesRoutes: Routes = [
 ];
 ```
 
-Features are lazy loaded from [apps/angular-base/src/app/app.routes.ts](../apps/angular-base/src/app/app.routes.ts) through `loadChildren`, pages inside a feature through `loadComponent`. Each page brings its own translations, loaded by `loadI18nScope`, see [Internationalization](i18n.md).
+Features are lazy loaded from [apps/angular-base/src/app/app.routes.ts](../../apps/angular-base/src/app/app.routes.ts) through `loadChildren`, pages inside a feature through `loadComponent`. Each page brings its own translations, loaded by `loadI18nScope`, see [Internationalization](i18n.md).
 
 A feature does not need every layer. `showcase` and `legal` only render static content, so they consist of `presentation/` and their routes.
 
@@ -192,7 +192,7 @@ Two more rules:
 
 Two mechanisms, both run by `pnpm nx run-many -t lint`.
 
-**Between projects**: Nx tags and `@nx/enforce-module-boundaries` in the root [eslint.config.mjs](../eslint.config.mjs). Each project carries one tag in its `project.json`:
+**Between projects**: Nx tags and `@nx/enforce-module-boundaries` in the root [eslint.config.mjs](../../eslint.config.mjs). Each project carries one tag in its `project.json`:
 
 | Tag             | Projects       | May depend on                                      |
 | --------------- | -------------- | -------------------------------------------------- |
@@ -207,16 +207,16 @@ Two mechanisms, both run by `pnpm nx run-many -t lint`.
 
 A second tag says which product a project belongs to, so products do not depend on each other:
 
-| Scope                                                                                                                                               | Projects                                                               | May depend on                     |
-| --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------- |
-| `scope:shared`                                                                                                                                      | the libs in `packages/shared`, `packages/server`, `packages/contracts` | `scope:shared`                    |
-| `scope:base`                                                                                                                                        | `angular-base`, `express-api-base`                                     | `scope:base`, `scope:shared`      |
-| `scope:portfolio`                                                                                                                                   | `portfolio-web`, `portfolio-api`, `portfolio-contracts`                | `scope:portfolio`, `scope:shared` |
-| The API side has its own tags (`type:api-app`, `type:server`), which no browser project may depend on, see [API architecture](api/architecture.md). |
+| Scope                                                                                                                                                      | Projects                                                               | May depend on                     |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------- |
+| `scope:shared`                                                                                                                                             | the libs in `packages/shared`, `packages/server`, `packages/contracts` | `scope:shared`                    |
+| `scope:base`                                                                                                                                               | `angular-base`, `express-api-base`                                     | `scope:base`, `scope:shared`      |
+| `scope:portfolio`                                                                                                                                          | `portfolio-web`, `portfolio-api`, `portfolio-contracts`                | `scope:portfolio`, `scope:shared` |
+| The API side has its own tags (`type:api-app`, `type:server`), which no browser project may depend on, see [API architecture](../backend/architecture.md). |
 
 `type:app` and `type:core` may not import `@spartan-ng/*`, `@ng-icons/*` or `@tiptap/*` (`bannedExternalImports`). Nx also rejects cycles between projects and relative imports into another project.
 
-**Inside the app**: `no-restricted-imports` rules in [apps/angular-base/eslint.config.mjs](../apps/angular-base/eslint.config.mjs), one block per folder pattern:
+**Inside the app**: `no-restricted-imports` rules in [apps/angular-base/eslint.config.mjs](../../apps/angular-base/eslint.config.mjs), one block per folder pattern:
 
 ```js
 restrictImports(
@@ -234,7 +234,7 @@ A later block replaces the rule of an earlier one for the files it matches, so e
 
 ## App-wide setup
 
-[apps/angular-base/src/app/app.config.ts](../apps/angular-base/src/app/app.config.ts) wires the infrastructure from `core`:
+[apps/angular-base/src/app/app.config.ts](../../apps/angular-base/src/app/app.config.ts) wires the infrastructure from `core`:
 
 ```ts
 export const appConfig: ApplicationConfig = {
@@ -278,9 +278,9 @@ export const appConfig: ApplicationConfig = {
 
 ## App shell
 
-Every page is rendered inside the `AppShell` from [apps/angular-base/src/app/layout/](../apps/angular-base/src/app/layout/). It is the parent route of all features:
+Every page is rendered inside the `AppShell` from [apps/angular-base/src/app/layout/](../../apps/angular-base/src/app/layout). It is the parent route of all features:
 
-[apps/angular-base/src/app/app.routes.ts](../apps/angular-base/src/app/app.routes.ts)
+[apps/angular-base/src/app/app.routes.ts](../../apps/angular-base/src/app/app.routes.ts)
 
 ```ts
 export const routes: Routes = [
@@ -310,7 +310,7 @@ layout/
 └── app-nav-items.ts  the navigation entries of header and drawer, the legal links of the footer
 ```
 
-By default the shell puts a page into the centered `page-container` with space above and below. A page whose sections run across the full width, like the start page of `portfolio-web`, sets `shellLayout('full-bleed')` from [packages/shared/core/src/layout/shell-layout.ts](../packages/shared/core/src/layout/shell-layout.ts) in the `data` of its route, next to `routeSeo()`. Child routes take it over.
+By default the shell puts a page into the centered `page-container` with space above and below. A page whose sections run across the full width, like the start page of `portfolio-web`, sets `shellLayout('full-bleed')` from [packages/shared/core/src/layout/shell-layout.ts](../../packages/shared/core/src/layout/shell-layout.ts) in the `data` of its route, next to `routeSeo()`. Child routes take it over.
 
 - The shell is loaded eagerly, since it is visible on every page. The features below it stay lazy
 - A page without the frame, e.g. a full-screen login, is a route next to the shell route, not a child of it
@@ -333,10 +333,4 @@ By default the shell puts a page into the centered `page-container` with space a
 
 ## Adding an app
 
-A new app reuses the libs and brings only what is its own:
-
-1. Generate it with `pnpm nx g @nx/angular:application` and tag it `type:app`. Take `project.json`, `vite.config.mts`, `tsconfig*.json` and `eslint.config.mjs` of `angular-base` as the reference, with `packages/shared` in `stylePreprocessorOptions.includePaths` and `implicitDependencies: ["styles"]`
-2. In `app.config.ts` set `APP_NAME` and hand `uiI18n` and the app's own shared texts to `provideI18n()`. The app's texts must contain `seo.defaultDescription` and `seo.imageAlt`, which `SeoService` expects
-3. Give it its own `src/styles/` with `tailwind.css` (`@source` on its `src` and on `packages/shared`), `styles.scss`, `themes/` and fonts, see [Styling](styling.md)
-4. Its `src/test-setup.ts` calls `setupTestEnvironment()` from `@core/testing/setup-test-environment` with `APP_NAME` and `provideI18nTesting()`
-5. To use another Spartan style than vega, see [UI components](ui-components.md#spartan-styles)
+See [Workspace](../workspace.md#adding-an-angular-app).
