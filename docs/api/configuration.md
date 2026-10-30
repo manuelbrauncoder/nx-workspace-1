@@ -7,7 +7,18 @@ Configuration comes from two places:
 
 This split lets the JSON file live on the server as a plain mounted file, while secrets come from the stack's environment.
 
-Both are loaded and validated once at startup in [`src/config/index.ts`](../src/config/index.ts). If a value is missing or invalid, the process prints what is wrong and exits. The rest of the code imports the typed `config` object and never reads `process.env` itself.
+Both are loaded and validated once at startup in [`packages/server/core/src/config.ts`](../../packages/server/core/src/config.ts). If a value is missing or invalid, the process prints what is wrong and exits. The rest of the code imports the typed `config` object and never reads `process.env` itself.
+
+The keys every API app has (everything below except `uploads`) are defined in `server-core`, and the libs read them from `@server/core/config`. An app adds its own keys with `extendConfig()` in its `src/config/index.ts`, here `uploads`, and its features import the extended `config` from there:
+
+```ts
+export const config = extendConfig({
+  uploads: z.object({
+    dir: z.string().min(1),
+    // ...
+  }),
+});
+```
 
 ## Environment variables
 
@@ -18,11 +29,11 @@ Both are loaded and validated once at startup in [`src/config/index.ts`](../src/
 | `SESSION_SECRET` | yes      | Signs the session cookie. At least 32 characters. Changing it logs everyone out.  |
 | `NODE_ENV`       | no       | `development` (default), `production` or `test`. Development enables pretty logs. |
 
-Locally these come from `.env` (see [`.env.example`](../.env.example)), which the `dev`, `start`, `db:migrate` and `db:studio` scripts load.
+Locally these come from `.env` (see [`apps/express-api-base/.env.example`](../../apps/express-api-base/.env.example)), which the targets `serve`, `start`, `db:migrate` and `db:studio` of the app load.
 
 ## JSON config file
 
-Local development uses [`config/development.json`](../config/development.json). [`config/production.example.json`](../config/production.example.json) is the template for production.
+Local development uses [`apps/express-api-base/config/development.json`](../../apps/express-api-base/config/development.json). [`apps/express-api-base/config/production.example.json`](../../apps/express-api-base/config/production.example.json) is the template for production.
 
 | Setting                       | Type              | Meaning                                                                              |
 | ----------------------------- | ----------------- | ------------------------------------------------------------------------------------ |
@@ -61,6 +72,6 @@ Every setting is required; there are no hidden defaults.
 
 ## Adding a setting
 
-1. Add it to `fileSchema` in [`src/config/index.ts`](../src/config/index.ts).
-2. Add it to all files in `config/`, and to the real production file on the server.
+1. Add it to `fileSchema` in [`packages/server/core/src/config.ts`](../../packages/server/core/src/config.ts).
+2. Add it to all files in `apps/express-api-base/config/`, and to the real production file on the server.
 3. Use it through the `config` object.

@@ -11,13 +11,17 @@
     "serve": {
       "continuous": true,
       "command": "tsx watch --env-file=.env src/index.ts",
-      "options": { "cwd": "{projectRoot}" }
+      "options": {
+        "cwd": "{projectRoot}"
+      }
     },
     "start": {
       "continuous": true,
       "dependsOn": ["build"],
       "command": "node --env-file-if-exists=.env ../../dist/apps/express-api-base/index.js",
-      "options": { "cwd": "{projectRoot}" }
+      "options": {
+        "cwd": "{projectRoot}"
+      }
     },
     "typecheck": {
       "executor": "nx:run-commands",
@@ -30,16 +34,34 @@
     },
     "db:generate": {
       "command": "drizzle-kit generate",
-      "options": { "cwd": "{projectRoot}" }
+      "options": {
+        "cwd": "{projectRoot}"
+      }
     },
     "db:migrate": {
       "command": "tsx --env-file=.env src/scripts/migrate.ts",
-      "options": { "cwd": "{projectRoot}" }
+      "options": {
+        "cwd": "{projectRoot}"
+      }
     },
     "db:studio": {
       "continuous": true,
       "command": "node --env-file=.env ../../node_modules/drizzle-kit/bin.cjs studio",
-      "options": { "cwd": "{projectRoot}" }
+      "options": {
+        "cwd": "{projectRoot}"
+      }
+    },
+    "prune-lockfile": {
+      "dependsOn": ["build"],
+      "cache": true,
+      "executor": "@nx/js:prune-lockfile",
+      "outputs": [
+        "{workspaceRoot}/dist/apps/express-api-base/package.json",
+        "{workspaceRoot}/dist/apps/express-api-base/pnpm-lock.yaml"
+      ],
+      "options": {
+        "buildTarget": "build"
+      }
     }
   }
 }

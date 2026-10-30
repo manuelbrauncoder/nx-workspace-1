@@ -8,7 +8,7 @@ How the app talks to a backend: the API layer in `apps/angular-base/src/api`, an
 
 | File                  | Role                                                     |
 | --------------------- | -------------------------------------------------------- |
-| `note.dto.ts`         | DTO: the wire format, exactly as the backend sends it    |
+| `note.dto.ts`         | DTO: the wire format, types from `@contracts/notes`      |
 | `note.ts`             | Model: what the app works with                           |
 | `note-dto.mapper.ts`  | Mapper: translates between the two, in both directions   |
 | `notes.repository.ts` | Repository: the HTTP calls. Hands out models, never DTOs |
@@ -17,24 +17,40 @@ How the app talks to a backend: the API layer in `apps/angular-base/src/api`, an
 
 Keeping the two apart means a change in the wire format stops at the mapper. In `notes` the differences are the timestamps, ISO strings on the wire and `Date` objects in the app, and the images, which only get their `url` in the model.
 
+The DTO is not written by hand. The API and the app share the zod schemas of the wire format in the `contracts` lib, and `note.dto.ts` re-exports the types derived from them:
+
 [apps/angular-base/src/api/notes/note.dto.ts](../apps/angular-base/src/api/notes/note.dto.ts)
 
 ```ts
-/** Wire format of a note. Timestamps are ISO 8601 strings. */
-export interface NoteDto {
-  id: string;
-  title: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
-  images: NoteImageDto[];
-}
-
-/** The backend wraps a note, the list and uploaded images in an object. */
-export interface NoteResponseDto {
-  note: NoteDto;
-}
+export type {
+  NoteDraftDto,
+  NoteDto,
+  NoteImageDto,
+  NoteImagesResponseDto,
+  NoteResponseDto,
+  NotesResponseDto,
+} from '@contracts/notes';
 ```
+
+[packages/contracts/src/notes.ts](../packages/contracts/src/notes.ts)
+
+```ts
+export const noteSchema = z.object({
+  id: z.uuid(),
+  title: z.string(),
+  description: z.string(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
+  images: z.array(noteImageSchema),
+});
+
+export type NoteDto = z.output<typeof noteSchema>;
+```
+
+- A change in the wire format is a change in `contracts`. The API validates and documents with the schema, the app gets the new type and the compiler shows every place the mapper has to follow
+- Only types are imported, so Zod does not end up in the bundle. The limits the forms check (`NOTE_TITLE_MAX_LENGTH`, …) are plain constants in `@contracts/notes-limits`, re-exported by `note.ts`
+- `@contracts/*` is imported in the API layer only, the rest of the app works with models. ESLint enforces it
+- A resource of another backend, without a shared contract, writes its DTO by hand as an interface
 
 [apps/angular-base/src/api/notes/note.ts](../apps/angular-base/src/api/notes/note.ts)
 
@@ -152,7 +168,7 @@ Repositories return observables and do no error handling. Failed requests are al
 
 ### Adding an API resource
 
-1. Create `apps/angular-base/src/api/<resource>/` with the DTO, the model, a mapper extending `DtoMapper` and the repository
+1. Create `apps/angular-base/src/api/<resource>/` with the DTO, the model, a mapper extending `DtoMapper` and the repository. For an endpoint of an API app of the workspace, define the schemas in `packages/contracts` and re-export their types as the DTO
 2. Read the base URL from `AppConfigService.apiBaseUrl`, never hard-code it
 3. Return models from every repository method
 4. Add specs for the mapper and the repository, following [note-dto.mapper.spec.ts](../apps/angular-base/src/api/notes/note-dto.mapper.spec.ts) and [notes.repository.spec.ts](../apps/angular-base/src/api/notes/notes.repository.spec.ts)

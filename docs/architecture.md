@@ -46,6 +46,8 @@ packages/shared/
 ├── helm-vega/                @spartan-ng/helm/*: Spartan components, style vega
 └── styles/                   global SCSS: abstracts, base styles, layout
 
+packages/contracts/src/       @contracts/*: wire format shared with the API apps
+
 apps/angular-base/src/
 ├── api/                      API layer, one folder per backend resource
 │   ├── dto-mapper.ts
@@ -192,13 +194,16 @@ Two mechanisms, both run by `pnpm nx run-many -t lint`.
 
 **Between projects**: Nx tags and `@nx/enforce-module-boundaries` in the root [eslint.config.mjs](../eslint.config.mjs). Each project carries one tag in its `project.json`:
 
-| Tag           | Projects       | May depend on                                      |
-| ------------- | -------------- | -------------------------------------------------- |
-| `type:app`    | `angular-base` | `type:ui`, `type:core`, `type:styles`              |
-| `type:ui`     | `ui`           | `type:ui`, `type:core`, `type:helm`, `type:styles` |
-| `type:core`   | `core`         | `type:core`                                        |
-| `type:helm`   | `helm-vega`, … | `type:helm`                                        |
-| `type:styles` | `styles`       | `type:styles`                                      |
+| Tag             | Projects       | May depend on                                      |
+| --------------- | -------------- | -------------------------------------------------- |
+| `type:app`      | `angular-base` | `type:ui`, `type:core`, `type:styles`              |
+| `type:ui`       | `ui`           | `type:ui`, `type:core`, `type:helm`, `type:styles` |
+| `type:core`     | `core`         | `type:core`                                        |
+| `type:helm`     | `helm-vega`, … | `type:helm`                                        |
+| `type:styles`   | `styles`       | `type:styles`                                      |
+| `type:contract` | `contracts`    | `type:contract`, from npm only `zod`               |
+
+`type:app` and `type:ui` may also depend on `type:contract`. The API side has its own tags (`type:api-app`, `type:server`), which no browser project may depend on, see [API architecture](api/architecture.md).
 
 `type:app` and `type:core` may not import `@spartan-ng/*`, `@ng-icons/*` or `@tiptap/*` (`bannedExternalImports`). Nx also rejects cycles between projects and relative imports into another project.
 

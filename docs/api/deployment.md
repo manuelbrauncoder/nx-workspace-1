@@ -4,19 +4,19 @@ The API is deployed as a Docker image. The same image is used twice: once as a s
 
 ## Building the image
 
-The image is built by the GitHub Actions workflow in [`.github/workflows/ci.yml`](../.github/workflows/ci.yml):
+The image is built by the GitHub Actions workflow in [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml):
 
-- Every push to `main` and every pull request runs the checks: lint, format check, typecheck, tests (against a Postgres service container) and build.
-- Pushing a tag that starts with `v` runs the same checks and then publishes the image to the GitHub Container Registry.
+- Every push to `main` and every pull request runs the checks of the affected projects: format check, lint, typecheck, tests (against a Postgres service container) and build.
+- Pushing a tag that starts with `express-api-base-v` runs the checks of all projects and then publishes the image to the GitHub Container Registry. Every app of the workspace has its own tag prefix.
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag express-api-base-v1.0.0
+git push origin express-api-base-v1.0.0
 ```
 
-The image is published as `ghcr.io/<owner>/<repository>` with three tags: the git tag (`v1.0.0`), `latest` and `sha-<short commit>`. Use the git tag in the stack, so a redeploy never pulls a different version by accident.
+The image is published as `ghcr.io/<owner>/express-api-base` with three tags: the version (`v1.0.0`), `latest` and `sha-<short commit>`. Use the version in the stack, so a redeploy never pulls a different version by accident.
 
-The [Dockerfile](../Dockerfile) compiles the TypeScript and produces an image with only production dependencies, the compiled code in `dist/` and the migrations in `drizzle/`.
+The [Dockerfile](../../apps/express-api-base/Dockerfile) is built from the workspace root (`docker build -f apps/express-api-base/Dockerfile .`). It bundles the app with the libs, writes a lockfile with only the runtime dependencies (`nx prune-lockfile`) and produces an image with those dependencies, the bundle in `dist/` and the migrations from `apps/express-api-base/drizzle/` in `drizzle/`. The paths inside the image are the same as before the monorepo: `dist/index.js` and `dist/scripts/migrate.js`.
 
 ## What the server needs
 
@@ -28,11 +28,11 @@ The [Dockerfile](../Dockerfile) compiles the TypeScript and produces an image wi
 | Secrets        | `SESSION_SECRET` (at least 32 characters) and the database credentials, as stack variables      |
 | Reverse proxy  | Terminates HTTPS and forwards to port 3000                                                      |
 
-Create the config file from [`config/production.example.json`](../config/production.example.json). All settings are explained in [Configuration](configuration.md).
+Create the config file from [`apps/express-api-base/config/production.example.json`](../../apps/express-api-base/config/production.example.json). All settings are explained in [Configuration](configuration.md).
 
 ## The stack
 
-[`docker-compose.prod.example.yml`](../docker-compose.prod.example.yml) is a template for a Portainer stack behind Traefik. It defines two services:
+[`apps/express-api-base/docker-compose.prod.example.yml`](../../apps/express-api-base/docker-compose.prod.example.yml) is a template for a Portainer stack behind Traefik. It defines two services:
 
 - **`migrate`** runs `node dist/scripts/migrate.js` and exits. It only gets `DATABASE_URL`.
 - **`api`** starts only after `migrate` has finished successfully. It gets the config file, the uploads volume and the environment variables.
@@ -48,7 +48,7 @@ The template expects two things that already exist on the server: a Traefik inst
 1. **Publish the image** by pushing a version tag, as shown above. The workflow builds for `linux/amd64`.
 2. **Give Portainer access to the image.** If the package on ghcr.io is private, add the registry under _Registries_ (`ghcr.io`, your GitHub user, a personal access token with `read:packages`).
 3. **Create the database.** The `migrate` service creates the tables, not the database itself: `CREATE DATABASE ...` once in the existing Postgres.
-4. **Create the config file and the uploads folder on the host**, at the two paths used under `volumes` in the stack. The config file is a copy of [`config/production.example.json`](../config/production.example.json) with your values; see the checklist below.
+4. **Create the config file and the uploads folder on the host**, at the two paths used under `volumes` in the stack. The config file is a copy of [`apps/express-api-base/config/production.example.json`](../../apps/express-api-base/config/production.example.json) with your values; see the checklist below.
 5. **Create the stack.** _Stacks → Add stack → Web editor_, paste the template and adjust it. Set these under _Environment variables_:
 
    | Variable            | Value                                                      |
@@ -90,7 +90,7 @@ After the first deploy, `https://your-api-host/health` should answer `{"status":
 
 ## Updating
 
-1. Push a new version tag and wait for the workflow to publish the image.
+1. Push a new tag `express-api-base-v…` and wait for the workflow to publish the image.
 2. Change the tag for both services in the stack and redeploy.
 
 Pending migrations are applied by the `migrate` service automatically.

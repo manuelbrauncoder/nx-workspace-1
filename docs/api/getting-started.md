@@ -6,6 +6,8 @@
 - **pnpm** (`corepack enable pnpm`)
 - **Docker**, for the local Postgres database
 
+All commands run from the root of the Nx workspace.
+
 ## Setup
 
 1. Install the dependencies:
@@ -17,7 +19,7 @@
 2. Create your `.env` file:
 
    ```bash
-   cp .env.example .env
+   cp apps/express-api-base/.env.example apps/express-api-base/.env
    ```
 
    Then set `SESSION_SECRET` to a random value of at least 32 characters, for example the output of `openssl rand -hex 32`. The other values already match the local setup.
@@ -28,18 +30,18 @@
    docker compose up -d
    ```
 
-   This starts Postgres 18 on port 5432 with user, password and database all set to `app` (see [docker-compose.yml](../docker-compose.yml)).
+   This starts Postgres 18 on port 5432 with user, password and database all set to `app` (see [docker-compose.yml](../../docker-compose.yml)). Every API app of the workspace uses this server, each with a database of its own.
 
 4. Create the tables:
 
    ```bash
-   pnpm db:migrate
+   pnpm nx run express-api-base:db:migrate
    ```
 
 5. Start the API:
 
    ```bash
-   pnpm dev
+   pnpm nx serve express-api-base
    ```
 
    The server restarts when a source file changes. Check that it is up with `curl http://localhost:3000/health`, which answers `{"status":"ok"}`.
@@ -66,7 +68,7 @@ curl -b cookies.txt -F images=@photo1.jpg -F images=@photo2.png \
   http://localhost:3000/notes/NOTE_ID/images
 ```
 
-An admin user is created on the first start, with the email and password from the `admin` section of [`config/development.json`](../config/development.json). Sign in as that user to try the admin endpoints:
+An admin user is created on the first start, with the email and password from the `admin` section of [`apps/express-api-base/config/development.json`](../../apps/express-api-base/config/development.json). Sign in as that user to try the admin endpoints:
 
 ```bash
 curl -c admin.txt -H 'content-type: application/json' \
@@ -76,30 +78,23 @@ curl -c admin.txt -H 'content-type: application/json' \
 curl -b admin.txt http://localhost:3000/admin/users
 ```
 
-## Scripts
+## Commands
 
-| Command             | What it does                                                 |
-| ------------------- | ------------------------------------------------------------ |
-| `pnpm dev`          | Start the API in watch mode                                  |
-| `pnpm build`        | Compile to `dist/` (tests excluded)                          |
-| `pnpm start`        | Run the compiled API from `dist/`                            |
-| `pnpm typecheck`    | Type-check everything, including tests                       |
-| `pnpm test`         | Run the test suite, see [Testing](testing.md)                |
-| `pnpm lint`         | ESLint                                                       |
-| `pnpm format`       | Format all files with Prettier                               |
-| `pnpm format:check` | Check the formatting without changing files (used by CI)     |
-| `pnpm db:generate`  | Create a migration from changed table files                  |
-| `pnpm db:migrate`   | Apply pending migrations to the database from `DATABASE_URL` |
-| `pnpm db:studio`    | Browse and edit the database in Drizzle Studio               |
+| Command                                                                                         | What it does                                                           |
+| ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `pnpm nx serve express-api-base`                                                                | Start the API in watch mode (`tsx watch`)                              |
+| `pnpm nx build express-api-base`                                                                | Bundle the API with the libs into `dist/apps/express-api-base`         |
+| `pnpm nx start express-api-base`                                                                | Build and run the bundle                                               |
+| `pnpm nx typecheck express-api-base`                                                            | Type-check everything, including tests                                 |
+| `pnpm nx test express-api-base`                                                                 | Run the tests of the app, see [Testing](testing.md)                    |
+| `pnpm nx lint express-api-base`                                                                 | ESLint                                                                 |
+| `pnpm nx run-many -t lint typecheck test -p express-api-base server-core server-auth contracts` | The same for the app and its libs                                      |
+| `pnpm format:fix`, `pnpm format:check`                                                          | Format with Prettier, or only check (used by CI)                       |
+| `pnpm nx run express-api-base:db:generate`                                                      | Create a migration from changed table files, including the auth tables |
+| `pnpm nx run express-api-base:db:migrate`                                                       | Apply pending migrations to the database from `DATABASE_URL`           |
+| `pnpm nx run express-api-base:db:studio`                                                        | Browse and edit the database in Drizzle Studio                         |
 
-## A note on the two TypeScript versions
-
-`package.json` lists TypeScript twice:
-
-- `@typescript/native` is TypeScript 7. It provides the `tsc` command used by `build` and `typecheck`.
-- `typescript` is an alias for TypeScript 6. ESLint's TypeScript plugin needs the programmatic compiler API, which TypeScript 7.0 does not ship.
-
-Once `typescript-eslint` supports TypeScript 7, the alias can be removed and `typescript` can point to version 7 again.
+The workspace uses TypeScript 6 for everything, since the Angular compiler requires it. The standalone repository used TypeScript 7 for `tsc`.
 
 ## Next steps
 

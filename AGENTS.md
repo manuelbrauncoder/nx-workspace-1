@@ -76,17 +76,22 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 
 ## Architektur
 
-Nx-Workspace: Apps in `apps/`, die Libs, die jede App nutzt, in `packages/shared/`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
+Nx-Workspace mit zwei Seiten: Angular-Apps (`apps/angular-base`, Libs in `packages/shared/`) und API-Apps (`apps/express-api-base`, Libs in `packages/server/`, siehe Abschnitt „API-Apps“). Beide teilen das Wire-Format über `packages/contracts`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
 
 Die Grenzen erzwingt ESLint an zwei Stellen: zwischen Projekten über Nx-Tags (`@nx/enforce-module-boundaries` in der Root-`eslint.config.mjs`), innerhalb der App über `no-restricted-imports` in `apps/angular-base/eslint.config.mjs`.
 
-| Tag           | Projekte       | Darf abhängen von                                  |
-| ------------- | -------------- | -------------------------------------------------- |
-| `type:app`    | `angular-base` | `type:ui`, `type:core`, `type:styles`              |
-| `type:ui`     | `ui`           | `type:ui`, `type:core`, `type:helm`, `type:styles` |
-| `type:core`   | `core`         | `type:core`                                        |
-| `type:helm`   | `helm-vega`, … | `type:helm`                                        |
-| `type:styles` | `styles`       | `type:styles`                                      |
+| Tag             | Projekte                     | Darf abhängen von                                  |
+| --------------- | ---------------------------- | -------------------------------------------------- |
+| `type:app`      | `angular-base`               | `type:ui`, `type:core`, `type:styles`              |
+| `type:ui`       | `ui`                         | `type:ui`, `type:core`, `type:helm`, `type:styles` |
+| `type:core`     | `core`                       | `type:core`                                        |
+| `type:helm`     | `helm-vega`, …               | `type:helm`                                        |
+| `type:styles`   | `styles`                     | `type:styles`                                      |
+| `type:contract` | `contracts`                  | `type:contract`, von npm nur `zod`                 |
+| `type:api-app`  | `express-api-base`, …        | `type:server`, `type:contract`                     |
+| `type:server`   | `server-core`, `server-auth` | `type:server`, `type:contract`                     |
+
+`type:app` und `type:ui` dürfen zusätzlich von `type:contract` abhängen. Browser- und Server-Projekte importieren sich nie gegenseitig.
 
 Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Einstieg: `docs/README.md`). Ändert sich eine Regel hier, das passende Doc mit anpassen.
 
@@ -103,6 +108,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
   - `presentation/`: Pages und Komponenten. Nutzt nur `application` und `domain`
   - `<feature>.routes.ts`: stellt UseCase und Store bereit, beide leben so lange wie das Feature
 - `apps/angular-base/src/api/<feature>/`: eigenständiger API-Layer, kennt keine Features. Enthält das DTO (Wire-Format, z. B. `NoteDto`), das Model (z. B. `Note`), den Mapper und das Repository mit den HTTP-Calls. Das Repository gibt nur Models heraus, nie DTOs
+- DTOs für Endpunkte der eigenen API-Apps kommen aus `packages/contracts` (`@contracts/*`): Die `*.dto.ts` re-exportiert die Typen (`export type { NoteDto } from '@contracts/notes'`), Limits kommen aus `@contracts/notes-limits`. Nur Typen importieren, damit Zod nicht ins Bundle kommt. `@contracts/*` nur im API-Layer der App und in der Lib `ui` (Rich Text), ESLint erzwingt das
 - Mapper sind Klassen, die `DtoMapper` (`apps/angular-base/src/api/dto-mapper.ts`) implementieren, z. B. `NoteDtoMapper`. Pflicht sind beide Richtungen: `toModel` und `toDto`
 - `apps/angular-base/src/server/`: Teile des Express-Servers (SEO-Routen, Config, Log), eingehängt in `apps/angular-base/src/server.ts`. Keine Mock-API, die App spricht mit dem echten Backend. Dessen Beschreibung liegt unter `<apiBaseUrl>/docs/openapi.json`
 - Features importieren sich nie gegenseitig, einzige Ausnahme ist `@features/auth/public-api`. Innerhalb eines Features relative Imports, sonst die Aliase `@core/*`, `@shared/*`, `@api/*`, `@features/*`
@@ -190,7 +196,8 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 
 - Pipeline in `.github/workflows/ci.yml`: Format-Check und `nx affected -t lint typecheck test build` bei Push auf `main` und bei Pull Requests, `nx run-many` bei Release-Tags. Dieselben Befehle vor dem Push lokal ausführen (`pnpm format:check`, `pnpm nx affected -t lint typecheck test build`)
 - Vitest mit Analog prüft keine Typen, deshalb gibt es pro Projekt das Target `typecheck`, das auch die Specs mit `tsc` prüft
-- Jede App hat ihr eigenes Release-Tag. `angular-base-v*` baut `apps/angular-base/Dockerfile` aus dem Workspace-Root und schiebt das Image als `ghcr.io/<owner>/angular-base` nach GHCR. Node-Version steht in `.nvmrc`, pnpm-Version in `packageManager`
+- Der Job `checks` startet einen Postgres-Service für die Tests der API-Projekte
+- Jede App hat ihr eigenes Release-Tag. `express-api-base-v*` baut `apps/express-api-base/Dockerfile`, `angular-base-v*` baut `apps/angular-base/Dockerfile` aus dem Workspace-Root und schiebt das Image als `ghcr.io/<owner>/angular-base` nach GHCR. Node-Version steht in `.nvmrc`, pnpm-Version in `packageManager`
 - Nichts Umgebungsspezifisches im Image. Das Deployment mountet seine Config über `/app/dist/angular-base/browser/config/app-config.json` (das Image kopiert die Ausgabe aus `dist/apps/angular-base` dorthin) und setzt `NG_ALLOWED_HOSTS` auf die öffentlichen Hostnamen, sonst lehnt Angular SSR die Requests mit 400 ab
 - Details in `docs/ci-and-deployment.md`
 
@@ -232,3 +239,71 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 - Use the `providedIn: 'root'` option for singleton services
 - Prefer the `@Service` decorator over `@Injectable({providedIn: 'root'})` for new singleton services (Angular v22+)
 - Use the `inject()` function instead of constructor injection
+
+## API-Apps (Express)
+
+Express 5, Drizzle ORM auf Postgres, Zod 4. Ausführlich in `docs/api/` (Einstieg in `docs/README.md`).
+
+### Befehle
+
+Postgres muss laufen: `docker compose up -d` im Workspace-Root (ein Server für alle API-Apps, eine Datenbank pro App).
+
+```sh
+pnpm nx serve express-api-base                 # tsx watch, lädt apps/express-api-base/.env
+pnpm nx build express-api-base                 # rolldown: App + Libs -> dist/apps/express-api-base
+pnpm nx run-many -t lint typecheck test -p express-api-base server-core server-auth contracts
+pnpm nx run express-api-base:db:generate       # drizzle-kit: *.table.ts -> neue SQL-Migration in drizzle/
+pnpm nx run express-api-base:db:migrate        # Migrationen auf DATABASE_URL aus .env anwenden
+pnpm nx run express-api-base:db:studio
+```
+
+Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SESSION_SECRET` (min. 32 Zeichen) setzen, dann `db:migrate`.
+
+### Aufbau
+
+- `packages/contracts/src/` (Lib `contracts`, Alias `@contracts/*`): Zod-Schemas des Wire-Formats für Requests und Responses (`notes`, `auth`, `errors`), daraus abgeleitete Typen (`*Dto`, `*Input`), Limits als Konstanten ohne Zod (`notes-limits`) und die Rich-Text-Regeln (`rich-text`). Läuft in Node und im Browser, importiert nur `zod`
+- `packages/server/core/src/` (Lib `server-core`, Alias `@server/core/*`): `config` und `extendConfig()`, `logger`, `errors`, `validate`, Middleware (Error-Handler, Origin-Check), `db/db` und `db/migrate`, OpenAPI-Helfer mit `buildOpenApiDocument()`, `createServer()` und `startServer()`, `testing/global-setup`. Kennt keine Features
+- `packages/server/auth/src/` (Lib `server-auth`, Alias `@server/auth/*`): Tabellen `users` und `session`, Registrieren, Anmelden, Abmelden, `/auth/me`, Session-Middleware, Guards `requireAuth`/`requireAdmin`, `currentUserId(req)`, Rate-Limit, Admin-Endpunkte, `seedAdmin()`, `onUserDeleted()`, Test-Helfer. Kennt keine Features
+- `apps/express-api-base/`: die Features (`notes`, `docs`), die App-Config-Erweiterung (`uploads`), `config/`, `drizzle/`, `Dockerfile`, `docker-compose.prod.example.yml`
+- Die App wird gebündelt, Imports brauchen keine `.js`-Endung (ältere Dateien haben sie noch, beides geht). Die npm-Pakete bleiben extern und stehen in `apps/express-api-base/package.json`, die das Image installiert. Ein neues Runtime-Paket dort und in der Root-`package.json` eintragen
+
+### Konfiguration
+
+- Env-Variablen für Secrets und Zeiger: `CONFIG_PATH`, `DATABASE_URL`, `SESSION_SECRET`, `NODE_ENV`. Eine JSON-Datei unter `CONFIG_PATH` (`config/*.json`) für alles andere, Ausnahme `admin.email`/`admin.password` für den ersten Admin
+- Was jede API-App hat, steht im Basis-Schema in `packages/server/core/src/config.ts`, die Libs lesen `@server/core/config`. Eigene Keys einer App kommen über `extendConfig({...})` in `src/config/index.ts` der App, ihre Features importieren diesen `config`. Ein neuer Key gehört in jede Datei in `config/` der App (und bei Basis-Keys in `packages/server/auth/src/testing/test-config.json`)
+- Code liest das eingefrorene `config`, nie `process.env`. Ausnahme ist `src/scripts/migrate.ts`, das nur `DATABASE_URL` liest
+
+### Features
+
+- Ein Ordner pro Feature in `src/features/<name>/` der App, eine Datei pro Rolle `<name>.<rolle>.ts`: `*.table.ts` (Drizzle, über den Glob in `drizzle.config.ts` gefunden), `*.routes.ts` (dünner Router: `parse()`, Service aufrufen, antworten), `*.service.ts` (Logik und alle DB-Zugriffe, wirft `HttpError`), `*.openapi.ts` (`register<Name>Docs(registry)`), `*.test.ts` (supertest gegen die ganze App)
+- Schemas für Request und Response in `packages/contracts`, wenn ein Frontend die Endpunkte nutzt, sonst neben dem Feature
+- Ein Feature registrieren: Router in `routes` von `createServer()` in `src/app.ts`, Register-Funktion in `register` von `src/features/docs/docs.document.ts`, Router in die Liste in `docs.test.ts`
+- Räumt ein Feature beim Löschen eines Users mehr auf als die DB-Kaskade (z. B. Dateien), registriert es in `src/app.ts` einen Hook mit `onUserDeleted()`. Admin kennt keine Features
+
+### Konventionen über Dateien hinweg
+
+- **Fehler**: Helfer aus `@server/core/errors` (`badRequest`, `notFound`, …) werfen, auch in async Handlern (Express 5 reicht Rejections weiter). Der Error-Handler macht daraus `{ error: { message, details? } }`, Unbekanntes wird ein geloggter 500er
+- **Validierung**: `parse()` aus `@server/core/validate` liefert die typisierte Ausgabe oder wirft einen 400er mit `details` pro Feld
+- **Auth**: Cookie-Sessions (`express-session` in Postgres über `connect-pg-simple`). Routen mit `requireAuth` schützen, den User mit `currentUserId(req)` lesen. Die Tabelle `session` steht in `sessions.table.ts` nur, damit sie Teil der Migrationen ist, und muss das Layout von connect-pg-simple behalten
+- **Rollen**: `users.role` ist `user` oder `admin`. `requireAdmin` liest sie bei jedem Request aus der DB (401 ohne Session, sonst 403). `seedAdmin()` läuft in `src/index.ts` vor dem Start und legt den Admin aus `config.admin` nur an, solange keiner existiert. `/admin` verweigert Änderungen am eigenen Account mit 409
+- **CSRF**: keine Tokens. Der Origin-Check lehnt zustandsändernde Requests ab, deren `Origin` nicht in `config.cors.origins` (oder der eigene) ist
+- **Besitz**: Services filtern jede Query nach `userId`, eine fremde Ressource ist ein 404, kein 403
+- **Docs per Test synchron**: `docs.test.ts` schlägt fehl, wenn eine Route ohne OpenAPI-Eintrag existiert oder umgekehrt, und prüft echte Antworten gegen die Schemas mit `.strict()`
+- **Rich Text**: `notes.sanitize.ts` erlaubt genau `RICH_TEXT_TAGS` aus `@contracts/rich-text`, dieselbe Liste wie der Editor im Frontend
+
+### Tests
+
+- Brauchen Postgres, aber keine `.env`: `vitest.config.ts` jedes Projekts setzt die Umgebung selbst. Jedes Projekt hat eine eigene Test-Datenbank (`app_test` für die App, `server_auth_test` für die Lib), weil Nx die Tests mehrerer Projekte gleichzeitig ausführt
+- `packages/server/core/src/testing/global-setup.ts` legt die Datenbank an und migriert. `server-auth` migriert mit eigenen Migrationen in `packages/server/auth/drizzle/`, die nur die Auth-Tabellen enthalten
+- `src/test/setup.ts` der App leert vor jedem Test `users` und `session` (`resetAuthTables()`, kaskadiert auf alles andere) und das Upload-Verzeichnis. Dateien laufen nacheinander
+- `signedUpAgent(email)` und `adminAgent()` aus `src/test/helpers.ts` der App, sie umhüllen `@server/auth/testing/helpers`. Auth und Admin testet die Lib gegen eine Minimal-App
+
+### Migrationen
+
+- Eine `*.table.ts` ändern, `db:generate` der App ausführen, die erzeugten Dateien in `drizzle/` committen. Angewendete Migrationen nicht ändern
+- Ändern sich die Auth-Tabellen, `db:generate` jeder API-App und `pnpm nx run server-auth:db:generate` ausführen
+- In Produktion führt das Image `node dist/scripts/migrate.js` aus (das Dockerfile kopiert `drizzle/` dafür)
+
+### Neue API-App
+
+`apps/express-api-base` ist die Referenz für `project.json` (Tag `type:api-app`), `package.json`, `tsconfig.json`, `rolldown.config.ts`, `vitest.config.ts`, `drizzle.config.ts` (mit `../../packages/server/auth/src/*.table.ts`), `eslint.config.mjs` und `Dockerfile`. Eigene Datenbank und Test-Datenbank, eigenes Release-Tag und Publish-Job in der CI. Details in `docs/api/architecture.md`

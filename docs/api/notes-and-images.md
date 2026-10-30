@@ -19,17 +19,17 @@ Request and response details are in the API reference at `/docs`.
 
 ## Ownership
 
-Every user only sees and changes their own notes. All queries in [`notes.service.ts`](../src/features/notes/notes.service.ts) filter by the signed-in user's id. A note that belongs to someone else behaves exactly like one that does not exist: the API answers 404, never 403, so ids of other users' notes cannot be probed.
+Every user only sees and changes their own notes. All queries in [`notes.service.ts`](../../apps/express-api-base/src/features/notes/notes.service.ts) filter by the signed-in user's id. A note that belongs to someone else behaves exactly like one that does not exist: the API answers 404, never 403, so ids of other users' notes cannot be probed.
 
 ## Description sanitizing
 
-The description is HTML from a rich-text editor. Because it will be rendered in a browser, the server cleans it before saving ([`notes.sanitize.ts`](../src/features/notes/notes.sanitize.ts)):
+The description is HTML from a rich-text editor. Because it will be rendered in a browser, the server cleans it before saving ([`notes.sanitize.ts`](../../apps/express-api-base/src/features/notes/notes.sanitize.ts)):
 
-- **Kept:** `p`, `br`, `hr`, `h1`–`h3`, `blockquote`, `pre`, `code`, `strong`, `b`, `em`, `i`, `u`, `s`, `ul`, `ol`, `li`, `a`.
-- **Links:** only `http`, `https` and `mailto` targets. Every link gets `target="_blank"` and `rel="noopener noreferrer"`.
+- **Kept:** the tags of `RICH_TEXT_TAGS` in [`@contracts/rich-text`](../../packages/contracts/src/rich-text.ts): `p`, `br`, `h2`, `h3`, `blockquote`, `strong`, `em`, `ul`, `ol`, `li`, `a`. The editor of the Angular app follows the same list, so the server keeps exactly what the editor can produce.
+- **Links:** only `http`, `https` and `mailto` targets. Every link gets `target="_blank"` and `rel="noopener noreferrer nofollow"`.
 - **Removed:** everything else, including `script`, `style`, `iframe`, `img`, event handlers such as `onclick`, and all other attributes.
 
-Invalid HTML is not rejected; the unsafe parts are silently dropped. To allow more formatting (for example tables), extend the allowlist in that file.
+Invalid HTML is not rejected; the unsafe parts are silently dropped. To allow more formatting (for example tables), extend `RICH_TEXT_TAGS` and add the format to the editor and the styles of the frontend.
 
 ## Images
 

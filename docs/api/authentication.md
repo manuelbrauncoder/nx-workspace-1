@@ -45,14 +45,14 @@ Sign-up and sign-in share a limit per client IP: `rateLimit.authMaxRequests` req
 With cookie auth, another website could try to make the user's browser send a request to the API. Two things prevent that:
 
 - `SameSite=Lax` stops the cookie from being sent on POST requests from other sites.
-- The [origin check](../src/shared/middleware/origin-check.ts) rejects every state-changing request (anything except GET, HEAD, OPTIONS) whose `Origin` header is neither in `cors.origins` nor the API's own origin. This also covers requests from sibling subdomains, which `SameSite` treats as the same site.
+- The [origin check](../../packages/server/core/src/middleware/origin-check.ts) rejects every state-changing request (anything except GET, HEAD, OPTIONS) whose `Origin` header is neither in `cors.origins` nor the API's own origin. This also covers requests from sibling subdomains, which `SameSite` treats as the same site.
 
 Requests without an `Origin` header are allowed. They come from tools like curl, which carry no browser cookies.
 
 ## Protecting routes
 
 ```ts
-import { currentUserId, requireAuth } from '../auth/auth.middleware.js';
+import { currentUserId, requireAuth } from '@server/auth/auth.middleware';
 
 notesRouter.use(requireAuth); // every route below needs a session
 
@@ -69,7 +69,7 @@ Every user has a role, `user` (the default) or `admin`. It is part of the user o
 
 ### The first admin
 
-At every start the API checks whether an admin exists. If none does, it creates one from `admin.email` and `admin.password` in the JSON config file ([`admin.seed.ts`](../src/features/admin/admin.seed.ts)). This happens before the server accepts requests, so nobody can sign up with that email first.
+At every start the API checks whether an admin exists. If none does, it creates one from `admin.email` and `admin.password` in the JSON config file ([`admin.seed.ts`](../../packages/server/auth/src/admin.seed.ts)). This happens before the server accepts requests, so nobody can sign up with that email first.
 
 - Once an admin exists, the two settings are no longer used. Changing `admin.password` later does not change the account's password.
 - If the email already belongs to a normal user, that user is not promoted; the API logs a warning and starts without an admin.
@@ -90,7 +90,7 @@ At every start the API checks whether an admin exists. If none does, it creates 
 To protect other routes the same way:
 
 ```ts
-import { requireAdmin } from '../auth/auth.middleware.js';
+import { requireAdmin } from '@server/auth/auth.middleware';
 
 adminRouter.use(requireAdmin); // 401 without a session, 403 without the admin role
 ```
