@@ -16,6 +16,11 @@ export interface ServerOptions {
   middleware?: RequestHandler[];
   /** Routers by the path they are mounted on. */
   routes: Record<string, Router>;
+  /**
+   * Base path of the routers, e.g. `/api/v1`. `/health` and `/docs` stay at the root, outside
+   * the versioning. Pass the same prefix to `buildOpenApiDocument()`.
+   */
+  prefix?: string;
   /** Builds the OpenAPI document, served under /docs when `docs.enabled` is set in the config. */
   docs?: () => OpenApiDocument;
 }
@@ -25,7 +30,7 @@ export interface ServerOptions {
  * origins, the origin check against CSRF, JSON bodies, `/health`, `/docs`, a 404 for unknown
  * routes and the error handler.
  */
-export function createServer({ middleware = [], routes, docs }: ServerOptions): Express {
+export function createServer({ middleware = [], routes, prefix, docs }: ServerOptions): Express {
   const app = express();
   app.set('trust proxy', config.trustProxy);
 
@@ -43,7 +48,9 @@ export function createServer({ middleware = [], routes, docs }: ServerOptions): 
   if (docs && config.docs.enabled) app.use('/docs', docsRouter(docs()));
 
   for (const handler of middleware) app.use(handler);
-  for (const [path, router] of Object.entries(routes)) app.use(path, router);
+  const api = express.Router();
+  for (const [path, router] of Object.entries(routes)) api.use(path, router);
+  app.use(prefix ?? '/', api);
 
   app.use(() => {
     throw notFound('Route not found');

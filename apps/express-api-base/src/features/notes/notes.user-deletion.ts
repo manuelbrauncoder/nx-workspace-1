@@ -1,4 +1,4 @@
-import { removeImages } from './notes.images.js';
+import { removeImages } from '@server/core/images';
 import { imageFilenamesOfUser } from './notes.service.js';
 
 /**

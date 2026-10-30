@@ -55,6 +55,8 @@ export interface OpenApiDocumentOptions {
   description: string;
   /** The `register…Docs` functions of the features, in the order they should appear. */
   register: ((registry: OpenAPIRegistry) => void)[];
+  /** Base path of the routers, as passed to `createServer()`. The features register without it. */
+  prefix?: string;
 }
 
 /** Builds the OpenAPI document of an API app, including `/health`. */
@@ -63,19 +65,27 @@ export function buildOpenApiDocument({
   version,
   description,
   register,
+  prefix = '',
 }: OpenApiDocumentOptions): OpenApiDocument {
   const registry = createRegistry();
+  for (const registerDocs of register) registerDocs(registry);
+  const definitions = registry.definitions.map((definition) =>
+    definition.type === 'route'
+      ? { ...definition, route: { ...definition.route, path: prefix + definition.route.path } }
+      : definition,
+  );
 
-  registry.registerPath({
+  // Registered after the prefix was applied, since /health stays at the root.
+  const system = new OpenAPIRegistry();
+  system.registerPath({
     method: 'get',
     path: '/health',
     tags: ['System'],
     summary: 'Health check',
     responses: { 200: jsonResponse('The API is running', z.object({ status: z.literal('ok') })) },
   });
-  for (const registerDocs of register) registerDocs(registry);
 
-  return new OpenApiGeneratorV31(registry.definitions).generateDocument({
+  return new OpenApiGeneratorV31([...system.definitions, ...definitions]).generateDocument({
     openapi: '3.1.0',
     info: { title, version, description },
   });

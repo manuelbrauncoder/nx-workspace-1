@@ -10,17 +10,20 @@ export async function resetAuthTables() {
   await db.execute(sql`TRUNCATE users, session CASCADE`);
 }
 
-/** Signs up a new user and returns an agent that keeps the session cookie. */
-export async function signedUpAgent(app: Express, email: string) {
+/**
+ * Signs up a new user and returns an agent that keeps the session cookie. `prefix` is the one
+ * passed to `createServer()`, e.g. `/api/v1`.
+ */
+export async function signedUpAgent(app: Express, email: string, prefix = '') {
   const agent = request.agent(app);
-  await agent.post('/auth/sign-up').send({ email, password: 'correct-horse' }).expect(201);
+  await agent.post(`${prefix}/auth/sign-up`).send({ email, password: 'correct-horse' }).expect(201);
   return agent;
 }
 
 /** Creates the configured admin (as the server does at startup) and returns a signed-in agent. */
-export async function adminAgent(app: Express) {
+export async function adminAgent(app: Express, prefix = '') {
   await seedAdmin();
   const agent = request.agent(app);
-  await agent.post('/auth/sign-in').send(config.admin).expect(200);
+  await agent.post(`${prefix}/auth/sign-in`).send(config.admin).expect(200);
   return agent;
 }

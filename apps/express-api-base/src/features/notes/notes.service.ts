@@ -1,9 +1,9 @@
 import type { CreateNoteInput, UpdateNoteInput } from '@contracts/notes';
 import { db } from '@server/core/db/db';
 import { badRequest, notFound } from '@server/core/errors';
+import { imagePath, processImage, removeImages, saveImage } from '@server/core/images';
 import { and, asc, count, desc, eq, inArray } from 'drizzle-orm';
 import { config } from '../../config/index.js';
-import { imagePath, processImage, removeImages, saveImage } from './notes.images.js';
 import { sanitizeDescription } from './notes.sanitize.js';
 import { noteImages, notes } from './notes.table.js';
 

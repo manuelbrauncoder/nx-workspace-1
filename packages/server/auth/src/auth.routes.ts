@@ -1,7 +1,8 @@
 import { signInSchema, signUpSchema } from '@contracts/auth';
-import { unauthorized } from '@server/core/errors';
+import { config } from '@server/core/config';
+import { forbidden, unauthorized } from '@server/core/errors';
 import { parse } from '@server/core/validate';
-import { Router } from 'express';
+import { type RequestHandler, Router } from 'express';
 import { currentUserId, requireAuth } from './auth.middleware';
 import { getUser, signIn, signUp } from './auth.service';
 import { endSession, sessionCookie, startSession } from './auth.session';
@@ -9,7 +10,13 @@ import { authRateLimit } from './rate-limit';
 
 export const authRouter = Router();
 
-authRouter.post('/sign-up', authRateLimit, async (req, res) => {
+/** Read per request, so tests can switch it; a closed sign-up does not count against the limit. */
+const signUpOpen: RequestHandler = (_req, _res, next) => {
+  if (!config.auth.signUpEnabled) throw forbidden('Sign-up is disabled');
+  next();
+};
+
+authRouter.post('/sign-up', signUpOpen, authRateLimit, async (req, res) => {
   const user = await signUp(parse(signUpSchema, req.body));
   await startSession(req, user.id);
   res.status(201).json({ user });

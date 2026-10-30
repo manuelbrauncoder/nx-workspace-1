@@ -8,7 +8,10 @@ const envSchema = z.object({
   SESSION_SECRET: z.string().min(32),
 });
 
-/** What every API app has in its config file. An app adds its own keys with `extendConfig()`. */
+/**
+ * What every API app has in its config file. An app adds its own keys with `extendConfig()`.
+ * Keys added later have a default, so the file of an existing deployment stays valid.
+ */
 const baseFileSchema = z.object({
   port: z.number().int().positive(),
   logLevel: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']),
@@ -26,6 +29,8 @@ const baseFileSchema = z.object({
     authWindowMinutes: z.number().positive(),
     authMaxRequests: z.number().int().positive(),
   }),
+  // false closes POST /auth/sign-up, so only the admin and existing users can sign in
+  auth: z.object({ signUpEnabled: z.boolean() }).default({ signUpEnabled: true }),
   // the first admin, created at startup while no admin exists (see @server/auth)
   admin: z.object({
     email: z.email(),
@@ -33,6 +38,14 @@ const baseFileSchema = z.object({
   }),
   // serves the OpenAPI spec and Swagger UI under /docs
   docs: z.object({ enabled: z.boolean() }),
+  // where uploaded images are stored, see images.ts
+  uploads: z
+    .object({
+      dir: z.string().min(1),
+      maxFileSizeMb: z.number().positive(),
+      maxImageWidth: z.number().int().positive(),
+    })
+    .default({ dir: './uploads', maxFileSizeMb: 10, maxImageWidth: 2000 }),
 });
 
 function fail(message: string): never {
@@ -40,10 +53,10 @@ function fail(message: string): never {
   process.exit(1);
 }
 
-function readEnv() {
-  const env = envSchema.safeParse(process.env);
-  if (!env.success) fail(`environment variables\n${z.prettifyError(env.error)}`);
-  return env.data;
+function parse<T extends z.ZodType>(schema: T, data: unknown, source: string): z.output<T> {
+  const result = schema.safeParse(data);
+  if (!result.success) fail(`${source}\n${z.prettifyError(result.error)}`);
+  return result.data;
 }
 
 function readFile(path: string): unknown {
@@ -54,18 +67,25 @@ function readFile(path: string): unknown {
   }
 }
 
-function parseFile<T extends z.ZodType>(schema: T, path: string, json: unknown): z.output<T> {
-  const file = schema.safeParse(json);
-  if (!file.success) fail(`${path}\n${z.prettifyError(file.error)}`);
-  return file.data;
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+/** Merges the keys of an app into the shared ones, one level deep, e.g. `uploads.maxImagesPerNote`. */
+function merge<A extends object, B extends object>(base: A, own: B): A & B {
+  const result: Record<string, unknown> = { ...(base as Record<string, unknown>) };
+  for (const [key, value] of Object.entries(own)) {
+    const current = result[key];
+    result[key] = isPlainObject(current) && isPlainObject(value) ? { ...current, ...value } : value;
+  }
+  return result as A & B;
 }
 
-const env = readEnv();
+const env = parse(envSchema, process.env, 'environment variables');
 const json = readFile(env.CONFIG_PATH);
 
 /** The settings every API app shares, read once at startup. */
 export const config = Object.freeze({
-  ...parseFile(baseFileSchema, env.CONFIG_PATH, json),
+  ...parse(baseFileSchema, json, env.CONFIG_PATH),
   nodeEnv: env.NODE_ENV,
   databaseUrl: env.DATABASE_URL,
   sessionSecret: env.SESSION_SECRET,
@@ -74,14 +94,20 @@ export const config = Object.freeze({
 export type Config = typeof config;
 
 /**
- * The shared settings plus the keys of one app, read from the same file.
+ * The shared settings plus the keys of one app, read from the same file and environment. A key
+ * the shared settings have too, such as `uploads`, is merged into them.
  *
  * @example
- * export const config = extendConfig({
- *   uploads: z.object({ dir: z.string().min(1) }),
- * });
+ * export const config = extendConfig(
+ *   { uploads: z.object({ maxImagesPerNote: z.number().int().positive() }) },
+ *   { SMTP_PASSWORD: z.string().optional() },
+ * );
  */
-export function extendConfig<T extends z.ZodRawShape>(shape: T) {
-  const own = parseFile(z.object(shape), env.CONFIG_PATH, json);
-  return Object.freeze({ ...config, ...own });
+export function extendConfig<
+  F extends z.ZodRawShape,
+  E extends z.ZodRawShape = Record<string, never>,
+>(fileShape: F, envShape?: E) {
+  const file = parse(z.object(fileShape), json, env.CONFIG_PATH);
+  const ownEnv = parse(z.object(envShape ?? ({} as E)), process.env, 'environment variables');
+  return Object.freeze(merge(merge(config, file), { env: ownEnv }));
 }
