@@ -3,8 +3,14 @@ name: CI
 on:
   push:
     branches: [main]
-    # One release tag per app, e.g. angular-base-v1.2.0 or portfolio-api-v1.2.0.
-    tags: ['angular-base-v*', 'express-api-base-v*', 'portfolio-web-v*', 'portfolio-api-v*']
+    # One release tag per app, e.g. nx1-angular-base-v1.2.0 or nx1-portfolio-api-v1.2.0.
+    tags:
+      [
+        'nx1-angular-base-v*',
+        'nx1-express-api-base-v*',
+        'nx1-portfolio-web-v*',
+        'nx1-portfolio-api-v*',
+      ]
   pull_request:
   workflow_dispatch:
 
@@ -81,7 +87,7 @@ jobs:
     name: Build and push angular-base image
     runs-on: ubuntu-latest
     needs: checks
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/angular-base-v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nx1-angular-base-v')
 
     permissions:
       contents: read
@@ -101,13 +107,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Tag `angular-base-v1.2.0` becomes image `ghcr.io/<owner>/angular-base:v1.2.0`.
+      # Tag `nx1-angular-base-v1.2.0` becomes image `ghcr.io/<owner>/nx1-angular-base:v1.2.0`.
       - name: Set image metadata
         id: meta
         run: |
           OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/angular-base" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#angular-base-}" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${OWNER}/nx1-angular-base" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME#nx1-angular-base-}" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
@@ -140,7 +146,7 @@ jobs:
     name: Build and push express-api-base image
     runs-on: ubuntu-latest
     needs: checks
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/express-api-base-v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nx1-express-api-base-v')
 
     permissions:
       contents: read
@@ -160,13 +166,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Tag `express-api-base-v1.2.0` becomes image `ghcr.io/<owner>/express-api-base:v1.2.0`.
+      # Tag `nx1-express-api-base-v1.2.0` becomes image `ghcr.io/<owner>/nx1-express-api-base:v1.2.0`.
       - name: Set image metadata
         id: meta
         run: |
           OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/express-api-base" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#express-api-base-}" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${OWNER}/nx1-express-api-base" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME#nx1-express-api-base-}" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
@@ -199,7 +205,7 @@ jobs:
     name: Build and push portfolio-web image
     runs-on: ubuntu-latest
     needs: checks
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/portfolio-web-v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nx1-portfolio-web-v')
 
     permissions:
       contents: read
@@ -219,13 +225,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Tag `portfolio-web-v1.2.0` becomes image `ghcr.io/<owner>/portfolio-web:v1.2.0`.
+      # Tag `nx1-portfolio-web-v1.2.0` becomes image `ghcr.io/<owner>/nx1-portfolio-web:v1.2.0`.
       - name: Set image metadata
         id: meta
         run: |
           OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/portfolio-web" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#portfolio-web-}" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${OWNER}/nx1-portfolio-web" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME#nx1-portfolio-web-}" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
@@ -258,7 +264,7 @@ jobs:
     name: Build and push portfolio-api image
     runs-on: ubuntu-latest
     needs: checks
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/portfolio-api-v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nx1-portfolio-api-v')
 
     permissions:
       contents: read
@@ -278,13 +284,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Tag `portfolio-api-v1.2.0` becomes image `ghcr.io/<owner>/portfolio-api:v1.2.0`.
+      # Tag `nx1-portfolio-api-v1.2.0` becomes image `ghcr.io/<owner>/nx1-portfolio-api:v1.2.0`.
       - name: Set image metadata
         id: meta
         run: |
           OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/portfolio-api" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#portfolio-api-}" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${OWNER}/nx1-portfolio-api" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME#nx1-portfolio-api-}" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
