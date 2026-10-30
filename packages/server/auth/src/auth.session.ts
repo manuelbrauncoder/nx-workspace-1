@@ -1,10 +1,10 @@
+import { config } from '@server/core/config';
 import { db, pool } from '@server/core/db/db';
 import connectPgSimple from 'connect-pg-simple';
 import { sql } from 'drizzle-orm';
 import type { CookieOptions, Request } from 'express';
 import session from 'express-session';
-import { config } from '../../config/index.js';
-import { sessions } from './sessions.table.js';
+import { sessions } from './sessions.table';
 
 declare module 'express-session' {
   interface SessionData {

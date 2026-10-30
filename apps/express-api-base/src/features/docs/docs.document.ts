@@ -1,6 +1,6 @@
+import { registerAdminDocs } from '@server/auth/admin.openapi';
+import { registerAuthDocs } from '@server/auth/auth.openapi';
 import { buildOpenApiDocument, type OpenApiDocument } from '@server/core/openapi';
-import { registerAdminDocs } from '../admin/admin.openapi.js';
-import { registerAuthDocs } from '../auth/auth.openapi.js';
 import { registerNotesDocs } from '../notes/notes.openapi.js';
 
 const description = `

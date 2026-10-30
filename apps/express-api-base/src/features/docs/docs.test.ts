@@ -1,12 +1,12 @@
 import { userSchema } from '@contracts/auth';
 import { noteImageSchema, noteSchema } from '@contracts/notes';
+import { adminRouter } from '@server/auth/admin.routes';
+import { authRouter } from '@server/auth/auth.routes';
 import type { Router } from 'express';
 import sharp from 'sharp';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { adminAgent, app, signedUpAgent } from '../../test/helpers.js';
-import { adminRouter } from '../admin/admin.routes.js';
-import { authRouter } from '../auth/auth.routes.js';
 import { notesRouter } from '../notes/notes.routes.js';
 import { buildDocs } from './docs.document.js';
 

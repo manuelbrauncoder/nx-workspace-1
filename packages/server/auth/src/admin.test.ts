@@ -1,10 +1,9 @@
-import { readdir } from 'node:fs/promises';
-import sharp from 'sharp';
+import { config } from '@server/core/config';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { config } from '../../config/index.js';
-import { adminAgent, app, signedUpAgent } from '../../test/helpers.js';
-import { seedAdmin } from './admin.seed.js';
+import { seedAdmin } from './admin.seed';
+import { adminAgent, app, signedUpAgent } from './testing/test-app';
+import { onUserDeleted } from './user-deletion';
 
 const UNKNOWN_ID = '00000000-0000-4000-8000-000000000000';
 
@@ -90,29 +89,37 @@ describe('admin', () => {
     await admin.delete('/admin/users/not-a-uuid').expect(400);
   });
 
-  it('deletes a user with their sessions, notes and image files', async () => {
+  it('deletes a user with their sessions', async () => {
     const admin = await adminAgent();
     const user = await signedUpAgent('ada@example.com');
     const id = await idOf(user);
 
-    const note = await user.post('/notes').send({ title: 'Note' }).expect(201);
-    const png = await sharp({ create: { width: 10, height: 10, channels: 3, background: 'red' } })
-      .png()
-      .toBuffer();
-    await user.post(`/notes/${note.body.note.id}/images`).attach('images', png, 'a.png');
-    expect(await readdir(config.uploads.dir)).toHaveLength(1);
-
     await admin.delete(`/admin/users/${id}`).expect(204);
 
     await user.get('/auth/me').expect(401);
-    expect(await readdir(config.uploads.dir)).toHaveLength(0);
     const list = await admin.get('/admin/users').expect(200);
     expect(list.body.users).toHaveLength(1);
 
-    // the email is free again, and the new account starts empty
-    const again = await signedUpAgent('ada@example.com');
-    const notes = await again.get('/notes').expect(200);
-    expect(notes.body.notes).toHaveLength(0);
+    // the email is free again
+    await signedUpAgent('ada@example.com');
+  });
+
+  it('runs the cleanup of features after the user is deleted', async () => {
+    const admin = await adminAgent();
+    const user = await signedUpAgent('ada@example.com');
+    const id = await idOf(user);
+    const steps: string[] = [];
+    const remove = onUserDeleted(async (userId) => {
+      steps.push(`before ${userId === id}`);
+      return async () => {
+        steps.push('after');
+      };
+    });
+
+    await admin.delete(`/admin/users/${id}`).expect(204);
+
+    remove();
+    expect(steps).toEqual(['before true', 'after']);
   });
 
   it('revokes all sessions of a user, who can sign in again', async () => {

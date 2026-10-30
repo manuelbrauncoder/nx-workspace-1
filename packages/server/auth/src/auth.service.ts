@@ -3,7 +3,7 @@ import { db } from '@server/core/db/db';
 import { conflict, unauthorized } from '@server/core/errors';
 import argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
-import { users } from './users.table.js';
+import { users } from './users.table';
 
 export const publicUser = {
   id: users.id,

@@ -2,11 +2,10 @@ import type { Role } from '@contracts/auth';
 import { db } from '@server/core/db/db';
 import { conflict, notFound } from '@server/core/errors';
 import { asc, eq } from 'drizzle-orm';
-import { publicUser } from '../auth/auth.service.js';
-import { revokeSessions } from '../auth/auth.session.js';
-import { users } from '../auth/users.table.js';
-import { removeImages } from '../notes/notes.images.js';
-import { imageFilenamesOfUser } from '../notes/notes.service.js';
+import { publicUser } from './auth.service';
+import { revokeSessions } from './auth.session';
+import { prepareUserDeletion } from './user-deletion';
+import { users } from './users.table';
 
 export function listUsers() {
   return db.select(publicUser).from(users).orderBy(asc(users.createdAt));
@@ -28,16 +27,16 @@ export async function setRole(actorId: string, userId: string, role: Role) {
 export async function deleteUser(actorId: string, userId: string) {
   if (userId === actorId) throw conflict('You cannot delete your own account');
 
-  const filenames = await imageFilenamesOfUser(userId);
+  const cleanUp = await prepareUserDeletion(userId);
 
-  // notes and image rows go with the user (cascade); the files are removed afterwards
+  // rows of features go with the user (cascade); their files are removed afterwards
   await db.transaction(async (tx) => {
     const deleted = await tx.delete(users).where(eq(users.id, userId)).returning({ id: users.id });
     if (deleted.length === 0) throw notFound('User not found');
     await revokeSessions(userId, tx);
   });
 
-  await removeImages(filenames);
+  await cleanUp();
 }
 
 export async function revokeUserSessions(userId: string) {

@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { app } from '../../test/helpers.js';
+import { app } from './testing/test-app';
 
 const credentials = { email: 'Ada@Example.com', password: 'correct-horse' };
 
@@ -71,7 +71,6 @@ describe('auth', () => {
 
   it('requires a session', async () => {
     await request(app).get('/auth/me').expect(401);
-    await request(app).get('/notes').expect(401);
   });
 
   it('rejects state-changing requests from an unknown origin', async () => {

@@ -4,9 +4,9 @@ import {
   noteParamsSchema,
   updateNoteSchema,
 } from '@contracts/notes';
+import { currentUserId, requireAuth } from '@server/auth/auth.middleware';
 import { parse } from '@server/core/validate';
 import { Router } from 'express';
-import { currentUserId, requireAuth } from '../auth/auth.middleware.js';
 import { uploadImages } from './notes.images.js';
 import {
   addImages,

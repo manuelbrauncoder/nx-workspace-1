@@ -1,9 +1,9 @@
+import { config } from '@server/core/config';
 import { db } from '@server/core/db/db';
 import { logger } from '@server/core/logger';
 import argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
-import { config } from '../../config/index.js';
-import { users } from '../auth/users.table.js';
+import { users } from './users.table';
 
 /**
  * Creates the first admin from config.admin. Runs at every start and does nothing once an

@@ -1,8 +1,9 @@
 import { readdir } from 'node:fs/promises';
 import sharp from 'sharp';
+import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { config } from '../../config/index.js';
-import { signedUpAgent } from '../../test/helpers.js';
+import { app, signedUpAgent } from '../../test/helpers.js';
 
 function png(width = 400, height = 200) {
   return sharp({ create: { width, height, channels: 3, background: 'red' } })
@@ -11,6 +12,10 @@ function png(width = 400, height = 200) {
 }
 
 describe('notes', () => {
+  it('requires a session', async () => {
+    await request(app).get('/notes').expect(401);
+  });
+
   it('creates, reads, updates and deletes a note', async () => {
     const agent = await signedUpAgent('ada@example.com');
 

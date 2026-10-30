@@ -1,0 +1,24 @@
+{
+  "port": 3001,
+  "logLevel": "silent",
+  "trustProxy": false,
+  "cors": {
+    "origins": ["http://localhost:4200"]
+  },
+  "session": {
+    "cookieName": "sid",
+    "maxAgeDays": 1,
+    "secureCookie": false
+  },
+  "rateLimit": {
+    "authWindowMinutes": 15,
+    "authMaxRequests": 1000
+  },
+  "admin": {
+    "email": "admin@mail.dev",
+    "password": "test-admin-password"
+  },
+  "docs": {
+    "enabled": true
+  }
+}

@@ -1,5 +1,5 @@
+import { config } from '@server/core/config';
 import { rateLimit } from 'express-rate-limit';
-import { config } from '../../config/index.js';
 
 /** Slows down password guessing and mass sign-ups; counted per client IP. */
 export const authRateLimit = rateLimit({

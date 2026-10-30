@@ -2,10 +2,10 @@ import { signInSchema, signUpSchema } from '@contracts/auth';
 import { unauthorized } from '@server/core/errors';
 import { parse } from '@server/core/validate';
 import { Router } from 'express';
-import { authRateLimit } from '../../shared/middleware/rate-limit.js';
-import { currentUserId, requireAuth } from './auth.middleware.js';
-import { getUser, signIn, signUp } from './auth.service.js';
-import { endSession, sessionCookie, startSession } from './auth.session.js';
+import { currentUserId, requireAuth } from './auth.middleware';
+import { getUser, signIn, signUp } from './auth.service';
+import { endSession, sessionCookie, startSession } from './auth.session';
+import { authRateLimit } from './rate-limit';
 
 export const authRouter = Router();
 

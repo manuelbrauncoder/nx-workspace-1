@@ -1,5 +1,5 @@
+import { users } from '@server/auth/users.table';
 import { index, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { users } from '../auth/users.table.js';
 
 export const notes = pgTable(
   'notes',

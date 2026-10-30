@@ -1,11 +1,15 @@
+import { adminRouter } from '@server/auth/admin.routes';
+import { authRouter } from '@server/auth/auth.routes';
+import { sessionMiddleware } from '@server/auth/auth.session';
+import { onUserDeleted } from '@server/auth/user-deletion';
 import { createServer } from '@server/core/server';
-import { adminRouter } from './features/admin/admin.routes.js';
-import { authRouter } from './features/auth/auth.routes.js';
-import { sessionMiddleware } from './features/auth/auth.session.js';
 import { buildDocs } from './features/docs/docs.document.js';
 import { notesRouter } from './features/notes/notes.routes.js';
+import { removeNoteImagesOfUser } from './features/notes/notes.user-deletion.js';
 
 export function createApp() {
+  onUserDeleted(removeNoteImagesOfUser);
+
   return createServer({
     middleware: [sessionMiddleware],
     routes: {

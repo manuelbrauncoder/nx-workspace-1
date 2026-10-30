@@ -23,7 +23,8 @@
       "@shared/*": ["./packages/shared/ui/src/*"],
       "@spartan-ng/helm/*": ["./packages/shared/helm-vega/*/src/index.ts"],
       "@contracts/*": ["./packages/contracts/src/*"],
-      "@server/core/*": ["./packages/server/core/src/*"]
+      "@server/core/*": ["./packages/server/core/src/*"],
+      "@server/auth/*": ["./packages/server/auth/src/*"]
     }
   },
   "angularCompilerOptions": {

@@ -1,6 +1,6 @@
 import { forbidden, unauthorized } from '@server/core/errors';
 import type { Request, RequestHandler } from 'express';
-import { getUser } from './auth.service.js';
+import { getUser } from './auth.service';
 
 export const requireAuth: RequestHandler = (req, _res, next) => {
   if (!req.session.userId) throw unauthorized();
