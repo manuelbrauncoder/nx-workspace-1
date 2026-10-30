@@ -1,5 +1,5 @@
+import { forbidden, unauthorized } from '@server/core/errors';
 import type { Request, RequestHandler } from 'express';
-import { forbidden, unauthorized } from '../../shared/errors.js';
 import { getUser } from './auth.service.js';
 
 export const requireAuth: RequestHandler = (req, _res, next) => {

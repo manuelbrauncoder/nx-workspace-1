@@ -1,6 +1,6 @@
 import pg from 'pg';
 import type { TestProject } from 'vitest/node';
-import { runMigrations } from '../db/migrate.js';
+import { runMigrations } from '../db/migrate';
 
 /** Creates the test database if it is missing and brings it up to date. */
 export default async function setup(project: TestProject) {

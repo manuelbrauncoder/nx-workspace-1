@@ -4,8 +4,8 @@ import {
   noteParamsSchema,
   updateNoteSchema,
 } from '@contracts/notes';
+import { parse } from '@server/core/validate';
 import { Router } from 'express';
-import { parse } from '../../shared/validate.js';
 import { currentUserId, requireAuth } from '../auth/auth.middleware.js';
 import { uploadImages } from './notes.images.js';
 import {

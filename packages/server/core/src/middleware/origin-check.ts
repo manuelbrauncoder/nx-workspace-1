@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
-import { config } from '../../config/index.js';
-import { forbidden } from '../errors.js';
+import { config } from '../config';
+import { forbidden } from '../errors';
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 

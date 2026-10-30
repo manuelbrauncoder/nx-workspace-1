@@ -8,7 +8,7 @@ import { adminAgent, app, signedUpAgent } from '../../test/helpers.js';
 import { adminRouter } from '../admin/admin.routes.js';
 import { authRouter } from '../auth/auth.routes.js';
 import { notesRouter } from '../notes/notes.routes.js';
-import { buildOpenApiDocument } from './docs.document.js';
+import { buildDocs } from './docs.document.js';
 
 /** "POST /notes/{id}/images" for every route registered on the router. */
 function routesOf(prefix: string, router: Router): string[] {
@@ -30,7 +30,7 @@ describe('docs', () => {
   });
 
   it('documents exactly the routes that exist', () => {
-    const documented = Object.entries(buildOpenApiDocument().paths ?? {})
+    const documented = Object.entries(buildDocs().paths ?? {})
       .flatMap(([path, operations]) =>
         Object.keys(operations).map((method) => `${method.toUpperCase()} ${path}`),
       )

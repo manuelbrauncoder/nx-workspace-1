@@ -1,6 +1,6 @@
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { signInSchema, signUpSchema, userResponseSchema } from '@contracts/auth';
-import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '../../shared/openapi.js';
+import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '@server/core/openapi';
 
 export function registerAuthDocs(registry: OpenAPIRegistry) {
   registry.registerPath({

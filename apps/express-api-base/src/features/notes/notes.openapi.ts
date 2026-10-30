@@ -8,8 +8,8 @@ import {
   notesResponseSchema,
   updateNoteSchema,
 } from '@contracts/notes';
+import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '@server/core/openapi';
 import { config } from '../../config/index.js';
-import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '../../shared/openapi.js';
 
 const { maxFileSizeMb, maxImagesPerNote, maxImageWidth } = config.uploads;
 

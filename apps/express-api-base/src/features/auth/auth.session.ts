@@ -1,9 +1,9 @@
+import { db, pool } from '@server/core/db/db';
 import connectPgSimple from 'connect-pg-simple';
 import { sql } from 'drizzle-orm';
 import type { CookieOptions, Request } from 'express';
 import session from 'express-session';
 import { config } from '../../config/index.js';
-import { db, pool } from '../../db/index.js';
 import { sessions } from './sessions.table.js';
 
 declare module 'express-session' {

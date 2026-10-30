@@ -1,5 +1,5 @@
 import type { z } from 'zod';
-import { badRequest } from './errors.js';
+import { badRequest } from './errors';
 
 /** Validates request input (body, params, query) and returns the typed result, or throws a 400. */
 export function parse<T extends z.ZodType>(schema: T, data: unknown): z.output<T> {

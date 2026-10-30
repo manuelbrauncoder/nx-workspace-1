@@ -1,6 +1,6 @@
 import { updateUserSchema, userParamsSchema } from '@contracts/auth';
+import { parse } from '@server/core/validate';
 import { Router } from 'express';
-import { parse } from '../../shared/validate.js';
 import { currentUserId, requireAdmin } from '../auth/auth.middleware.js';
 import { deleteUser, listUsers, revokeUserSessions, setRole } from './admin.service.js';
 

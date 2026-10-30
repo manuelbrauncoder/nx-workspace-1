@@ -1,8 +1,8 @@
+import { db } from '@server/core/db/db';
+import { logger } from '@server/core/logger';
 import argon2 from 'argon2';
 import { eq } from 'drizzle-orm';
 import { config } from '../../config/index.js';
-import { db } from '../../db/index.js';
-import { logger } from '../../shared/logger.js';
 import { users } from '../auth/users.table.js';
 
 /**

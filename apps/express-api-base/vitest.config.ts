@@ -6,7 +6,7 @@ export default defineConfig({
   test: {
     name: 'express-api-base',
     include: ['src/**/*.test.ts'],
-    globalSetup: ['src/test/global-setup.ts'],
+    globalSetup: ['../../packages/server/core/src/testing/global-setup.ts'],
     setupFiles: ['src/test/setup.ts'],
     // all test files share one database
     fileParallelism: false,

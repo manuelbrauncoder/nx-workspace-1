@@ -5,7 +5,7 @@ import {
   userResponseSchema,
   usersResponseSchema,
 } from '@contracts/auth';
-import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '../../shared/openapi.js';
+import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '@server/core/openapi';
 
 export function registerAdminDocs(registry: OpenAPIRegistry) {
   const base = { tags: ['Admin'], security: sessionAuth };

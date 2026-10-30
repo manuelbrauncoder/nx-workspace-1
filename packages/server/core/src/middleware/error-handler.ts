@@ -1,7 +1,7 @@
 import type { ErrorRequestHandler } from 'express';
 import { MulterError } from 'multer';
-import { HttpError } from '../errors.js';
-import { logger } from '../logger.js';
+import { HttpError } from '../errors';
+import { logger } from '../logger';
 
 function toHttpError(error: unknown): HttpError | undefined {
   if (error instanceof HttpError) return error;

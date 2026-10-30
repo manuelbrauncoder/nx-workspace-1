@@ -1,9 +1,9 @@
+import { db, pool } from '@server/core/db/db';
 import { sql } from 'drizzle-orm';
 import { mkdir, readdir, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { afterAll, beforeEach } from 'vitest';
 import { config } from '../config/index.js';
-import { db, pool } from '../db/index.js';
 
 // Every test starts with an empty database and an empty uploads directory.
 beforeEach(async () => {

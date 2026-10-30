@@ -1,4 +1,4 @@
-import { runMigrations } from '../db/migrate.js';
+import { runMigrations } from '@server/core/db/migrate';
 
 // Reads only DATABASE_URL so it can run in a container without the JSON config file.
 const databaseUrl = process.env['DATABASE_URL'];

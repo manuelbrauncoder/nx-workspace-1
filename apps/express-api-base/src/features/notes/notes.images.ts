@@ -1,3 +1,5 @@
+import { badRequest } from '@server/core/errors';
+import { logger } from '@server/core/logger';
 import multer from 'multer';
 import { randomUUID } from 'node:crypto';
 import { mkdirSync } from 'node:fs';
@@ -5,8 +7,6 @@ import { rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 import { config } from '../../config/index.js';
-import { badRequest } from '../../shared/errors.js';
-import { logger } from '../../shared/logger.js';
 
 const uploadsDir = path.resolve(config.uploads.dir);
 mkdirSync(uploadsDir, { recursive: true });

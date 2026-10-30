@@ -1,7 +1,11 @@
-import { OpenAPIRegistry, type ResponseConfig } from '@asteasolutions/zod-to-openapi';
+import {
+  OpenApiGeneratorV31,
+  OpenAPIRegistry,
+  type ResponseConfig,
+} from '@asteasolutions/zod-to-openapi';
 import { errorSchema } from '@contracts/errors';
 import { z } from 'zod';
-import { config } from '../config/index.js';
+import { config } from './config';
 
 const ERROR_DESCRIPTIONS = {
   400: 'Invalid input; `details` lists the failing fields',
@@ -40,4 +44,39 @@ export function errorResponses(...statuses: (keyof typeof ERROR_DESCRIPTIONS)[])
   return Object.fromEntries(
     statuses.map((status) => [status, jsonResponse(ERROR_DESCRIPTIONS[status], errorSchema)]),
   );
+}
+
+export type OpenApiDocument = ReturnType<OpenApiGeneratorV31['generateDocument']>;
+
+export interface OpenApiDocumentOptions {
+  title: string;
+  version: string;
+  /** Markdown shown at the top of the Swagger UI. */
+  description: string;
+  /** The `register…Docs` functions of the features, in the order they should appear. */
+  register: ((registry: OpenAPIRegistry) => void)[];
+}
+
+/** Builds the OpenAPI document of an API app, including `/health`. */
+export function buildOpenApiDocument({
+  title,
+  version,
+  description,
+  register,
+}: OpenApiDocumentOptions): OpenApiDocument {
+  const registry = createRegistry();
+
+  registry.registerPath({
+    method: 'get',
+    path: '/health',
+    tags: ['System'],
+    summary: 'Health check',
+    responses: { 200: jsonResponse('The API is running', z.object({ status: z.literal('ok') })) },
+  });
+  for (const registerDocs of register) registerDocs(registry);
+
+  return new OpenApiGeneratorV31(registry.definitions).generateDocument({
+    openapi: '3.1.0',
+    info: { title, version, description },
+  });
 }
