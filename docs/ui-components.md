@@ -72,6 +72,7 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 | `UiAlert`                | `app-ui-alert`                                | `@shared/ui/alert/alert`                           |
 | `UiEmpty`                | `app-ui-empty`                                | `@shared/ui/empty/empty`                           |
 | `UiAttachmentImports`    | `app-ui-attachment`, `[appUiAttachmentGroup]` | `@shared/ui/attachment/attachment`                 |
+| `UiBreadcrumb`           | `app-ui-breadcrumb`                           | `@shared/ui/breadcrumb/breadcrumb`                 |
 | `UiRichText`             | `app-ui-rich-text`                            | `@shared/ui/rich-text/rich-text`                   |
 | `UiMenuImports`          | `[appUiMenuTrigger]`, `app-ui-menu` and parts | `@shared/ui/menu/menu`                             |
 | `UiNavMenu`              | `app-ui-nav-menu`                             | `@shared/ui/nav-menu/nav-menu`                     |
@@ -94,14 +95,15 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 </button>
 ```
 
-| Input          | Values                                                                 |
-| -------------- | ---------------------------------------------------------------------- |
-| `variant`      | `default`, `outline`, `secondary`, `ghost`, `destructive`, `link`      |
-| `size`         | `default`, `xs`, `sm`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg`   |
-| `disabled`     | boolean                                                                |
-| `loading`      | boolean. Shows a spinner in front of the content and blocks the button |
-| `loadingLabel` | Announced to screen readers while loading                              |
+| Input          | Values                                                                     |
+| -------------- | -------------------------------------------------------------------------- |
+| `variant`      | `default`, `outline`, `secondary`, `ghost`, `destructive`, `link`, `brand` |
+| `size`         | `default`, `xs`, `sm`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg`       |
+| `disabled`     | boolean                                                                    |
+| `loading`      | boolean. Shows a spinner in front of the content and blocks the button     |
+| `loadingLabel` | Announced to screen readers while loading                                  |
 
+- `brand` is for the one main action of a page, e.g. in a hero. Its colors come from the tokens `--brand` and `--brand-foreground` of the app's theme (angular-base: the primary color, portfolio-web: the trail-marker yellow). Spartan has no such variant, the wrapper replaces the colors of `default`
 - Show the loading state through `[loading]`, not through your own spinner in the content
 - An icon-only button needs an `aria-label`
 - A blocked link gets `aria-disabled` and swallows the click, since `<a>` has no `disabled` attribute
@@ -118,7 +120,9 @@ Typography goes through `appUiText` with a variant:
 </ul>
 ```
 
-Variants: `h1`, `h2`, `h3`, `h4`, `p`, `lead`, `large`, `small`, `muted`, `code`, `blockquote`, `list`.
+Variants: `display`, `section`, `title`, `h1`, `h2`, `h3`, `h4`, `p`, `lead`, `large`, `small`, `muted`, `code`, `blockquote`, `list`.
+
+`display`, `section` and `title` are large sizes for landing pages, e.g. in `portfolio-web` the name in the hero, the section headings and the project titles. They scale with the viewport through `clamp()`.
 
 The element decides the semantics, the variant only the look. An `h2` may look like an `h3` when the page outline needs it. Classes on the element win over the variant.
 
@@ -249,7 +253,7 @@ A file or an image as a tile. Import `UiAttachmentImports`.
 ### Rich text
 
 ```html
-<app-ui-rich-text [html]="note.description" />
+<app-ui-rich-text [html]="note.description" /> <app-ui-rich-text [html]="html" profile="page" />
 ```
 
 Shows rich text that was written with `app-form-rich-text` and stored as HTML. Stored HTML is untrusted: anyone can send it to the API without going through the editor. The wrapper therefore reduces it to the formats listed in [rich-text-rules.ts](../packages/contracts/src/rich-text.ts) before it is rendered:
@@ -263,6 +267,8 @@ The result is bound to `innerHTML`, where Angular's sanitizer runs as well. Neve
 The typography lives in [\_rich-text.scss](../packages/shared/styles/base/_rich-text.scss) as the global class `.rich-text`, because rendered HTML carries no component scope. The editor uses the same class, so a text looks the same while it is written and when it is shown.
 
 This is one of three layers. The backend sanitizes the HTML too when a note is saved. A Content Security Policy as the third layer is not set up yet.
+
+- the profile `page` (default `text`) is for pages of this site such as the legal pages: it also keeps paths of the site (`/privacy`, `/#contact`, never `//`) and `tel:` links. Both open in the same tab, a plain click on a path goes through the router instead of loading the page again
 
 ### Menu
 
@@ -322,6 +328,29 @@ private readonly _items: UiNavMenuItem[] = [
 
 Header and drawer both use it with `APP_NAV_ITEMS`, see [app-header.html](../apps/angular-base/src/app/layout/app-header/app-header.html) and [app-drawer.html](../apps/angular-base/src/app/layout/app-drawer/app-drawer.html).
 
+- `fragment` links to a section of a page, e.g. `{ path: '/', fragment: 'projects', labelKey: '...' }` for `/#projects`. Such a link is never marked as current, all sections share the path of their page. The section needs an `id`, and `tabindex="-1"` so the shell can move focus to it after the jump
+
+### Breadcrumb
+
+Where the current page sits: a trail of links from the top level down to it. The admin area of `portfolio-web` uses it on every page below the hub instead of a "back" link.
+
+```ts
+private readonly _breadcrumb: UiBreadcrumbItem[] = [
+  { labelKey: 'admin.areas.hub', path: '/admin' },
+  { labelKey: 'admin.areas.portfolio', path: '/admin/portfolio' },
+  { labelKey: 'portfolioEditor.sections.hero' },
+];
+```
+
+```html
+<app-ui-breadcrumb [items]="_breadcrumb" />
+```
+
+- Labels are translation keys, the wrapper translates them. A label that depends on the page (a section, a legal page) goes into a `computed`
+- Every item but the last is a link through the router. The last item is the current page: no link, `aria-current="page"`, even if it has a `path`
+- The `<nav>` is named "Navigationspfad" (`common.breadcrumb`), `label` overrides it. The separators are hidden from screen readers
+- Built on Spartan's `breadcrumb`. The list wraps on narrow screens, there is no collapsing into an ellipsis
+
 ### Sheet
 
 A panel that slides in from an edge of the screen and covers the page as a modal dialog. Use it for a mobile navigation or a filter:
@@ -342,6 +371,8 @@ A panel that slides in from an edge of the screen and covers the page as a modal
 - Focus is trapped inside while it is open and returns to the triggering element afterwards
 
 The mobile navigation uses it, see [app-drawer.html](../apps/angular-base/src/app/layout/app-drawer/app-drawer.html).
+
+- `(closed)` emits once the panel is gone and the page scrolls again. While it is open the page is locked, so the router cannot scroll to a section. The drawer waits for this before it jumps to the section of a link, see [app-drawer.ts](../apps/portfolio-web/src/app/layout/app-drawer/app-drawer.ts)
 
 ### Dialog
 

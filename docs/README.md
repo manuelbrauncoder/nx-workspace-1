@@ -1,6 +1,6 @@
 # Documentation
 
-Long-form documentation for the workspace: the Angular app `angular-base` with the libs in `packages/shared/`, the API app `express-api-base` with the libs in `packages/server/`, and `packages/contracts`, the wire format both sides share. The short rule set that tooling and AI agents work from lives in [CLAUDE.md](../CLAUDE.md). These docs explain the same rules with the reasoning behind them and with examples taken from the code.
+Long-form documentation for the workspace: the Angular app `angular-base` with the libs in `packages/shared/`, the API app `express-api-base` with the libs in `packages/server/`, and `packages/contracts`, the wire format both sides share. The portfolio (`portfolio-web`, `portfolio-api`) is built the same way, its own pages are in [portfolio/](portfolio/README.md). The short rule set that tooling and AI agents work from lives in [CLAUDE.md](../CLAUDE.md). These docs explain the same rules with the reasoning behind them and with examples taken from the code.
 
 ## Angular apps
 

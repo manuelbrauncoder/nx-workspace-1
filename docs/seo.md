@@ -72,6 +72,7 @@ constructor() {
 - The texts are final, not translation keys. An empty description falls back to the one of the route
 - `toMetaDescription()` turns rich text into plain text on one line and cuts it at about 160 characters
 - The data is loaded during server rendering, so the tags are part of the delivered HTML
+- `image` is a `PageSeoImage` with an absolute `url`, `width`, `height` and `alt`, e.g. an image on the backend. The start page takes title, description and preview image from the `seo` section of its content, e.g. in `portfolio-web`, see [Portfolio](portfolio/web/portfolio.md)
 
 ## Indexing
 

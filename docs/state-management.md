@@ -167,6 +167,10 @@ patchResource(this._list, (notes) => notes.filter((note) => note.id !== id));
 
 The change function must be pure and return a new array. Signals are never mutated in place.
 
+### Waiting for data before a page opens
+
+Normally a page opens at once and `app-async-content` shows a spinner. When the content must be there the moment the page opens, a route guard can wait for it with `settled(resource, injector)` ([settled.ts](../packages/shared/core/src/state/settled.ts)), which resolves once the resource is no longer loading, whether it failed or not. In `portfolio-web` `PortfolioStore.load()` uses it, so the router finds the section of a `/#projects` link. Route providers outlive the page, so such a store loads again on every visit and keeps the old data on screen while it does.
+
 ## In the component
 
 Components inject the store, read its signals and call its methods. They hold no copy of the store's state.

@@ -20,7 +20,7 @@ The point of the split is that each kind of change has one place:
 
 ## Folder map
 
-The app lives in an Nx workspace. Everything another app can reuse is a lib in `packages/shared/`, everything specific to this app stays in `apps/angular-base/`.
+The Angular apps live in an Nx workspace: `apps/angular-base` and `apps/portfolio-web`, which is built the same way (see [Portfolio](portfolio/README.md)). Everything another app can reuse is a lib in `packages/shared/`, everything specific to one app stays in its folder. The tree below shows `angular-base`.
 
 ```text
 packages/shared/
@@ -203,7 +203,16 @@ Two mechanisms, both run by `pnpm nx run-many -t lint`.
 | `type:styles`   | `styles`       | `type:styles`                                      |
 | `type:contract` | `contracts`    | `type:contract`, from npm only `zod`               |
 
-`type:app` and `type:ui` may also depend on `type:contract`. The API side has its own tags (`type:api-app`, `type:server`), which no browser project may depend on, see [API architecture](api/architecture.md).
+`type:app` and `type:ui` may also depend on `type:contract`.
+
+A second tag says which product a project belongs to, so products do not depend on each other:
+
+| Scope                                                                                                                                               | Projects                                                               | May depend on                     |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------- |
+| `scope:shared`                                                                                                                                      | the libs in `packages/shared`, `packages/server`, `packages/contracts` | `scope:shared`                    |
+| `scope:base`                                                                                                                                        | `angular-base`, `express-api-base`                                     | `scope:base`, `scope:shared`      |
+| `scope:portfolio`                                                                                                                                   | `portfolio-web`, `portfolio-api`, `portfolio-contracts`                | `scope:portfolio`, `scope:shared` |
+| The API side has its own tags (`type:api-app`, `type:server`), which no browser project may depend on, see [API architecture](api/architecture.md). |
 
 `type:app` and `type:core` may not import `@spartan-ng/*`, `@ng-icons/*` or `@tiptap/*` (`bannedExternalImports`). Nx also rejects cycles between projects and relative imports into another project.
 
@@ -300,6 +309,8 @@ layout/
 ├── not-found/        page of the `**` route, answers with status 404
 └── app-nav-items.ts  the navigation entries of header and drawer, the legal links of the footer
 ```
+
+By default the shell puts a page into the centered `page-container` with space above and below. A page whose sections run across the full width, like the start page of `portfolio-web`, sets `shellLayout('full-bleed')` from [packages/shared/core/src/layout/shell-layout.ts](../packages/shared/core/src/layout/shell-layout.ts) in the `data` of its route, next to `routeSeo()`. Child routes take it over.
 
 - The shell is loaded eagerly, since it is visible on every page. The features below it stay lazy
 - A page without the frame, e.g. a full-screen login, is a route next to the shell route, not a child of it

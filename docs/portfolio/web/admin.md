@@ -1,6 +1,6 @@
 # Admin area
 
-Everything under `/admin` is for admins only. One `adminGuard` on the parent route in [app.routes.ts](../src/app/app.routes.ts) protects it: signed out it leads to the sign-in page, a user without admin rights lands on the start page. Admins open it through "Administration" in the account menu.
+Everything under `/admin` is for admins only. One `adminGuard` on the parent route in [app.routes.ts](../../../apps/portfolio-web/src/app/app.routes.ts) protects it: signed out it leads to the sign-in page, a user without admin rights lands on the start page. Admins open it through "Administration" in the account menu.
 
 ```text
 /admin              AdminHub         feature admin
@@ -14,9 +14,9 @@ The features hang below the same parent, none imports another. The hub links to 
 
 ## The feature `admin`
 
-[src/app/features/admin/](../src/app/features/admin/)
+[src/app/features/admin/](../../../apps/portfolio-web/src/app/features/admin/)
 
-- `AdminUseCase` combines two API layers: [src/api/users](../src/api/users/) (`GET`, `PATCH`, `DELETE /admin/users…`) and the admin part of [src/api/contact](../src/api/contact/) (`/contact/messages`)
+- `AdminUseCase` combines two API layers: [src/api/users](../../../apps/portfolio-web/src/api/users/) (`GET`, `PATCH`, `DELETE /admin/users…`) and the admin part of [src/api/contact](../../../apps/portfolio-web/src/api/contact/) (`/contact/messages`)
 - `AdminStore` loads users and messages as soon as the area opens, so the hub can show the counts. Users and messages each have a mutation of their own, so a failure on one page never shows up on the other. After a write the loaded list is patched, nothing is fetched again
 - The signed-in admin comes from `AuthStore` through `@features/auth/public-api`
 
@@ -39,7 +39,7 @@ The lists stay short, and cards read well on a phone without scrolling sideways.
 
 ## Legal pages
 
-[src/app/features/legal-editor/](../src/app/features/legal-editor/)
+[src/app/features/legal-editor/](../../../apps/portfolio-web/src/app/features/legal-editor/)
 
 - `/admin/legal` lists the four pages (imprint, privacy policy, accessibility statement, cookie policy) with the time of the last change, or that a page does not exist yet. Each card links to the editor and, once the page exists, to the page on the site
 - `/admin/legal/:page` edits one page: German and English, each with `app-form-rich-text profile="page"`, so links may also point within the site (`/privacy`) or to a phone number. The route only matches the four pages (`legalPageMatch`), anything else is a 404

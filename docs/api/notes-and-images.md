@@ -55,7 +55,7 @@ What the server does with an upload:
 
 1. **Limits:** a file over `uploads.maxFileSizeMb` is answered with 413. More images than `uploads.maxImagesPerNote` (existing plus new) is answered with 400.
 2. **Type check:** the real format is read from the file's bytes. Accepted are JPEG, PNG, WebP, AVIF and GIF. The file name and the content type sent by the client are ignored, so a renamed file does not get through.
-3. **Processing:** the image is rotated according to its EXIF orientation, scaled down to `uploads.maxImageWidth` if it is wider, and re-encoded as WebP. This also removes metadata such as GPS coordinates.
+3. **Processing:** the image is rotated according to its EXIF orientation, scaled down to `uploads.maxImageWidth` if it is wider, and re-encoded as WebP. This also removes metadata such as GPS coordinates. Images larger than 50 megapixels are refused, since a small file can declare huge dimensions. Several images of one request are processed one after another, so only one is decoded in memory at a time. The code is shared by every API app: [`packages/server/core/src/images.ts`](../../packages/server/core/src/images.ts).
 4. **Storage:** the file is written to `uploads.dir` under a random name, and a row with its width and height is added to `note_images`.
 
 An upload request is all-or-nothing: if one file is not a valid image, the request fails with 400 and none of the files are saved.

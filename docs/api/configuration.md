@@ -9,16 +9,19 @@ This split lets the JSON file live on the server as a plain mounted file, while 
 
 Both are loaded and validated once at startup in [`packages/server/core/src/config.ts`](../../packages/server/core/src/config.ts). If a value is missing or invalid, the process prints what is wrong and exits. The rest of the code imports the typed `config` object and never reads `process.env` itself.
 
-The keys every API app has (everything below except `uploads`) are defined in `server-core`, and the libs read them from `@server/core/config`. An app adds its own keys with `extendConfig()` in its `src/config/index.ts`, here `uploads`, and its features import the extended `config` from there:
+The keys every API app has (everything below except `uploads.maxImagesPerNote`) are defined in `server-core`, and the libs read them from `@server/core/config`. An app adds its own keys with `extendConfig()` in its `src/config/index.ts`, and its features import the extended `config` from there. A key the shared settings have too, such as `uploads`, is merged into them. A second argument adds environment variables, which end up under `config.env`:
 
 ```ts
-export const config = extendConfig({
-  uploads: z.object({
-    dir: z.string().min(1),
-    // ...
-  }),
-});
+export const config = extendConfig(
+  {
+    // merged into the shared `uploads` settings
+    uploads: z.object({ maxImagesPerNote: z.number().int().positive() }),
+  },
+  { SMTP_PASSWORD: z.string().optional() }, // portfolio-api, read as config.env.SMTP_PASSWORD
+);
 ```
+
+Keys added to the shared settings later have a default, so the file of an existing deployment stays valid: `auth` (`{ "signUpEnabled": true }`) and `uploads` (`./uploads`, 10 MB, 2000 px).
 
 ## Environment variables
 
@@ -35,24 +38,25 @@ Locally these come from `.env` (see [`apps/express-api-base/.env.example`](../..
 
 Local development uses [`apps/express-api-base/config/development.json`](../../apps/express-api-base/config/development.json). [`apps/express-api-base/config/production.example.json`](../../apps/express-api-base/config/production.example.json) is the template for production.
 
-| Setting                       | Type              | Meaning                                                                              |
-| ----------------------------- | ----------------- | ------------------------------------------------------------------------------------ |
-| `port`                        | number            | Port the API listens on                                                              |
-| `logLevel`                    | string            | `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`                       |
-| `trustProxy`                  | boolean or number | Express "trust proxy". `false` locally, `1` behind one reverse proxy such as Traefik |
-| `cors.origins`                | string[]          | Frontend origins allowed to call the API, e.g. `https://app.example.com`             |
-| `session.cookieName`          | string            | Name of the session cookie                                                           |
-| `session.maxAgeDays`          | number            | Lifetime of a session                                                                |
-| `session.secureCookie`        | boolean           | Send the cookie over HTTPS only. `false` locally, `true` in production               |
-| `rateLimit.authWindowMinutes` | number            | Time window for the sign-up/sign-in rate limit                                       |
-| `rateLimit.authMaxRequests`   | number            | Allowed sign-up/sign-in requests per IP in that window                               |
-| `admin.email`                 | string            | Email of the first admin, created at startup while no admin exists                   |
-| `admin.password`              | string            | Its password, 8 to 128 characters. See the note below                                |
-| `docs.enabled`                | boolean           | Serve the API reference under `/docs`                                                |
-| `uploads.dir`                 | string            | Folder for image files, relative to the working directory or absolute                |
-| `uploads.maxFileSizeMb`       | number            | Maximum size of one uploaded file                                                    |
-| `uploads.maxImagesPerNote`    | number            | Maximum number of images per note                                                    |
-| `uploads.maxImageWidth`       | number            | Wider images are scaled down to this width in pixels                                 |
+| Setting                       | Type              | Meaning                                                                                           |
+| ----------------------------- | ----------------- | ------------------------------------------------------------------------------------------------- |
+| `port`                        | number            | Port the API listens on                                                                           |
+| `logLevel`                    | string            | `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`                                    |
+| `trustProxy`                  | boolean or number | Express "trust proxy". `false` locally, `1` behind one reverse proxy such as Traefik              |
+| `cors.origins`                | string[]          | Frontend origins allowed to call the API, e.g. `https://app.example.com`                          |
+| `session.cookieName`          | string            | Name of the session cookie                                                                        |
+| `session.maxAgeDays`          | number            | Lifetime of a session                                                                             |
+| `session.secureCookie`        | boolean           | Send the cookie over HTTPS only. `false` locally, `true` in production                            |
+| `rateLimit.authWindowMinutes` | number            | Time window for the sign-up/sign-in rate limit                                                    |
+| `rateLimit.authMaxRequests`   | number            | Allowed sign-up/sign-in requests per IP in that window                                            |
+| `auth.signUpEnabled`          | boolean           | Open `POST /auth/sign-up`. `false` lets only the admin and existing users sign in. Default `true` |
+| `admin.email`                 | string            | Email of the first admin, created at startup while no admin exists                                |
+| `admin.password`              | string            | Its password, 8 to 128 characters. See the note below                                             |
+| `docs.enabled`                | boolean           | Serve the API reference under `/docs`                                                             |
+| `uploads.dir`                 | string            | Folder for image files, relative to the working directory or absolute                             |
+| `uploads.maxFileSizeMb`       | number            | Maximum size of one uploaded file                                                                 |
+| `uploads.maxImagesPerNote`    | number            | Maximum number of images per note                                                                 |
+| `uploads.maxImageWidth`       | number            | Wider images are scaled down to this width in pixels                                              |
 
 Every setting is required; there are no hidden defaults.
 

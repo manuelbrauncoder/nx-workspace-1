@@ -4,12 +4,12 @@ The API stores the editorial content of the start page (`/`, feature `portfolio`
 
 Four features implement it. All endpoint paths in this guide are under `/api/v1`: `GET /portfolio` is `GET /api/v1/portfolio`.
 
-| Feature                                   | Endpoints    | What it does                                                |
-| ----------------------------------------- | ------------ | ----------------------------------------------------------- |
-| [`portfolio`](../src/features/portfolio/) | `/portfolio` | The page content, one singleton per section                 |
-| [`media`](../src/features/media/)         | `/media`     | Image uploads, served publicly                              |
-| [`contact`](../src/features/contact/)     | `/contact`   | The contact form: stores messages and forwards them by mail |
-| [`legal`](../src/features/legal/)         | `/legal`     | Imprint, privacy, accessibility and cookie policy as HTML   |
+| Feature                                                            | Endpoints    | What it does                                                |
+| ------------------------------------------------------------------ | ------------ | ----------------------------------------------------------- |
+| [`portfolio`](../../../apps/portfolio-api/src/features/portfolio/) | `/portfolio` | The page content, one singleton per section                 |
+| [`media`](../../../apps/portfolio-api/src/features/media/)         | `/media`     | Image uploads, served publicly                              |
+| [`contact`](../../../apps/portfolio-api/src/features/contact/)     | `/contact`   | The contact form: stores messages and forwards them by mail |
+| [`legal`](../../../apps/portfolio-api/src/features/legal/)         | `/legal`     | Imprint, privacy, accessibility and cookie policy as HTML   |
 
 ## Conventions
 
@@ -20,7 +20,7 @@ Four features implement it. All endpoint paths in this guide are under `/api/v1`
 
 ## Models
 
-These are the shapes `GET /portfolio` returns. The zod schemas in [`portfolio.schemas.ts`](../src/features/portfolio/portfolio.schemas.ts) are the source of truth, including the length limits.
+These are the shapes `GET /portfolio` returns. The zod schemas in [`portfolio.schemas.ts`](../../../packages/portfolio/contracts/src/portfolio.ts) are the source of truth, including the length limits.
 
 ```ts
 type L<T = string> = { de: T; en: T };
@@ -160,7 +160,7 @@ const { media } = await fetch(`${api}/media`, {
 // media: { id, url, width, height, createdAt }
 ```
 
-Uploads go through the same processing as note images ([`src/shared/images.ts`](../src/shared/images.ts)): the format is detected from the bytes (JPEG, PNG, WebP, AVIF, GIF; SVG is rejected), the image is scaled down to `uploads.maxImageWidth` and stored as WebP, metadata is dropped. Files over `uploads.maxFileSizeMb` are a 413.
+Uploads go through the same processing as note images ([`src/shared/images.ts`](../../../packages/server/core/src/images.ts)): the format is detected from the bytes (JPEG, PNG, WebP, AVIF, GIF; SVG is rejected), the image is scaled down to `uploads.maxImageWidth` and stored as WebP, metadata is dropped. Files over `uploads.maxFileSizeMb` are a 413.
 
 `url` is `{publicUrl}/api/v1/media/{id}`, built from the `publicUrl` setting. The file is public, because every visitor of the start page sees it, and is cached for a year (`immutable`): an image never changes under its id. To replace an image, upload a new one and change the reference.
 
@@ -196,7 +196,7 @@ Imprint, privacy policy, accessibility statement and cookie policy are CMS conte
 - **`GET /legal`** returns `{ imprint, privacy, accessibility, cookies }`, each `{ de, en, updatedAt }` or `null`.
 - **`PATCH /legal/{page}`** takes `de`, `en` or both, at least one. Each sent language replaces its stored HTML as a whole, the other one stays. With both languages a page that does not exist yet is created; with one it is a 404. It answers with the whole page: `{ "<page>": { de, en, updatedAt } }`.
 
-The HTML is sanitized before it is stored ([`legal.sanitize.ts`](../src/features/legal/legal.sanitize.ts)) to the formats of the rich text editor in the web app: `p`, `br`, `h2`, `h3`, `ul`, `ol`, `li`, `blockquote`, `strong`, `em` and `a` with an `href` that is `http`, `https`, `mailto`, `tel` or relative (`/privacy`, `/#contact`). Every other tag loses its markup but keeps its text, every other attribute (classes, styles, event handlers) is removed. The page heading (`h1`) is not part of the content, the web app renders it; the content starts with `h2`. A postal address is a paragraph with line breaks.
+The HTML is sanitized before it is stored ([`legal.sanitize.ts`](../../../apps/portfolio-api/src/features/legal/legal.sanitize.ts)) to the formats of the rich text editor in the web app: `p`, `br`, `h2`, `h3`, `ul`, `ol`, `li`, `blockquote`, `strong`, `em` and `a` with an `href` that is `http`, `https`, `mailto`, `tel` or relative (`/privacy`, `/#contact`). Every other tag loses its markup but keeps its text, every other attribute (classes, styles, event handlers) is removed. The page heading (`h1`) is not part of the content, the web app renders it; the content starts with `h2`. A postal address is a paragraph with line breaks.
 
 The pages hold the owner's contact details as text; they do not read them from `Settings`. Change both when the address changes.
 
@@ -204,10 +204,10 @@ In the web app (`portfolio-web`, feature `legal`) the page loads the fragment as
 
 ## Seed
 
-The initial content is in [`seed/portfolio.json`](../seed/portfolio.json) with the images in [`seed/images/`](../seed/images/), the legal pages in [`seed/legal/`](../seed/legal/) as `<page>.<lang>.html`. It was converted once from the web app (`portfolio-home/i18n/de.json`, `en.json`, `projects.ts`, `skill-groups.ts`, `site-owner.ts`, and the `seo.imageAlt` text for the og image). In that file an image is `{ "file": "images/portrait.webp", "alt": { … } }`.
+The initial content is in [`seed/portfolio.json`](../../../apps/portfolio-api/seed/portfolio.json) with the images in [`seed/images/`](../../../apps/portfolio-api/seed/images/), the legal pages in [`seed/legal/`](../../../apps/portfolio-api/seed/legal/) as `<page>.<lang>.html`. It was converted once from the web app (`portfolio-home/i18n/de.json`, `en.json`, `projects.ts`, `skill-groups.ts`, `site-owner.ts`, and the `seo.imageAlt` text for the og image). In that file an image is `{ "file": "images/portrait.webp", "alt": { … } }`.
 
 ```bash
-pnpm db:seed                  # locally, after pnpm db:migrate
+pnpm nx run portfolio-api:db:seed   # locally, after db:migrate
 node dist/scripts/seed.js     # in the container
 ```
 

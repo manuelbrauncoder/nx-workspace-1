@@ -73,16 +73,16 @@ The app does not start without a valid file. Details and how to add a value are 
 
 Defined in [tsconfig.base.json](../tsconfig.base.json):
 
-| Alias         | Points to                              |
-| ------------- | -------------------------------------- |
-| `@core/*`     | `packages/shared/core/src/*`           |
-| `@shared/*`   | `packages/shared/ui/src/*`             |
-| `@features/*` | `apps/angular-base/src/app/features/*` |
-| `@api/*`      | `apps/angular-base/src/api/*`          |
+| Alias         | Points to                       |
+| ------------- | ------------------------------- |
+| `@core/*`     | `packages/shared/core/src/*`    |
+| `@shared/*`   | `packages/shared/ui/src/*`      |
+| `@features/*` | `src/app/features/*` of the app |
+| `@api/*`      | `src/api/*` of the app          |
 
 Inside a feature use relative imports. Which alias may be used where is part of the [architecture rules](architecture.md#import-rules).
 
-`@core/*` and `@shared/*` point into libs, `@features/*` and `@api/*` still into the app. Inside a lib use relative imports, Nx reports an alias that points into the lib itself.
+`@core/*` and `@shared/*` point into libs, `@features/*` and `@api/*` into the app that imports them: their target starts with `${configDir}`, which TypeScript replaces with the folder of the app's tsconfig. So both Angular apps use the same aliases for their own features. Inside a lib use relative imports, Nx reports an alias that points into the lib itself.
 
 The alias `@spartan-ng/helm/*` points into `packages/shared/helm-vega`, the generated Spartan components. Only the `ui` lib imports them, see [UI components](ui-components.md).
 

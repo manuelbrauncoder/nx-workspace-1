@@ -9,16 +9,16 @@ Every public site in Germany needs an imprint and a privacy policy. The app has 
 | Accessibility statement | `/accessibility` | `GET /legal/accessibility` |
 | Cookie policy           | `/cookies`       | `GET /legal/cookies`       |
 
-The paths are the same in both languages. The language of a page comes from the cookie, not from the URL, see [Internationalization](i18n.md).
+The paths are the same in both languages. The language of a page comes from the cookie, not from the URL, see [Internationalization](../../i18n.md).
 
 ## How a page is shown
 
-[src/app/features/legal/](../src/app/features/legal/)
+[src/app/features/legal/](../../../apps/portfolio-web/src/app/features/legal/)
 
 - One component, `LegalPage`, serves all four routes. Each route names its page in `data: { page }`, which `withComponentInputBinding()` binds to the input `page`
 - The heading (`h1`) and the route title come from the app (scope `legalPage`), the content from the backend. It starts with the first `h2`
-- `LegalStore` loads the page through [src/api/legal](../src/api/legal/) as text: `GET /legal/<page>?lang=de|en` answers with a finished HTML fragment, not with JSON. The active language is part of the request, so a language switch loads the page again
-- The content is rendered by `<app-ui-rich-text profile="page">`, see [UI components](ui-components.md#rich-text). The profile `page` allows links within the site (`/privacy`, `/#contact`) and `tel:` links. A plain click on a link within the site goes through the router
+- `LegalStore` loads the page through [src/api/legal](../../../apps/portfolio-web/src/api/legal/) as text: `GET /legal/<page>?lang=de|en` answers with a finished HTML fragment, not with JSON. The active language is part of the request, so a language switch loads the page again
+- The content is rendered by `<app-ui-rich-text profile="page">`, see [UI components](../../ui-components.md#rich-text). The profile `page` allows links within the site (`/privacy`, `/#contact`) and `tel:` links. A plain click on a link within the site goes through the router
 - A page that was not created yet answers with 404, `app-async-content` shows it and sets the status
 
 ## Editing
@@ -33,12 +33,12 @@ The initial content comes from the seed of the backend (`seed/legal/` in `portfo
 
 ## The site owner
 
-[src/app/core/site-owner.ts](../src/app/core/site-owner.ts) holds only the name shown by the logo. Contact details live in the backend: in the legal pages and in the `settings` section of the start page.
+[src/app/core/site-owner.ts](../../../apps/portfolio-web/src/app/site-owner.ts) holds only the name shown by the logo. Contact details live in the backend: in the legal pages and in the `settings` section of the start page.
 
 ## Search engines
 
-The routes carry `routeSeo({ index: false })`, so they are reachable but stay out of search results and out of the sitemap. See [SEO](seo.md).
+The routes carry `routeSeo({ index: false })`, so they are reachable but stay out of search results and out of the sitemap. See [SEO](../../seo.md).
 
 ## Footer
 
-The links come from `APP_FOOTER_ITEMS` in [src/app/layout/app-nav-items.ts](../src/app/layout/app-nav-items.ts), their labels from `layout.footer.*` in the shared scope.
+The links come from `APP_FOOTER_ITEMS` in [src/app/layout/app-nav-items.ts](../../../apps/portfolio-web/src/app/layout/app-nav-items.ts), their labels from `layout.footer.*` in the shared scope.

@@ -4,19 +4,19 @@ The API is deployed as a Docker image. The same image is used twice: once as a s
 
 ## Building the image
 
-The image is built by the GitHub Actions workflow in [`.github/workflows/ci.yml`](../.github/workflows/ci.yml):
+The image is built by the GitHub Actions workflow in [`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml):
 
-- Every push to `main` and every pull request runs the checks: lint, format check, typecheck, tests (against a Postgres service container) and build.
-- Pushing a tag that starts with `v` runs the same checks and then publishes the image to the GitHub Container Registry.
+- Every push to `main` and every pull request runs the checks of the affected projects: format check, lint, typecheck, tests (against a Postgres service container) and build.
+- Pushing a tag that starts with `portfolio-api-v` runs the checks of all projects and then publishes the image to the GitHub Container Registry.
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag portfolio-api-v1.0.0
+git push origin portfolio-api-v1.0.0
 ```
 
-The image is published as `ghcr.io/<owner>/<repository>` with three tags: the git tag (`v1.0.0`), `latest` and `sha-<short commit>`. Use the git tag in the stack, so a redeploy never pulls a different version by accident.
+The image is published as `ghcr.io/<owner>/portfolio-api` with three tags: the version (`v1.0.0`), `latest` and `sha-<short commit>`. Use the version in the stack, so a redeploy never pulls a different version by accident. The package already exists from the former repository `portfolio-api`: give the workspace repository access under _Package settings_ → _Manage Actions access_ before the first release.
 
-The [Dockerfile](../Dockerfile) compiles the TypeScript and produces an image with only production dependencies, the compiled code in `dist/`, the migrations in `drizzle/` and the initial portfolio content in `seed/`.
+The [Dockerfile](../../../apps/portfolio-api/Dockerfile) is built from the workspace root (`docker build -f apps/portfolio-api/Dockerfile .`). It bundles the app with the server libs, installs only the runtime dependencies and contains the bundle in `dist/`, the migrations in `drizzle/` and the initial portfolio content in `seed/`. The paths are the same as before the monorepo, so the stack needs no change.
 
 ## What the server needs
 
@@ -29,11 +29,11 @@ The [Dockerfile](../Dockerfile) compiles the TypeScript and produces an image wi
 | SMTP account   | For forwarding contact messages; host, user and addresses go into the config file (`mail`)                  |
 | Reverse proxy  | Terminates HTTPS and forwards to port 3000                                                                  |
 
-Create the config file from [`config/production.example.json`](../config/production.example.json). All settings are explained in [Configuration](configuration.md).
+Create the config file from [`config/production.example.json`](../../../apps/portfolio-api/config/production.example.json). All settings are explained in [Configuration](configuration.md).
 
 ## The stack
 
-[`docker-compose.prod.example.yml`](../docker-compose.prod.example.yml) is a template for a Portainer stack behind Traefik. It defines two services:
+[`docker-compose.prod.example.yml`](../../../apps/portfolio-api/docker-compose.prod.example.yml) is a template for a Portainer stack behind Traefik. It defines two services:
 
 - **`migrate`** runs `node dist/scripts/migrate.js` and exits. It only gets `DATABASE_URL`.
 - **`api`** starts only after `migrate` has finished successfully. It gets the config file, the uploads volume and the environment variables.
@@ -49,7 +49,7 @@ The template expects two things that already exist on the server: a Traefik inst
 1. **Publish the image** by pushing a version tag, as shown above. The workflow builds for `linux/amd64`.
 2. **Give Portainer access to the image.** If the package on ghcr.io is private, add the registry under _Registries_ (`ghcr.io`, your GitHub user, a personal access token with `read:packages`).
 3. **Create the database.** The `migrate` service creates the tables, not the database itself: `CREATE DATABASE ...` once in the existing Postgres.
-4. **Create the config file and the uploads folder on the host**, at the two paths used under `volumes` in the stack. The config file is a copy of [`config/production.example.json`](../config/production.example.json) with your values; see the checklist below.
+4. **Create the config file and the uploads folder on the host**, at the two paths used under `volumes` in the stack. The config file is a copy of [`config/production.example.json`](../../../apps/portfolio-api/config/production.example.json) with your values; see the checklist below.
 5. **Create the stack.** _Stacks → Add stack → Web editor_, paste the template and adjust it. Set these under _Environment variables_:
 
    | Variable            | Value                                                      |
@@ -92,7 +92,7 @@ In the stack:
 
 On the domain:
 
-- [ ] Frontend and API share the same registrable domain (e.g. `app.example.com` and `api.example.com`). A server-rendered frontend needs the same host, with the API under a path such as `/api`. See [Authentication](authentication.md#frontend-integration).
+- [ ] Frontend and API share the same registrable domain (e.g. `app.example.com` and `api.example.com`). A server-rendered frontend needs the same host, with the API under a path such as `/api`. See [Authentication](../../api/authentication.md#frontend-integration).
 
 After the first deploy, `https://your-api-host/health` should answer `{"status":"ok"}`.
 

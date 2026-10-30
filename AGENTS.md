@@ -76,7 +76,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 
 ## Architektur
 
-Nx-Workspace mit zwei Seiten: Angular-Apps (`apps/angular-base`, Libs in `packages/shared/`) und API-Apps (`apps/express-api-base`, Libs in `packages/server/`, siehe Abschnitt „API-Apps“). Beide teilen das Wire-Format über `packages/contracts`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
+Nx-Workspace mit zwei Seiten: Angular-Apps (`apps/angular-base`, Libs in `packages/shared/`) und API-Apps (`apps/express-api-base`, Libs in `packages/server/`, siehe Abschnitt „API-Apps“). Beide teilen das Wire-Format über `packages/contracts`. Das Portfolio (`apps/portfolio-web`, `apps/portfolio-api`, `packages/portfolio/contracts`) ist genauso gebaut, Details in `docs/portfolio/`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
 
 Die Grenzen erzwingt ESLint an zwei Stellen: zwischen Projekten über Nx-Tags (`@nx/enforce-module-boundaries` in der Root-`eslint.config.mjs`), innerhalb der App über `no-restricted-imports` in `apps/angular-base/eslint.config.mjs`.
 
@@ -91,6 +91,8 @@ Die Grenzen erzwingt ESLint an zwei Stellen: zwischen Projekten über Nx-Tags (`
 | `type:api-app`  | `express-api-base`, …        | `type:server`, `type:contract`                     |
 | `type:server`   | `server-core`, `server-auth` | `type:server`, `type:contract`                     |
 
+Zweites Tag pro Projekt ist der Scope: `scope:shared` (alle Libs in `packages/shared`, `packages/server`, `packages/contracts`) darf nur von `scope:shared` abhängen, `scope:base` (angular-base, express-api-base) und `scope:portfolio` (portfolio-web, portfolio-api, portfolio-contracts) jeweils von sich selbst und `scope:shared`. Produkte importieren sich nie gegenseitig.
+
 `type:app` und `type:ui` dürfen zusätzlich von `type:contract` abhängen. Browser- und Server-Projekte importieren sich nie gegenseitig.
 
 Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Einstieg: `docs/README.md`). Ändert sich eine Regel hier, das passende Doc mit anpassen.
@@ -99,9 +101,10 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 - `packages/shared/ui/src/` (Lib `ui`, Alias `@shared/*`): UI-Wrapper, Form-Controls, `app-async-content`, `app-failure-alert`, Theme- und Language-Toggle und deren Texte. Kennt keine Apps
 - `packages/shared/helm-<style>/` (Alias `@spartan-ng/helm/*`): von der Spartan-CLI erzeugte Komponenten, eine Lib pro Spartan-Style, heute nur `helm-vega`. Generierter Code, Prettier und ESLint lassen ihn aus
 - `packages/shared/styles/` (Lib `styles`): geteiltes globales SCSS
-- `apps/angular-base/`: die App mit Features, Layout, API-Layer, Themes, `public/`, `config/` und eigenem `Dockerfile`. Features und API-Layer werden Libs, sobald eine zweite App sie braucht. Bis dahin zeigen `@features/*` und `@api/*` in die App
+- `apps/angular-base/`: die App mit Features, Layout, API-Layer, Themes, `public/`, `config/` und eigenem `Dockerfile`. Features und API-Layer werden Libs, sobald eine zweite App sie braucht. `@features/*` und `@api/*` zeigen per `${configDir}` in `tsconfig.base.json` auf die App, die sie importiert. So nutzen beide Angular-Apps dieselben Aliase für ihre eigenen Ordner
 - Innerhalb einer Lib relative Imports, Nx meldet einen Alias, der in die eigene Lib zeigt
 - `apps/angular-base/src/app/layout/`: die `AppShell` mit Header, `<main>` samt `<router-outlet>`, Footer und Drawer für Mobile. Sie ist die Eltern-Route aller Seiten in `app.routes.ts`, eine Route ohne Rahmen (z. B. Login im Vollbild) steht daneben. Kennt weder Features noch `apps/angular-base/src/api`, einzige Ausnahme ist `@features/auth/public-api` für das Account-Menü im Header. Navigationspunkte stehen in `app-nav-items.ts`, Header und Drawer rendern sie mit `app-ui-nav-menu`, die Footer-Links zu den Legal Pages dort in `APP_FOOTER_ITEMS`
+- Eine Seite, deren Abschnitte über die volle Breite laufen, setzt `shellLayout('full-bleed')` (`@core/layout/shell-layout`) in den `data` ihrer Route, Standard ist `contained` im `page-container`
 - `apps/angular-base/src/app/features/<feature>/`: ein Ordner pro Feature, lazy über `<feature>.routes.ts` geladen
   - `domain/`: UseCase des Features und Re-Export der Models aus dem API-Layer. Einziger Ort im Feature, der `@api/*` importiert. Der UseCase reicht aktuell das Repository durch und ist die Stelle, an der ein Feature mehrere API-Layer kombiniert. Kein HTTP
   - `application/`: Store des Features. Nutzt nur `domain`
@@ -121,7 +124,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 ### API und Runtime-Config
 
 - Die Backend-URL steht nicht im Build, sondern in `/config/app-config.json`. Lokal liegt die Datei in `apps/angular-base/config/`, im Container wird sie gemountet
-- Zugriff nur über `AppConfigService` (`packages/shared/core/src/config/`), geladen per App-Initializer vor dem ersten Rendern. Neue Config-Werte im Interface `AppConfig`, im Type Guard und in `apps/angular-base/config/app-config.json` ergänzen. Vorhanden: `apiBaseUrl`, `environment`, `logLevel`, `siteUrl`, `allowIndexing`
+- Zugriff nur über `AppConfigService` (`packages/shared/core/src/config/`), geladen per App-Initializer vor dem ersten Rendern. Neue Config-Werte im Interface `AppConfig`, im Type Guard und in `apps/angular-base/config/app-config.json` ergänzen. Vorhanden: `apiBaseUrl`, `environment`, `logLevel`, `siteUrl`, `allowIndexing`, `allowSignUp`. Später ergänzte Keys sind optional mit Default (`AppConfigFile` → `normalizeAppConfig()`), damit die Config laufender Deployments gültig bleibt
 - HTTP-Calls stehen ausschließlich in `apps/angular-base/src/api`
 - Die Session ist ein HTTP-only-Cookie des Backends (`sid`), die App speichert kein Token. `credentialsInterceptor` (`packages/shared/core/src/http/`) schickt das Cookie an Requests auf `apiBaseUrl` mit, auf dem Server reicht er das Cookie des eingehenden Requests weiter. `provideAuth()` lädt `/auth/me` per App-Initializer vor dem ersten Rendern
 - Das Backend meldet Fehler als `{ "error": { "message": "...", "details": [...] } }`, auf Englisch und ohne Codes. Unterschieden wird nur über den Status, `details` wertet die App nicht aus
@@ -153,16 +156,16 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 #### UI-Wrapper (`packages/shared/ui/src/ui/`)
 
 - Namensschema: Ordner `<name>/`, Klasse `Ui<Name>`, Selector `app-ui-<name>` (Element) bzw. `appUi<Name>` (Attribut auf einem nativen Element)
-- Vorhanden: `UiButton` (`button[appUiButton]`, `a[appUiButton]`), `UiText` (`appUiText`), `UiIcon`, `UiSpinner`, `UiSkeleton`, `UiCardImports`, `UiAlert`, `UiEmpty`, `UiAttachmentImports`, `UiRichText`, `UiMenuImports`, `UiNavMenu`, `UiSheet`, `UiDialog` mit `UiDialogService`, `UiConfirmDialogService`, `UiToastService` mit `UiToaster`
+- Vorhanden: `UiButton` (`button[appUiButton]`, `a[appUiButton]`, Variante `brand` mit den Tokens `--brand`/`--brand-foreground` der App), `UiText` (`appUiText`), `UiIcon`, `UiSpinner`, `UiSkeleton`, `UiCardImports`, `UiAlert`, `UiEmpty`, `UiAttachmentImports`, `UiRichText`, `UiMenuImports`, `UiNavMenu`, `UiBreadcrumb`, `UiSheet`, `UiDialog` mit `UiDialogService`, `UiConfirmDialogService`, `UiToastService` mit `UiToaster`
 - Jeder Wrapper trägt ein englisches JSDoc an der Klasse: ein Satz zum Zweck und ein `@example` mit der Benutzung (Template-Snippet, bei Services TypeScript). Inputs mit nicht offensichtlicher Bedeutung bekommen eine eigene Zeile
 - Dünne Wrapper setzen die Helm-Direktive über `hostDirectives` auf und reichen nur die benötigten Inputs durch. Spartan-Typen tauchen in der öffentlichen API nicht auf
-- Typografie nur über `appUiText` mit Variante: `<h1 appUiText="h1">`, `<p appUiText="lead">`. Das Element bestimmt die Semantik, die Variante nur die Optik
+- Typografie nur über `appUiText` mit Variante: `<h1 appUiText="h1">`, `<p appUiText="lead">`. Das Element bestimmt die Semantik, die Variante nur die Optik. Große Varianten für Landingpages: `display`, `section`, `title`
 - Icons nur über `<app-ui-icon name="plus" />`. Neue Icons in `icon/ui-icons.ts` registrieren, der Schlüssel ist der Name
 - Ladezustand eines Buttons über `[loading]`, nicht über einen eigenen Spinner im Inhalt
 - Dialoge sind Komponenten, die `UiDialogService.open()` öffnet. Sie bauen ihren Inhalt mit `app-ui-dialog`, lesen Daten mit `injectUiDialogData()` und schließen sich über `injectUiDialogRef()`. Ja/Nein-Fragen laufen über `UiConfirmDialogService.confirm()`
-- Eine Navigation aus Einträgen über `<app-ui-nav-menu [items]="_items" [label]="...">`, keine eigene Linkliste. Ein Eintrag mit `children` wird horizontal zum Dropdown, mit `orientation="vertical"` zum aufklappbaren Abschnitt. Nur eine Ebene
-- Ein Panel vom Bildschirmrand (mobile Navigation, Filter) über `<app-ui-sheet [(open)]="_open" heading="Filter">`, der Inhalt wird hineinprojiziert
-- Gespeicherten Rich Text nur über `<app-ui-rich-text [html]="note.description" />` anzeigen. Das HTML ist nicht vertrauenswürdig, der Wrapper reduziert es auf die erlaubten Formate. Kein eigenes `[innerHTML]` dafür, kein `bypassSecurityTrust*` (per ESLint verboten). Das Backend bereinigt das HTML beim Speichern zusätzlich
+- Eine Navigation aus Einträgen über `<app-ui-nav-menu [items]="_items" [label]="...">`, keine eigene Linkliste. Ein Eintrag mit `children` wird horizontal zum Dropdown, mit `orientation="vertical"` zum aufklappbaren Abschnitt. Nur eine Ebene. `fragment` springt zu einem Abschnitt (`/#projects`), so ein Link gilt nie als aktuell
+- Ein Panel vom Bildschirmrand (mobile Navigation, Filter) über `<app-ui-sheet [(open)]="_open" heading="Filter">`, der Inhalt wird hineinprojiziert. `(closed)` meldet, wenn das Panel weg ist und die Seite wieder scrollt
+- Gespeicherten Rich Text nur über `<app-ui-rich-text [html]="note.description" />` anzeigen. Das HTML ist nicht vertrauenswürdig, der Wrapper reduziert es auf die erlaubten Formate. Kein eigenes `[innerHTML]` dafür, kein `bypassSecurityTrust*` (per ESLint verboten). Das Backend bereinigt das HTML beim Speichern zusätzlich. Für Seiten der eigenen Site (Rechtsseiten) `profile="page"` an `app-ui-rich-text` und `app-form-rich-text`: erlaubt zusätzlich Pfade der Site und `tel:`, interne Links gehen über den Router
 - Dateien und Bilder als Kachel über `<app-ui-attachment>`, mehrere in einer `appUiAttachmentGroup`. Link und Entfernen-Button haben keinen sichtbaren Text und brauchen `linkLabel` bzw. `removeLabel`
 - Kurze Rückmeldung nach einer Aktion über `UiToastService`. `app-ui-toaster` steht genau einmal in `app.html`. Fehler, auf die der Nutzer reagieren muss, bleiben bei `app-failure-alert`
 - Jeder neue Wrapper bekommt einen Eintrag auf der Showcase-Seite `/showcase/components`
@@ -178,6 +181,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 - Routen-`title` ist ein Translation-Key, `SeoService` übersetzt ihn
 - Texte, die stehen bleiben (Navigation, Optionen, Statuszeilen), als Key halten und im Template übersetzen, nicht als fertigen String speichern. Validierungsmeldungen als Funktion: `message: () => this._i18n.translate(...)`
 - Datum über `localDate` (`'date'`, `'dateTime'`), nicht über `DatePipe`. Die Locale kommt aus `I18nService.locale()`
+- Texte aus dem Backend in beiden Sprachen sind `Localized<T>` (`{ de, en }`, `@core/i18n/localized`) und werden über die Pipe `localized` bzw. `I18nService.localize()` angezeigt, nicht über Keys
 - Die Sprache steht im Cookie `lang`. Der Server liest Cookie und `Accept-Language` und rendert `<html lang>`, der Browser übernimmt das. Umschalten über `I18nService.setLanguage()` bzw. `app-language-toggle`
 - `Failure.message` ist englisch und fürs Log, auch wenn sie vom Backend kommt. Dem Nutzer zeigt `app-failure-alert` den übersetzten Text zu `failure.<kind>` oder den eigenen Text der Page
 - In Specs sind die deutschen Shared-Texte des Projekts immer da: `src/test-setup.ts` jedes Projekts ruft `setupTestEnvironment()` (`@core/testing/setup-test-environment`) mit `provideI18nTesting({ shared, sharedDe })` auf. `core` nutzt eigene Testtexte, ein Lib-Spec, der App-Texte bräuchte, bringt einen eigenen Scope mit. Der Spec einer Page lädt ihren Scope mit `await loadI18nScopes(<scope>)` vor `createComponent`
@@ -186,7 +190,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 
 - Titel und Meta-Tags schreibt ausschließlich `SeoService` (`packages/shared/core/src/seo/`): `<title>` mit Suffix `| APP_NAME`, Description, Robots, Canonical, `og:*`, `twitter:card`. Kein `Title` oder `Meta` in Features, `shared` oder im Layout
 - Jede Route trägt ihre Angaben über `data: routeSeo({ ... })`: öffentliche Seiten eine `description` (Translation-Key im Scope der Page), Formulare und interne Seiten `index: false`. Kind-Routen übernehmen die Angaben der Eltern
-- Meta-Daten aus geladenen Daten über `injectPageSeo(() => ...)` im Konstruktor der Page, Rich Text dafür mit `toMetaDescription()` kürzen. `NoteDetail` ist die Referenz
+- Meta-Daten aus geladenen Daten über `injectPageSeo(() => ...)` im Konstruktor der Page, Rich Text dafür mit `toMetaDescription()` kürzen. `NoteDetail` ist die Referenz. Ein Vorschaubild aus geladenen Daten ist ein `PageSeoImage` mit `url`, `width`, `height` und `alt`
 - `siteUrl` und `allowIndexing` stehen in `apps/angular-base/config/app-config.json`. `allowIndexing` ist nur in Produktion `true`, sonst bekommt jede Seite `noindex` und `robots.txt` sperrt alles
 - Eine Seite, die „nicht gefunden“ zeigt, antwortet mit 404. `app-async-content` übernimmt den Status eines `Failure` automatisch, alles andere setzt ihn über `injectResponseStatus()` (`packages/shared/core/src/http/response-status.ts`). Unbekannte Pfade landen auf der `**`-Route mit `NotFound` (`apps/angular-base/src/app/layout/not-found/`)
 - `robots.txt` und `sitemap.xml` erzeugt der Express-Server (`apps/angular-base/src/server/seo-routes.ts`). Ein Feature mit öffentlichen Seiten ergänzt seine Sitemap-Einträge in `apps/angular-base/src/server.ts`. Notizen sind privat, ihre Routen tragen `index: false` und stehen nicht in der Sitemap
@@ -213,6 +217,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 
 - Reine Signals, keine State-Library. Ein Store pro Feature mit `@Service({ autoProvided: false })`, bereitgestellt in den Feature-Routen. Ausnahme ist `AuthStore`, der app-weit lebt
 - Jeder asynchrone Vorgang wird als `AsyncState` (`{ loadingState, failure }`, `packages/shared/core/src/state/async-state.ts`) nach außen gegeben, `loadingState` ist `'idle' | 'loading' | 'success' | 'failure'`. Zustände nur über `idle()`, `loading()`, `success()`, `failed()` erzeugen
+- Muss eine Seite ihre Daten beim Öffnen schon haben (z. B. für `#fragment`-Links), wartet ein Route-Guard mit `settled(resource, injector)` (`@core/state/settled`)
 - Lesen über `rxResource`, der Zustand dazu über `asyncState(resource)`. Daten als readonly Signals und `computed`. `value()` einer fehlgeschlagenen Resource wirft, daher mit `hasValue()` absichern
 - Schreiben über `async`-Methoden, die den Vorgang durch `mutation().run()` (`packages/shared/core/src/state/mutation.ts`) schicken. `run()` setzt den `AsyncState` der Mutation und liefert bei einem Fehler `undefined`, statt zu werfen. Kein eigenes `try/catch` im Store
 - Ein Store hat im Normalfall eine `mutation()` und gibt deren `state` als `mutationState` heraus. Schreibvorgänge, die parallel laufen können, bekommen je eine eigene
@@ -262,7 +267,7 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 ### Aufbau
 
 - `packages/contracts/src/` (Lib `contracts`, Alias `@contracts/*`): Zod-Schemas des Wire-Formats für Requests und Responses (`notes`, `auth`, `errors`), daraus abgeleitete Typen (`*Dto`, `*Input`), Limits als Konstanten ohne Zod (`notes-limits`) und die Rich-Text-Regeln (`rich-text`). Läuft in Node und im Browser, importiert nur `zod`
-- `packages/server/core/src/` (Lib `server-core`, Alias `@server/core/*`): `config` und `extendConfig()`, `logger`, `errors`, `validate`, Middleware (Error-Handler, Origin-Check), `db/db` und `db/migrate`, OpenAPI-Helfer mit `buildOpenApiDocument()`, `createServer()` und `startServer()`, `testing/global-setup`. Kennt keine Features
+- `packages/server/core/src/` (Lib `server-core`, Alias `@server/core/*`): `config` und `extendConfig(fileShape, envShape?)`, `logger` (redacted Cookie und Set-Cookie), `errors`, `validate`, Middleware (Error-Handler, Origin-Check), `db/db` und `db/migrate`, OpenAPI-Helfer mit `buildOpenApiDocument()`, `createServer({ prefix })` und `startServer()`, `images` (Bildverarbeitung mit Pixel-Limit), `createRateLimit()`, `testing/global-setup`. Kennt keine Features
 - `packages/server/auth/src/` (Lib `server-auth`, Alias `@server/auth/*`): Tabellen `users` und `session`, Registrieren, Anmelden, Abmelden, `/auth/me`, Session-Middleware, Guards `requireAuth`/`requireAdmin`, `currentUserId(req)`, Rate-Limit, Admin-Endpunkte, `seedAdmin()`, `onUserDeleted()`, Test-Helfer. Kennt keine Features
 - `apps/express-api-base/`: die Features (`notes`, `docs`), die App-Config-Erweiterung (`uploads`), `config/`, `drizzle/`, `Dockerfile`, `docker-compose.prod.example.yml`
 - Der Workspace ist ESM (`"type": "module"` in der Root-`package.json`). Sonst lädt `tsx` im Dev-Modus die Server-Libs als CommonJS, und Top-Level-Await bricht
@@ -271,7 +276,7 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 ### Konfiguration
 
 - Env-Variablen für Secrets und Zeiger: `CONFIG_PATH`, `DATABASE_URL`, `SESSION_SECRET`, `NODE_ENV`. Eine JSON-Datei unter `CONFIG_PATH` (`config/*.json`) für alles andere, Ausnahme `admin.email`/`admin.password` für den ersten Admin
-- Was jede API-App hat, steht im Basis-Schema in `packages/server/core/src/config.ts`, die Libs lesen `@server/core/config`. Eigene Keys einer App kommen über `extendConfig({...})` in `src/config/index.ts` der App, ihre Features importieren diesen `config`. Ein neuer Key gehört in jede Datei in `config/` der App (und bei Basis-Keys in `packages/server/auth/src/testing/test-config.json`)
+- Was jede API-App hat, steht im Basis-Schema in `packages/server/core/src/config.ts`, die Libs lesen `@server/core/config`. Eigene Keys einer App kommen über `extendConfig({...})` in `src/config/index.ts` der App, ihre Features importieren diesen `config`. Ein neuer Key gehört in jede Datei in `config/` der App (und bei Basis-Keys in `packages/server/auth/src/testing/test-config.json`). Ein Key, den die Basis auch hat (`uploads`, `rateLimit`), wird eine Ebene tief zusammengeführt. Env-Variablen einer App kommen als zweites Argument und landen unter `config.env`. Später ergänzte Basis-Keys haben Defaults (`auth.signUpEnabled: true`, `uploads`), damit laufende Deployments gültig bleiben
 - Code liest das eingefrorene `config`, nie `process.env`. Ausnahme ist `src/scripts/migrate.ts`, das nur `DATABASE_URL` liest
 
 ### Features

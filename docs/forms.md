@@ -161,6 +161,8 @@ An editor for formatted text: bold, italic, two heading levels (`h2`, `h3`), bul
 
 The editor library (Tiptap) is wrapped by [rich-text-editor.ts](../packages/shared/ui/src/form-controls/form-rich-text/rich-text-editor.ts), the only file that imports it. The allowed formats are listed once in [rich-text-rules.ts](../packages/contracts/src/rich-text.ts). Adding a format means: the list there, the editor schema, the toolbar and the styles in [\_rich-text.scss](../packages/shared/styles/base/_rich-text.scss).
 
+- `profile="page"` (default `text`) is for pages of this site such as the legal pages: links may also be a path of the site (`/privacy`) or `tel:`. Show the value with the same profile
+
 ### `FormFiles`
 
 ```html

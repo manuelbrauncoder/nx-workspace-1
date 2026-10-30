@@ -149,6 +149,13 @@ The page `/showcase/colors` shows every token with its current value in both the
 
 The same tokens are available as Tailwind utilities (`bg-primary`, `text-muted-foreground`, `border-border`). The mapping for the standard tokens comes from the Spartan preset imported in `tailwind.css`.
 
+### Tokens of the layout and the brand
+
+Besides the colors, a theme can set:
+
+- `--brand` and `--brand-foreground`: the colors of `variant="brand"` on `appUiButton`, the one main action of a page. angular-base uses its primary color, portfolio-web the trail-marker yellow. Both are exposed in `tailwind.css` as `bg-brand` and `text-brand-foreground`
+- `--page-container-max-width`, `--page-container-padding` and `--page-container-padding-md`: width and padding of `.page-container` from the `styles` lib. Without them it is 72rem wide with 1rem padding. portfolio-web sets 81rem and 3rem from `md` up
+
 ### Adding a token
 
 1. Define it in `themes/_light.scss` and in `themes/_dark.scss`. A token that exists in one theme only breaks the other

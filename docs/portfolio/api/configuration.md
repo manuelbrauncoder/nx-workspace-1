@@ -7,7 +7,9 @@ Configuration comes from two places:
 
 This split lets the JSON file live on the server as a plain mounted file, while secrets come from the stack's environment.
 
-Both are loaded and validated once at startup in [`src/config/index.ts`](../src/config/index.ts). If a value is missing or invalid, the process prints what is wrong and exits. The rest of the code imports the typed `config` object and never reads `process.env` itself.
+The shared keys of every API app are described in [Configuration](../../api/configuration.md). This page lists the whole file of `portfolio-api`, including its own keys (`publicUrl`, `rateLimit.contact*`, `mail`, `uploads.maxImagesPerNote`, Env `SMTP_PASSWORD`), which [`src/config/index.ts`](../../../apps/portfolio-api/src/config/index.ts) adds with `extendConfig()`.
+
+Both are loaded and validated once at startup. If a value is missing or invalid, the process prints what is wrong and exits. The rest of the code imports the typed `config` object and never reads `process.env` itself.
 
 ## Environment variables
 
@@ -19,11 +21,11 @@ Both are loaded and validated once at startup in [`src/config/index.ts`](../src/
 | `SMTP_PASSWORD`  | if mail  | Password of the SMTP account `mail.user`. Required while `mail.enabled` is true   |
 | `NODE_ENV`       | no       | `development` (default), `production` or `test`. Development enables pretty logs. |
 
-Locally these come from `.env` (see [`.env.example`](../.env.example)), which the `dev`, `start`, `db:migrate`, `db:seed` and `db:studio` scripts load.
+Locally these come from `.env` (see [`.env.example`](../../../apps/portfolio-api/.env.example)), which the targets `serve`, `start`, `db:migrate`, `db:seed` and `db:studio` of the app load.
 
 ## JSON config file
 
-Local development uses [`config/development.json`](../config/development.json). [`config/production.example.json`](../config/production.example.json) is the template for production.
+Local development uses [`config/development.json`](../../../apps/portfolio-api/config/development.json). [`config/production.example.json`](../../../apps/portfolio-api/config/production.example.json) is the template for production.
 
 To try settings without committing them, such as `mail.enabled: true` for a real mail, copy `development.json` to `config/development.local.json` (ignored by git) and set `CONFIG_PATH=config/development.local.json` in `.env`.
 
@@ -64,7 +66,7 @@ Every setting is required; there are no hidden defaults.
 
 - The values in `development.json` and `test.json` are committed and only for local use. Never reuse them.
 - In production, set a strong password in the mounted config file before the first start, and keep that file readable only by the deploy user.
-- It is used once, to create the first admin (see [Authentication](authentication.md#roles-and-admin)). After that the value can be replaced by any placeholder of valid length.
+- It is used once, to create the first admin (see [Authentication](../../api/authentication.md#roles-and-admin)). After that the value can be replaced by any placeholder of valid length.
 
 ### Settings that must match your deployment
 
@@ -79,6 +81,6 @@ Contact messages are always stored. With `mail.enabled: true` they are also forw
 
 ## Adding a setting
 
-1. Add it to `fileSchema` in [`src/config/index.ts`](../src/config/index.ts).
+1. Add it to `fileSchema` in [`src/config/index.ts`](../../../apps/portfolio-api/src/config/index.ts).
 2. Add it to all files in `config/`, and to the real production file on the server.
 3. Use it through the `config` object.

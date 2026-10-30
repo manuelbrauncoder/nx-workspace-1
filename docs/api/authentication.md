@@ -38,7 +38,9 @@ On sign-in a new session id is always issued, which prevents session fixation.
 
 ## Rate limiting
 
-Sign-up and sign-in share a limit per client IP: `rateLimit.authMaxRequests` requests per `rateLimit.authWindowMinutes`. Beyond that the API answers 429. The counter is kept in memory, so it resets on restart and is per instance.
+Sign-up and sign-in share a limit per client IP: `rateLimit.authMaxRequests` requests per `rateLimit.authWindowMinutes`. Beyond that the API answers 429. The counter is kept in memory, so it resets on restart and is per instance. Further limits, e.g. for a contact form, come from `createRateLimit()` in [`packages/server/core/src/middleware/rate-limit.ts`](../../packages/server/core/src/middleware/rate-limit.ts).
+
+With `auth.signUpEnabled: false` sign-up answers 403 before the limit counts, sign-in keeps working. The session cookie never reaches the log: the logger redacts `Cookie` and `Set-Cookie`, which pino-http would log otherwise.
 
 ## CSRF protection
 
