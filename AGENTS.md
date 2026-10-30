@@ -246,7 +246,7 @@ Express 5, Drizzle ORM auf Postgres, Zod 4. Ausführlich in `docs/api/` (Einstie
 
 ### Befehle
 
-Postgres muss laufen: `docker compose up -d` im Workspace-Root (ein Server für alle API-Apps, eine Datenbank pro App).
+Postgres muss laufen: `docker compose up -d` im Workspace-Root (ein Server für alle API-Apps, eine Datenbank pro App, z. B. `express_api_base`). Die Datenbanken legt `tools/postgres/init-databases.sql` beim ersten Start an, nur bei leerem Volume. Bei bestehendem Volume eine neue einmal mit `docker compose exec postgres createdb -U app <name>` anlegen.
 
 ```sh
 pnpm nx serve express-api-base                 # tsx watch, lädt apps/express-api-base/.env
@@ -294,7 +294,7 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 
 ### Tests
 
-- Brauchen Postgres, aber keine `.env`: `vitest.config.ts` jedes Projekts setzt die Umgebung selbst. Jedes Projekt hat eine eigene Test-Datenbank (`app_test` für die App, `server_auth_test` für die Lib), weil Nx die Tests mehrerer Projekte gleichzeitig ausführt
+- Brauchen Postgres, aber keine `.env`: `vitest.config.ts` jedes Projekts setzt die Umgebung selbst. Jedes Projekt hat eine eigene Test-Datenbank (`express_api_base_test` für die App, `server_auth_test` für die Lib), weil Nx die Tests mehrerer Projekte gleichzeitig ausführt
 - `packages/server/core/src/testing/global-setup.ts` legt die Datenbank an und migriert. `server-auth` migriert mit eigenen Migrationen in `packages/server/auth/drizzle/`, die nur die Auth-Tabellen enthalten
 - `src/test/setup.ts` der App leert vor jedem Test `users` und `session` (`resetAuthTables()`, kaskadiert auf alles andere) und das Upload-Verzeichnis. Dateien laufen nacheinander
 - `signedUpAgent(email)` und `adminAgent()` aus `src/test/helpers.ts` der App, sie umhüllen `@server/auth/testing/helpers`. Auth und Admin testet die Lib gegen eine Minimal-App
@@ -307,4 +307,4 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 
 ### Neue API-App
 
-`apps/express-api-base` ist die Referenz für `project.json` (Tag `type:api-app`), `package.json`, `tsconfig.json`, `rolldown.config.ts`, `vitest.config.ts`, `drizzle.config.ts` (mit `../../packages/server/auth/src/*.table.ts`), `eslint.config.mjs` und `Dockerfile`. Eigene Datenbank und Test-Datenbank, eigenes Release-Tag und Publish-Job in der CI. Details in `docs/api/architecture.md`
+`apps/express-api-base` ist die Referenz für `project.json` (Tag `type:api-app`), `package.json`, `tsconfig.json`, `rolldown.config.ts`, `vitest.config.ts`, `drizzle.config.ts` (mit `../../packages/server/auth/src/*.table.ts`), `eslint.config.mjs` und `Dockerfile`. Eigene Datenbank (Eintrag in `tools/postgres/init-databases.sql`) und Test-Datenbank, eigenes Release-Tag und Publish-Job in der CI. Details in `docs/api/architecture.md`

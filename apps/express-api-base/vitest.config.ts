@@ -14,7 +14,8 @@ export default defineConfig({
       NODE_ENV: 'test',
       CONFIG_PATH: 'config/test.json',
       DATABASE_URL:
-        process.env['TEST_DATABASE_URL'] ?? 'postgresql://app:app@localhost:5432/app_test',
+        process.env['TEST_DATABASE_URL'] ??
+        'postgresql://app:app@localhost:5432/express_api_base_test',
       SESSION_SECRET: 'test-session-secret-at-least-32-characters',
     },
   },

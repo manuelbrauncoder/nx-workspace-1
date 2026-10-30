@@ -30,7 +30,13 @@ All commands run from the root of the Nx workspace.
    docker compose up -d
    ```
 
-   This starts Postgres 18 on port 5432 with user, password and database all set to `app` (see [docker-compose.yml](../../docker-compose.yml)). Every API app of the workspace uses this server, each with a database of its own.
+   This starts Postgres 18 on port 5432 with user and password `app` (see [docker-compose.yml](../../docker-compose.yml)). Every API app of the workspace uses this server, each with a database of its own: `express_api_base` for this app. On the first start Postgres creates them from [tools/postgres/init-databases.sql](../../tools/postgres/init-databases.sql).
+
+   The script runs only while the volume is empty. If your local Postgres existed before, create the database once by hand:
+
+   ```bash
+   docker compose exec postgres createdb -U app express_api_base
+   ```
 
 4. Create the tables:
 
