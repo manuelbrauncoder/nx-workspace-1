@@ -1,0 +1,56 @@
+<app-ui-breadcrumb [items]="_breadcrumb" />
+<div class="section-overview__header">
+  <div>
+    <h1 class="mt-2" appUiText="h1">{{ 'sectionOverview.heading' | t }}</h1>
+    <p class="mt-2" appUiText="lead">{{ 'sectionOverview.lead' | t }}</p>
+  </div>
+  <a appUiButton variant="outline" routerLink="/">
+    {{ 'sectionOverview.viewSite' | t }}
+  </a>
+</div>
+
+<app-async-content
+  class="section-overview__body"
+  [state]="_store.state()"
+  [failureHeading]="'portfolioEditor.loadFailed' | t"
+  [loadingLabel]="'portfolioEditor.loading' | t"
+  (retry)="_store.reload()"
+  loadingIndicator="skeleton"
+  retryable
+>
+  <ng-template>
+    <ul class="section-overview__list">
+      @for (section of _sections; track section.name) {
+        @let sectionName = section.titleKey | t;
+        @let exists = _store.portfolio()?.[section.name] !== undefined;
+        <li>
+          <article class="h-full" appUiCard>
+            <div appUiCardHeader>
+              <h2 appUiCardTitle>{{ sectionName }}</h2>
+              <p appUiCardDescription>{{ section.descriptionKey | t }}</p>
+            </div>
+            <p
+              class="section-overview__status"
+              [class.section-overview__status--missing]="!exists"
+              appUiCardContent
+            >
+              {{ (exists ? 'sectionOverview.created' : 'sectionOverview.missing') | t }}
+            </p>
+            <div appUiCardFooter>
+              <a
+                [routerLink]="section.name"
+                [attr.aria-label]="'sectionOverview.editNamed' | t: { section: sectionName }"
+                appUiButton
+                variant="outline"
+                size="sm"
+              >
+                <app-ui-icon name="pencil" />
+                {{ (exists ? 'sectionOverview.edit' : 'sectionOverview.create') | t }}
+              </a>
+            </div>
+          </article>
+        </li>
+      }
+    </ul>
+  </ng-template>
+</app-async-content>

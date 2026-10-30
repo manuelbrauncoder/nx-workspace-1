@@ -1,0 +1,38 @@
+{
+  "title": "Typography · Showcase",
+  "heading": "Typography",
+  "lead": "Font families, headings, body text and font sizes.",
+  "pangram": "The quick brown fox jumps over the lazy dog.",
+  "families": {
+    "heading": "Font families",
+    "description": "Self-hosted variable fonts, assigned through --font-* in tailwind.css.",
+    "body": "Body text, headings and UI",
+    "headings": "Headings",
+    "code": "Code"
+  },
+  "headings": {
+    "heading": "Headings",
+    "description": "Variants h1 to h4 of appUiText. Headings use Overpass like the body text, the weights set the hierarchy.",
+    "sample": "Design starts with the typeface"
+  },
+  "body": {
+    "heading": "Body text",
+    "description": "Text styles for paragraphs and emphasis.",
+    "lead": "An introductory paragraph that briefly sums up the content of the page.",
+    "first": "Good typography goes unnoticed. It guides the eye through the text, creates hierarchy and keeps content readable on small screens as well.",
+    "second": "Several paragraphs get spacing between them automatically, the first one stays flush.",
+    "large": "Emphasized text",
+    "small": "Small text for labels",
+    "muted": "Subdued text for hints",
+    "quote": "“Typography is the art of making language visible.”",
+    "listFirst": "First list item",
+    "listSecond": "Second list item",
+    "listThird": "Third list item",
+    "codeBefore": "Install with",
+    "codeAfter": "and start."
+  },
+  "sizes": {
+    "heading": "Font sizes",
+    "description": "The Tailwind scale from text-xs to text-5xl."
+  }
+}

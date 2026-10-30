@@ -1,0 +1,42 @@
+{
+  "title": "Frontend Developer aus dem Spessart",
+  "description": "Manuel Braun, Frontend Developer aus Partenstein im Spessart. Angular-Projekte, Skills und Kontakt.",
+  "loadFailed": "Die Startseite konnte nicht geladen werden",
+  "hero": {
+    "checkWork": "Meine Arbeit ansehen",
+    "contactMe": "Kontakt aufnehmen",
+    "scrollCue": "Weiter nach unten"
+  },
+  "projects": {
+    "builtWith": "Gebaut mit",
+    "liveTest": "Live testen",
+    "liveTestNamed": "{{ name }} live testen",
+    "sourceCode": "Code auf GitHub",
+    "sourceCodeNamed": "Code von {{ name }} auf GitHub"
+  },
+  "contact": {
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "channels": "Direkte Kontaktwege",
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "Dein Name",
+      "email": "E-Mail",
+      "emailPlaceholder": "name@mail.com",
+      "message": "Nachricht",
+      "privacy": "Ich habe die Datenschutzerklärung gelesen und bin mit der Verarbeitung meiner Daten einverstanden."
+    },
+    "privacyLink": "Datenschutzerklärung lesen",
+    "validation": {
+      "nameRequired": "Bitte gib deinen Namen ein.",
+      "emailRequired": "Bitte gib deine E-Mail-Adresse ein.",
+      "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
+      "messageRequired": "Bitte schreib eine Nachricht.",
+      "privacyRequired": "Bitte stimme der Verarbeitung deiner Daten zu."
+    },
+    "send": "Nachricht senden",
+    "sending": "Nachricht wird gesendet",
+    "sent": "Danke für deine Nachricht! Ich melde mich so bald wie möglich.",
+    "failed": "Die Nachricht wurde nicht gesendet"
+  }
+}

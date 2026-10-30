@@ -1,0 +1,51 @@
+@let item = message();
+<article class="message-card" appUiCard>
+  <div class="message-card__header" appUiCardHeader>
+    <h2 class="message-card__sender" appUiCardTitle>
+      @if (!item.read) {
+        <span class="message-card__dot" aria-hidden="true"></span>
+        <span class="sr-only">{{ 'messageList.unread' | t }}:</span>
+      }
+      {{ item.name }}
+    </h2>
+    <p appUiCardDescription>
+      <a class="message-card__email" [href]="'mailto:' + item.email">{{ item.email }}</a>
+      ·
+      <time [attr.datetime]="item.createdAt.toISOString()">{{
+        item.createdAt | localDate: 'dateTime'
+      }}</time>
+    </p>
+  </div>
+  <p class="message-card__text" appUiCardContent>{{ item.message }}</p>
+  <div class="message-card__actions" appUiCardFooter>
+    <a [href]="_replyHref()" (click)="reply.emit()" appUiButton size="sm">
+      <app-ui-icon name="reply" />
+      {{ 'messageList.reply' | t }}
+    </a>
+    <button
+      [attr.aria-label]="
+        (item.read ? 'messageList.markUnreadNamed' : 'messageList.markReadNamed')
+          | t: { name: item.name }
+      "
+      (click)="toggleRead.emit()"
+      appUiButton
+      variant="outline"
+      size="sm"
+      type="button"
+    >
+      <app-ui-icon [name]="item.read ? 'mail' : 'mailOpen'" />
+      {{ (item.read ? 'messageList.markUnread' : 'messageList.markRead') | t }}
+    </button>
+    <button
+      [attr.aria-label]="'messageList.deleteNamed' | t: { name: item.name }"
+      (click)="remove.emit()"
+      appUiButton
+      variant="ghost"
+      size="sm"
+      type="button"
+    >
+      <app-ui-icon name="trash" />
+      {{ 'messageList.delete' | t }}
+    </button>
+  </div>
+</article>

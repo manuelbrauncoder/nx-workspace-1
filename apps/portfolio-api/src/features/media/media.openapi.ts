@@ -1,8 +1,8 @@
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
+import { mediaParamsSchema, mediaSchema } from '@portfolio/contracts/media';
 import { errorResponses, jsonResponse, sessionAuth } from '@server/core/openapi';
 import { z } from 'zod';
 import { config } from '../../config/index.js';
-import { mediaParamsSchema, mediaSchema } from './media.schemas.js';
 
 const mediaResponse = z.object({ media: mediaSchema });
 const { maxFileSizeMb, maxImageWidth } = config.uploads;

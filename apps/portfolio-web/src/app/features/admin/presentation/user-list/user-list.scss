@@ -1,0 +1,25 @@
+@use 'styles/abstracts' as *;
+
+:host {
+  display: block;
+}
+
+.user-list__body {
+  margin-top: 2rem;
+}
+
+.user-list__grid {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include up(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include up(lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

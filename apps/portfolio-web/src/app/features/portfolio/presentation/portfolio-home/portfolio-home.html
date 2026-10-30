@@ -1,0 +1,27 @@
+<!-- The sections bring their own container, a spinner or failure needs one. -->
+<app-async-content
+  [class.page-container]="_store.state().loadingState !== 'success'"
+  [class.portfolio-home__status]="_store.state().loadingState !== 'success'"
+  [state]="_store.state()"
+  [failureHeading]="'portfolioHome.loadFailed' | t"
+  (retry)="_store.reload()"
+  retryable
+>
+  <ng-template>
+    @if (_store.hero(); as hero) {
+      <app-hero-section [hero]="hero" />
+    }
+    @if (_store.about(); as about) {
+      <app-about-section [about]="about" />
+    }
+    @if (_store.projects(); as projects) {
+      <app-projects-section [projects]="projects" />
+    }
+    @if (_store.skills(); as skills) {
+      <app-skills-section [skills]="skills" />
+    }
+    @if (_store.contact(); as contact) {
+      <app-contact-section [contact]="contact" [settings]="_store.settings()" />
+    }
+  </ng-template>
+</app-async-content>

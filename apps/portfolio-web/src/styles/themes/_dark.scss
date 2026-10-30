@@ -1,0 +1,48 @@
+// "Trail" palette at night: mist text on deep forest green, the trail-marker yellow stays.
+:root.dark {
+  color-scheme: dark;
+
+  --chart-1: #8fd3a8;
+  --chart-2: #f2c230;
+  --chart-3: #93a89a;
+  --chart-4: #7fc8a9;
+  --chart-5: #f08a3c;
+  --background: #0e1a14;
+  --foreground: #e6ede4;
+  --foreground-soft: #b7c7bc;
+  --card: #15241c;
+  --card-foreground: #e6ede4;
+  --popover: #15241c;
+  --popover-foreground: #e6ede4;
+  --primary: #f2c230;
+  --primary-foreground: #142a20;
+  --secondary: #22382b;
+  --secondary-foreground: #e6ede4;
+  --muted: #1c2e24;
+  --muted-foreground: #93a89a;
+  --accent: #22382b;
+  --accent-foreground: #e6ede4;
+  --destructive: #f97066;
+  --border: #22382b;
+  --input: #5f7668;
+  --input-background: color-mix(in oklab, var(--input) 30%, transparent);
+  --ring: #f2c230;
+  --sidebar: #15241c;
+  --sidebar-foreground: #e6ede4;
+  --sidebar-primary: #f2c230;
+  --sidebar-primary-foreground: #142a20;
+  --sidebar-accent: #22382b;
+  --sidebar-accent-foreground: #e6ede4;
+  --sidebar-border: #22382b;
+  --sidebar-ring: #f2c230;
+
+  --surface: #15241c;
+  --trail: #f2c230;
+  --trail-foreground: #142a20;
+  // Main action of a page (`variant="brand"`): the trail-marker yellow.
+  --brand: var(--trail);
+  --brand-foreground: var(--trail-foreground);
+  --link: #8fd3a8;
+  --topo-line: #1f3428;
+  --topo-line-major: #2f4b3b;
+}

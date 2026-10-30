@@ -1,0 +1,39 @@
+<form class="flex flex-col gap-6" [formRoot]="_settingsForm">
+  <app-form-text
+    [formField]="_settingsForm.name"
+    [label]="'sectionEditor.settings.name' | t"
+    autocomplete="off"
+  />
+  <app-form-text
+    [formField]="_settingsForm.email"
+    [label]="'sectionEditor.settings.email' | t"
+    type="email"
+    autocomplete="off"
+  />
+  <app-form-text
+    [formField]="_settingsForm.phone"
+    [label]="'sectionEditor.settings.phone' | t"
+    [description]="'sectionEditor.optional' | t"
+    type="tel"
+    autocomplete="off"
+  />
+  <app-form-textarea
+    [formField]="_settingsForm.address"
+    [label]="'sectionEditor.settings.address' | t"
+    [description]="'sectionEditor.settings.addressDescription' | t"
+    rows="3"
+  />
+  <app-form-text
+    [formField]="_settingsForm.github"
+    [label]="'sectionEditor.settings.github' | t"
+    type="url"
+    autocomplete="off"
+  />
+  <app-form-text
+    [formField]="_settingsForm.linkedin"
+    [label]="'sectionEditor.settings.linkedin' | t"
+    type="url"
+    autocomplete="off"
+  />
+  <app-section-form-footer />
+</form>

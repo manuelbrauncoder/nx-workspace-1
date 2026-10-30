@@ -1,7 +1,7 @@
+import { type LegalPageKey, legalPageInputSchema, legalPageKeys } from '@portfolio/contracts/legal';
 import { parse } from '@server/core/validate';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { type LegalPageKey, legalPageInputSchema, legalPageKeys } from './legal.schemas.js';
 import { legalPageExists, updateLegalPage } from './legal.service.js';
 
 /**

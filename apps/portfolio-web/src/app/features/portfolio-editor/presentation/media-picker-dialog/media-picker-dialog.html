@@ -1,0 +1,52 @@
+<app-ui-dialog
+  [heading]="'sectionEditor.mediaPicker.heading' | t"
+  [description]="'sectionEditor.mediaPicker.description' | t"
+>
+  <app-async-content
+    [state]="_data.state()"
+    [failureHeading]="'sectionEditor.mediaPicker.loadFailed' | t"
+    [loadingLabel]="'sectionEditor.mediaPicker.loading' | t"
+    (retry)="_data.retry()"
+    retryable
+  >
+    <ng-template>
+      @if (_data.media().length === 0) {
+        <app-ui-empty
+          [heading]="'sectionEditor.mediaPicker.empty' | t"
+          [headingLevel]="3"
+          icon="image"
+        />
+      } @else {
+        <ul class="media-picker__grid">
+          @for (media of _data.media(); track media.id; let index = $index) {
+            <li>
+              <button
+                class="media-picker__item"
+                [attr.aria-label]="
+                  'sectionEditor.mediaPicker.choose'
+                    | t: { number: index + 1, date: media.createdAt | localDate: 'dateTime' }
+                "
+                (click)="_dialogRef.close(media)"
+                type="button"
+              >
+                <img
+                  class="media-picker__image"
+                  [src]="media.url"
+                  [width]="media.width"
+                  [height]="media.height"
+                  alt=""
+                  loading="lazy"
+                />
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </ng-template>
+  </app-async-content>
+  <div appUiDialogFooter>
+    <button (click)="_dialogRef.close()" appUiButton variant="outline" type="button">
+      {{ 'common.cancel' | t }}
+    </button>
+  </div>
+</app-ui-dialog>

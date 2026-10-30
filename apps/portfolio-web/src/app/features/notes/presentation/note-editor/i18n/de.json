@@ -1,0 +1,33 @@
+{
+  "titleNew": "Neue Notiz",
+  "titleEdit": "Notiz bearbeiten",
+  "fields": {
+    "title": "Titel",
+    "description": "Beschreibung",
+    "newImages": "Bilder hinzufügen"
+  },
+  "validation": {
+    "titleRequired": "Bitte gib einen Titel ein.",
+    "titleBlank": "Der Titel darf nicht nur aus Leerzeichen bestehen.",
+    "titleTooLong": "Der Titel darf höchstens {{ max }} Zeichen lang sein.",
+    "descriptionTooLong": "Die Beschreibung ist zu lang. Bitte kürze sie."
+  },
+  "images": {
+    "existing": "Vorhandene Bilder",
+    "alt": "Bild {{ number }}",
+    "remove": "Bild {{ number }} löschen",
+    "description": "JPEG, PNG, WebP, AVIF oder GIF mit höchstens {{ size }} MB. Eine Notiz hat höchstens {{ max }} Bilder.",
+    "full": "Die Notiz hat bereits {{ max }} Bilder. Lösche eines, um ein neues hinzuzufügen.",
+    "uploadFailed": "Die Notiz ist gespeichert, die Bilder wurden aber nicht hochgeladen",
+    "invalid": "Mindestens eine Datei ist kein gültiges Bild, deshalb wurde keines gespeichert.",
+    "removeHeading": "Bild {{ number }} löschen?",
+    "removeDescription": "Das Bild wird sofort und dauerhaft gelöscht, auch wenn du die Notiz danach nicht speicherst.",
+    "removeConfirm": "Löschen",
+    "removed": "Bild gelöscht",
+    "removeFailed": "Das Bild konnte nicht gelöscht werden"
+  },
+  "save": "Speichern",
+  "saving": "Wird gespeichert",
+  "saved": "Notiz gespeichert",
+  "saveFailed": "Speichern fehlgeschlagen"
+}

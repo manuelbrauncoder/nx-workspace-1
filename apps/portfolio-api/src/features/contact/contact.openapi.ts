@@ -1,12 +1,12 @@
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '@server/core/openapi';
-import { z } from 'zod';
 import {
   contactMessageSchema,
   messageParamsSchema,
   sendMessageSchema,
   updateMessageSchema,
-} from './contact.schemas.js';
+} from '@portfolio/contracts/contact';
+import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '@server/core/openapi';
+import { z } from 'zod';
 
 export function registerContactDocs(registry: OpenAPIRegistry) {
   registry.registerPath({

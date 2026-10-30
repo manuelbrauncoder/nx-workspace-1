@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+
+.message-card__sender {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-wrap: anywhere;
+}
+
+// Unread messages carry a trail marker and a bolder name.
+:host(.message-card--unread) .message-card__sender {
+  font-weight: 800;
+}
+
+.message-card__dot {
+  flex: none;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 999px;
+  background-color: var(--trail);
+  box-shadow: 0 0 0 1px var(--foreground);
+}
+
+.message-card__email {
+  color: var(--link);
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+// The text keeps the line breaks the visitor typed.
+.message-card__text {
+  color: var(--foreground-soft);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.message-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

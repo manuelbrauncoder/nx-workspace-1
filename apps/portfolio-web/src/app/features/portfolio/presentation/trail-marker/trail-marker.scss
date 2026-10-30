@@ -1,0 +1,17 @@
+:host {
+  display: inline-block;
+  flex: none;
+  width: 0.875rem;
+  height: 1.625rem;
+  border-radius: 3px;
+  background-color: var(--trail);
+  // The dark band at the foot of a painted marker.
+  box-shadow: inset 0 -0.5625rem 0 var(--foreground);
+}
+
+:host(.trail-marker--bullet) {
+  width: 0.625rem;
+  height: 1.125rem;
+  border-radius: 2px;
+  box-shadow: none;
+}

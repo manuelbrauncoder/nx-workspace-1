@@ -1,0 +1,90 @@
+<form class="flex flex-col gap-8" [formRoot]="_skillsForm">
+  <app-localized-field
+    [field]="_skillsForm.headline"
+    [label]="'sectionEditor.fields.headline' | t"
+  />
+  <app-localized-field
+    [field]="_skillsForm.description"
+    [label]="'sectionEditor.fields.description' | t"
+    multiline
+  />
+
+  <section class="skills-form__sets" aria-labelledby="skills-form-sets">
+    <h2 id="skills-form-sets" appUiText="h3">{{ 'sectionEditor.skills.heading' | t }}</h2>
+    @for (
+      set of _skillsForm.sets;
+      track set;
+      let setIndex = $index, firstSet = $first, lastSet = $last
+    ) {
+      @let setName = 'sectionEditor.skills.set' | t: { number: setIndex + 1 };
+      <fieldset class="skills-form__group">
+        <legend class="skills-form__legend">{{ setName }}</legend>
+        <app-list-item-actions
+          class="skills-form__actions"
+          [name]="setName"
+          [first]="firstSet"
+          [last]="lastSet"
+          (moveUp)="_moveSet(setIndex, -1)"
+          (moveDown)="_moveSet(setIndex, 1)"
+          (remove)="_removeSet(setIndex)"
+        />
+        <app-localized-field [field]="set.title" [label]="'sectionEditor.skills.title' | t" />
+
+        @for (skill of set.skills; track skill; let index = $index, first = $first, last = $last) {
+          @let skillName =
+            'sectionEditor.skills.skillOfSet' | t: { number: index + 1, set: setIndex + 1 };
+          <fieldset class="skills-form__group skills-form__group--nested">
+            <legend class="skills-form__legend">
+              {{ 'sectionEditor.skills.skill' | t: { number: index + 1 } }}
+            </legend>
+            <app-list-item-actions
+              class="skills-form__actions"
+              [name]="skillName"
+              [first]="first"
+              [last]="last"
+              (moveUp)="_moveSkill(setIndex, index, -1)"
+              (moveDown)="_moveSkill(setIndex, index, 1)"
+              (remove)="_removeSkill(setIndex, index)"
+            />
+            <app-localized-field [field]="skill.name" [label]="'sectionEditor.skills.name' | t" />
+            <app-localized-field
+              [field]="skill.points"
+              [label]="'sectionEditor.skills.points' | t"
+              [description]="'sectionEditor.onePerLine' | t"
+              multiline
+            />
+          </fieldset>
+        }
+        <button
+          class="self-start"
+          [attr.aria-label]="'sectionEditor.skills.addSkillTo' | t: { set: setIndex + 1 }"
+          [disabled]="set.skills.length >= _maxSkills"
+          (click)="_addSkill(setIndex)"
+          appUiButton
+          variant="outline"
+          size="sm"
+          type="button"
+        >
+          <app-ui-icon name="plus" />
+          {{ 'sectionEditor.skills.addSkill' | t }}
+        </button>
+      </fieldset>
+    } @empty {
+      <p appUiText="muted">{{ 'sectionEditor.skills.empty' | t }}</p>
+    }
+    <button
+      class="self-start"
+      #addSet
+      [disabled]="_skillsForm.sets.length >= _maxSets"
+      (click)="_addSet()"
+      appUiButton
+      variant="outline"
+      type="button"
+    >
+      <app-ui-icon name="plus" />
+      {{ 'sectionEditor.skills.addSet' | t }}
+    </button>
+  </section>
+
+  <app-section-form-footer />
+</form>

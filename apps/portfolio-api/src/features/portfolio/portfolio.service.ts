@@ -1,13 +1,13 @@
-import { db } from '@server/core/db/db';
-import { badRequest, conflict, notFound } from '@server/core/errors';
-import { eq, sql } from 'drizzle-orm';
-import { type Media, mediaByIds } from '../media/media.service.js';
 import {
   type Language,
   type SectionContent,
   type SectionKey,
   sectionKeys,
-} from './portfolio.schemas.js';
+} from '@portfolio/contracts/portfolio';
+import { db } from '@server/core/db/db';
+import { badRequest, conflict, notFound } from '@server/core/errors';
+import { eq, sql } from 'drizzle-orm';
+import { type Media, mediaByIds } from '../media/media.service.js';
 import { portfolioSections } from './portfolio.table.js';
 
 const isObject = (value: unknown): value is Record<string, unknown> =>

@@ -1,6 +1,4 @@
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '@server/core/openapi';
-import { z } from 'zod';
 import {
   localizedPageSchema,
   pageQuerySchema,
@@ -9,7 +7,9 @@ import {
   sectionKeys,
   sectionSchemas,
   sectionUpdateSchemas,
-} from './portfolio.schemas.js';
+} from '@portfolio/contracts/portfolio';
+import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '@server/core/openapi';
+import { z } from 'zod';
 
 export function registerPortfolioDocs(registry: OpenAPIRegistry) {
   registry.registerPath({

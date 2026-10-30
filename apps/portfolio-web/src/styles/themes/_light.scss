@@ -1,0 +1,58 @@
+// "Trail" palette: spruce ink on lichen grey-green, trail-marker yellow as the accent.
+:root {
+  color-scheme: light;
+
+  --chart-1: #1f6b45;
+  --chart-2: #c9971b;
+  --chart-3: #4a5d52;
+  --chart-4: #7fc8a9;
+  --chart-5: #b4532a;
+  --radius: 0.375rem;
+  --background: #edf0ea;
+  --foreground: #142a20;
+  // Body copy that sits next to the main text, e.g. descriptions under a heading.
+  --foreground-soft: #2e4337;
+  --card: #f8faf6;
+  --card-foreground: #142a20;
+  --popover: #f8faf6;
+  --popover-foreground: #142a20;
+  --primary: #142a20;
+  --primary-foreground: #edf0ea;
+  --secondary: #dce3da;
+  --secondary-foreground: #142a20;
+  --muted: #e2e8df;
+  --muted-foreground: #4a5d52;
+  --accent: #dce5d9;
+  --accent-foreground: #142a20;
+  --destructive: #b42318;
+  --border: #c7d1c6;
+  --input: #6d8075;
+  // Fill of a form field. Matches the Spartan inputs (`bg-transparent dark:bg-input/30`).
+  --input-background: transparent;
+  --ring: #142a20;
+  --sidebar: #f8faf6;
+  --sidebar-foreground: #142a20;
+  --sidebar-primary: #142a20;
+  --sidebar-primary-foreground: #edf0ea;
+  --sidebar-accent: #dce5d9;
+  --sidebar-accent-foreground: #142a20;
+  --sidebar-border: #c7d1c6;
+  --sidebar-ring: #142a20;
+
+  // Every other section of a page, the footer and form panels.
+  --surface: #f8faf6;
+  // Trail-marker yellow: the logo sign, markers and the main call to action.
+  --trail: #f2c230;
+  --trail-foreground: #142a20;
+  // Main action of a page (`variant="brand"`): the trail-marker yellow.
+  --brand: var(--trail);
+  --brand-foreground: var(--trail-foreground);
+  // Width of the page container: 75rem of content plus 2 × 3rem padding from `md` up.
+  --page-container-max-width: 81rem;
+  --page-container-padding-md: 3rem;
+  // Inline links in running text.
+  --link: #1f6b45;
+  // Contour lines of the decorative map, every few lines a stronger index line.
+  --topo-line: #bfcbbe;
+  --topo-line-major: #9fb0a4;
+}

@@ -1,0 +1,27 @@
+{
+  "title": "Administration",
+  "heading": "Administration",
+  "lead": "Konten, Nachrichten aus dem Kontaktformular und die Inhalte der Startseite.",
+  "loading": "Übersicht wird geladen",
+  "loadFailed": "Die Übersicht konnte nicht geladen werden",
+  "users": {
+    "heading": "Benutzer",
+    "count": "{{ count }} Konten, davon {{ admins }} mit Admin-Rechten",
+    "open": "Benutzer verwalten"
+  },
+  "messages": {
+    "heading": "Nachrichten",
+    "count": "{{ count }} Nachrichten, davon {{ unread }} ungelesen",
+    "open": "Nachrichten lesen"
+  },
+  "portfolio": {
+    "heading": "Startseite",
+    "description": "Texte, Projekte, Skills und Bilder der Startseite in beiden Sprachen",
+    "open": "Startseite bearbeiten"
+  },
+  "legal": {
+    "heading": "Rechtsseiten",
+    "description": "Impressum, Datenschutz, Barrierefreiheit und Cookie-Richtlinie in beiden Sprachen",
+    "open": "Rechtsseiten bearbeiten"
+  }
+}

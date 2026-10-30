@@ -1,0 +1,111 @@
+{
+  "name": "portfolio-web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/portfolio-web/src",
+  "tags": ["type:app", "scope:portfolio"],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/portfolio-web",
+        "browser": "apps/portfolio-web/src/main.ts",
+        "index": "apps/portfolio-web/src/index.html",
+        "tsConfig": "apps/portfolio-web/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/portfolio-web/public"
+          },
+          {
+            "glob": "**/*",
+            "input": "apps/portfolio-web/config",
+            "output": "config"
+          }
+        ],
+        "styles": [
+          "apps/portfolio-web/src/styles/tailwind.css",
+          "apps/portfolio-web/src/styles/styles.scss"
+        ],
+        "server": "apps/portfolio-web/src/main.server.ts",
+        "outputMode": "server",
+        "security": {
+          "allowedHosts": ["localhost"]
+        },
+        "ssr": {
+          "entry": "apps/portfolio-web/src/server.ts"
+        },
+        "stylePreprocessorOptions": {
+          "includePaths": ["packages/shared"]
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "800kB",
+              "maximumError": "1MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kB",
+              "maximumError": "8kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        },
+        "watch": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "watch": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4100
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "portfolio-web:build:production"
+        },
+        "development": {
+          "buildTarget": "portfolio-web:build:development"
+        }
+      }
+    },
+    "serve-ssr": {
+      "continuous": true,
+      "dependsOn": ["build"],
+      "command": "node dist/apps/portfolio-web/server/server.mjs"
+    },
+    "server": {
+      "continuous": true,
+      "command": "node --watch dist/apps/portfolio-web/server/server.mjs"
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^default"],
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit"
+      }
+    }
+  },
+  "implicitDependencies": ["styles"]
+}

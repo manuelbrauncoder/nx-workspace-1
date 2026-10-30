@@ -1,0 +1,38 @@
+{
+  "title": "Typografie · Showcase",
+  "heading": "Typografie",
+  "lead": "Schriftfamilien, Überschriften, Fließtext und Schriftgrade.",
+  "pangram": "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.",
+  "families": {
+    "heading": "Schriftfamilien",
+    "description": "Selbst gehostete Variable Fonts, zugewiesen über --font-* in tailwind.css.",
+    "body": "Fließtext, Überschriften und UI",
+    "headings": "Überschriften",
+    "code": "Code"
+  },
+  "headings": {
+    "heading": "Überschriften",
+    "description": "Varianten h1 bis h4 von appUiText. Überschriften nutzen wie der Fließtext Overpass, die Gewichte setzen die Hierarchie.",
+    "sample": "Gestaltung beginnt mit der Schrift"
+  },
+  "body": {
+    "heading": "Fließtext",
+    "description": "Textstile für Absätze und Auszeichnungen.",
+    "lead": "Ein einleitender Absatz, der den Inhalt der Seite kurz zusammenfasst.",
+    "first": "Gute Typografie fällt nicht auf. Sie führt das Auge durch den Text, schafft Hierarchie und sorgt dafür, dass Inhalte auch auf kleinen Bildschirmen lesbar bleiben.",
+    "second": "Mehrere Absätze erhalten automatisch Abstand zueinander, der erste bleibt bündig.",
+    "large": "Hervorgehobener Text",
+    "small": "Kleiner Text für Beschriftungen",
+    "muted": "Zurückhaltender Text für Hinweise",
+    "quote": "„Typografie ist die Kunst, Sprache sichtbar zu machen.“",
+    "listFirst": "Erster Listenpunkt",
+    "listSecond": "Zweiter Listenpunkt",
+    "listThird": "Dritter Listenpunkt",
+    "codeBefore": "Installieren mit",
+    "codeAfter": "und starten."
+  },
+  "sizes": {
+    "heading": "Schriftgrade",
+    "description": "Die Tailwind-Skala von text-xs bis text-5xl."
+  }
+}

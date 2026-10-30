@@ -1,0 +1,43 @@
+@use 'styles/abstracts' as *;
+
+:host {
+  display: block;
+}
+
+.section-overview__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-overview__body {
+  margin-top: 2rem;
+}
+
+.section-overview__list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include up(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include up(lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.section-overview__status {
+  color: var(--foreground-soft);
+  font-size: 0.875rem;
+}
+
+.section-overview__status--missing {
+  color: var(--muted-foreground);
+  font-style: italic;
+}

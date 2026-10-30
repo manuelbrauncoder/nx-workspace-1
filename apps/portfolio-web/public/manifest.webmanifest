@@ -1,0 +1,12 @@
+{
+  "name": "Manuel Braun · Frontend Developer",
+  "short_name": "Manuel Braun",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#edf0ea",
+  "theme_color": "#142a20",
+  "icons": [
+    { "src": "logo.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "logo-512.png", "type": "image/png", "sizes": "512x512" }
+  ]
+}

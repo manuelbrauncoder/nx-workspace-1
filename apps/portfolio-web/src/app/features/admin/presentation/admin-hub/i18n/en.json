@@ -1,0 +1,27 @@
+{
+  "title": "Administration",
+  "heading": "Administration",
+  "lead": "Accounts, messages from the contact form and the content of the start page.",
+  "loading": "Loading the overview",
+  "loadFailed": "The overview could not be loaded",
+  "users": {
+    "heading": "Users",
+    "count": "{{ count }} accounts, {{ admins }} of them with admin rights",
+    "open": "Manage users"
+  },
+  "messages": {
+    "heading": "Messages",
+    "count": "{{ count }} messages, {{ unread }} of them unread",
+    "open": "Read messages"
+  },
+  "portfolio": {
+    "heading": "Start page",
+    "description": "Texts, projects, skills and images of the start page in both languages",
+    "open": "Edit start page"
+  },
+  "legal": {
+    "heading": "Legal pages",
+    "description": "Imprint, privacy policy, accessibility statement and cookie policy in both languages",
+    "open": "Edit legal pages"
+  }
+}

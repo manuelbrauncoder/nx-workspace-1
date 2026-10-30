@@ -1,0 +1,16 @@
+@let section = skills();
+<section class="skills" id="skills" aria-labelledby="skills-heading" tabindex="-1">
+  <div class="page-container">
+    <div class="skills__header">
+      <h2 class="skills__heading" id="skills-heading" appUiText="section">
+        {{ section.headline | localized }}
+      </h2>
+      <p class="skills__intro">{{ section.description | localized }}</p>
+    </div>
+    <div class="skills__signposts">
+      @for (set of section.sets; track $index) {
+        <app-skill-signpost [set]="set" />
+      }
+    </div>
+  </div>
+</section>

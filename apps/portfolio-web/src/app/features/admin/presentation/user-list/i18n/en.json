@@ -1,0 +1,30 @@
+{
+  "title": "Users",
+  "heading": "Users",
+  "lead": "Every account, oldest first. Your own account cannot be changed here.",
+  "loading": "Loading users",
+  "loadFailed": "The users could not be loaded",
+  "actionFailed": "The action failed",
+  "conflict": "Your own account cannot be changed or deleted here.",
+  "roles": {
+    "admin": "Admin",
+    "user": "User"
+  },
+  "me": "That is you",
+  "since": "Registered on {{ date }}",
+  "actions": "Actions for {{ name }}",
+  "makeAdmin": "Grant admin rights",
+  "removeAdmin": "Remove admin rights",
+  "madeAdmin": "{{ name }} now has admin rights. This applies from their next request.",
+  "removedAdmin": "{{ name }} no longer has admin rights. This applies from their next request.",
+  "revokeSessions": "Sign out everywhere",
+  "revokeHeading": "Sign {{ name }} out everywhere?",
+  "revokeDescription": "The account is signed out on all devices and can sign in again afterwards.",
+  "revokeConfirm": "Sign out",
+  "revoked": "{{ name }} is signed out everywhere",
+  "delete": "Delete account",
+  "deleteHeading": "Delete the account of {{ name }}?",
+  "deleteDescription": "The account is deleted for good, together with all its notes and images. This cannot be undone.",
+  "deleteConfirm": "Delete",
+  "deleted": "Account of {{ name }} deleted"
+}

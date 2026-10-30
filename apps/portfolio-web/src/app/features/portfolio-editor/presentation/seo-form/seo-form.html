@@ -1,0 +1,15 @@
+<form class="flex flex-col gap-8" [formRoot]="_seoForm">
+  <app-localized-field
+    [field]="_seoForm.title"
+    [label]="'sectionEditor.seo.title' | t"
+    [description]="'sectionEditor.seo.titleDescription' | t"
+  />
+  <app-localized-field
+    [field]="_seoForm.description"
+    [label]="'sectionEditor.seo.description' | t"
+    [description]="'sectionEditor.seo.descriptionDescription' | t"
+    multiline
+  />
+  <app-image-field [field]="_seoForm.ogImage" [label]="'sectionEditor.seo.ogImage' | t" removable />
+  <app-section-form-footer />
+</form>

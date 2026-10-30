@@ -1,0 +1,115 @@
+{
+  "title": "Edit section",
+  "existing": "Changes show up on the start page as soon as you save.",
+  "missing": "This section does not exist yet. Saving creates it, and it then shows up on the start page.",
+  "languages": {
+    "de": "German",
+    "en": "English"
+  },
+  "optional": "Optional",
+  "onePerLine": "One entry per line.",
+  "save": "Save",
+  "saving": "Saving",
+  "saved": "Section saved",
+  "saveFailed": "Saving failed",
+  "conflict": "The section has been created elsewhere in the meantime. Reload the page to edit it.",
+  "fields": {
+    "headline": "Heading",
+    "description": "Description"
+  },
+  "validation": {
+    "required": "Please fill in this field.",
+    "tooLong": "At most {{ max }} characters.",
+    "bothLanguages": "Please fill in both languages or leave both empty.",
+    "tooManyLines": "At most {{ max }} entries.",
+    "lineTooLong": "Each entry may be at most {{ max }} characters long.",
+    "url": "Please enter a full address starting with https://.",
+    "email": "Please enter a valid email address.",
+    "imageRequired": "Please upload an image or choose one from the library.",
+    "altRequired": "Please describe the image."
+  },
+  "image": {
+    "none": "No image",
+    "upload": "Upload",
+    "uploading": "Uploading image",
+    "choose": "From the library",
+    "remove": "Remove image",
+    "hint": "JPEG, PNG, WebP, AVIF or GIF of at most {{ size }} MB.",
+    "wrongType": "This file is not a supported image.",
+    "tooLarge": "The file is larger than {{ size }} MB.",
+    "uploadFailed": "The image was not uploaded",
+    "alt": "Alternative text",
+    "altDescription": "Describes the image for everyone who cannot see it."
+  },
+  "mediaPicker": {
+    "heading": "Image from the library",
+    "description": "Every uploaded image, newest first.",
+    "loading": "Loading images",
+    "loadFailed": "The images could not be loaded",
+    "empty": "No images uploaded yet",
+    "choose": "Choose image {{ number }}, uploaded on {{ date }}"
+  },
+  "list": {
+    "moveUp": "Move {{ name }} up",
+    "moveDown": "Move {{ name }} down",
+    "remove": "Remove {{ name }}",
+    "removeDescription": "The entry disappears from the form. The start page only changes once you save.",
+    "removeConfirm": "Remove"
+  },
+  "hero": {
+    "name": "Name",
+    "nameDescription": "First and last name each get a line of their own on the start page.",
+    "description": "Introduction",
+    "mapPlace": "Place on the map",
+    "mapPlaceDescription": "Optional. Shown next to the pin.",
+    "mapCoordinates": "Coordinates",
+    "mapCoordinatesDescription": "Optional, e.g. 50°03′ N  9°31′ E."
+  },
+  "about": {
+    "facts": "What describes me",
+    "image": "Portrait"
+  },
+  "projects": {
+    "heading": "Projects",
+    "item": "Project {{ number }}",
+    "title": "Project name",
+    "stack": "Technologies",
+    "testUrl": "Address to try it",
+    "githubUrl": "Code on GitHub",
+    "image": "Screenshot",
+    "empty": "No projects yet.",
+    "add": "Add project",
+    "removeHeading": "Remove project {{ number }}?"
+  },
+  "skills": {
+    "heading": "Signposts",
+    "set": "Signpost {{ number }}",
+    "title": "Label",
+    "skill": "Skill {{ number }}",
+    "skillOfSet": "Skill {{ number }} of signpost {{ set }}",
+    "name": "Name",
+    "points": "Use",
+    "addSkill": "Add skill",
+    "addSkillTo": "Add skill to signpost {{ set }}",
+    "addSet": "Add signpost",
+    "empty": "No signposts yet.",
+    "removeSetHeading": "Remove signpost {{ number }}?",
+    "removeSkillHeading": "Remove skill {{ number }}?"
+  },
+  "settings": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Postal address",
+    "addressDescription": "Optional. One line of the address per line.",
+    "github": "GitHub profile",
+    "linkedin": "LinkedIn profile"
+  },
+  "seo": {
+    "title": "Title",
+    "titleDescription": "Shown in the browser tab and in search results, followed by the name of the site.",
+    "description": "Description",
+    "descriptionDescription": "The short text below the title in search results.",
+    "ogImage": "Preview image for shared links"
+  }
+}

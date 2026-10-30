@@ -1,0 +1,116 @@
+{
+  "title": "Components · Showcase",
+  "heading": "Components",
+  "lead": "UI wrappers from shared/ui. Features only use these building blocks.",
+  "button": {
+    "description": "appUiButton on button or a, with variants, sizes and a loading state.",
+    "add": "Add",
+    "save": "Save",
+    "saving": "Saving",
+    "disabled": "Disabled"
+  },
+  "icon": {
+    "description": "app-ui-icon with the names from ui-icons.ts."
+  },
+  "card": {
+    "description": "appUiCard with header, content and footer.",
+    "title": "Shopping",
+    "updatedAt": "Updated on {{ date }}",
+    "content": "Milk, bread and coffee.",
+    "edit": "Edit"
+  },
+  "alert": {
+    "description": "app-ui-alert for notices within the content.",
+    "noteHeading": "Note",
+    "noteText": "Changes are saved automatically.",
+    "failureHeading": "Saving failed",
+    "failureText": "The server cannot be reached."
+  },
+  "attachment": {
+    "description": "app-ui-attachment shows a file or an image as a tile, several go into an appUiAttachmentGroup.",
+    "image": "Sample image {{ number }}",
+    "open": "Open sample image {{ number }} in full size",
+    "size": "1.2 MB",
+    "remove": "Remove: bericht.pdf",
+    "uploading": "Uploading"
+  },
+  "empty": {
+    "description": "app-ui-empty for lists without entries.",
+    "heading": "No notes yet",
+    "text": "Create your first note to get started.",
+    "action": "New note"
+  },
+  "loading": {
+    "heading": "Spinner and skeleton",
+    "description": "Loading indicators. Usually app-async-content renders them.",
+    "label": "Loading example"
+  },
+  "menu": {
+    "description": "appUiMenuTrigger opens an app-ui-menu.",
+    "choose": "Choose density",
+    "compact": "Compact",
+    "comfortable": "Comfortable",
+    "reset": "Reset",
+    "chosen": "Chosen: {{ value }}"
+  },
+  "navMenu": {
+    "description": "app-ui-nav-menu builds the navigation from an array. An item with children becomes a dropdown in the horizontal bar and a collapsible section in the vertical list.",
+    "horizontal": "Horizontal example",
+    "vertical": "Vertical example",
+    "notes": "Notes",
+    "showcase": "Showcase",
+    "forms": "Forms",
+    "components": "Components"
+  },
+  "breadcrumb": {
+    "description": "app-ui-breadcrumb shows where the page sits: links from the top down, the last item is the current page. Used in the admin area.",
+    "current": "Breadcrumb"
+  },
+  "sheet": {
+    "description": "app-ui-sheet slides a panel in from the edge, e.g. for the mobile navigation.",
+    "open": "Open sheet",
+    "heading": "Filter",
+    "content": "The content of the sheet is projected into it."
+  },
+  "overlays": {
+    "heading": "Dialog, confirm dialog and toast",
+    "description": "Opened through UiDialogService, UiConfirmDialogService and UiToastService.",
+    "openDialog": "Open dialog",
+    "confirmDelete": "Confirm deletion",
+    "noAction": "No action yet.",
+    "dialogClosed": "Dialog closed without a result.",
+    "dialogResult": "Dialog result: {{ name }}",
+    "confirmHeading": "Delete entry?",
+    "confirmDescription": "This cannot be undone.",
+    "confirmLabel": "Delete",
+    "confirmed": "Deletion confirmed.",
+    "cancelled": "Deletion cancelled.",
+    "toastSuccess": "Toast: success",
+    "toastInfo": "Toast: info",
+    "toastWarning": "Toast: warning",
+    "toastError": "Toast: error",
+    "toastBottom": "Toast: bottom center",
+    "toastMessage": "This is a toast",
+    "toastKind": "Type: {{ kind }}",
+    "toastElsewhere": "Toast in a different place"
+  },
+  "dialog": {
+    "heading": "Change name",
+    "description": "The name is returned as the result.",
+    "name": "Name",
+    "nameRequired": "Please enter a name.",
+    "apply": "Apply"
+  },
+  "richText": {
+    "description": "app-ui-rich-text shows stored rich text from app-form-rich-text. The HTML is reduced to the allowed formats before it is rendered.",
+    "sample": "<h3>Groceries</h3><p>Still missing for the <strong>weekend</strong>:</p><ul><li><p>Milk</p></li><li><p>Bread</p></li></ul><blockquote><p>Never shop hungry.</p></blockquote><p>Recipes are on <a href=\"https://example.org\">example.org</a>.</p>",
+    "pageDescription": "With profile=\"page\" for pages of this site, e.g. legal pages: links may also point to a path of the site or a phone number and open in the same tab, a path through the router.",
+    "pageSample": "<h2>Contact</h2><p>Jane Doe<br>1 Example Street<br>12345 Example City</p><p>Email: <a href=\"mailto:jane@example.org\">jane@example.org</a>, phone: <a href=\"tel:+491234\">+49 1234</a></p><p>More in the <a href=\"/privacy\">privacy policy</a>.</p>"
+  },
+  "i18n": {
+    "heading": "Language and date",
+    "description": "app-language-toggle switches the language, the localDate pipe formats in the locale of the language.",
+    "date": "localDate: 'date'",
+    "dateTime": "localDate: 'dateTime'"
+  }
+}

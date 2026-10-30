@@ -1,9 +1,9 @@
+import { type LegalPageKey, type LegalPageUpdate, legalPageKeys } from '@portfolio/contracts/legal';
+import type { Language } from '@portfolio/contracts/portfolio';
 import { db } from '@server/core/db/db';
 import { notFound } from '@server/core/errors';
 import { eq, sql } from 'drizzle-orm';
-import type { Language } from '../portfolio/portfolio.schemas.js';
 import { sanitizeLegalHtml } from './legal.sanitize.js';
-import { type LegalPageKey, type LegalPageUpdate, legalPageKeys } from './legal.schemas.js';
 import { legalPages } from './legal.table.js';
 
 const toPage = (row: typeof legalPages.$inferSelect) => ({ ...row.html, updatedAt: row.updatedAt });

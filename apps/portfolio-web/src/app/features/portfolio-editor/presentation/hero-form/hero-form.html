@@ -1,0 +1,25 @@
+<form class="flex flex-col gap-8" [formRoot]="_heroForm">
+  <app-form-text
+    [formField]="_heroForm.name"
+    [label]="'sectionEditor.hero.name' | t"
+    [description]="'sectionEditor.hero.nameDescription' | t"
+    autocomplete="off"
+  />
+  <app-localized-field
+    [field]="_heroForm.description"
+    [label]="'sectionEditor.hero.description' | t"
+    multiline
+  />
+  <app-localized-field
+    [field]="_heroForm.mapPlace"
+    [label]="'sectionEditor.hero.mapPlace' | t"
+    [description]="'sectionEditor.hero.mapPlaceDescription' | t"
+  />
+  <app-form-text
+    [formField]="_heroForm.mapCoordinates"
+    [label]="'sectionEditor.hero.mapCoordinates' | t"
+    [description]="'sectionEditor.hero.mapCoordinatesDescription' | t"
+    autocomplete="off"
+  />
+  <app-section-form-footer />
+</form>

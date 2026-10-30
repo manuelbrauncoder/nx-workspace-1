@@ -1,0 +1,51 @@
+@let item = project();
+<article class="project-card">
+  <img
+    class="project-card__image"
+    [alt]="item.image.alt | localized"
+    [height]="item.image.height"
+    [ngSrc]="item.image.url"
+    [priority]="priority()"
+    [width]="item.image.width"
+  />
+  <div class="project-card__body">
+    <h3 class="project-card__title" appUiText="title">
+      <app-trail-marker />
+      {{ item.title }}
+    </h3>
+    <p class="project-card__description">{{ item.description | localized }}</p>
+    <ul class="project-card__stack" [attr.aria-label]="'portfolioHome.projects.builtWith' | t">
+      @for (technology of item.stack; track technology) {
+        <li class="project-card__tag">{{ technology }}</li>
+      }
+    </ul>
+    @if (item.testUrl || item.githubUrl) {
+      <div class="project-card__links">
+        @if (item.testUrl; as testUrl) {
+          <a
+            class="project-card__link"
+            [attr.aria-label]="'portfolioHome.projects.liveTestNamed' | t: { name: item.title }"
+            [href]="testUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ 'portfolioHome.projects.liveTest' | t }}
+            <app-ui-icon name="externalLink" />
+          </a>
+        }
+        @if (item.githubUrl; as githubUrl) {
+          <a
+            class="project-card__link"
+            [attr.aria-label]="'portfolioHome.projects.sourceCodeNamed' | t: { name: item.title }"
+            [href]="githubUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ 'portfolioHome.projects.sourceCode' | t }}
+            <app-ui-icon name="externalLink" />
+          </a>
+        }
+      </div>
+    }
+  </div>
+</article>

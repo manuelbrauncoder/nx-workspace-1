@@ -1,0 +1,115 @@
+{
+  "title": "Abschnitt bearbeiten",
+  "existing": "Änderungen erscheinen nach dem Speichern sofort auf der Startseite.",
+  "missing": "Diesen Abschnitt gibt es noch nicht. Er wird beim Speichern angelegt und erscheint dann auf der Startseite.",
+  "languages": {
+    "de": "Deutsch",
+    "en": "Englisch"
+  },
+  "optional": "Optional",
+  "onePerLine": "Ein Eintrag pro Zeile.",
+  "save": "Speichern",
+  "saving": "Wird gespeichert",
+  "saved": "Abschnitt gespeichert",
+  "saveFailed": "Speichern fehlgeschlagen",
+  "conflict": "Der Abschnitt wurde inzwischen an anderer Stelle angelegt. Lade die Seite neu, um ihn zu bearbeiten.",
+  "fields": {
+    "headline": "Überschrift",
+    "description": "Beschreibung"
+  },
+  "validation": {
+    "required": "Bitte fülle dieses Feld aus.",
+    "tooLong": "Höchstens {{ max }} Zeichen.",
+    "bothLanguages": "Bitte fülle beide Sprachen aus oder lass beide leer.",
+    "tooManyLines": "Höchstens {{ max }} Einträge.",
+    "lineTooLong": "Jeder Eintrag darf höchstens {{ max }} Zeichen lang sein.",
+    "url": "Bitte gib eine vollständige Adresse mit https:// ein.",
+    "email": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "imageRequired": "Bitte lade ein Bild hoch oder wähle eines aus der Mediathek.",
+    "altRequired": "Bitte beschreibe das Bild."
+  },
+  "image": {
+    "none": "Kein Bild",
+    "upload": "Hochladen",
+    "uploading": "Bild wird hochgeladen",
+    "choose": "Aus der Mediathek",
+    "remove": "Bild entfernen",
+    "hint": "JPEG, PNG, WebP, AVIF oder GIF mit höchstens {{ size }} MB.",
+    "wrongType": "Diese Datei ist kein unterstütztes Bild.",
+    "tooLarge": "Die Datei ist größer als {{ size }} MB.",
+    "uploadFailed": "Das Bild wurde nicht hochgeladen",
+    "alt": "Alternativtext",
+    "altDescription": "Beschreibt das Bild für alle, die es nicht sehen."
+  },
+  "mediaPicker": {
+    "heading": "Bild aus der Mediathek",
+    "description": "Alle hochgeladenen Bilder, das neueste zuerst.",
+    "loading": "Bilder werden geladen",
+    "loadFailed": "Die Bilder konnten nicht geladen werden",
+    "empty": "Noch keine Bilder hochgeladen",
+    "choose": "Bild {{ number }} wählen, hochgeladen am {{ date }}"
+  },
+  "list": {
+    "moveUp": "{{ name }} nach oben",
+    "moveDown": "{{ name }} nach unten",
+    "remove": "{{ name }} entfernen",
+    "removeDescription": "Der Eintrag verschwindet aus dem Formular. Auf der Startseite ändert sich erst etwas, wenn du speicherst.",
+    "removeConfirm": "Entfernen"
+  },
+  "hero": {
+    "name": "Name",
+    "nameDescription": "Vor- und Nachname stehen auf der Startseite in je einer Zeile.",
+    "description": "Einleitung",
+    "mapPlace": "Ort auf der Karte",
+    "mapPlaceDescription": "Optional. Steht neben der Stecknadel.",
+    "mapCoordinates": "Koordinaten",
+    "mapCoordinatesDescription": "Optional, z. B. 50°03′ N  9°31′ E."
+  },
+  "about": {
+    "facts": "Was mich ausmacht",
+    "image": "Porträt"
+  },
+  "projects": {
+    "heading": "Projekte",
+    "item": "Projekt {{ number }}",
+    "title": "Name des Projekts",
+    "stack": "Technologien",
+    "testUrl": "Adresse zum Ausprobieren",
+    "githubUrl": "Code auf GitHub",
+    "image": "Screenshot",
+    "empty": "Noch keine Projekte.",
+    "add": "Projekt hinzufügen",
+    "removeHeading": "Projekt {{ number }} entfernen?"
+  },
+  "skills": {
+    "heading": "Wegweiser",
+    "set": "Wegweiser {{ number }}",
+    "title": "Beschriftung",
+    "skill": "Skill {{ number }}",
+    "skillOfSet": "Skill {{ number }} von Wegweiser {{ set }}",
+    "name": "Name",
+    "points": "Einsatz",
+    "addSkill": "Skill hinzufügen",
+    "addSkillTo": "Skill zu Wegweiser {{ set }} hinzufügen",
+    "addSet": "Wegweiser hinzufügen",
+    "empty": "Noch keine Wegweiser.",
+    "removeSetHeading": "Wegweiser {{ number }} entfernen?",
+    "removeSkillHeading": "Skill {{ number }} entfernen?"
+  },
+  "settings": {
+    "name": "Name",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "address": "Anschrift",
+    "addressDescription": "Optional. Eine Zeile der Anschrift pro Zeile.",
+    "github": "GitHub-Profil",
+    "linkedin": "LinkedIn-Profil"
+  },
+  "seo": {
+    "title": "Titel",
+    "titleDescription": "Steht im Browser-Tab und in Suchergebnissen, gefolgt vom Namen der Website.",
+    "description": "Beschreibung",
+    "descriptionDescription": "Der kurze Text unter dem Titel in Suchergebnissen.",
+    "ogImage": "Vorschaubild für geteilte Links"
+  }
+}

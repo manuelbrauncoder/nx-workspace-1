@@ -1,5 +1,5 @@
+import { legalPageKeys } from '@portfolio/contracts/legal';
 import { jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
-import { legalPageKeys } from './legal.schemas.js';
 
 /** One row per legal page; `html` holds the sanitized fragment of each language. */
 export const legalPages = pgTable('legal_pages', {

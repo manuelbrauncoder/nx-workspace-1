@@ -1,9 +1,9 @@
+import { mediaParamsSchema } from '@portfolio/contracts/media';
 import { requireAdmin } from '@server/auth/auth.middleware';
 import { parse } from '@server/core/validate';
 import { Router } from 'express';
 import multer from 'multer';
 import { config } from '../../config/index.js';
-import { mediaParamsSchema } from './media.schemas.js';
 import { deleteMedia, getMediaFile, listMedia, uploadMedia } from './media.service.js';
 
 /** Parses one multipart upload from the "file" field into memory. */

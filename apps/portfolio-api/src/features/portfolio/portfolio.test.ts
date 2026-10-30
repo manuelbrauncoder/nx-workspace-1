@@ -1,8 +1,8 @@
+import { sectionKeys } from '@portfolio/contracts/portfolio';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { config } from '../../config/index.js';
 import { adminAgent, app, signedUpAgent, uploadedMediaId } from '../../test/helpers.js';
-import { sectionKeys } from './portfolio.schemas.js';
 import { seedPortfolio } from './portfolio.seed.js';
 
 const l = <T>(de: T, en: T) => ({ de, en });

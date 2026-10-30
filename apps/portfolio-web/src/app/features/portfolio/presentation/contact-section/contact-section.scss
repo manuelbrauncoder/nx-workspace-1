@@ -1,0 +1,133 @@
+@use 'styles/abstracts' as *;
+
+.contact {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--background);
+  outline: none;
+}
+
+// Text above the form on a phone, side by side from `lg`.
+.contact__layout {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  padding-block: 4rem;
+
+  @include up(lg) {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 5rem;
+    padding-block: 7.5rem;
+  }
+}
+
+.contact__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.contact__heading {
+  margin: 0;
+}
+
+.contact__lead {
+  max-width: 36ch;
+  margin: 0;
+  color: var(--foreground-soft);
+  font-size: 1.0625rem;
+}
+
+.contact__inline-link {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: var(--foreground);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+.contact__channels {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-weight: 600;
+}
+
+.contact__channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  color: var(--foreground);
+  font-size: 1.0625rem;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+// A panel on the section, one step lighter than the background.
+.contact__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 2px);
+  background-color: var(--surface);
+
+  @include up(md) {
+    padding: 2.25rem;
+  }
+
+  @include up(lg) {
+    margin-top: 0;
+  }
+}
+
+.contact__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.contact__privacy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.contact__privacy-link {
+  align-self: flex-start;
+  padding-block: 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.contact__submit {
+  @include up(sm) {
+    align-self: flex-start;
+  }
+}

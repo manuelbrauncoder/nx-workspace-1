@@ -1,0 +1,21 @@
+<div
+  class="swatch__color"
+  [style.background-color]="_background()"
+  [style.color]="_foreground()"
+  aria-hidden="true"
+>
+  @if (token().foreground) {
+    Aa
+  }
+</div>
+<p class="swatch__name">
+  <code>--{{ token().name }}</code>
+</p>
+@if (token().foreground; as _foreground) {
+  <p class="swatch__meta">
+    <code>--{{ _foreground }}</code>
+  </p>
+}
+@if (value()) {
+  <p class="swatch__meta">{{ value() }}</p>
+}

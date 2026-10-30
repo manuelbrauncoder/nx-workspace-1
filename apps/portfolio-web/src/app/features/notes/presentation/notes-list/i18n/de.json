@@ -1,0 +1,16 @@
+{
+  "title": "Notizen",
+  "heading": "Notizen",
+  "lead": "Referenz-Feature für alle CRUD-Operationen gegen die API.",
+  "new": "Neue Notiz",
+  "actionFailed": "Die Aktion ist fehlgeschlagen",
+  "loading": "Notizen werden geladen",
+  "loadFailed": "Die Notizen konnten nicht geladen werden",
+  "empty": {
+    "heading": "Noch keine Notizen",
+    "description": "Lege deine erste Notiz an, um loszulegen."
+  },
+  "card": {
+    "updatedAt": "Geändert am"
+  }
+}

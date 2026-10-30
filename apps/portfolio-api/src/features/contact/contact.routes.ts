@@ -1,8 +1,12 @@
+import {
+  messageParamsSchema,
+  sendMessageSchema,
+  updateMessageSchema,
+} from '@portfolio/contracts/contact';
 import { requireAdmin } from '@server/auth/auth.middleware';
 import { parse } from '@server/core/validate';
 import { Router } from 'express';
 import { contactRateLimit } from '../../shared/middleware/rate-limit.js';
-import { messageParamsSchema, sendMessageSchema, updateMessageSchema } from './contact.schemas.js';
 import { deleteMessage, listMessages, receiveMessage, updateMessage } from './contact.service.js';
 
 export const contactRouter = Router();

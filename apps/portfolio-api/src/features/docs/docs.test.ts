@@ -1,5 +1,15 @@
 import { userSchema } from '@contracts/auth';
 import { noteImageSchema, noteSchema } from '@contracts/notes';
+import { contactMessageSchema } from '@portfolio/contracts/contact';
+import { legalPagesSchema } from '@portfolio/contracts/legal';
+import { mediaSchema } from '@portfolio/contracts/media';
+import {
+  localizedPageSchema,
+  localizedSectionSchemas,
+  pageSchema,
+  sectionKeys,
+  sectionSchemas,
+} from '@portfolio/contracts/portfolio';
 import { adminRouter } from '@server/auth/admin.routes';
 import { authRouter } from '@server/auth/auth.routes';
 import type { Router } from 'express';
@@ -8,21 +18,11 @@ import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { adminAgent, app, signedUpAgent } from '../../test/helpers.js';
 import { contactRouter } from '../contact/contact.routes.js';
-import { contactMessageSchema } from '../contact/contact.schemas.js';
 import { legalRouter } from '../legal/legal.routes.js';
-import { legalPagesSchema } from '../legal/legal.schemas.js';
 import { seedLegal } from '../legal/legal.seed.js';
 import { mediaRouter } from '../media/media.routes.js';
-import { mediaSchema } from '../media/media.schemas.js';
 import { notesRouter } from '../notes/notes.routes.js';
 import { portfolioRouter } from '../portfolio/portfolio.routes.js';
-import {
-  localizedPageSchema,
-  localizedSectionSchemas,
-  pageSchema,
-  sectionKeys,
-  sectionSchemas,
-} from '../portfolio/portfolio.schemas.js';
 import { seedPortfolio } from '../portfolio/portfolio.seed.js';
 import { buildDocs } from './docs.document.js';
 

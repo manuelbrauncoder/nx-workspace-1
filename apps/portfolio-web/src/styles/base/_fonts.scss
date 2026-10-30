@@ -1,0 +1,25 @@
+// Self-hosted variable fonts from public/fonts. Assigned via --font-* in tailwind.css.
+// Overpass is licensed under the SIL Open Font License, see public/fonts/Overpass-OFL.txt.
+@font-face {
+  font-family: 'Overpass';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/Overpass-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Overpass';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/Overpass-Italic-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('/fonts/JetBrainsMono-VariableFont_wght.ttf') format('truetype');
+}

@@ -1,7 +1,11 @@
+import {
+  type LegalPageKey,
+  legalPageUpdateSchema,
+  legalQuerySchema,
+} from '@portfolio/contracts/legal';
 import { requireAdmin } from '@server/auth/auth.middleware';
 import { parse } from '@server/core/validate';
 import { type Request, type Response, Router } from 'express';
-import { type LegalPageKey, legalPageUpdateSchema, legalQuerySchema } from './legal.schemas.js';
 import { getLegalHtml, listLegalPages, updateLegalPage } from './legal.service.js';
 
 export const legalRouter = Router();

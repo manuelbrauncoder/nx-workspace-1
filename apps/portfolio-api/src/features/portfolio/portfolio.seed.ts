@@ -1,8 +1,8 @@
+import { type SectionKey, sectionInputSchemas, sectionKeys } from '@portfolio/contracts/portfolio';
 import { parse } from '@server/core/validate';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { uploadMedia } from '../media/media.service.js';
-import { type SectionKey, sectionInputSchemas, sectionKeys } from './portfolio.schemas.js';
 import { createSection, sectionExists } from './portfolio.service.js';
 
 /** Uploads every `{ file, alt }` in the seed content and replaces it by the reference `{ id, alt }`. */

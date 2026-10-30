@@ -1,0 +1,27 @@
+@let item = about();
+<!-- `tabindex` lets the shell move focus here after a jump from the navigation. -->
+<section class="about" id="about" aria-labelledby="about-heading" tabindex="-1">
+  <div class="page-container about__layout">
+    <h2 class="about__heading" id="about-heading" appUiText="section">
+      {{ item.headline | localized }}
+    </h2>
+    <img
+      class="about__portrait"
+      [alt]="item.image.alt | localized"
+      [ngSrc]="item.image.url"
+      [width]="item.image.width"
+      [height]="item.image.height"
+    />
+    <div class="about__text">
+      <p class="about__intro">{{ item.description | localized }}</p>
+      <ul class="about__points">
+        @for (fact of item.facts | localized; track $index) {
+          <li class="about__point">
+            <app-trail-marker class="about__marker" variant="bullet" />
+            {{ fact }}
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

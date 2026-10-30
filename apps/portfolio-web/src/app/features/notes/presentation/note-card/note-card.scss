@@ -1,0 +1,35 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.note-card {
+  height: 100%;
+}
+
+.note-card__link {
+  border-radius: 0.25rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}
+
+// A preview: the card shows the first lines, the detail page the whole note.
+.note-card__content {
+  flex: 1;
+  max-height: 6lh;
+  overflow: hidden;
+  // Fades out the last line instead of cutting it in half. A short note ends above the fade.
+  mask-image: linear-gradient(to bottom, black calc(100% - 1.5lh), transparent);
+  color: var(--muted-foreground);
+}
+
+.note-card__actions {
+  gap: 0.5rem;
+}

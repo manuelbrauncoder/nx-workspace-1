@@ -1,0 +1,32 @@
+<button
+  [attr.aria-label]="'sectionEditor.list.moveUp' | t: { name: name() }"
+  [disabled]="first()"
+  (click)="moveUp.emit()"
+  appUiButton
+  variant="ghost"
+  size="icon-sm"
+  type="button"
+>
+  <app-ui-icon name="arrowUp" />
+</button>
+<button
+  [attr.aria-label]="'sectionEditor.list.moveDown' | t: { name: name() }"
+  [disabled]="last()"
+  (click)="moveDown.emit()"
+  appUiButton
+  variant="ghost"
+  size="icon-sm"
+  type="button"
+>
+  <app-ui-icon name="arrowDown" />
+</button>
+<button
+  [attr.aria-label]="'sectionEditor.list.remove' | t: { name: name() }"
+  (click)="remove.emit()"
+  appUiButton
+  variant="ghost"
+  size="icon-sm"
+  type="button"
+>
+  <app-ui-icon name="trash" />
+</button>

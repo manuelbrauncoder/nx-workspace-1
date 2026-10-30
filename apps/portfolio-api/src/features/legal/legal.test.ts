@@ -1,7 +1,7 @@
+import { legalPageKeys } from '@portfolio/contracts/legal';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { adminAgent, app, signedUpAgent } from '../../test/helpers.js';
-import { legalPageKeys } from './legal.schemas.js';
 import { seedLegal } from './legal.seed.js';
 
 const imprint = {

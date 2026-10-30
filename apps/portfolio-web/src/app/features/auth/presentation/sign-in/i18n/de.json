@@ -1,0 +1,20 @@
+{
+  "title": "Anmelden",
+  "lead": "Melde dich an, um auf deine Inhalte zuzugreifen.",
+  "fields": {
+    "email": "E-Mail",
+    "password": "Passwort"
+  },
+  "validation": {
+    "emailRequired": "Bitte gib deine E-Mail-Adresse ein.",
+    "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "passwordRequired": "Bitte gib dein Passwort ein."
+  },
+  "submit": "Anmelden",
+  "submitting": "Anmeldung läuft",
+  "signedIn": "Du bist angemeldet",
+  "failed": "Anmeldung fehlgeschlagen",
+  "invalidCredentials": "E-Mail-Adresse oder Passwort ist falsch.",
+  "noAccount": "Noch kein Konto?",
+  "toSignUp": "Jetzt registrieren"
+}

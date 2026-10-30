@@ -1,0 +1,16 @@
+<h1 appUiText="h1">{{ 'showcaseHub.heading' | t }}</h1>
+<p class="mt-2" appUiText="lead">{{ 'showcaseHub.lead' | t }}</p>
+
+<ul class="hub-grid">
+  @for (page of _pages; track page.path) {
+    <li>
+      <a class="hub-card" [routerLink]="page.path" appUiCard>
+        <div appUiCardHeader>
+          <app-ui-icon class="hub-card__icon" [name]="page.icon" />
+          <h2 appUiCardTitle>{{ page.titleKey | t }}</h2>
+          <p appUiCardDescription>{{ page.descriptionKey | t }}</p>
+        </div>
+      </a>
+    </li>
+  }
+</ul>

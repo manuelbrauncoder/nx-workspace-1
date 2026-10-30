@@ -1,0 +1,12 @@
+{
+  "title": "Note",
+  "createdAt": "Created on",
+  "updatedAt": "Updated on",
+  "noContent": "No content",
+  "images": {
+    "heading": "Images",
+    "alt": "Image {{ number }}",
+    "open": "Open image {{ number }} in full size"
+  },
+  "deleteFailed": "Deleting failed"
+}

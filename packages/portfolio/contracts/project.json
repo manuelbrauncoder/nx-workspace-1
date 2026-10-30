@@ -1,0 +1,8 @@
+{
+  "name": "portfolio-contracts",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/portfolio/contracts/src",
+  "tags": ["type:contract", "scope:portfolio"],
+  "targets": {}
+}

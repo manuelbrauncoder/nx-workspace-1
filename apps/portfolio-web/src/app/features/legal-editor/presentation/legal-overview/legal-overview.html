@@ -1,0 +1,65 @@
+<app-ui-breadcrumb [items]="_breadcrumb" />
+<h1 class="mt-2" appUiText="h1">{{ 'legalOverview.heading' | t }}</h1>
+<p class="mt-2" appUiText="lead">{{ 'legalOverview.lead' | t }}</p>
+
+<app-async-content
+  class="legal-overview__body"
+  [state]="_store.state()"
+  [failureHeading]="'legalEditor.loadFailed' | t"
+  [loadingLabel]="'legalEditor.loading' | t"
+  (retry)="_store.reload()"
+  loadingIndicator="skeleton"
+  retryable
+>
+  <ng-template>
+    <ul class="legal-overview__list">
+      @for (page of _pages; track page.name) {
+        @let pageName = page.titleKey | t;
+        @let stored = _store.pages()?.[page.name];
+        <li>
+          <article class="h-full" appUiCard>
+            <div appUiCardHeader>
+              <h2 appUiCardTitle>{{ pageName }}</h2>
+            </div>
+            <p
+              class="legal-overview__status"
+              [class.legal-overview__status--missing]="!stored"
+              appUiCardContent
+            >
+              @if (stored) {
+                {{
+                  'legalOverview.updated' | t: { date: stored.updatedAt | localDate: 'dateTime' }
+                }}
+              } @else {
+                {{ 'legalOverview.missing' | t }}
+              }
+            </p>
+            <div class="legal-overview__actions" appUiCardFooter>
+              <a
+                [routerLink]="page.name"
+                [attr.aria-label]="'legalOverview.editNamed' | t: { page: pageName }"
+                appUiButton
+                variant="outline"
+                size="sm"
+              >
+                <app-ui-icon name="pencil" />
+                {{ (stored ? 'legalOverview.edit' : 'legalOverview.create') | t }}
+              </a>
+              @if (stored) {
+                <a
+                  [routerLink]="'/' + page.name"
+                  [attr.aria-label]="'legalOverview.viewNamed' | t: { page: pageName }"
+                  appUiButton
+                  variant="ghost"
+                  size="sm"
+                >
+                  {{ 'legalOverview.view' | t }}
+                </a>
+              }
+            </div>
+          </article>
+        </li>
+      }
+    </ul>
+  </ng-template>
+</app-async-content>

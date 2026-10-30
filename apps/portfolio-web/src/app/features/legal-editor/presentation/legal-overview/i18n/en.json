@@ -1,0 +1,12 @@
+{
+  "title": "Edit legal pages",
+  "heading": "Edit legal pages",
+  "lead": "Imprint, privacy policy, accessibility statement and cookie policy in both languages. A page that does not exist yet shows “not found” on the site.",
+  "updated": "Last updated: {{ date }}",
+  "missing": "Not created yet",
+  "edit": "Edit",
+  "create": "Create",
+  "editNamed": "Edit {{ page }}",
+  "view": "View",
+  "viewNamed": "View {{ page }} on the site"
+}

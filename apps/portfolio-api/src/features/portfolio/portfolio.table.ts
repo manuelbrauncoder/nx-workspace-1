@@ -1,5 +1,5 @@
+import { sectionKeys } from '@portfolio/contracts/portfolio';
 import { jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
-import { sectionKeys } from './portfolio.schemas.js';
 
 /**
  * One row per section of the start page. The content is stored as sent (validated by the

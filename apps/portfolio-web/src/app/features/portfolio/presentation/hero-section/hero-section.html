@@ -1,0 +1,28 @@
+@let item = hero();
+<section class="hero">
+  <app-topo-map
+    [place]="item.mapPlace && (item.mapPlace | localized)"
+    [coordinates]="item.mapCoordinates"
+    variant="hero"
+  />
+  <div class="page-container hero__content">
+    <div class="hero__main">
+      <h1 class="hero__name" appUiText="display">
+        <!-- The space keeps the words apart for screen readers, each line is a block of its own. -->
+        @for (line of _nameLines(); track $index; let last = $last) {
+          <span class="hero__name-line">{{ line }}{{ last ? '' : ' ' }}</span>
+        }
+      </h1>
+      <p class="hero__lead">{{ item.description | localized }}</p>
+      <div class="hero__actions">
+        <a appUiButton variant="brand" size="lg" routerLink="/" fragment="projects">
+          {{ 'portfolioHome.hero.checkWork' | t }}
+        </a>
+        <a appUiButton variant="outline" size="lg" routerLink="/" fragment="contact">
+          {{ 'portfolioHome.hero.contactMe' | t }}
+        </a>
+      </div>
+    </div>
+    <app-scroll-cue class="hero__scroll-cue" />
+  </div>
+</section>

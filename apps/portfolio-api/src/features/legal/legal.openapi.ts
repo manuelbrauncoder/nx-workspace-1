@@ -1,13 +1,13 @@
 import type { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '@server/core/openapi';
-import { z } from 'zod';
 import {
   legalPageKeys,
   legalPageSchema,
   legalPagesSchema,
   legalPageUpdateSchema,
   legalQuerySchema,
-} from './legal.schemas.js';
+} from '@portfolio/contracts/legal';
+import { errorResponses, jsonContent, jsonResponse, sessionAuth } from '@server/core/openapi';
+import { z } from 'zod';
 
 export function registerLegalDocs(registry: OpenAPIRegistry) {
   const base = { tags: ['Legal'] };

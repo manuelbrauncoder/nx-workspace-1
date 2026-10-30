@@ -1,0 +1,19 @@
+{
+  "title": "Edit legal page",
+  "existing": "Changes show up on the site right after saving.",
+  "missing": "This page does not exist yet. Saving creates it.",
+  "languages": {
+    "de": "German",
+    "en": "English"
+  },
+  "contentDescription": "The site sets the heading itself, the text starts with the first section. Links may also point to pages of this site, e.g. /privacy.",
+  "save": "Save",
+  "saving": "Saving",
+  "saved": "Page saved",
+  "saveFailed": "Saving failed",
+  "view": "View page",
+  "validation": {
+    "required": "Please enter a text.",
+    "tooLong": "The text is too long."
+  }
+}

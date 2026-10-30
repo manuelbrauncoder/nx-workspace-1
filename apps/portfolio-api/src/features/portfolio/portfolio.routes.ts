@@ -1,12 +1,12 @@
-import { requireAdmin } from '@server/auth/auth.middleware';
-import { parse } from '@server/core/validate';
-import { type Request, type Response, Router } from 'express';
 import {
   pageQuerySchema,
   sectionInputSchemas,
   type SectionKey,
   sectionUpdateSchemas,
-} from './portfolio.schemas.js';
+} from '@portfolio/contracts/portfolio';
+import { requireAdmin } from '@server/auth/auth.middleware';
+import { parse } from '@server/core/validate';
+import { type Request, type Response, Router } from 'express';
 import { createSection, getPage, updateSection } from './portfolio.service.js';
 
 export const portfolioRouter = Router();

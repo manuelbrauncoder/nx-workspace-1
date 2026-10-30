@@ -1,10 +1,10 @@
+import type { SendMessageInput, UpdateMessageInput } from '@portfolio/contracts/contact';
 import { db } from '@server/core/db/db';
 import { notFound } from '@server/core/errors';
 import { logger } from '@server/core/logger';
 import { desc, eq } from 'drizzle-orm';
 import { config } from '../../config/index.js';
 import { sendMail } from '../../shared/mail.js';
-import type { SendMessageInput, UpdateMessageInput } from './contact.schemas.js';
 import { contactMessages } from './contact.table.js';
 
 const messageColumns = {
