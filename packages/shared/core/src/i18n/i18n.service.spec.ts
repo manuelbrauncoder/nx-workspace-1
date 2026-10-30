@@ -55,6 +55,15 @@ describe('I18nService', () => {
     expect(document.cookie).toContain(`${LANGUAGE_COOKIE}=en`);
   });
 
+  it('picks the value of a localized in the active language', async () => {
+    const greeting = { de: 'Hallo', en: 'Hello' };
+    expect(service.localize(greeting)).toBe('Hallo');
+
+    await service.setLanguage('en');
+
+    expect(service.localize(greeting)).toBe('Hello');
+  });
+
   it('loads a scope only once per language', async () => {
     const de = vi.fn(() => Promise.resolve({ default: { greeting: 'Hallo' } }));
     const scope = defineI18nScope('specPage', { de, en: de });

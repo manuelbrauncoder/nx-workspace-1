@@ -34,6 +34,9 @@
     "remove": "Entfernen: bericht.pdf",
     "uploading": "Wird hochgeladen"
   },
+  "breadcrumb": {
+    "description": "app-ui-breadcrumb zeigt, wo eine Seite liegt. Der letzte Eintrag ist die aktuelle Seite."
+  },
   "empty": {
     "description": "app-ui-empty für Listen ohne Einträge.",
     "heading": "Noch keine Notizen",

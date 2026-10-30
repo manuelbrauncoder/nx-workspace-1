@@ -15,6 +15,9 @@
   --popover-foreground: oklch(0.129 0.042 264.695);
   --primary: oklch(0.511 0.262 276.966);
   --primary-foreground: oklch(0.984 0.003 247.858);
+  // Main action of a page (`variant="brand"`). This app uses its primary color.
+  --brand: var(--primary);
+  --brand-foreground: var(--primary-foreground);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
   --muted: oklch(0.968 0.007 247.896);

@@ -3,7 +3,8 @@
     "cancel": "Abbrechen",
     "close": "Schließen",
     "loading": "Wird geladen …",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "breadcrumb": "Navigationspfad"
   },
   "failure": {
     "network": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",
@@ -45,9 +46,10 @@
       "linkHeading": "Link",
       "linkUrl": "Adresse",
       "linkUrlDescription": "Eine Webadresse oder mailto:name@example.org.",
-      "linkInvalid": "Bitte gib eine gültige Webadresse ein.",
+      "linkInvalid": "Bitte gib eine gültige Adresse ein.",
       "linkApply": "Übernehmen",
-      "linkRemove": "Link entfernen"
+      "linkRemove": "Link entfernen",
+      "linkUrlDescriptionPage": "Eine Webadresse, mailto:name@example.org, tel:+49… oder ein Pfad dieser Website wie /privacy."
     }
   },
   "language": {

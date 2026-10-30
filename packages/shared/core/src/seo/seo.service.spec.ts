@@ -15,7 +15,11 @@ class Page {}
 @Component({ selector: 'app-data-page', template: '' })
 class DataPage {
   constructor() {
-    injectPageSeo(() => ({ title: 'Einkauf', description: 'Milch und Brot' }));
+    injectPageSeo(() => ({
+      title: 'Einkauf',
+      description: 'Milch und Brot',
+      image: { url: 'https://api.example.com/media/1', width: 800, height: 420, alt: 'Korb' },
+    }));
   }
 }
 
@@ -114,11 +118,15 @@ describe('SeoService', () => {
 
     expect(TestBed.inject(Title).getTitle()).toBe('Einkauf | test-app');
     expect(content('name="description"')).toBe('Milch und Brot');
+    expect(content('property="og:image"')).toBe('https://api.example.com/media/1');
+    expect(content('property="og:image:width"')).toBe('800');
+    expect(content('property="og:image:alt"')).toBe('Korb');
 
     await harness.navigateByUrl('/plain');
 
     expect(TestBed.inject(Title).getTitle()).toBe('Abbrechen | test-app');
     expect(content('name="description"')).toContain('Beschreibung der Test-App');
+    expect(content('property="og:image"')).toBe('https://example.com/og-image.png');
   });
 
   it('follows a language switch', async () => {

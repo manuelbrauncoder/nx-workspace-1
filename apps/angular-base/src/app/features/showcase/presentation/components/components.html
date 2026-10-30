@@ -43,6 +43,13 @@
     </div>
   </app-showcase-section>
 
+  <app-showcase-section
+    [description]="'showcaseComponents.breadcrumb.description' | t"
+    heading="Breadcrumb"
+  >
+    <app-ui-breadcrumb [items]="_breadcrumb" />
+  </app-showcase-section>
+
   <app-showcase-section [description]="'showcaseComponents.icon.description' | t" heading="Icon">
     <ul class="icon-grid">
       @for (icon of _icons; track icon) {

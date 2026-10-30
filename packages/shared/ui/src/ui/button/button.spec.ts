@@ -56,6 +56,17 @@ describe('UiButton', () => {
     expect(button.classList.contains('underline-offset-4')).toBe(true);
   });
 
+  it('replaces the primary colors with the brand colors', async () => {
+    const { fixture, host, button } = await render();
+
+    host.variant.set('brand');
+    await fixture.whenStable();
+
+    expect(button.classList.contains('bg-brand')).toBe(true);
+    expect(button.classList.contains('text-brand-foreground')).toBe(true);
+    expect(button.classList.contains('bg-primary')).toBe(false);
+  });
+
   it('disables the native button', async () => {
     const { fixture, host, button } = await render();
 

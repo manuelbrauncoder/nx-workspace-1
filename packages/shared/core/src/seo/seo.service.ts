@@ -25,12 +25,20 @@ export interface ActiveRouteSeo {
   seo: RouteSeo;
 }
 
+/** Preview image for shared links that a page takes from its loaded data. */
+export interface PageSeoImage {
+  /** Absolute address, e.g. an image on the backend. */
+  url: string;
+  width: number;
+  height: number;
+  alt: string;
+}
+
 /** Meta data a page takes from its loaded data. Texts are final, not translation keys. */
 export interface PageSeo {
   title?: string;
   description?: string;
-  /** Path of the preview image for shared links. */
-  image?: string;
+  image?: PageSeoImage;
 }
 
 /**
@@ -88,7 +96,6 @@ export class SeoService {
     const description =
       page?.description || this._i18n.translate(route.seo.description ?? 'seo.defaultDescription');
     const url = this._config.siteUrl + route.path;
-    const imagePath = page?.image ?? route.seo.image ?? DEFAULT_IMAGE.path;
     const indexable = this._config.allowIndexing && route.seo.index !== false;
 
     this._title.setTitle(title);
@@ -102,15 +109,24 @@ export class SeoService {
     this._setProperty('og:title', title);
     this._setProperty('og:description', description);
     this._setProperty('og:url', url);
-    const image = this._config.siteUrl + imagePath;
-    this._setProperty('og:image', image);
+    const image = page?.image ?? this._routeImage(route.seo.image);
+    this._setProperty('og:image', image.url);
     // Not every preview falls back to `og:image`.
-    this._setName('twitter:image', image);
-    this._setProperty('og:image:alt', this._i18n.translate('seo.imageAlt'));
-    // The size is only known for the default image.
-    const isDefaultImage = imagePath === DEFAULT_IMAGE.path;
-    this._setProperty('og:image:width', isDefaultImage ? `${DEFAULT_IMAGE.width}` : undefined);
-    this._setProperty('og:image:height', isDefaultImage ? `${DEFAULT_IMAGE.height}` : undefined);
+    this._setName('twitter:image', image.url);
+    this._setProperty('og:image:alt', image.alt);
+    this._setProperty('og:image:width', image.width?.toString());
+    this._setProperty('og:image:height', image.height?.toString());
+  }
+
+  /** The size is only known for the default image. */
+  private _routeImage(path = DEFAULT_IMAGE.path): Partial<PageSeoImage> & { url: string } {
+    const isDefault = path === DEFAULT_IMAGE.path;
+    return {
+      url: this._config.siteUrl + path,
+      alt: this._i18n.translate('seo.imageAlt'),
+      width: isDefault ? DEFAULT_IMAGE.width : undefined,
+      height: isDefault ? DEFAULT_IMAGE.height : undefined,
+    };
   }
 
   private _setName(name: string, content: string): void {

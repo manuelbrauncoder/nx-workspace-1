@@ -6,6 +6,7 @@ import { TranslationKey, TranslationParams } from '@core/i18n/translation-key';
 import { LanguageToggle } from '@shared/language-toggle/language-toggle';
 import { UiAlert, UiAlertAction } from '@shared/ui/alert/alert';
 import { UiAttachmentImports } from '@shared/ui/attachment/attachment';
+import { UiBreadcrumb, UiBreadcrumbItem } from '@shared/ui/breadcrumb/breadcrumb';
 import { UiButton, UiButtonSize, UiButtonVariant } from '@shared/ui/button/button';
 import { UiCardImports } from '@shared/ui/card/card';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
@@ -42,6 +43,7 @@ interface Message {
     UiAlert,
     UiAlertAction,
     UiAttachmentImports,
+    UiBreadcrumb,
     UiButton,
     UiCardImports,
     UiEmpty,
@@ -70,9 +72,14 @@ export class Components {
     'ghost',
     'destructive',
     'link',
+    'brand',
   ];
   private readonly _sizes: UiButtonSize[] = ['xs', 'sm', 'default', 'lg'];
   private readonly _icons = UI_ICON_NAMES;
+  private readonly _breadcrumb: UiBreadcrumbItem[] = [
+    { labelKey: 'layout.nav.showcaseOverview', path: '/showcase' },
+    { labelKey: 'layout.nav.showcaseComponents' },
+  ];
   private readonly _densities: { value: Density; labelKey: TranslationKey }[] = [
     { value: 'compact', labelKey: 'showcaseComponents.menu.compact' },
     { value: 'comfortable', labelKey: 'showcaseComponents.menu.comfortable' },

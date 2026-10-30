@@ -34,6 +34,9 @@
     "remove": "Remove: bericht.pdf",
     "uploading": "Uploading"
   },
+  "breadcrumb": {
+    "description": "app-ui-breadcrumb shows where a page sits. The last item is the current page."
+  },
   "empty": {
     "description": "app-ui-empty for lists without entries.",
     "heading": "No notes yet",

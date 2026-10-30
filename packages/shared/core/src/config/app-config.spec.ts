@@ -25,6 +25,7 @@ describe('AppConfigService', () => {
       logLevel: 'warn',
       siteUrl: 'https://example.com/',
       allowIndexing: true,
+      allowSignUp: true,
     });
     await loaded;
 
@@ -33,6 +34,7 @@ describe('AppConfigService', () => {
     expect(service.logLevel).toBe('warn');
     expect(service.siteUrl).toBe('https://example.com');
     expect(service.allowIndexing).toBe(true);
+    expect(service.allowSignUp).toBe(true);
   });
 
   it('loads the config only once', async () => {
@@ -44,6 +46,7 @@ describe('AppConfigService', () => {
       logLevel: 'info',
       siteUrl: 'https://example.com',
       allowIndexing: false,
+      allowSignUp: true,
     });
 
     expect(second).toBe(first);
@@ -60,6 +63,7 @@ describe('AppConfigService', () => {
       logLevel: 'info',
       siteUrl: 'https://example.com',
       allowIndexing: false,
+      allowSignUp: true,
     });
     await loaded;
 
@@ -104,6 +108,7 @@ describe('AppConfigService', () => {
       environment: 'staging',
       logLevel: 'info',
       allowIndexing: false,
+      allowSignUp: true,
     });
 
     await expect(loaded).rejects.toThrow('"siteUrl" must be strings');
@@ -117,9 +122,38 @@ describe('AppConfigService', () => {
       logLevel: 'info',
       siteUrl: 'https://example.com',
       allowIndexing: 'yes',
+      allowSignUp: true,
     });
 
-    await expect(loaded).rejects.toThrow('"allowIndexing" a boolean');
+    await expect(loaded).rejects.toThrow('"allowIndexing" (and "allowSignUp" if set) booleans');
+  });
+
+  it('allows sign-up when the flag is missing, so older config files stay valid', async () => {
+    const loaded = service.load();
+    backend.expectOne(APP_CONFIG_URL).flush({
+      apiBaseUrl: '/api',
+      environment: 'staging',
+      logLevel: 'info',
+      siteUrl: 'https://example.com',
+      allowIndexing: false,
+    });
+    await loaded;
+
+    expect(service.allowSignUp).toBe(true);
+  });
+
+  it('rejects a config whose sign-up flag is not a boolean', async () => {
+    const loaded = service.load();
+    backend.expectOne(APP_CONFIG_URL).flush({
+      apiBaseUrl: '/api',
+      environment: 'staging',
+      logLevel: 'info',
+      siteUrl: 'https://example.com',
+      allowIndexing: false,
+      allowSignUp: 'yes',
+    });
+
+    await expect(loaded).rejects.toThrow('"allowSignUp" if set');
   });
 
   it('rejects when the config file cannot be loaded', async () => {

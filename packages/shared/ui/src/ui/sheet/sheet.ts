@@ -1,4 +1,4 @@
-import { booleanAttribute, Component, input, model } from '@angular/core';
+import { booleanAttribute, Component, input, model, output } from '@angular/core';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { HlmSheetImports } from '@spartan-ng/helm/sheet';
 import { UiButton } from '../button/button';
@@ -45,4 +45,9 @@ export class UiSheet {
   readonly side = input<UiSheetSide>('right');
   /** Lets a panel on the left or right cover the whole width on small screens. */
   readonly fullWidth = input(false, { transform: booleanAttribute });
+  /**
+   * Emits once the panel is gone and the page scrolls again. While it is open the page is
+   * locked, so a jump to a section of the page has to wait for this.
+   */
+  readonly closed = output<void>();
 }

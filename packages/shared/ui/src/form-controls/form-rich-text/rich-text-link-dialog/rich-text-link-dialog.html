@@ -3,7 +3,7 @@
   <app-ui-dialog [heading]="'form.richText.linkHeading' | t">
     <app-form-text
       [formField]="_linkForm.address"
-      [description]="'form.richText.linkUrlDescription' | t"
+      [description]="_descriptionKey | t"
       [label]="'form.richText.linkUrl' | t"
       type="url"
       autocomplete="off"

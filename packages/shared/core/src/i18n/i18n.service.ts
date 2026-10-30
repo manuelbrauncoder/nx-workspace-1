@@ -4,6 +4,7 @@ import type { I18nScope } from './i18n-scope';
 import { I18N_SHARED_SOURCES } from './i18n-shared-sources';
 import { injectInitialLanguage } from './initial-language';
 import { APP_LANGUAGES, AppLanguage, LANGUAGE_COOKIE } from './languages';
+import { Localized } from './localized';
 import { TranslationKey, TranslationParams } from './translation-key';
 
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
@@ -66,6 +67,11 @@ export class I18nService {
     this.language();
     this._revision();
     return this._transloco.translate(key, params);
+  }
+
+  /** The value of a `Localized` in the active language. Reactive like `translate()`. */
+  localize<T>(value: Localized<T>): T {
+    return value[this.language()];
   }
 
   private _apply(language: AppLanguage): void {
