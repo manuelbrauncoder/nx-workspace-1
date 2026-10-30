@@ -1,8 +1,8 @@
 # Documentation
 
-Long-form documentation for the workspace: the app `angular-base` and the shared libs in `packages/shared/` that every app builds on. The short rule set that tooling and AI agents work from lives in [CLAUDE.md](../CLAUDE.md). These docs explain the same rules with the reasoning behind them and with examples taken from the code.
+Long-form documentation for the workspace: the Angular app `angular-base` with the libs in `packages/shared/`, the API app `express-api-base` with the libs in `packages/server/`, and `packages/contracts`, the wire format both sides share. The short rule set that tooling and AI agents work from lives in [CLAUDE.md](../CLAUDE.md). These docs explain the same rules with the reasoning behind them and with examples taken from the code.
 
-## Reading order
+## Angular apps
 
 | Doc                                         | What it covers                                                                                 |
 | ------------------------------------------- | ---------------------------------------------------------------------------------------------- |
@@ -20,6 +20,19 @@ Long-form documentation for the workspace: the app `angular-base` and the shared
 | [SEO](seo.md)                               | Title and meta tags, indexing, HTTP status, `robots.txt`, sitemap                              |
 | [Legal pages](legal-pages.md)               | Imprint, privacy policy, accessibility statement, what a project has to fill in                |
 | [CI and deployment](ci-and-deployment.md)   | GitHub Actions pipeline, container image, settings of a deployment                             |
+
+## API apps
+
+| Doc                                         | What it covers                                                    |
+| ------------------------------------------- | ----------------------------------------------------------------- |
+| [Getting started](api/getting-started.md)   | Setup with the local Postgres, trying the API, Nx commands        |
+| [Architecture](api/architecture.md)         | App and server libs, request flow, adding a feature or an API app |
+| [Configuration](api/configuration.md)       | Environment variables, the JSON config, `extendConfig()`          |
+| [Authentication](api/authentication.md)     | Sessions, roles, admin, CSRF protection, frontend integration     |
+| [Database](api/database.md)                 | Drizzle tables, migrations, the auth tables of `server-auth`      |
+| [Notes and images](api/notes-and-images.md) | Notes, rich text sanitizing, image uploads                        |
+| [Testing](api/testing.md)                   | Test databases, helpers, what is covered                          |
+| [Deployment](api/deployment.md)             | Image, release tags, Portainer stack                              |
 
 New to the project: read _Getting started_ and _Architecture_ first, then open the `notes` feature next to _State management_.
 

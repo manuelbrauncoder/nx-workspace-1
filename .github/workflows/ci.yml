@@ -3,7 +3,8 @@ name: CI
 on:
   push:
     branches: [main]
-    tags: ['angular-base-v*']
+    # One release tag per app, e.g. angular-base-v1.2.0 or express-api-base-v1.2.0.
+    tags: ['angular-base-v*', 'express-api-base-v*']
   pull_request:
   workflow_dispatch:
 
@@ -21,6 +22,23 @@ jobs:
   checks:
     name: Quality checks
     runs-on: ubuntu-latest
+
+    # Same credentials as docker-compose.yml, which the Vitest configs of the API projects expect
+    # by default. Each of them creates and migrates its own test database.
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: app
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U app -d app"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
 
     steps:
       - name: Checkout
@@ -116,4 +134,63 @@ jobs:
             echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
             echo ""
             echo "Runtime listens on port **4000** (\`PORT\`). Mount the runtime config over \`/app/dist/angular-base/browser/config/app-config.json\` and set \`NG_ALLOWED_HOSTS\` to the public host names."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish-express-api-base:
+    name: Build and push express-api-base image
+    runs-on: ubuntu-latest
+    needs: checks
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/express-api-base-v')
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Tag `express-api-base-v1.2.0` becomes image `ghcr.io/<owner>/express-api-base:v1.2.0`.
+      - name: Set image metadata
+        id: meta
+        run: |
+          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          echo "image=ghcr.io/${OWNER}/express-api-base" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME#express-api-base-}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: apps/express-api-base/Dockerfile
+          push: true
+          cache-from: type=gha,scope=express-api-base
+          cache-to: type=gha,mode=max,scope=express-api-base
+          tags: |
+            ${{ steps.meta.outputs.image }}:latest
+            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
+            ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "## Image published"
+            echo ""
+            echo "**Tag:** \`${{ steps.meta.outputs.tag }}\`"
+            echo "**Commit:** \`sha-${{ steps.meta.outputs.short_sha }}\`"
+            echo ""
+            echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
+            echo ""
+            echo "The API listens on port **3000** (\`port\` in the config file). Mount the config file and set \`CONFIG_PATH\`, \`DATABASE_URL\` and \`SESSION_SECRET\`. Apply migrations with \`node dist/scripts/migrate.js\` before starting the API."
           } >> "$GITHUB_STEP_SUMMARY"

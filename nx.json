@@ -19,6 +19,18 @@
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "lint": {
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/eslint.angular.mjs",
+        "{projectRoot}/eslint.config.mjs",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     }
   },
   "plugins": [

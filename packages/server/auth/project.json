@@ -1,0 +1,23 @@
+{
+  "name": "server-auth",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/server/auth/src",
+  "tags": ["type:server"],
+  "targets": {
+    "db:generate": {
+      "command": "drizzle-kit generate",
+      "options": {
+        "cwd": "{projectRoot}"
+      }
+    },
+    "typecheck": {
+      "cache": true,
+      "inputs": ["default", "^default"],
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "tsc -p tsconfig.lib.json --noEmit && tsc -p tsconfig.spec.json --noEmit"
+      }
+    }
+  }
+}

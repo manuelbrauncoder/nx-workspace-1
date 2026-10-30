@@ -1,9 +1,11 @@
 // @ts-check
 import { defineConfig } from 'eslint/config';
+import angularConfig from '../../../eslint.angular.mjs';
 import baseConfig from '../../../eslint.config.mjs';
 
 export default defineConfig([
   ...baseConfig,
+  ...angularConfig,
   {
     // The translation library stays behind `@core/i18n`, so swapping it stays local.
     files: ['src/**/*.ts'],

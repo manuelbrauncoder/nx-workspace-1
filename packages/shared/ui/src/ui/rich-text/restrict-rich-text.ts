@@ -3,7 +3,7 @@ import {
   RICH_TEXT_LINK_REL,
   RICH_TEXT_LINK_TARGET,
   RICH_TEXT_TAGS,
-} from './rich-text-rules';
+} from '@contracts/rich-text';
 
 /** Removed together with their content. Any other unknown element only loses its tag. */
 const DROPPED_TAGS: readonly string[] = [
@@ -33,7 +33,7 @@ function unwrap(element: Element): void {
 }
 
 /**
- * Reduces untrusted HTML to the formats of `rich-text-rules.ts`: unknown elements lose their tag,
+ * Reduces untrusted HTML to the formats of `@contracts/rich-text`: unknown elements lose their tag,
  * every attribute is removed and a link keeps only an allowed `href`, with `target` and `rel` set
  * here. Parsing happens in an inert
  * document, so nothing is loaded or executed. The result still goes through Angular's sanitizer

@@ -252,7 +252,7 @@ A file or an image as a tile. Import `UiAttachmentImports`.
 <app-ui-rich-text [html]="note.description" />
 ```
 
-Shows rich text that was written with `app-form-rich-text` and stored as HTML. Stored HTML is untrusted: anyone can send it to the API without going through the editor. The wrapper therefore reduces it to the formats listed in [rich-text-rules.ts](../packages/shared/ui/src/ui/rich-text/rich-text-rules.ts) before it is rendered:
+Shows rich text that was written with `app-form-rich-text` and stored as HTML. Stored HTML is untrusted: anyone can send it to the API without going through the editor. The wrapper therefore reduces it to the formats listed in [rich-text-rules.ts](../packages/contracts/src/rich-text.ts) before it is rendered:
 
 - unknown elements lose their tag, scripts, styles, frames and embedded content are removed with what is inside
 - every attribute is removed, so stored HTML cannot use the classes of the app or carry an event handler

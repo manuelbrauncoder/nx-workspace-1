@@ -1,6 +1,6 @@
 // Formatted text written with `app-form-rich-text` and shown by `app-ui-rich-text`. Both render
 // HTML that carries no component scope, so the styles are global. Covers exactly the formats
-// listed in `packages/shared/ui/src/ui/rich-text/rich-text-rules.ts`.
+// listed in `packages/contracts/src/rich-text.ts`.
 @layer components {
   .rich-text {
     line-height: 1.6;

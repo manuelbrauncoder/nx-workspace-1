@@ -1,4 +1,7 @@
 allowBuilds:
+  # Telemetry of swagger-ui-express, not needed.
+  '@scarf/scarf': false
+  argon2: true
   '@parcel/watcher': true
   '@swc/core': true
   esbuild: true

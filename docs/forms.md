@@ -159,7 +159,7 @@ An editor for formatted text: bold, italic, two heading levels (`h2`, `h3`), bul
 - The editor exists in the browser only. The server renders the empty frame, the content appears after hydration
 - Show a stored value with `app-ui-rich-text`, never with `innerHTML` directly. See [UI components](ui-components.md#rich-text) for why the stored HTML is untrusted
 
-The editor library (Tiptap) is wrapped by [rich-text-editor.ts](../packages/shared/ui/src/form-controls/form-rich-text/rich-text-editor.ts), the only file that imports it. The allowed formats are listed once in [rich-text-rules.ts](../packages/shared/ui/src/ui/rich-text/rich-text-rules.ts). Adding a format means: the list there, the editor schema, the toolbar and the styles in [\_rich-text.scss](../packages/shared/styles/base/_rich-text.scss).
+The editor library (Tiptap) is wrapped by [rich-text-editor.ts](../packages/shared/ui/src/form-controls/form-rich-text/rich-text-editor.ts), the only file that imports it. The allowed formats are listed once in [rich-text-rules.ts](../packages/contracts/src/rich-text.ts). Adding a format means: the list there, the editor schema, the toolbar and the styles in [\_rich-text.scss](../packages/shared/styles/base/_rich-text.scss).
 
 ### `FormFiles`
 

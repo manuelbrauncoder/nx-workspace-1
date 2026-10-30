@@ -24,16 +24,12 @@ export interface NoteDraft {
   description: string;
 }
 
-// The limits of the backend, so a form can report them before sending.
-export const NOTE_TITLE_MAX_LENGTH = 200;
-/** Counts the HTML, not the visible text. */
-export const NOTE_DESCRIPTION_MAX_LENGTH = 50_000;
+// The limits of the API, so a form can report them before sending.
+export {
+  NOTE_DESCRIPTION_MAX_LENGTH,
+  NOTE_IMAGE_TYPES,
+  NOTE_TITLE_MAX_LENGTH,
+} from '@contracts/notes-limits';
+/** Set in the runtime config of the API, these are its defaults. */
 export const NOTE_IMAGES_MAX = 10;
 export const NOTE_IMAGE_MAX_BYTES = 10 * 1024 * 1024;
-export const NOTE_IMAGE_TYPES: readonly string[] = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/avif',
-  'image/gif',
-];

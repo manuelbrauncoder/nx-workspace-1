@@ -1,11 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { form, FormField, validate } from '@angular/forms/signals';
+import { isAllowedRichTextHref } from '@contracts/rich-text';
 import { I18nService } from '@core/i18n/i18n.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { UiButton } from '../../../ui/button/button';
 import { UiDialog, UiDialogFooter } from '../../../ui/dialog/dialog';
 import { injectUiDialogData, injectUiDialogRef } from '../../../ui/dialog/dialog-ref';
-import { isAllowedRichTextHref } from '../../../ui/rich-text/rich-text-rules';
 import { FormText } from '../../form-text/form-text';
 
 /** A typed address without a scheme, such as `example.org`, is taken as a web address. */

@@ -55,3 +55,7 @@ vitest.config.*.timestamp*
 .nx/polygraph
 .nx/self-healing
 .nx/migrate-runs.vitest
+
+# Local secrets and runtime data of the API apps
+.env
+uploads/

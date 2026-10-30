@@ -1,9 +1,11 @@
 // @ts-check
 import { defineConfig } from 'eslint/config';
+import angularConfig from '../../../eslint.angular.mjs';
 import baseConfig from '../../../eslint.config.mjs';
 
 export default defineConfig([
   ...baseConfig,
+  ...angularConfig,
   {
     // The one place that may write to the console. Everything else uses AppLog or ServerLog.
     files: ['src/log/log.ts', 'src/log/*.spec.ts'],
