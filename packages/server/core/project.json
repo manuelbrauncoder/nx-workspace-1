@@ -3,6 +3,6 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "packages/server/core/src",
-  "tags": ["type:server"],
+  "tags": ["type:server", "scope:shared"],
   "targets": {}
 }

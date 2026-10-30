@@ -4,6 +4,9 @@
   "projectType": "library",
   "sourceRoot": "packages/shared/helm-vega",
   "prefix": "hlm",
-  "tags": ["type:helm"],
+  "tags": [
+    "type:helm",
+    "scope:shared"
+  ],
   "targets": {}
 }

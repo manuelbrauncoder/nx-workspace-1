@@ -4,7 +4,7 @@
   "sourceRoot": "packages/shared/ui/src",
   "prefix": "app",
   "projectType": "library",
-  "tags": ["type:ui"],
+  "tags": ["type:ui", "scope:shared"],
   "targets": {
     "typecheck": {
       "cache": true,

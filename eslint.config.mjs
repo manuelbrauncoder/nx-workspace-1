@@ -72,6 +72,19 @@ export default defineConfig([
               sourceTag: 'type:server',
               onlyDependOnLibsWithTags: ['type:server', 'type:contract'],
             },
+            // Products. Shared libs know no product, products do not know each other.
+            {
+              sourceTag: 'scope:shared',
+              onlyDependOnLibsWithTags: ['scope:shared'],
+            },
+            {
+              sourceTag: 'scope:base',
+              onlyDependOnLibsWithTags: ['scope:base', 'scope:shared'],
+            },
+            {
+              sourceTag: 'scope:portfolio',
+              onlyDependOnLibsWithTags: ['scope:portfolio', 'scope:shared'],
+            },
             // Shared by both sides, so it may only use what runs in the browser and in Node.
             {
               sourceTag: 'type:contract',

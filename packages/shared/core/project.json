@@ -4,7 +4,7 @@
   "sourceRoot": "packages/shared/core/src",
   "prefix": "app",
   "projectType": "library",
-  "tags": ["type:core"],
+  "tags": ["type:core", "scope:shared"],
   "targets": {
     "typecheck": {
       "cache": true,
