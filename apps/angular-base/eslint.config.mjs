@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'eslint/config';
+import angularConfig from '../../eslint.angular.mjs';
 import baseConfig from '../../eslint.config.mjs';
 
 /**
@@ -41,6 +42,7 @@ const restrictImports = (files, patterns) => ({
 
 export default defineConfig([
   ...baseConfig,
+  ...angularConfig,
   restrictImports(['src/app/*.ts'], [I18N_LIBRARY]),
   // The app shell frames every page, so it knows neither features nor the API layer. The one
   // exception is the public API of the auth feature, for the account menu in the header.

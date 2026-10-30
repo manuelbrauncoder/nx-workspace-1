@@ -1,7 +1,6 @@
 // @ts-check
 import eslint from '@eslint/js';
 import nx from '@nx/eslint-plugin';
-import angular from 'angular-eslint';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
@@ -10,6 +9,7 @@ const UI_LIBRARIES = ['@spartan-ng/*', '@ng-icons/*', '@tiptap/*'];
 /**
  * Rules for every project of the workspace. Project configs extend this file and add their own
  * restrictions, e.g. the layer rules of the features in `apps/angular-base/eslint.config.mjs`.
+ * Angular projects add `eslint.angular.mjs` on top.
  */
 export default defineConfig([
   ...nx.configs['flat/base'],
@@ -33,16 +33,22 @@ export default defineConfig([
             '^@api/.*',
           ],
           depConstraints: [
-            // The UI and icon libraries are only used inside the `ui` lib, so swapping them
-            // stays local to it.
+            // Browser side. The UI and icon libraries are only used inside the `ui` lib, so
+            // swapping them stays local to it.
             {
               sourceTag: 'type:app',
-              onlyDependOnLibsWithTags: ['type:ui', 'type:core', 'type:styles'],
+              onlyDependOnLibsWithTags: ['type:ui', 'type:core', 'type:styles', 'type:contract'],
               bannedExternalImports: UI_LIBRARIES,
             },
             {
               sourceTag: 'type:ui',
-              onlyDependOnLibsWithTags: ['type:ui', 'type:core', 'type:helm', 'type:styles'],
+              onlyDependOnLibsWithTags: [
+                'type:ui',
+                'type:core',
+                'type:helm',
+                'type:styles',
+                'type:contract',
+              ],
             },
             {
               sourceTag: 'type:core',
@@ -57,6 +63,21 @@ export default defineConfig([
               sourceTag: 'type:styles',
               onlyDependOnLibsWithTags: ['type:styles'],
             },
+            // Server side.
+            {
+              sourceTag: 'type:api-app',
+              onlyDependOnLibsWithTags: ['type:server', 'type:contract'],
+            },
+            {
+              sourceTag: 'type:server',
+              onlyDependOnLibsWithTags: ['type:server', 'type:contract'],
+            },
+            // Shared by both sides, so it may only use what runs in the browser and in Node.
+            {
+              sourceTag: 'type:contract',
+              onlyDependOnLibsWithTags: ['type:contract'],
+              allowedExternalImports: ['zod'],
+            },
           ],
         },
       ],
@@ -64,13 +85,7 @@ export default defineConfig([
   },
   {
     files: ['**/*.ts'],
-    extends: [
-      eslint.configs.recommended,
-      tseslint.configs.recommended,
-      tseslint.configs.stylistic,
-      angular.configs.tsRecommended,
-    ],
-    processor: angular.processInlineTemplates,
+    extends: [eslint.configs.recommended, tseslint.configs.recommended, tseslint.configs.stylistic],
     rules: {
       // Added by the Nx presets. Signals and `@ViewChild` make `!` common in Angular code, and
       // `no-empty-object-type` from typescript-eslint already covers empty interfaces.
@@ -88,36 +103,6 @@ export default defineConfig([
           leadingUnderscore: 'require',
         },
       ],
-      // Untrusted HTML and URLs go through Angular's sanitizer, stored rich text through
-      // `app-ui-rich-text`.
-      'no-restricted-properties': [
-        'error',
-        ...['Html', 'Script', 'Style', 'Url', 'ResourceUrl'].map((kind) => ({
-          property: `bypassSecurityTrust${kind}`,
-          message: 'Do not switch off the sanitizer.',
-        })),
-      ],
-      '@angular-eslint/directive-selector': [
-        'error',
-        {
-          type: 'attribute',
-          prefix: 'app',
-          style: 'camelCase',
-        },
-      ],
-      '@angular-eslint/component-selector': [
-        'error',
-        {
-          type: 'element',
-          prefix: 'app',
-          style: 'kebab-case',
-        },
-      ],
     },
-  },
-  {
-    files: ['**/*.html'],
-    extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
-    rules: {},
   },
 ]);
