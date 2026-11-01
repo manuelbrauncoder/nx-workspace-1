@@ -1,0 +1,45 @@
+{
+  "port": 3100,
+  "logLevel": "debug",
+  "trustProxy": false,
+  "publicUrl": "http://localhost:3100",
+  "cors": {
+    "origins": ["http://localhost:4100"]
+  },
+  "session": {
+    "cookieName": "sid",
+    "maxAgeDays": 7,
+    "secureCookie": false
+  },
+  "rateLimit": {
+    "authWindowMinutes": 15,
+    "authMaxRequests": 20,
+    "contactWindowMinutes": 60,
+    "contactMaxRequests": 20
+  },
+  "auth": {
+    "signUpEnabled": true
+  },
+  "admin": {
+    "email": "admin@mail.dev",
+    "password": "dev-admin-password"
+  },
+  "docs": {
+    "enabled": true
+  },
+  "mail": {
+    "enabled": false,
+    "host": "smtp.ionos.de",
+    "port": 465,
+    "secure": true,
+    "user": "mail@manuel-braun.net",
+    "from": "Portfolio <mail@manuel-braun.net>",
+    "to": "mail@manuel-braun.net"
+  },
+  "uploads": {
+    "dir": "./uploads",
+    "maxFileSizeMb": 10,
+    "maxImagesPerNote": 10,
+    "maxImageWidth": 2000
+  }
+}

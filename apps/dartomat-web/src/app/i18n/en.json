@@ -1,0 +1,15 @@
+{
+  "layout": {
+    "appName": "Dartomat"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "heading": "Page not found",
+    "description": "This page does not exist or has been moved.",
+    "backToSetup": "Go to player selection"
+  },
+  "seo": {
+    "defaultDescription": "Dartomat keeps score in your game of 301: add the players, tap the darts, see the checkout. Plain and fast, also on your phone.",
+    "imageAlt": "Dartomat lettering with a yellow trail marker"
+  }
+}

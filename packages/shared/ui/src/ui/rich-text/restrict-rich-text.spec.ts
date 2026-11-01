@@ -59,4 +59,34 @@ describe('restrictRichText', () => {
 
     expect(restrict(link.outerHTML)).toBe('Link');
   });
+
+  it('keeps mail links without a new tab', () => {
+    expect(restrict('<a href="mailto:a@example.org" target="_blank">Mail</a>')).toBe(
+      '<a href="mailto:a@example.org">Mail</a>',
+    );
+  });
+
+  describe('in the profile page', () => {
+    const restrictPage = (html: string) => restrictRichText(html, document, 'page');
+
+    it.each(['/privacy', '/#contact', 'tel:+491234'])(
+      'keeps a link to %s in the same tab',
+      (href) => {
+        expect(restrictPage(`<a href="${href}" target="_blank">Link</a>`)).toBe(
+          `<a href="${href}">Link</a>`,
+        );
+      },
+    );
+
+    it.each(['//example.org', 'javascript:alert(1)', 'tel:+49 javascript'])(
+      'still turns a link to %s into plain text',
+      (href) => {
+        const link = document.createElement('a');
+        link.setAttribute('href', href);
+        link.textContent = 'Link';
+
+        expect(restrictPage(link.outerHTML)).toBe('Link');
+      },
+    );
+  });
 });

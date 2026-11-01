@@ -1,0 +1,88 @@
+@use 'styles/abstracts' as *;
+
+.about {
+  border-bottom: 1px solid var(--border);
+  background-color: var(--surface);
+  outline: none;
+}
+
+// Phone: heading, portrait, text. From `md` the portrait moves next to heading and text.
+.about__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.375rem;
+  padding-block: 4rem;
+
+  @include up(md) {
+    grid-template-columns: minmax(0, 25rem) minmax(0, 1fr);
+    grid-template-areas:
+      'portrait heading'
+      'portrait text';
+    grid-template-rows: auto 1fr;
+    column-gap: 4.5rem;
+    row-gap: 1.5rem;
+    padding-block: 7.5rem;
+  }
+}
+
+.about__heading {
+  margin: 0;
+
+  @include up(md) {
+    grid-area: heading;
+  }
+}
+
+.about__portrait {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: top;
+  border: 1.5px solid var(--foreground);
+  border-radius: var(--radius);
+
+  @include up(md) {
+    grid-area: portrait;
+    aspect-ratio: 2 / 3;
+  }
+}
+
+.about__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @include up(md) {
+    grid-area: text;
+  }
+}
+
+.about__intro {
+  max-width: 38ch;
+  margin: 0;
+  font-size: clamp(1.1875rem, 1.6vw, 1.3125rem);
+  line-height: 1.55;
+}
+
+.about__points {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 60ch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--foreground-soft);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.about__point {
+  display: flex;
+  gap: 1rem;
+}
+
+.about__marker {
+  margin-top: 0.3rem;
+}

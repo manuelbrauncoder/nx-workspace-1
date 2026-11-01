@@ -1,0 +1,20 @@
+{
+  "title": "Startseite bearbeiten",
+  "heading": "Startseite bearbeiten",
+  "lead": "Jeder Abschnitt der Startseite in beiden Sprachen. Ein Abschnitt, den es noch nicht gibt, fehlt auf der Startseite.",
+  "viewSite": "Startseite ansehen",
+  "created": "Angelegt",
+  "missing": "Noch nicht angelegt",
+  "edit": "Bearbeiten",
+  "create": "Anlegen",
+  "editNamed": "{{ section }} bearbeiten",
+  "descriptions": {
+    "hero": "Name, Einleitung und der Ort auf der Karte",
+    "about": "Überschrift, Einleitung, Fakten und Porträt",
+    "projects": "Die Projekte mit Screenshot, Technologien und Links",
+    "skills": "Die Wegweiser mit ihren Skills",
+    "contact": "Überschrift und Einleitung über dem Kontaktformular",
+    "settings": "Name, E-Mail, Anschrift und Profile",
+    "seo": "Titel, Beschreibung und Vorschaubild für Suchmaschinen"
+  }
+}

@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.skills-form__sets {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+// The actions sit in the top right corner, the legend has to stay the first child.
+.skills-form__group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--surface);
+}
+
+.skills-form__group--nested {
+  background-color: var(--background);
+}
+
+.skills-form__legend {
+  float: left;
+  padding: 0;
+  font-weight: 700;
+}
+
+.skills-form__actions {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+}

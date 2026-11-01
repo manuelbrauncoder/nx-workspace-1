@@ -14,6 +14,9 @@
     "authWindowMinutes": 15,
     "authMaxRequests": 1000
   },
+  "auth": {
+    "signUpEnabled": true
+  },
   "admin": {
     "email": "admin@mail.dev",
     "password": "test-admin-password"

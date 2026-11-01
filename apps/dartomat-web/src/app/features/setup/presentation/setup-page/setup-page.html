@@ -1,0 +1,140 @@
+<main class="setup page-container">
+  <header class="setup__header">
+    <p class="setup__wordmark">
+      <span class="setup__marker" aria-hidden="true"></span>
+      {{ 'layout.appName' | t }}
+    </p>
+    <h1 class="setup__heading" appUiText="h1">{{ 'setupPage.heading' | t }}</h1>
+    <p appUiText="lead">{{ 'setupPage.lead' | t }}</p>
+  </header>
+
+  <section class="setup__section" aria-labelledby="setup-players">
+    <div class="setup__section-head">
+      <h2 class="setup__label" id="setup-players">{{ 'setupPage.players.heading' | t }}</h2>
+      <span class="setup__label">{{ _store.players().length }}</span>
+    </div>
+
+    @if (_store.players().length > 0) {
+      <ol class="setup__players" aria-labelledby="setup-players" aria-describedby="setup-order">
+        @for (
+          name of _store.players();
+          track name;
+          let index = $index, first = $first, last = $last
+        ) {
+          <li class="setup__player">
+            <span class="setup__order" aria-hidden="true">{{ index + 1 }}</span>
+            <span class="setup__name">{{ name }}</span>
+            <button
+              [attr.aria-label]="'setupPage.players.moveUp' | t: { name }"
+              [disabled]="first"
+              (click)="_store.move(index, -1)"
+              appUiButton
+              size="icon-lg"
+              type="button"
+              variant="ghost"
+            >
+              <app-ui-icon name="chevronUp" />
+            </button>
+            <button
+              [attr.aria-label]="'setupPage.players.moveDown' | t: { name }"
+              [disabled]="last"
+              (click)="_store.move(index, 1)"
+              appUiButton
+              size="icon-lg"
+              type="button"
+              variant="ghost"
+            >
+              <app-ui-icon name="chevronDown" />
+            </button>
+            <button
+              [attr.aria-label]="'setupPage.players.remove' | t: { name }"
+              (click)="_store.removePlayer(index)"
+              appUiButton
+              size="icon-lg"
+              type="button"
+              variant="ghost"
+            >
+              <app-ui-icon name="x" />
+            </button>
+          </li>
+        }
+      </ol>
+      <p class="setup__hint" id="setup-order">{{ 'setupPage.players.hint' | t }}</p>
+    } @else {
+      <p class="setup__hint">{{ 'setupPage.players.empty' | t }}</p>
+    }
+
+    <form class="setup__add" (submit)="_addPlayer($event)" novalidate>
+      <app-form-text
+        class="setup__add-field"
+        [formField]="_playerForm.name"
+        [label]="'setupPage.add.label' | t"
+        [placeholder]="'setupPage.add.placeholder' | t"
+        autocomplete="off"
+      />
+      <button
+        class="setup__add-button"
+        [attr.aria-label]="'setupPage.add.submit' | t"
+        [disabled]="_store.isFull()"
+        appUiButton
+        size="icon-lg"
+        type="submit"
+        variant="secondary"
+      >
+        <app-ui-icon name="plus" />
+      </button>
+    </form>
+    @if (_store.isFull()) {
+      <p class="setup__hint" role="status">
+        {{ 'setupPage.players.full' | t: { max: _playersMax } }}
+      </p>
+    }
+
+    @if (_store.recentNames().length > 0) {
+      <div class="setup__recent" role="group" aria-labelledby="setup-recent">
+        <span class="setup__label" id="setup-recent">{{ 'setupPage.recent.heading' | t }}</span>
+        @for (name of _store.recentNames(); track name) {
+          <button
+            [attr.aria-label]="'setupPage.recent.add' | t: { name }"
+            [disabled]="_store.isFull()"
+            (click)="_store.addPlayer(name)"
+            appUiButton
+            size="sm"
+            type="button"
+            variant="outline"
+          >
+            <app-ui-icon name="plus" />
+            {{ name }}
+          </button>
+        }
+      </div>
+    }
+  </section>
+
+  <app-form-toggle-group
+    [description]="_finishHint()"
+    [formField]="_rulesForm.finish"
+    [label]="'setupPage.finish.label' | t"
+    [options]="_finishes()"
+  />
+
+  <div class="setup__footer">
+    @if (_store.mutationState().failure; as failure) {
+      <app-failure-alert [failure]="failure" [heading]="'setupPage.startFailed' | t" />
+    }
+    <button
+      class="setup__start"
+      [disabled]="!_store.canStart()"
+      [loading]="_starting()"
+      [loadingLabel]="'setupPage.starting' | t"
+      (click)="_start()"
+      appUiButton
+      size="lg"
+      type="button"
+      variant="brand"
+    >
+      <span>{{ 'setupPage.start' | t }}</span>
+      <span class="setup__start-count">{{ _playerCount() }}</span>
+    </button>
+  </div>
+</main>

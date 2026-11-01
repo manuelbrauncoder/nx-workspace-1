@@ -1,0 +1,44 @@
+{
+  "title": "Formulare · Showcase",
+  "heading": "Formulare",
+  "lead": "Form Controls aus shared/form-controls, gebunden über Signal Forms.",
+  "controls": {
+    "heading": "Alle Controls",
+    "description": "Jedes Control bringt Label, Beschreibung und Fehlermeldungen mit. Fehler erscheinen nach dem Verlassen des Feldes oder beim Absenden."
+  },
+  "fields": {
+    "name": "Name",
+    "email": "E-Mail",
+    "emailDescription": "Wird nur für Rückfragen verwendet.",
+    "about": "Über mich",
+    "notes": "Notizen",
+    "notesDescription": "Formatierter Text, gespeichert als HTML.",
+    "attachments": "Anhänge",
+    "attachmentsDescription": "Drop-Zone für höchstens drei Dateien, die Anzahl ist über maxFiles einstellbar.",
+    "birthday": "Geburtstag",
+    "role": "Rolle",
+    "newsletter": "Newsletter",
+    "newsletterDescription": "Höchstens eine Mail im Monat.",
+    "terms": "Ich stimme den Bedingungen zu",
+    "customerNumber": "Kundennummer",
+    "customerNumberDescription": "Deaktiviert über die Formular-Logik."
+  },
+  "roles": {
+    "developer": "Entwicklung",
+    "designer": "Design",
+    "product": "Produkt"
+  },
+  "validation": {
+    "name": "Bitte gib einen Namen ein.",
+    "email": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "birthday": "Bitte wähle ein Datum.",
+    "role": "Bitte wähle eine Rolle.",
+    "terms": "Bitte stimme den Bedingungen zu."
+  },
+  "submit": "Absenden",
+  "valid": "Das Formular ist gültig.",
+  "value": {
+    "heading": "Aktueller Wert",
+    "description": "Das Model hinter dem Formular, live aktualisiert."
+  }
+}

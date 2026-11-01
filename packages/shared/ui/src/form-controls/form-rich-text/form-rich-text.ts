@@ -15,11 +15,15 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
+import { RichTextProfile } from '@contracts/rich-text';
 import { UiDialogService } from '../../ui/dialog/dialog.service';
 import { FormControlErrors, visibleErrorMessages } from '../form-control-shell/form-control-errors';
 import { FormControlShell } from '../form-control-shell/form-control-shell';
 import { INITIAL_TOOLBAR_STATE, RichTextCommand, RichTextEditor } from './rich-text-editor';
-import { RichTextLinkDialog } from './rich-text-link-dialog/rich-text-link-dialog';
+import {
+  RichTextLinkDialog,
+  RichTextLinkDialogData,
+} from './rich-text-link-dialog/rich-text-link-dialog';
 import { RichTextToolbar } from './rich-text-toolbar/rich-text-toolbar';
 
 /**
@@ -27,7 +31,8 @@ import { RichTextToolbar } from './rich-text-toolbar/rich-text-toolbar';
  * `<app-form-rich-text [formField]="form.content" label="Inhalt" />`.
  *
  * The value is an HTML string limited to bold, italic, two heading levels, lists, quotes and
- * links, and `''` while the editor is empty. Show a stored value with `app-ui-rich-text`.
+ * links, and `''` while the editor is empty. Show a stored value with `app-ui-rich-text` and the
+ * same `profile`.
  */
 @Component({
   selector: 'app-form-rich-text',
@@ -40,6 +45,8 @@ export class FormRichText implements FormValueControl<string> {
 
   readonly label = input.required<string>();
   readonly description = input<string>();
+  /** `page` for a page of this site: links may also point within the site or to a phone. */
+  readonly profile = input<RichTextProfile>('text');
 
   // Bound by the `FormField` directive.
   readonly errors = input<FormControlErrors>([]);
@@ -69,6 +76,7 @@ export class FormRichText implements FormValueControl<string> {
       this._editor.set(
         new RichTextEditor(this._content().nativeElement, {
           html: untracked(this.value),
+          profile: untracked(this.profile),
           onChange: (html) => this.value.set(html),
           onState: (state) => this._toolbarState.set(state),
         }),
@@ -102,9 +110,12 @@ export class FormRichText implements FormValueControl<string> {
       return;
     }
     this._linkDialogOpen = true;
-    const href = await this._dialog.open<string | null, string>(RichTextLinkDialog, {
-      data: editor.linkHref,
-    }).closed;
+    const href = await this._dialog.open<string | null, RichTextLinkDialogData>(
+      RichTextLinkDialog,
+      {
+        data: { href: editor.linkHref, profile: this.profile() },
+      },
+    ).closed;
     this._linkDialogOpen = false;
     if (href !== undefined) {
       editor.setLink(href);

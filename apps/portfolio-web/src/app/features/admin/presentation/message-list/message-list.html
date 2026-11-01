@@ -1,0 +1,42 @@
+<app-ui-breadcrumb [items]="_breadcrumb" />
+<h1 class="mt-2" #heading appUiText="h1" tabindex="-1">{{ 'messageList.heading' | t }}</h1>
+<p class="mt-2" appUiText="lead">
+  {{ 'messageList.lead' | t: { unread: _store.unreadCount() } }}
+</p>
+
+@if (_store.messageMutationState().failure; as failure) {
+  <app-failure-alert class="mt-6" [failure]="failure" [heading]="'messageList.actionFailed' | t" />
+}
+
+<app-async-content
+  class="message-list__body"
+  [state]="_store.messagesState()"
+  [failureHeading]="'messageList.loadFailed' | t"
+  [loadingLabel]="'messageList.loading' | t"
+  (retry)="_store.reloadMessages()"
+  loadingIndicator="skeleton"
+  retryable
+>
+  <ng-template>
+    @if (_store.messages().length === 0) {
+      <app-ui-empty
+        [heading]="'messageList.empty.heading' | t"
+        [description]="'messageList.empty.description' | t"
+        icon="inbox"
+      />
+    } @else {
+      <ul class="message-list__items">
+        @for (message of _store.messages(); track message.id) {
+          <li>
+            <app-message-card
+              [message]="message"
+              (toggleRead)="_toggleRead(message)"
+              (reply)="_reply(message)"
+              (remove)="_remove(message)"
+            />
+          </li>
+        }
+      </ul>
+    }
+  </ng-template>
+</app-async-content>

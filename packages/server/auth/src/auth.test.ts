@@ -1,3 +1,4 @@
+import { config } from '@server/core/config';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { app } from './testing/test-app';
@@ -27,6 +28,18 @@ describe('auth', () => {
   it('treats the name as optional', async () => {
     const res = await request(app).post('/auth/sign-up').send(credentials).expect(201);
     expect(res.body.user.name).toBeNull();
+  });
+
+  it('refuses sign-ups while they are disabled', async () => {
+    config.auth.signUpEnabled = false;
+    try {
+      const res = await request(app).post('/auth/sign-up').send(credentials).expect(403);
+      expect(res.body.error.message).toBe('Sign-up is disabled');
+    } finally {
+      config.auth.signUpEnabled = true;
+    }
+
+    await request(app).post('/auth/sign-in').send(credentials).expect(401);
   });
 
   it('rejects a duplicate email', async () => {

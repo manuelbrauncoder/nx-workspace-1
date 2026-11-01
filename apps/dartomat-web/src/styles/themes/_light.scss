@@ -1,0 +1,7 @@
+// Dartomat exists in dark only (`FORCED_THEME_MODE` in app.config.ts), the colors are in
+// _dark.scss. This file holds what does not depend on the theme.
+:root {
+  --radius: 0.375rem;
+  --page-container-max-width: 30rem;
+  --page-container-padding-md: 1rem;
+}

@@ -1,9 +1,9 @@
 import type { CreateNoteInput, UpdateNoteInput } from '@contracts/notes';
 import { db } from '@server/core/db/db';
 import { badRequest, notFound } from '@server/core/errors';
+import { imagePath, processImage, removeImages, saveImage } from '@server/core/images';
 import { and, asc, count, desc, eq, inArray } from 'drizzle-orm';
 import { config } from '../../config/index.js';
-import { imagePath, processImage, removeImages, saveImage } from './notes.images.js';
 import { sanitizeDescription } from './notes.sanitize.js';
 import { noteImages, notes } from './notes.table.js';
 
@@ -130,7 +130,9 @@ export async function addImages(userId: string, noteId: string, uploads: Buffer[
     throw badRequest(`A note can have at most ${config.uploads.maxImagesPerNote} images`);
   }
 
-  const processed = await Promise.all(uploads.map(processImage));
+  // one after another, so a request holds only one decoded image in memory at a time
+  const processed = [];
+  for (const upload of uploads) processed.push(await processImage(upload));
 
   const filenames: string[] = [];
   try {

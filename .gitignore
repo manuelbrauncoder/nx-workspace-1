@@ -59,3 +59,6 @@ vitest.config.*.timestamp*
 # Local secrets and runtime data of the API apps
 .env
 uploads/
+
+# Local config copies of the API apps, e.g. with mail enabled
+apps/*/config/*.local.json

@@ -1,0 +1,79 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.score-focus__player {
+  margin: 0;
+  color: var(--foreground-soft);
+  font-size: 1.0625rem;
+}
+
+.score-focus__score {
+  margin: 0;
+  padding-top: 0.75rem;
+  font-size: 7rem;
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+// Keeps its height while there is no checkout, so nothing below jumps.
+.score-focus__checkout {
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
+  min-height: 1.75rem;
+  margin: 0;
+  padding-top: 0.25rem;
+}
+
+.score-focus__checkout-label {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.score-focus__checkout-route {
+  display: inline-flex;
+  gap: 0.375rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.score-focus__turn {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.score-focus__dart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 4rem;
+  height: 2rem;
+  padding-inline: 0.75rem;
+  border-radius: 4px;
+  background: var(--secondary);
+  font-size: 0.9375rem;
+  font-weight: 800;
+}
+
+// An open dart: a dashed outline like a marked trail not walked yet.
+.score-focus__dart--open {
+  border: 1px dashed var(--topo-line-major);
+  background: transparent;
+  color: var(--muted-foreground);
+  font-weight: 400;
+}
+
+.score-focus__separator {
+  color: var(--muted-foreground);
+  font-weight: 400;
+}

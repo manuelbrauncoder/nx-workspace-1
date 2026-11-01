@@ -3,8 +3,16 @@ name: CI
 on:
   push:
     branches: [main]
-    # One release tag per app, e.g. angular-base-v1.2.0 or express-api-base-v1.2.0.
-    tags: ['angular-base-v*', 'express-api-base-v*']
+    # One release tag per app, e.g. nx1-angular-base-v1.2.0 or nx1-portfolio-api-v1.2.0.
+    tags:
+      [
+        'nx1-angular-base-v*',
+        'nx1-express-api-base-v*',
+        'nx1-portfolio-web-v*',
+        'nx1-portfolio-api-v*',
+        'nx1-dartomat-web-v*',
+        'nx1-dartomat-api-v*',
+      ]
   pull_request:
   workflow_dispatch:
 
@@ -81,7 +89,7 @@ jobs:
     name: Build and push angular-base image
     runs-on: ubuntu-latest
     needs: checks
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/angular-base-v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nx1-angular-base-v')
 
     permissions:
       contents: read
@@ -101,13 +109,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Tag `angular-base-v1.2.0` becomes image `ghcr.io/<owner>/angular-base:v1.2.0`.
+      # Tag `nx1-angular-base-v1.2.0` becomes image `ghcr.io/<owner>/nx1-angular-base:v1.2.0`.
       - name: Set image metadata
         id: meta
         run: |
           OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/angular-base" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#angular-base-}" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${OWNER}/nx1-angular-base" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME#nx1-angular-base-}" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
@@ -140,7 +148,7 @@ jobs:
     name: Build and push express-api-base image
     runs-on: ubuntu-latest
     needs: checks
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/express-api-base-v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nx1-express-api-base-v')
 
     permissions:
       contents: read
@@ -160,13 +168,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Tag `express-api-base-v1.2.0` becomes image `ghcr.io/<owner>/express-api-base:v1.2.0`.
+      # Tag `nx1-express-api-base-v1.2.0` becomes image `ghcr.io/<owner>/nx1-express-api-base:v1.2.0`.
       - name: Set image metadata
         id: meta
         run: |
           OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/express-api-base" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#express-api-base-}" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${OWNER}/nx1-express-api-base" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME#nx1-express-api-base-}" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
@@ -193,4 +201,240 @@ jobs:
             echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
             echo ""
             echo "The API listens on port **3000** (\`port\` in the config file). Mount the config file and set \`CONFIG_PATH\`, \`DATABASE_URL\` and \`SESSION_SECRET\`. Apply migrations with \`node dist/scripts/migrate.js\` before starting the API."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish-portfolio-web:
+    name: Build and push portfolio-web image
+    runs-on: ubuntu-latest
+    needs: checks
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nx1-portfolio-web-v')
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Tag `nx1-portfolio-web-v1.2.0` becomes image `ghcr.io/<owner>/nx1-portfolio-web:v1.2.0`.
+      - name: Set image metadata
+        id: meta
+        run: |
+          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          echo "image=ghcr.io/${OWNER}/nx1-portfolio-web" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME#nx1-portfolio-web-}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: apps/portfolio-web/Dockerfile
+          push: true
+          cache-from: type=gha,scope=portfolio-web
+          cache-to: type=gha,mode=max,scope=portfolio-web
+          tags: |
+            ${{ steps.meta.outputs.image }}:latest
+            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
+            ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "## Image published"
+            echo ""
+            echo "**Tag:** \`${{ steps.meta.outputs.tag }}\`"
+            echo "**Commit:** \`sha-${{ steps.meta.outputs.short_sha }}\`"
+            echo ""
+            echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
+            echo ""
+            echo "Runtime listens on port **4000** (\`PORT\`). Mount the runtime config over \`/app/dist/portfolio-web/browser/config/app-config.json\` and set \`NG_ALLOWED_HOSTS\` to the public host names."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish-portfolio-api:
+    name: Build and push portfolio-api image
+    runs-on: ubuntu-latest
+    needs: checks
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nx1-portfolio-api-v')
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Tag `nx1-portfolio-api-v1.2.0` becomes image `ghcr.io/<owner>/nx1-portfolio-api:v1.2.0`.
+      - name: Set image metadata
+        id: meta
+        run: |
+          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          echo "image=ghcr.io/${OWNER}/nx1-portfolio-api" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME#nx1-portfolio-api-}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: apps/portfolio-api/Dockerfile
+          push: true
+          cache-from: type=gha,scope=portfolio-api
+          cache-to: type=gha,mode=max,scope=portfolio-api
+          tags: |
+            ${{ steps.meta.outputs.image }}:latest
+            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
+            ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "## Image published"
+            echo ""
+            echo "**Tag:** \`${{ steps.meta.outputs.tag }}\`"
+            echo "**Commit:** \`sha-${{ steps.meta.outputs.short_sha }}\`"
+            echo ""
+            echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
+            echo ""
+            echo "The API listens on port **3000** (\`port\` in the config file). Mount the config file and set \`CONFIG_PATH\`, \`DATABASE_URL\` and \`SESSION_SECRET\`. Apply migrations with \`node dist/scripts/migrate.js\` before starting the API, and load the initial content once with \`node dist/scripts/seed.js\`. Set \`SMTP_PASSWORD\` while \`mail.enabled\` is true."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish-dartomat-web:
+    name: Build and push dartomat-web image
+    runs-on: ubuntu-latest
+    needs: checks
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nx1-dartomat-web-v')
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Tag `nx1-dartomat-web-v1.2.0` becomes image `ghcr.io/<owner>/nx1-dartomat-web:v1.2.0`.
+      - name: Set image metadata
+        id: meta
+        run: |
+          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          echo "image=ghcr.io/${OWNER}/nx1-dartomat-web" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME#nx1-dartomat-web-}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: apps/dartomat-web/Dockerfile
+          push: true
+          cache-from: type=gha,scope=dartomat-web
+          cache-to: type=gha,mode=max,scope=dartomat-web
+          tags: |
+            ${{ steps.meta.outputs.image }}:latest
+            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
+            ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "## Image published"
+            echo ""
+            echo "**Tag:** \`${{ steps.meta.outputs.tag }}\`"
+            echo "**Commit:** \`sha-${{ steps.meta.outputs.short_sha }}\`"
+            echo ""
+            echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
+            echo ""
+            echo "Runtime listens on port **4000** (\`PORT\`). Mount the runtime config over \`/app/dist/dartomat-web/browser/config/app-config.json\` and set \`NG_ALLOWED_HOSTS\` to the public host names."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish-dartomat-api:
+    name: Build and push dartomat-api image
+    runs-on: ubuntu-latest
+    needs: checks
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/nx1-dartomat-api-v')
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Tag `nx1-dartomat-api-v1.2.0` becomes image `ghcr.io/<owner>/nx1-dartomat-api:v1.2.0`.
+      - name: Set image metadata
+        id: meta
+        run: |
+          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          echo "image=ghcr.io/${OWNER}/nx1-dartomat-api" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_REF_NAME#nx1-dartomat-api-}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: apps/dartomat-api/Dockerfile
+          push: true
+          cache-from: type=gha,scope=dartomat-api
+          cache-to: type=gha,mode=max,scope=dartomat-api
+          tags: |
+            ${{ steps.meta.outputs.image }}:latest
+            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
+            ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
+
+      - name: Deployment summary
+        run: |
+          {
+            echo "## Image published"
+            echo ""
+            echo "**Tag:** \`${{ steps.meta.outputs.tag }}\`"
+            echo "**Commit:** \`sha-${{ steps.meta.outputs.short_sha }}\`"
+            echo ""
+            echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
+            echo ""
+            echo "The API listens on port **3000** (\`port\` in the config file). Mount the config file and set \`CONFIG_PATH\`, \`DATABASE_URL\` and \`SESSION_SECRET\`. Apply migrations with \`node dist/scripts/migrate.js\` before starting the API. \`SESSION_SECRET\` is required by the shared config only, dartomat has no sign-in."
           } >> "$GITHUB_STEP_SUMMARY"

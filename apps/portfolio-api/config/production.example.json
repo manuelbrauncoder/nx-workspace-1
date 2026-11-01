@@ -1,0 +1,45 @@
+{
+  "port": 3000,
+  "logLevel": "info",
+  "trustProxy": 1,
+  "publicUrl": "https://example.com",
+  "cors": {
+    "origins": ["https://example.com"]
+  },
+  "session": {
+    "cookieName": "sid",
+    "maxAgeDays": 7,
+    "secureCookie": true
+  },
+  "rateLimit": {
+    "authWindowMinutes": 15,
+    "authMaxRequests": 20,
+    "contactWindowMinutes": 60,
+    "contactMaxRequests": 5
+  },
+  "auth": {
+    "signUpEnabled": false
+  },
+  "admin": {
+    "email": "admin@mail.dev",
+    "password": "change-me-before-deploying"
+  },
+  "docs": {
+    "enabled": false
+  },
+  "mail": {
+    "enabled": true,
+    "host": "smtp.example.com",
+    "port": 465,
+    "secure": true,
+    "user": "api@example.com",
+    "from": "Portfolio <api@example.com>",
+    "to": "me@example.com"
+  },
+  "uploads": {
+    "dir": "./uploads",
+    "maxFileSizeMb": 10,
+    "maxImagesPerNote": 10,
+    "maxImageWidth": 2000
+  }
+}

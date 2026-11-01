@@ -1,0 +1,93 @@
+<h1 appUiText="h1">{{ 'adminHub.heading' | t }}</h1>
+<p class="mt-2" appUiText="lead">{{ 'adminHub.lead' | t }}</p>
+
+<app-async-content
+  class="admin-hub__body"
+  [state]="_state()"
+  [failureHeading]="'adminHub.loadFailed' | t"
+  [loadingLabel]="'adminHub.loading' | t"
+  (retry)="_retry()"
+  loadingIndicator="skeleton"
+  retryable
+>
+  <ng-template>
+    <ul class="admin-hub__list">
+      <li>
+        <article class="h-full" appUiCard>
+          <div appUiCardHeader>
+            <h2 class="admin-hub__title" appUiCardTitle>
+              <app-ui-icon name="users" />
+              {{ 'adminHub.users.heading' | t }}
+            </h2>
+            <p appUiCardDescription>
+              {{
+                'adminHub.users.count'
+                  | t: { count: _store.users().length, admins: _store.adminCount() }
+              }}
+            </p>
+          </div>
+          <div appUiCardFooter>
+            <a appUiButton variant="outline" size="sm" routerLink="users">
+              {{ 'adminHub.users.open' | t }}
+            </a>
+          </div>
+        </article>
+      </li>
+      <li>
+        <article class="h-full" appUiCard>
+          <div appUiCardHeader>
+            <h2 class="admin-hub__title" appUiCardTitle>
+              <app-ui-icon name="inbox" />
+              {{ 'adminHub.messages.heading' | t }}
+            </h2>
+            <p appUiCardDescription>
+              {{
+                'adminHub.messages.count'
+                  | t: { count: _store.messages().length, unread: _store.unreadCount() }
+              }}
+            </p>
+          </div>
+          <div appUiCardFooter>
+            <a appUiButton variant="outline" size="sm" routerLink="messages">
+              {{ 'adminHub.messages.open' | t }}
+            </a>
+          </div>
+        </article>
+      </li>
+      <li>
+        <article class="h-full" appUiCard>
+          <div appUiCardHeader>
+            <h2 class="admin-hub__title" appUiCardTitle>
+              <app-ui-icon name="pencil" />
+              {{ 'adminHub.portfolio.heading' | t }}
+            </h2>
+            <p appUiCardDescription>{{ 'adminHub.portfolio.description' | t }}</p>
+          </div>
+          <div appUiCardFooter>
+            <!-- The editor is a feature of its own, only its path is known here. -->
+            <a appUiButton variant="outline" size="sm" routerLink="/admin/portfolio">
+              {{ 'adminHub.portfolio.open' | t }}
+            </a>
+          </div>
+        </article>
+      </li>
+      <li>
+        <article class="h-full" appUiCard>
+          <div appUiCardHeader>
+            <h2 class="admin-hub__title" appUiCardTitle>
+              <app-ui-icon name="scale" />
+              {{ 'adminHub.legal.heading' | t }}
+            </h2>
+            <p appUiCardDescription>{{ 'adminHub.legal.description' | t }}</p>
+          </div>
+          <div appUiCardFooter>
+            <!-- The editor is a feature of its own, only its path is known here. -->
+            <a appUiButton variant="outline" size="sm" routerLink="/admin/legal">
+              {{ 'adminHub.legal.open' | t }}
+            </a>
+          </div>
+        </article>
+      </li>
+    </ul>
+  </ng-template>
+</app-async-content>

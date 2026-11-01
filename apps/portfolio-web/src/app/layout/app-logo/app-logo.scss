@@ -1,0 +1,82 @@
+@use 'styles/abstracts' as *;
+
+:host {
+  display: inline-flex;
+}
+
+.app-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: calc(var(--radius) - 2px);
+  color: var(--foreground);
+  text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
+  }
+
+  @include up(md) {
+    gap: 0.875rem;
+  }
+}
+
+// An arrow-shaped trail sign. All sizes in em, so the sign scales with its font size.
+.app-logo__sign {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  box-sizing: border-box;
+  height: 1.6em;
+  padding: 0.12em 1.25em 0 0.45em;
+  border-radius: 0.1em 0 0 0.1em;
+  background-color: var(--trail);
+  color: var(--trail-foreground);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  clip-path: polygon(0 0, calc(100% - 0.72em) 0, 100% 50%, calc(100% - 0.72em) 100%, 0 100%);
+
+  @include up(md) {
+    font-size: 1.625rem;
+  }
+}
+
+.app-logo__chevron {
+  position: absolute;
+  top: 50%;
+  right: 0.62em;
+  width: 0.36em;
+  height: 0.36em;
+  transform: translate(0, -50%) rotate(45deg);
+  border-top: 0.13em solid currentColor;
+  border-right: 0.13em solid currentColor;
+}
+
+.app-logo__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.app-logo__name {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+
+  @include up(md) {
+    font-size: 1.25rem;
+  }
+}
+
+.app-logo__tagline {
+  font-size: 0.8125rem;
+  font-weight: 400;
+
+  @include up(md) {
+    font-size: 0.9375rem;
+  }
+}

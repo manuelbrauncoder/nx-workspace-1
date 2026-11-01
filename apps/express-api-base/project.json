@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/express-api-base/src",
-  "tags": ["type:api-app"],
+  "tags": ["type:api-app", "scope:base"],
   "targets": {
     "build": {
       "outputs": ["{workspaceRoot}/dist/apps/express-api-base"]

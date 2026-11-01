@@ -1,0 +1,60 @@
+:host {
+  display: block;
+}
+
+.user-card {
+  height: 100%;
+}
+
+.user-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.user-card__identity {
+  min-width: 0;
+}
+
+// Long addresses must not push the menu out of the card.
+.user-card__name,
+.user-card__email {
+  overflow-wrap: anywhere;
+}
+
+.user-card__details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-card__role,
+.user-card__me {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.user-card__role--admin {
+  border-color: var(--trail);
+  background-color: var(--trail);
+  color: var(--trail-foreground);
+}
+
+.user-card__me {
+  color: var(--muted-foreground);
+}
+
+.user-card__since {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}

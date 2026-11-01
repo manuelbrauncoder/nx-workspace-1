@@ -1,0 +1,104 @@
+<main class="game page-container">
+  @if (_store.notFound()) {
+    <app-game-not-found />
+  } @else {
+    <app-async-content
+      class="game__content"
+      [failureHeading]="'gamePage.loadFailed' | t"
+      [loadingLabel]="'gamePage.loading' | t"
+      [state]="_store.gameState()"
+      (retry)="_store.reload()"
+      loadingIndicator="skeleton"
+      retryable
+    >
+      <ng-template>
+        @if (_store.game(); as game) {
+          <header class="game__header">
+            <h1 class="game__title" [attr.aria-label]="_heading()">
+              <span aria-hidden="true">301</span>
+              <span class="game__separator" aria-hidden="true">·</span>
+              <span aria-hidden="true">{{ _finish() }}</span>
+            </h1>
+            <div class="game__tools">
+              <button
+                [attr.aria-label]="'gamePage.undo' | t"
+                [disabled]="!game.canUndo || _store.busy()"
+                (click)="_store.undo()"
+                appUiButton
+                size="icon-lg"
+                type="button"
+                variant="ghost"
+              >
+                <app-ui-icon name="undo" />
+              </button>
+              <button
+                [attr.aria-label]="'gamePage.openMenu' | t"
+                (click)="_menuOpen.set(true)"
+                appUiButton
+                size="icon-lg"
+                type="button"
+                variant="ghost"
+                aria-haspopup="dialog"
+              >
+                <app-ui-icon name="ellipsis" />
+              </button>
+            </div>
+          </header>
+
+          <app-player-strip
+            class="game__strip"
+            [currentIdx]="_store.isFinished() ? null : game.currentPlayerIdx"
+            [players]="game.players"
+          />
+
+          @if (_store.winner(); as winner) {
+            <app-game-result
+              class="game__stage"
+              [busy]="_store.busy()"
+              [standings]="_store.standings()"
+              [winner]="winner"
+              [winningTurn]="game.currentTurnDarts"
+              (restart)="_store.restart()"
+            />
+          } @else {
+            <div class="game__stage game__stage--center">
+              @if (_store.currentPlayer(); as player) {
+                <app-score-focus
+                  [checkout]="game.checkout"
+                  [player]="player"
+                  [turnDarts]="game.currentTurnDarts"
+                />
+              }
+            </div>
+          }
+
+          @if (_store.mutationState().failure; as failure) {
+            <app-failure-alert
+              class="game__failure"
+              [failure]="failure"
+              [heading]="'gamePage.writeFailed' | t"
+            />
+          }
+
+          @if (!_store.isFinished()) {
+            <app-dart-keypad
+              class="game__keypad"
+              [disabled]="_store.busy()"
+              (dartThrown)="_throw($event)"
+            />
+          }
+
+          <app-game-menu
+            [(open)]="_menuOpen"
+            [disabled]="_store.busy()"
+            [doubleOut]="game.doubleOut"
+            (quit)="_quit()"
+            (copyLink)="_copyLink()"
+            (doubleOutChange)="_store.setDoubleOut($event)"
+            (restart)="_restartFromMenu()"
+          />
+        }
+      </ng-template>
+    </app-async-content>
+  }
+</main>

@@ -1,0 +1,23 @@
+<fieldset class="localized-field">
+  <legend class="localized-field__legend">{{ label() }}</legend>
+  @if (description(); as description) {
+    <p class="localized-field__description">{{ description }}</p>
+  }
+  <div class="localized-field__languages">
+    @if (multiline()) {
+      <app-form-textarea
+        [formField]="field().de"
+        [label]="'sectionEditor.languages.de' | t"
+        [rows]="rows()"
+      />
+      <app-form-textarea
+        [formField]="field().en"
+        [label]="'sectionEditor.languages.en' | t"
+        [rows]="rows()"
+      />
+    } @else {
+      <app-form-text [formField]="field().de" [label]="'sectionEditor.languages.de' | t" />
+      <app-form-text [formField]="field().en" [label]="'sectionEditor.languages.en' | t" />
+    }
+  </div>
+</fieldset>

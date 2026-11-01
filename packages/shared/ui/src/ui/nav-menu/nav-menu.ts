@@ -12,6 +12,11 @@ export interface UiNavMenuLink {
   path: string;
   /** Marks the link only on exactly this path, e.g. an overview above its sub pages. */
   exact?: boolean;
+  /**
+   * Section of the page to jump to, e.g. `projects` for `/#projects`. Such a link is never
+   * marked as current, since all sections of a page share its path.
+   */
+  fragment?: string;
 }
 
 /** Entry without a page of its own, its links open below it. */
@@ -46,6 +51,7 @@ const SUBSET: IsActiveMatchOptions = {
   fragment: 'ignored',
 };
 const EXACT: IsActiveMatchOptions = { ...SUBSET, paths: 'exact' };
+const NEVER_ACTIVE: Signal<boolean> = signal(false).asReadonly();
 
 /**
  * Navigation built from a list of items. An item with `children` becomes a group: a dropdown
@@ -103,7 +109,9 @@ export class UiNavMenu {
     return {
       kind: 'link',
       link,
-      active: isActive(link.path, this._router, link.exact ? EXACT : SUBSET),
+      active: link.fragment
+        ? NEVER_ACTIVE
+        : isActive(link.path, this._router, link.exact ? EXACT : SUBSET),
     };
   }
 }

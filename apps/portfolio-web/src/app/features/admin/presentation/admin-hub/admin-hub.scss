@@ -1,0 +1,28 @@
+@use 'styles/abstracts' as *;
+
+:host {
+  display: block;
+}
+
+.admin-hub__body {
+  margin-top: 2rem;
+}
+
+.admin-hub__list {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  // four areas: two by two
+  @include up(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.admin-hub__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

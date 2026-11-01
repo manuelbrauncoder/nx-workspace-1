@@ -1,0 +1,78 @@
+<fieldset class="image-field">
+  <legend class="image-field__legend">{{ label() }}</legend>
+  <div class="image-field__body">
+    <div class="image-field__preview">
+      @if (_media(); as media) {
+        <!-- The alt text is right below, the preview itself only shows the file. -->
+        <img
+          class="image-field__image"
+          [src]="media.url"
+          [width]="media.width"
+          [height]="media.height"
+          alt=""
+        />
+      } @else {
+        <span class="image-field__placeholder">
+          <app-ui-icon name="image" />
+          {{ 'sectionEditor.image.none' | t }}
+        </span>
+      }
+    </div>
+    <div class="image-field__actions">
+      <!-- Opened by the button, which is the one the user sees and reaches by keyboard. -->
+      <input #fileInput [accept]="_accept" (change)="_upload($event)" type="file" hidden />
+      <button
+        [attr.aria-describedby]="_errorMessages().length > 0 ? _errorId : null"
+        [loading]="_uploading()"
+        [loadingLabel]="'sectionEditor.image.uploading' | t"
+        (click)="fileInput.click()"
+        appUiButton
+        variant="outline"
+        size="sm"
+        type="button"
+      >
+        <app-ui-icon name="upload" />
+        {{ 'sectionEditor.image.upload' | t }}
+      </button>
+      <button
+        [attr.aria-describedby]="_errorMessages().length > 0 ? _errorId : null"
+        (click)="_choose()"
+        appUiButton
+        variant="outline"
+        size="sm"
+        type="button"
+      >
+        <app-ui-icon name="images" />
+        {{ 'sectionEditor.image.choose' | t }}
+      </button>
+      @if (removable() && _media()) {
+        <button (click)="_remove()" appUiButton variant="ghost" size="sm" type="button">
+          <app-ui-icon name="trash" />
+          {{ 'sectionEditor.image.remove' | t }}
+        </button>
+      }
+      <p class="image-field__hint">
+        {{ 'sectionEditor.image.hint' | t: { size: _maxMegabytes } }}
+      </p>
+    </div>
+  </div>
+
+  @if (_errorMessages().length > 0) {
+    <div class="image-field__errors" [id]="_errorId">
+      @for (message of _errorMessages(); track $index) {
+        <p>{{ message }}</p>
+      }
+    </div>
+  }
+  @if (_uploadFailure(); as failure) {
+    <app-failure-alert [failure]="failure" [heading]="'sectionEditor.image.uploadFailed' | t" />
+  }
+
+  @if (_media()) {
+    <app-localized-field
+      [field]="field().alt"
+      [label]="'sectionEditor.image.alt' | t"
+      [description]="'sectionEditor.image.altDescription' | t"
+    />
+  }
+</fieldset>

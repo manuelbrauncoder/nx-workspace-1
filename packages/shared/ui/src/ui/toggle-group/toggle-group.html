@@ -1,0 +1,26 @@
+<div
+  class="ui-toggle-group"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-describedby]="ariaDescribedby() ?? null"
+  [attr.aria-labelledby]="ariaLabelledby() ?? null"
+  [disabled]="disabled()"
+  [nullable]="false"
+  [size]="size()"
+  [spacing]="variant() === 'outline' ? 0 : 1"
+  [value]="value()"
+  [variant]="variant() === 'outline' ? 'outline' : 'default'"
+  (valueChange)="_select($event)"
+  hlmToggleGroup
+  type="single"
+>
+  @for (option of options(); track option.value) {
+    <button
+      class="ui-toggle-group__item"
+      [disabled]="option.disabled ?? false"
+      [value]="option.value"
+      hlmToggleGroupItem
+    >
+      {{ option.label }}
+    </button>
+  }
+</div>

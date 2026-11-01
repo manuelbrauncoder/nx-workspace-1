@@ -1,0 +1,49 @@
+@use 'styles/abstracts' as *;
+
+.skills {
+  padding-block: 4rem;
+  border-block: 1px solid var(--border);
+  background-color: var(--surface);
+  outline: none;
+
+  @include up(md) {
+    padding-block: 7rem;
+  }
+}
+
+// The intro sits right below the heading at every width.
+.skills__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  margin-bottom: 2.5rem;
+
+  @include up(md) {
+    gap: 1.25rem;
+    margin-bottom: 4rem;
+  }
+}
+
+.skills__heading {
+  margin: 0;
+}
+
+.skills__intro {
+  max-width: 52ch;
+  margin: 0;
+  color: var(--foreground-soft);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+// One column on a phone, two by two from `lg`.
+.skills__signposts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+
+  @include up(lg) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3.5rem 4rem;
+  }
+}

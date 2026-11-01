@@ -1,0 +1,98 @@
+<a class="px-0" appUiButton variant="link" size="sm" routerLink="/notes">{{
+  'notes.backToList' | t
+}}</a>
+<h1 class="mt-2" appUiText="h1">
+  {{ (_isEdit() ? 'noteEditor.titleEdit' : 'noteEditor.titleNew') | t }}
+</h1>
+
+<app-async-content
+  class="note-editor"
+  [state]="_store.detailState()"
+  [failureHeading]="'notes.loadFailed' | t"
+  [loadingLabel]="'notes.loading' | t"
+>
+  <ng-template>
+    <form [formRoot]="_noteForm">
+      <div class="note-editor__fields">
+        <app-form-text
+          [formField]="_noteForm.title"
+          [label]="'noteEditor.fields.title' | t"
+          autocomplete="off"
+        />
+        <app-form-rich-text
+          [formField]="_noteForm.description"
+          [label]="'noteEditor.fields.description' | t"
+        />
+
+        @if (_images().length > 0) {
+          <div class="note-editor__images" role="group" aria-labelledby="note-editor-images">
+            <p id="note-editor-images" appUiText="small">
+              {{ 'noteEditor.images.existing' | t }}
+            </p>
+            <div appUiAttachmentGroup role="list">
+              @for (image of _images(); track image.id; let index = $index) {
+                <app-ui-attachment
+                  [imageAlt]="'noteEditor.images.alt' | t: { number: index + 1 }"
+                  [imageSrc]="image.url"
+                  [removeLabel]="'noteEditor.images.remove' | t: { number: index + 1 }"
+                  (remove)="_removeImage(image, index + 1)"
+                  orientation="vertical"
+                  removable
+                  role="listitem"
+                />
+              }
+            </div>
+          </div>
+        }
+
+        @if (_freeImages() > 0) {
+          <app-form-files
+            [accept]="_imageTypes"
+            [description]="
+              'noteEditor.images.description' | t: { size: _imageMaxMegabytes, max: _imagesMax }
+            "
+            [formField]="_noteForm.newImages"
+            [label]="'noteEditor.fields.newImages' | t"
+            [maxFiles]="_freeImages()"
+            [maxFileSize]="_imageMaxBytes"
+          />
+        } @else {
+          <p appUiText="muted">{{ 'noteEditor.images.full' | t: { max: _imagesMax } }}</p>
+        }
+
+        @if (_store.mutationState().failure; as failure) {
+          <app-failure-alert [failure]="failure" [heading]="'noteEditor.saveFailed' | t" />
+        }
+        @if (_store.imageMutationState().failure; as failure) {
+          @if (_imageAction() === 'remove') {
+            <app-failure-alert
+              [failure]="failure"
+              [heading]="'noteEditor.images.removeFailed' | t"
+            />
+          } @else {
+            <!-- A 400 here means the backend could not read one of the files as an image. -->
+            <app-failure-alert
+              [failure]="failure"
+              [heading]="'noteEditor.images.uploadFailed' | t"
+              [message]="
+                failure.kind === 'bad-request' ? ('noteEditor.images.invalid' | t) : undefined
+              "
+            />
+          }
+        }
+
+        <div class="note-editor__actions">
+          <button
+            [loading]="_saving()"
+            [loadingLabel]="'noteEditor.saving' | t"
+            appUiButton
+            type="submit"
+          >
+            {{ 'noteEditor.save' | t }}
+          </button>
+          <a appUiButton variant="outline" routerLink="/notes">{{ 'common.cancel' | t }}</a>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+</app-async-content>

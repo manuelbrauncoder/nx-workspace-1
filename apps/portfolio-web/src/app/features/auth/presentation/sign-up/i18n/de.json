@@ -1,0 +1,26 @@
+{
+  "title": "Registrieren",
+  "lead": "Lege ein Konto an, um deine Inhalte zu speichern.",
+  "fields": {
+    "name": "Name",
+    "nameDescription": "Optional. So sprechen wir dich an.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "passwordDescription": "Mindestens {{ min }} Zeichen."
+  },
+  "validation": {
+    "nameTooLong": "Der Name darf höchstens {{ max }} Zeichen lang sein.",
+    "emailRequired": "Bitte gib deine E-Mail-Adresse ein.",
+    "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "passwordRequired": "Bitte wähle ein Passwort.",
+    "passwordTooShort": "Das Passwort muss mindestens {{ min }} Zeichen lang sein.",
+    "passwordTooLong": "Das Passwort darf höchstens {{ max }} Zeichen lang sein."
+  },
+  "submit": "Konto anlegen",
+  "submitting": "Konto wird angelegt",
+  "signedUp": "Dein Konto ist angelegt",
+  "failed": "Registrierung fehlgeschlagen",
+  "emailTaken": "Zu dieser E-Mail-Adresse gibt es schon ein Konto.",
+  "hasAccount": "Schon ein Konto?",
+  "toSignIn": "Jetzt anmelden"
+}

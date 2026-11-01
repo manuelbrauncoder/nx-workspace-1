@@ -1,0 +1,41 @@
+<app-ui-breadcrumb [items]="_breadcrumb()" />
+<h1 class="mt-2" appUiText="h1">{{ _sectionKey() | t }}</h1>
+
+<app-async-content
+  class="section-editor"
+  [state]="_store.state()"
+  [failureHeading]="'portfolioEditor.loadFailed' | t"
+  [loadingLabel]="'portfolioEditor.loading' | t"
+  (retry)="_store.reload()"
+  loadingIndicator="skeleton"
+  retryable
+>
+  <ng-template>
+    <p class="section-editor__status" appUiText="lead">
+      {{ (_exists() ? 'sectionEditor.existing' : 'sectionEditor.missing') | t }}
+    </p>
+    @switch (section()) {
+      @case ('hero') {
+        <app-hero-form />
+      }
+      @case ('about') {
+        <app-about-form />
+      }
+      @case ('projects') {
+        <app-projects-form />
+      }
+      @case ('skills') {
+        <app-skills-form />
+      }
+      @case ('contact') {
+        <app-contact-form />
+      }
+      @case ('settings') {
+        <app-settings-form />
+      }
+      @case ('seo') {
+        <app-seo-form />
+      }
+    }
+  </ng-template>
+</app-async-content>

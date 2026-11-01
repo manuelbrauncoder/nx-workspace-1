@@ -1,0 +1,16 @@
+{
+  "title": "Notes",
+  "heading": "Notes",
+  "lead": "Reference feature for all CRUD operations against the API.",
+  "new": "New note",
+  "actionFailed": "The action failed",
+  "loading": "Loading notes",
+  "loadFailed": "The notes could not be loaded",
+  "empty": {
+    "heading": "No notes yet",
+    "description": "Create your first note to get started."
+  },
+  "card": {
+    "updatedAt": "Updated on"
+  }
+}

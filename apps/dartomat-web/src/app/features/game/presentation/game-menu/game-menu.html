@@ -1,0 +1,52 @@
+<app-ui-sheet [(open)]="open" [heading]="'gamePage.menu.heading' | t" side="bottom">
+  <div class="game-menu">
+    <!-- Without a form: the switch reports each change, the page saves it right away. -->
+    <app-form-switch
+      class="game-menu__row"
+      [checked]="doubleOut()"
+      [description]="'gamePage.menu.doubleOutHint' | t"
+      [disabled]="disabled()"
+      [label]="'gamePage.menu.doubleOut' | t"
+      (checkedChange)="doubleOutChange.emit($event)"
+    />
+    <ul class="game-menu__actions">
+      <li>
+        <button
+          class="game-menu__action"
+          (click)="copyLink.emit()"
+          appUiButton
+          type="button"
+          variant="ghost"
+        >
+          <app-ui-icon name="link" />
+          {{ 'gamePage.menu.copyLink' | t }}
+        </button>
+      </li>
+      <li>
+        <button
+          class="game-menu__action"
+          [disabled]="disabled()"
+          (click)="restart.emit()"
+          appUiButton
+          type="button"
+          variant="ghost"
+        >
+          <app-ui-icon name="rotateCcw" />
+          {{ 'gamePage.menu.restart' | t }}
+        </button>
+      </li>
+      <li>
+        <button
+          class="game-menu__action game-menu__action--destructive"
+          (click)="quit.emit()"
+          appUiButton
+          type="button"
+          variant="ghost"
+        >
+          <app-ui-icon name="circleX" />
+          {{ 'gamePage.menu.abort' | t }}
+        </button>
+      </li>
+    </ul>
+  </div>
+</app-ui-sheet>

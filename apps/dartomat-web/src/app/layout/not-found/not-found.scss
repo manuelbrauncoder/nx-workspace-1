@@ -1,0 +1,45 @@
+.not-found {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 100dvh;
+  padding-block: 1rem 1.5rem;
+}
+
+.not-found__wordmark {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+// Trail marker: a small yellow blaze in front of the name.
+.not-found__marker {
+  width: 0.625rem;
+  height: 1.125rem;
+  border-radius: 3px;
+  background: var(--trail);
+}
+
+.not-found__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.875rem;
+  max-width: 34ch;
+}
+
+.not-found__heading {
+  font-size: 3rem;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.not-found__action {
+  width: 100%;
+  height: 3.75rem;
+  font-size: 1.125rem;
+}

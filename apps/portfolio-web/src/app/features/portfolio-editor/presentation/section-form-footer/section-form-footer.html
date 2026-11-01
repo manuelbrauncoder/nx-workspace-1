@@ -1,0 +1,20 @@
+@if (_store.mutationState().failure; as failure) {
+  <!-- 409: someone else created the section since the editor loaded it. -->
+  <app-failure-alert
+    [failure]="failure"
+    [heading]="'sectionEditor.saveFailed' | t"
+    [message]="failure.kind === 'conflict' ? ('sectionEditor.conflict' | t) : undefined"
+  />
+}
+<div class="section-form-footer__actions">
+  <button
+    [loading]="_saving()"
+    [loadingLabel]="'sectionEditor.saving' | t"
+    appUiButton
+    variant="brand"
+    type="submit"
+  >
+    {{ 'sectionEditor.save' | t }}
+  </button>
+  <a [routerLink]="_editorPath" appUiButton variant="outline">{{ 'common.cancel' | t }}</a>
+</div>

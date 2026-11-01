@@ -1,0 +1,12 @@
+<form class="flex flex-col gap-8" [formRoot]="_contactForm">
+  <app-localized-field
+    [field]="_contactForm.headline"
+    [label]="'sectionEditor.fields.headline' | t"
+  />
+  <app-localized-field
+    [field]="_contactForm.description"
+    [label]="'sectionEditor.fields.description' | t"
+    multiline
+  />
+  <app-section-form-footer />
+</form>

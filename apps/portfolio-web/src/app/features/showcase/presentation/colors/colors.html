@@ -1,0 +1,18 @@
+<h1 appUiText="h1">{{ 'showcaseColors.heading' | t }}</h1>
+<p class="mt-2" appUiText="lead">
+  {{ 'showcaseColors.lead' | t: { scheme: _schemeKey() | t } }}
+</p>
+
+<div class="mt-12 flex flex-col gap-16">
+  @for (group of _groups; track group.titleKey) {
+    <app-showcase-section [heading]="group.titleKey | t" [description]="group.descriptionKey | t">
+      <ul class="swatch-grid">
+        @for (token of group.tokens; track token.name) {
+          <li>
+            <app-color-swatch [token]="token" [value]="_values()[token.name]" />
+          </li>
+        }
+      </ul>
+    </app-showcase-section>
+  }
+</div>

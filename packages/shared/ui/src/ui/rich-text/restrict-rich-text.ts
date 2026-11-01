@@ -1,8 +1,10 @@
 import {
   isAllowedRichTextHref,
+  isExternalRichTextHref,
   RICH_TEXT_LINK_REL,
   RICH_TEXT_LINK_TARGET,
   RICH_TEXT_TAGS,
+  RichTextProfile,
 } from '@contracts/rich-text';
 
 /** Removed together with their content. Any other unknown element only loses its tag. */
@@ -34,12 +36,16 @@ function unwrap(element: Element): void {
 
 /**
  * Reduces untrusted HTML to the formats of `@contracts/rich-text`: unknown elements lose their tag,
- * every attribute is removed and a link keeps only an allowed `href`, with `target` and `rel` set
- * here. Parsing happens in an inert
- * document, so nothing is loaded or executed. The result still goes through Angular's sanitizer
+ * every attribute is removed and a link keeps only an allowed `href`. An external link gets
+ * `target` and `rel` set here. Parsing happens in an inert document, so nothing is loaded or
+ * executed. The result still goes through Angular's sanitizer
  * when it is bound to `innerHTML`, this function only narrows what that lets through.
  */
-export function restrictRichText(html: string, document: Document): string {
+export function restrictRichText(
+  html: string,
+  document: Document,
+  profile: RichTextProfile = 'text',
+): string {
   const body = document.implementation.createHTMLDocument('').body;
   body.innerHTML = html;
 
@@ -53,12 +59,17 @@ export function restrictRichText(html: string, document: Document): string {
     for (const attribute of Array.from(element.attributes)) {
       element.removeAttribute(attribute.name);
     }
-    if (!RICH_TEXT_TAGS.includes(tag) || (tag === 'a' && !(href && isAllowedRichTextHref(href)))) {
+    if (
+      !RICH_TEXT_TAGS.includes(tag) ||
+      (tag === 'a' && !(href && isAllowedRichTextHref(href, profile)))
+    ) {
       unwrap(element);
     } else if (href) {
       element.setAttribute('href', href);
-      element.setAttribute('target', RICH_TEXT_LINK_TARGET);
-      element.setAttribute('rel', RICH_TEXT_LINK_REL);
+      if (isExternalRichTextHref(href)) {
+        element.setAttribute('target', RICH_TEXT_LINK_TARGET);
+        element.setAttribute('rel', RICH_TEXT_LINK_REL);
+      }
     }
   }
   return body.innerHTML;

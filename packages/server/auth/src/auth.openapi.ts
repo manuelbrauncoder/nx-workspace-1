@@ -8,7 +8,8 @@ export function registerAuthDocs(registry: OpenAPIRegistry) {
     path: '/auth/sign-up',
     tags: ['Auth'],
     summary: 'Create an account',
-    description: 'Creates the user and signs them in: the response sets the session cookie.',
+    description:
+      'Creates the user and signs them in: the response sets the session cookie. Answers 403 while `auth.signUpEnabled` is false in the config.',
     request: { body: jsonContent(signUpSchema) },
     responses: {
       201: jsonResponse('Account created and signed in', userResponseSchema),

@@ -1,0 +1,116 @@
+{
+  "title": "Komponenten · Showcase",
+  "heading": "Komponenten",
+  "lead": "UI-Wrapper aus shared/ui. Features nutzen nur diese Bausteine.",
+  "button": {
+    "description": "appUiButton auf button oder a, mit Varianten, Größen und Ladezustand.",
+    "add": "Hinzufügen",
+    "save": "Speichern",
+    "saving": "Wird gespeichert",
+    "disabled": "Deaktiviert"
+  },
+  "icon": {
+    "description": "app-ui-icon mit den Namen aus ui-icons.ts."
+  },
+  "card": {
+    "description": "appUiCard mit Header, Inhalt und Footer.",
+    "title": "Einkauf",
+    "updatedAt": "Geändert am {{ date }}",
+    "content": "Milch, Brot und Kaffee.",
+    "edit": "Bearbeiten"
+  },
+  "alert": {
+    "description": "app-ui-alert für Hinweise im Inhalt.",
+    "noteHeading": "Hinweis",
+    "noteText": "Die Änderungen werden automatisch gespeichert.",
+    "failureHeading": "Speichern fehlgeschlagen",
+    "failureText": "Der Server ist nicht erreichbar."
+  },
+  "attachment": {
+    "description": "app-ui-attachment zeigt eine Datei oder ein Bild als Kachel, mehrere stehen in einer appUiAttachmentGroup.",
+    "image": "Beispielbild {{ number }}",
+    "open": "Beispielbild {{ number }} in voller Größe öffnen",
+    "size": "1,2 MB",
+    "remove": "Entfernen: bericht.pdf",
+    "uploading": "Wird hochgeladen"
+  },
+  "empty": {
+    "description": "app-ui-empty für Listen ohne Einträge.",
+    "heading": "Noch keine Notizen",
+    "text": "Lege deine erste Notiz an, um loszulegen.",
+    "action": "Neue Notiz"
+  },
+  "loading": {
+    "heading": "Spinner und Skeleton",
+    "description": "Ladeanzeigen. Im Normalfall rendert app-async-content sie.",
+    "label": "Beispiel wird geladen"
+  },
+  "menu": {
+    "description": "appUiMenuTrigger öffnet ein app-ui-menu.",
+    "choose": "Dichte wählen",
+    "compact": "Kompakt",
+    "comfortable": "Komfortabel",
+    "reset": "Zurücksetzen",
+    "chosen": "Gewählt: {{ value }}"
+  },
+  "navMenu": {
+    "description": "app-ui-nav-menu baut die Navigation aus einem Array. Ein Eintrag mit children wird horizontal zum Dropdown, vertikal zum aufklappbaren Abschnitt.",
+    "horizontal": "Beispiel horizontal",
+    "vertical": "Beispiel vertikal",
+    "notes": "Notizen",
+    "showcase": "Showcase",
+    "forms": "Formulare",
+    "components": "Komponenten"
+  },
+  "breadcrumb": {
+    "description": "app-ui-breadcrumb zeigt, wo die Seite liegt: Links von oben nach unten, der letzte Eintrag ist die aktuelle Seite. Genutzt im Admin-Bereich.",
+    "current": "Breadcrumb"
+  },
+  "sheet": {
+    "description": "app-ui-sheet schiebt ein Panel vom Rand herein, z. B. für die mobile Navigation.",
+    "open": "Sheet öffnen",
+    "heading": "Filter",
+    "content": "Der Inhalt des Sheets wird hineinprojiziert."
+  },
+  "overlays": {
+    "heading": "Dialog, Confirm-Dialog und Toast",
+    "description": "Geöffnet über UiDialogService, UiConfirmDialogService und UiToastService.",
+    "openDialog": "Dialog öffnen",
+    "confirmDelete": "Löschen bestätigen",
+    "noAction": "Noch keine Aktion ausgeführt.",
+    "dialogClosed": "Dialog ohne Ergebnis geschlossen.",
+    "dialogResult": "Dialog-Ergebnis: {{ name }}",
+    "confirmHeading": "Eintrag löschen?",
+    "confirmDescription": "Das lässt sich nicht rückgängig machen.",
+    "confirmLabel": "Löschen",
+    "confirmed": "Löschen bestätigt.",
+    "cancelled": "Löschen abgebrochen.",
+    "toastSuccess": "Toast: Erfolg",
+    "toastInfo": "Toast: Info",
+    "toastWarning": "Toast: Warnung",
+    "toastError": "Toast: Fehler",
+    "toastBottom": "Toast: unten mittig",
+    "toastMessage": "Das ist ein Toast",
+    "toastKind": "Typ: {{ kind }}",
+    "toastElsewhere": "Toast an anderer Stelle"
+  },
+  "dialog": {
+    "heading": "Name ändern",
+    "description": "Der Name wird als Ergebnis zurückgegeben.",
+    "name": "Name",
+    "nameRequired": "Bitte gib einen Namen ein.",
+    "apply": "Übernehmen"
+  },
+  "richText": {
+    "description": "app-ui-rich-text zeigt gespeicherten Rich Text aus app-form-rich-text. Das HTML wird vor der Ausgabe auf die erlaubten Formate reduziert.",
+    "sample": "<h3>Einkauf</h3><p>Für das <strong>Wochenende</strong> fehlt noch:</p><ul><li><p>Milch</p></li><li><p>Brot</p></li></ul><blockquote><p>Nicht hungrig einkaufen.</p></blockquote><p>Rezepte gibt es auf <a href=\"https://example.org\">example.org</a>.</p>",
+    "pageDescription": "Mit profile=\"page\" für Seiten dieser Website, z. B. Rechtsseiten: Links dürfen auch auf einen Pfad der Website oder eine Telefonnummer zeigen und öffnen im selben Tab, ein Pfad über den Router.",
+    "pageSample": "<h2>Kontakt</h2><p>Max Mustermann<br>Musterstraße 1<br>12345 Musterstadt</p><p>E-Mail: <a href=\"mailto:max@example.org\">max@example.org</a>, Telefon: <a href=\"tel:+491234\">+49 1234</a></p><p>Mehr in der <a href=\"/privacy\">Datenschutzerklärung</a>.</p>"
+  },
+  "i18n": {
+    "heading": "Sprache und Datum",
+    "description": "app-language-toggle schaltet die Sprache um, die Pipe localDate formatiert in der Locale der Sprache.",
+    "date": "localDate: 'date'",
+    "dateTime": "localDate: 'dateTime'"
+  }
+}

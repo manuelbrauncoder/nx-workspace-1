@@ -1,6 +1,7 @@
 <hlm-sheet
   [state]="open() ? 'open' : 'closed'"
   [side]="side()"
+  (closed)="closed.emit()"
   (stateChanged)="open.set($event === 'open')"
 >
   <hlm-sheet-content

@@ -102,6 +102,20 @@ describe('FormRichText', () => {
     vi.unstubAllGlobals();
   });
 
+  it('keeps links within the site only in the profile page', async () => {
+    const value = '<p><a href="/privacy">Datenschutz</a></p>';
+    const text = await render({ value });
+    expect(text.editor.querySelector('a')).toBeNull();
+
+    const page = await render({ value, profile: 'page' });
+    page.button('Überschrift').click();
+    await page.fixture.whenStable();
+
+    expect(page.fixture.componentInstance.value()).toBe(
+      '<h2><a href="/privacy">Datenschutz</a></h2>',
+    );
+  });
+
   it('emits touch only when focus leaves the whole control', async () => {
     const { fixture, editor, button } = await render();
     const touched = vi.fn();

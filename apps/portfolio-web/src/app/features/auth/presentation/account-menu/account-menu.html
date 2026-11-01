@@ -1,0 +1,38 @@
+@if (_store.me(); as me) {
+  <button
+    [appUiMenuTrigger]="menu"
+    [attr.aria-label]="'auth.account' | t"
+    appUiButton
+    variant="ghost"
+    size="icon"
+    type="button"
+    align="end"
+  >
+    <app-ui-icon name="user" />
+  </button>
+
+  <ng-template #menu>
+    <app-ui-menu class="w-56">
+      <div class="account-menu__identity">
+        <span class="account-menu__name">{{ me.name ?? me.email }}</span>
+        @if (me.name) {
+          <span class="account-menu__email">{{ me.email }}</span>
+        }
+      </div>
+      <app-ui-menu-group>
+        @if (_store.isAdmin()) {
+          <button (triggered)="_openAdmin()" appUiMenuItem type="button">
+            <app-ui-icon name="shield" />
+            {{ 'auth.admin' | t }}
+          </button>
+        }
+        <button (triggered)="_signOut()" appUiMenuItem type="button">
+          <app-ui-icon name="logOut" />
+          {{ 'auth.signOut' | t }}
+        </button>
+      </app-ui-menu-group>
+    </app-ui-menu>
+  </ng-template>
+} @else if (showSignIn()) {
+  <a [routerLink]="_signInPath" appUiButton variant="ghost" size="sm">{{ 'auth.signIn' | t }}</a>
+}

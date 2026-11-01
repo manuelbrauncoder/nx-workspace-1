@@ -1,10 +1,18 @@
+@use '../abstracts' as *;
+
 // Global layout building blocks (e.g. page containers). In @layer components,
 // so Tailwind utilities can override them.
 @layer components {
+  // An app sets its own width and padding in its theme, e.g. `--page-container-max-width: 81rem`.
+  // The padding counts into the width (`border-box`).
   .page-container {
     margin-inline: auto;
     width: 100%;
-    max-width: 72rem;
-    padding-inline: 1rem;
+    max-width: var(--page-container-max-width, 72rem);
+    padding-inline: var(--page-container-padding, 1rem);
+
+    @include up(md) {
+      padding-inline: var(--page-container-padding-md, var(--page-container-padding, 1rem));
+    }
   }
 }

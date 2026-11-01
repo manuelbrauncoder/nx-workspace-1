@@ -1,0 +1,30 @@
+{
+  "title": "Benutzer",
+  "heading": "Benutzer",
+  "lead": "Alle Konten, das älteste zuerst. Dein eigenes Konto lässt sich hier nicht ändern.",
+  "loading": "Benutzer werden geladen",
+  "loadFailed": "Die Benutzer konnten nicht geladen werden",
+  "actionFailed": "Die Aktion ist fehlgeschlagen",
+  "conflict": "Das eigene Konto lässt sich hier nicht ändern oder löschen.",
+  "roles": {
+    "admin": "Admin",
+    "user": "Benutzer"
+  },
+  "me": "Das bist du",
+  "since": "Registriert am {{ date }}",
+  "actions": "Aktionen für {{ name }}",
+  "makeAdmin": "Admin-Rechte geben",
+  "removeAdmin": "Admin-Rechte entziehen",
+  "madeAdmin": "{{ name }} hat jetzt Admin-Rechte. Das gilt ab der nächsten Anfrage.",
+  "removedAdmin": "{{ name }} hat keine Admin-Rechte mehr. Das gilt ab der nächsten Anfrage.",
+  "revokeSessions": "Überall abmelden",
+  "revokeHeading": "{{ name }} überall abmelden?",
+  "revokeDescription": "Das Konto wird auf allen Geräten abgemeldet und kann sich danach wieder anmelden.",
+  "revokeConfirm": "Abmelden",
+  "revoked": "{{ name }} ist überall abgemeldet",
+  "delete": "Konto löschen",
+  "deleteHeading": "Konto von {{ name }} löschen?",
+  "deleteDescription": "Das Konto wird mit allen Notizen und Bildern dauerhaft gelöscht. Das lässt sich nicht rückgängig machen.",
+  "deleteConfirm": "Löschen",
+  "deleted": "Konto von {{ name }} gelöscht"
+}

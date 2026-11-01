@@ -1,0 +1,45 @@
+{
+  "port": 3001,
+  "logLevel": "silent",
+  "trustProxy": false,
+  "publicUrl": "http://localhost:3001",
+  "cors": {
+    "origins": ["http://localhost:4200"]
+  },
+  "session": {
+    "cookieName": "sid",
+    "maxAgeDays": 1,
+    "secureCookie": false
+  },
+  "rateLimit": {
+    "authWindowMinutes": 15,
+    "authMaxRequests": 1000,
+    "contactWindowMinutes": 15,
+    "contactMaxRequests": 1000
+  },
+  "auth": {
+    "signUpEnabled": true
+  },
+  "admin": {
+    "email": "admin@mail.dev",
+    "password": "test-admin-password"
+  },
+  "docs": {
+    "enabled": true
+  },
+  "mail": {
+    "enabled": false,
+    "host": "localhost",
+    "port": 587,
+    "secure": false,
+    "user": "api@mail.dev",
+    "from": "Portfolio <api@mail.dev>",
+    "to": "admin@mail.dev"
+  },
+  "uploads": {
+    "dir": "./uploads/test",
+    "maxFileSizeMb": 1,
+    "maxImagesPerNote": 3,
+    "maxImageWidth": 200
+  }
+}

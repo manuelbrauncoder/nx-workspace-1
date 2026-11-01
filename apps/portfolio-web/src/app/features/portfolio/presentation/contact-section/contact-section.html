@@ -1,0 +1,82 @@
+<section class="contact" id="contact" aria-labelledby="contact-heading" tabindex="-1">
+  <app-topo-map variant="corner" />
+  <div class="page-container contact__layout">
+    <div class="contact__intro">
+      <h2 class="contact__heading" id="contact-heading" appUiText="section">
+        {{ contact().headline | localized }}
+      </h2>
+      <p class="contact__lead">{{ contact().description | localized }}</p>
+      @if (settings(); as owner) {
+        <ul class="contact__channels" [attr.aria-label]="'portfolioHome.contact.channels' | t">
+          <li>
+            <a class="contact__channel" [href]="'mailto:' + owner.email">
+              <app-ui-icon name="mail" />
+              {{ owner.email }}
+            </a>
+          </li>
+          <li>
+            <a class="contact__channel" [href]="owner.profiles.github">
+              <app-ui-icon name="github" />
+              {{ 'portfolioHome.contact.github' | t }}
+            </a>
+          </li>
+          <li>
+            <a class="contact__channel" [href]="owner.profiles.linkedin">
+              <app-ui-icon name="linkedin" />
+              {{ 'portfolioHome.contact.linkedin' | t }}
+            </a>
+          </li>
+        </ul>
+      }
+    </div>
+
+    <form class="contact__form" [formRoot]="_contactForm">
+      <div class="contact__row">
+        <app-form-text
+          class="contact__field"
+          [formField]="_contactForm.name"
+          [label]="'portfolioHome.contact.fields.name' | t"
+          [placeholder]="'portfolioHome.contact.fields.namePlaceholder' | t"
+          autocomplete="name"
+        />
+        <app-form-text
+          class="contact__field"
+          [formField]="_contactForm.email"
+          [label]="'portfolioHome.contact.fields.email' | t"
+          [placeholder]="'portfolioHome.contact.fields.emailPlaceholder' | t"
+          type="email"
+          autocomplete="email"
+        />
+      </div>
+      <app-form-textarea
+        [formField]="_contactForm.message"
+        [label]="'portfolioHome.contact.fields.message' | t"
+        rows="5"
+      />
+      <div class="contact__privacy">
+        <app-form-checkbox
+          [formField]="_contactForm.privacy"
+          [label]="'portfolioHome.contact.fields.privacy' | t"
+        />
+        <a class="contact__inline-link contact__privacy-link" routerLink="/privacy">
+          {{ 'portfolioHome.contact.privacyLink' | t }}
+        </a>
+      </div>
+
+      @if (_store.mutationState().failure; as failure) {
+        <app-failure-alert [failure]="failure" [heading]="'portfolioHome.contact.failed' | t" />
+      }
+
+      <button
+        class="contact__submit"
+        [loading]="_sending()"
+        [loadingLabel]="'portfolioHome.contact.sending' | t"
+        appUiButton
+        size="lg"
+        type="submit"
+      >
+        {{ 'portfolioHome.contact.send' | t }}
+      </button>
+    </form>
+  </div>
+</section>

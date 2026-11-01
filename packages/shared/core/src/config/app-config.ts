@@ -14,11 +14,19 @@ export interface AppConfig {
   siteUrl: string;
   /** Whether search engines may index this deployment. `false` everywhere but production. */
   allowIndexing: boolean;
+  /** Whether visitors may create an account. Must match `auth.signUpEnabled` of the backend. */
+  allowSignUp: boolean;
 }
+
+/**
+ * The file as a deployment mounts it. Keys added later are optional, so the file of an existing
+ * deployment stays valid. `normalizeAppConfig()` fills in their defaults.
+ */
+export type AppConfigFile = Omit<AppConfig, 'allowSignUp'> & { allowSignUp?: boolean };
 
 export const APP_CONFIG_URL = '/config/app-config.json';
 
-export const isAppConfig = (value: unknown): value is AppConfig =>
+export const isAppConfig = (value: unknown): value is AppConfigFile =>
   typeof value === 'object' &&
   value !== null &&
   'apiBaseUrl' in value &&
@@ -30,14 +38,16 @@ export const isAppConfig = (value: unknown): value is AppConfig =>
   'siteUrl' in value &&
   typeof value.siteUrl === 'string' &&
   'allowIndexing' in value &&
-  typeof value.allowIndexing === 'boolean';
+  typeof value.allowIndexing === 'boolean' &&
+  (!('allowSignUp' in value) || typeof value.allowSignUp === 'boolean');
 
 /** Removes trailing slashes, so URLs can be joined with a path that starts with one. */
 const withoutTrailingSlash = (url: string) => url.replace(/\/+$/, '');
 
 /** Brings a valid config into the form the app and the server work with. */
-export const normalizeAppConfig = (config: AppConfig): AppConfig => ({
+export const normalizeAppConfig = (config: AppConfigFile): AppConfig => ({
   ...config,
+  allowSignUp: config.allowSignUp ?? true,
   apiBaseUrl: withoutTrailingSlash(config.apiBaseUrl),
   siteUrl: withoutTrailingSlash(config.siteUrl),
 });
@@ -71,6 +81,10 @@ export class AppConfigService {
     return this._loaded.allowIndexing;
   }
 
+  get allowSignUp(): boolean {
+    return this._loaded.allowSignUp;
+  }
+
   /**
    * Whether a request goes to the backend. `false` while the config is still loading, so
    * interceptors can ask before the first render.
@@ -100,7 +114,7 @@ export class AppConfigService {
     if (!isAppConfig(raw)) {
       throw new Error(
         `${APP_CONFIG_URL} is invalid: "apiBaseUrl", "environment" and "siteUrl" must be strings, ` +
-          `"allowIndexing" a boolean, "logLevel" one of ${LOG_LEVELS.join(', ')}.`,
+          `"allowIndexing" (and "allowSignUp" if set) booleans, "logLevel" one of ${LOG_LEVELS.join(', ')}.`,
       );
     }
     this._config = normalizeAppConfig(raw);

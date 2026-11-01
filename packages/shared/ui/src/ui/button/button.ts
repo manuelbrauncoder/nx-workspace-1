@@ -1,10 +1,16 @@
 import { booleanAttribute, Component, computed, HOST_TAG_NAME, inject, input } from '@angular/core';
 import { buttonVariants } from '@spartan-ng/helm/button';
-import { classes } from '@spartan-ng/helm/utils';
+import { classes, hlm } from '@spartan-ng/helm/utils';
 import { UiSpinner } from '../spinner/spinner';
 
 export type UiButtonVariant =
-  'default' | 'outline' | 'secondary' | 'ghost' | 'destructive' | 'link';
+  'default' | 'outline' | 'secondary' | 'ghost' | 'destructive' | 'link' | 'brand';
+
+/**
+ * The brand color of the app for the one main action of a page, from the tokens `--brand` and
+ * `--brand-foreground` of its theme. Spartan has no such variant.
+ */
+const BRAND_CLASSES = 'bg-brand text-brand-foreground font-bold hover:bg-brand/85';
 export type UiButtonSize =
   'default' | 'xs' | 'sm' | 'lg' | 'icon' | 'icon-xs' | 'icon-sm' | 'icon-lg';
 
@@ -18,6 +24,7 @@ export type UiButtonSize =
  *   Speichern
  * </button>
  * <a appUiButton variant="outline" size="sm" routerLink="/notes">Abbrechen</a>
+ * <a appUiButton variant="brand" size="lg" routerLink="/" fragment="projects">Projekte</a>
  * <button appUiButton variant="ghost" size="icon" type="button" aria-label="Hinzufügen">
  *   <app-ui-icon name="plus" />
  * </button>
@@ -50,7 +57,13 @@ export class UiButton {
   private readonly _blocked = computed(() => this.disabled() || this.loading());
 
   constructor() {
-    classes(() => buttonVariants({ variant: this.variant(), size: this.size() }));
+    classes(() => {
+      const variant = this.variant();
+      // `hlm` merges the colors of the default variant away, so only the brand colors stay.
+      return variant === 'brand'
+        ? hlm(buttonVariants({ variant: 'default', size: this.size() }), BRAND_CLASSES)
+        : buttonVariants({ variant, size: this.size() });
+    });
   }
 
   /** A link has no `disabled` attribute, so a blocked one has to swallow the click itself. */

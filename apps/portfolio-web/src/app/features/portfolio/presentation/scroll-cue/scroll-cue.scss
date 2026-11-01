@@ -1,0 +1,90 @@
+:host {
+  display: inline-flex;
+}
+
+.scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 2.75rem;
+  border-radius: calc(var(--radius) - 2px);
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+
+  &:hover .scroll-cue__label {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
+  }
+}
+
+.scroll-cue__trail {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 0.875rem;
+  height: 4.125rem;
+}
+
+.scroll-cue__path {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 6px;
+  width: 2px;
+  background-image: linear-gradient(var(--muted-foreground) 50%, transparent 50%);
+  background-size: 2px 12px;
+  animation: trail-flow 1.2s linear infinite;
+}
+
+.scroll-cue__marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0.875rem;
+  height: 1.25rem;
+  border-radius: 3px;
+  background-color: var(--trail);
+  box-shadow: inset 0 -7px 0 var(--foreground);
+  animation: trail-walk 2.4s cubic-bezier(0.45, 0, 0.35, 1) infinite;
+}
+
+@keyframes trail-walk {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  15%,
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(2.875rem);
+    opacity: 0;
+  }
+}
+
+@keyframes trail-flow {
+  to {
+    background-position: 0 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue__path,
+  .scroll-cue__marker {
+    animation: none;
+  }
+
+  .scroll-cue__marker {
+    transform: translateY(1.25rem);
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "title": "Spiel",
+  "heading": "301 · {{ finish }}",
+  "doubleOut": "Double-Out",
+  "straightOut": "Straight-Out",
+  "loading": "Spiel wird geladen",
+  "loadFailed": "Das Spiel konnte nicht geladen werden",
+  "writeFailed": "Das hat nicht geklappt",
+  "undo": "Letzten Wurf zurücknehmen",
+  "openMenu": "Optionen öffnen",
+  "scoreboard": "Punktestand",
+  "current": {
+    "throws": "{{ name }} wirft",
+    "checkout": "Checkout",
+    "noCheckout": "Kein Checkout möglich",
+    "turn": "Aufnahme",
+    "openDart": "Dart {{ number }} offen"
+  },
+  "keypad": {
+    "label": "Eingabe",
+    "multiplier": "Multiplikator",
+    "single": "Single",
+    "double": "Double",
+    "triple": "Triple",
+    "numbers": "Felder 1 bis 20",
+    "specials": "Bull und Miss",
+    "bull": "Bull 25",
+    "doubleBull": "Bull 50",
+    "miss": "Miss"
+  },
+  "menu": {
+    "heading": "Optionen",
+    "doubleOut": "Double-Out",
+    "doubleOutHint": "Der letzte Wurf muss ein Double sein.",
+    "copyLink": "Link zum Spiel kopieren",
+    "linkCopied": "Link kopiert",
+    "copyFailed": "Der Link konnte nicht kopiert werden",
+    "restart": "Neues Spiel mit gleichen Spielern",
+    "abort": "Spiel abbrechen"
+  },
+  "restart": {
+    "heading": "Neu starten?",
+    "description": "Alle gehen zurück auf {{ score }}, der aktuelle Stand ist dann weg.",
+    "confirm": "Neu starten",
+    "cancel": "Weiterspielen"
+  },
+  "abort": {
+    "heading": "Spiel abbrechen?",
+    "description": "Du gehst zurück zur Spielerauswahl. Über den Spiel-Link kommst du später wieder zum aktuellen Stand.",
+    "confirm": "Spiel abbrechen",
+    "cancel": "Weiterspielen"
+  },
+  "result": {
+    "wins": "{{ name }} gewinnt",
+    "checkout": "Checkout mit {{ dart }}.",
+    "standings": "Endstand",
+    "newGame": "Neues Spiel",
+    "samePlayers": "Gleiche Spieler",
+    "backToSetup": "Zurück zur Spielerauswahl"
+  },
+  "notFound": {
+    "heading": "Spiel nicht gefunden",
+    "description": "Dieses Spiel gibt es nicht oder es wurde entfernt. Prüf den Link oder starte ein neues Spiel.",
+    "backToSetup": "Zur Spielerauswahl"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../dist/out-tsc",
+    "lib": ["ES2022"],
+    "noUncheckedIndexedAccess": true,
+    "types": []
+  },
+  "include": ["src/**/*.ts"]
+}

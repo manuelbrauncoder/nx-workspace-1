@@ -1,0 +1,123 @@
+@use 'styles/abstracts' as *;
+
+:host {
+  display: block;
+}
+
+// Stacked on a phone, screenshot and text side by side from `md`.
+.project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+
+  @include up(md) {
+    flex-direction: row;
+    align-items: center;
+    gap: 4rem;
+  }
+}
+
+:host(.project-card--reversed) .project-card {
+  @include up(md) {
+    flex-direction: row-reverse;
+  }
+}
+
+.project-card__image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+  border: 1.5px solid var(--foreground);
+  border-radius: var(--radius);
+  background-color: var(--surface);
+
+  @include up(md) {
+    flex: 7 1 0;
+    min-width: 0;
+  }
+}
+
+.project-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+
+  @include up(md) {
+    flex: 5 1 0;
+    min-width: 0;
+    gap: 1.25rem;
+  }
+}
+
+.project-card__title {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin: 0.375rem 0 0;
+
+  @include up(md) {
+    margin-top: 0;
+  }
+}
+
+.project-card__description {
+  margin: 0;
+  color: var(--foreground-soft);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.project-card__stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include up(md) {
+    gap: 0.5rem;
+  }
+}
+
+.project-card__tag {
+  padding: 0.125rem 0.5625rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.8125rem;
+  font-weight: 600;
+
+  @include up(md) {
+    padding-inline: 0.625rem;
+    font-size: 0.875rem;
+  }
+}
+
+.project-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.75rem;
+}
+
+.project-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2.75rem;
+  color: var(--link);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+
+  &:hover {
+    color: var(--foreground);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}

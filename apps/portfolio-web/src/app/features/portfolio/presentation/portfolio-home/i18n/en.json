@@ -1,0 +1,42 @@
+{
+  "title": "Frontend developer from the Spessart",
+  "description": "Manuel Braun, frontend developer from Partenstein in the Spessart. Angular projects, skills and contact.",
+  "loadFailed": "The start page could not be loaded",
+  "hero": {
+    "checkWork": "Check my work",
+    "contactMe": "Contact me",
+    "scrollCue": "Scroll to explore"
+  },
+  "projects": {
+    "builtWith": "Built with",
+    "liveTest": "Open live test",
+    "liveTestNamed": "Open live test of {{ name }}",
+    "sourceCode": "View code on GitHub",
+    "sourceCodeNamed": "View code of {{ name }} on GitHub"
+  },
+  "contact": {
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "channels": "Direct ways to reach me",
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "name@mail.com",
+      "message": "Message",
+      "privacy": "I’ve read the privacy policy and agree to the processing of my data as outlined."
+    },
+    "privacyLink": "Read the privacy policy",
+    "validation": {
+      "nameRequired": "Please enter your name.",
+      "emailRequired": "Please enter your email address.",
+      "emailInvalid": "Please enter a valid email address.",
+      "messageRequired": "Please write a message.",
+      "privacyRequired": "Please agree to the processing of your data."
+    },
+    "send": "Send message",
+    "sending": "Sending message",
+    "sent": "Thank you for your message! I’ll get back to you as soon as possible.",
+    "failed": "The message was not sent"
+  }
+}

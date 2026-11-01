@@ -1,0 +1,31 @@
+{
+  "title": "Colors · Showcase",
+  "heading": "Colors",
+  "lead": "All theme tokens with their value in the current color scheme ({{ scheme }}).",
+  "groups": {
+    "surfaces": {
+      "title": "Surfaces",
+      "description": "Backgrounds for page, cards and overlays with their text color."
+    },
+    "trail": {
+      "title": "Trail",
+      "description": "Trail-marker yellow for the logo, markers and the main action, the link color and the contour lines of the map."
+    },
+    "actions": {
+      "title": "Actions and states",
+      "description": "Colors for buttons, highlights and errors."
+    },
+    "borders": {
+      "title": "Borders and focus",
+      "description": "Lines, input fields and the focus ring."
+    },
+    "charts": {
+      "title": "Charts",
+      "description": "Data series in charts."
+    },
+    "sidebar": {
+      "title": "Sidebar",
+      "description": "A palette of its own for the sidebar."
+    }
+  }
+}

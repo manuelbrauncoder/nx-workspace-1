@@ -16,6 +16,9 @@ import {
 import { classes } from '@spartan-ng/helm/utils';
 
 export type UiTextVariant =
+  | 'display'
+  | 'section'
+  | 'title'
   | 'h1'
   | 'h2'
   | 'h3'
@@ -29,7 +32,20 @@ export type UiTextVariant =
   | 'blockquote'
   | 'list';
 
+// Display sizes of the start page. Spartan has no variants this large, they scale with the
+// viewport between a phone and a wide screen. The leading comes after the size, a font size
+// class would otherwise merge it away.
+const DISPLAY =
+  'font-heading font-extrabold tracking-[-0.04em] text-[clamp(4rem,11.5vw,10.5rem)] leading-[0.88]';
+const SECTION =
+  'font-heading font-extrabold tracking-[-0.03em] text-[clamp(2.625rem,6vw,4.5rem)] leading-none';
+const TITLE =
+  'font-heading font-extrabold tracking-[-0.025em] text-[clamp(1.875rem,3vw,2.5rem)] leading-[1.05]';
+
 const VARIANT_CLASSES: Record<UiTextVariant, string> = {
+  display: DISPLAY,
+  section: SECTION,
+  title: TITLE,
   h1: hlmH1,
   h2: hlmH2,
   h3: hlmH3,
@@ -50,6 +66,7 @@ const VARIANT_CLASSES: Record<UiTextVariant, string> = {
  *
  * @example
  * <h1 appUiText="h1">Notizen</h1>
+ * <h2 appUiText="section">Projekte</h2>
  * <p class="mt-2" appUiText="lead">Kurze Einleitung zur Seite.</p>
  * <ul appUiText="list"><li>Eintrag</li></ul>
  */

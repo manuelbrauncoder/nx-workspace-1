@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+.legal-page-editor {
+  display: block;
+  max-width: 56rem;
+  margin-top: 1rem;
+}
+
+.legal-page-editor__status {
+  margin-bottom: 2rem;
+}
+
+.legal-page-editor__form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.legal-page-editor__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

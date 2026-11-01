@@ -1,0 +1,25 @@
+{
+  "title": "Messages",
+  "heading": "Messages",
+  "lead": "Messages from the contact form, newest first. {{ unread }} unread.",
+  "loading": "Loading messages",
+  "loadFailed": "The messages could not be loaded",
+  "actionFailed": "The action failed",
+  "empty": {
+    "heading": "No messages",
+    "description": "As soon as someone sends the contact form, the message shows up here."
+  },
+  "unread": "Unread",
+  "reply": "Reply",
+  "replySubject": "Your message through the contact form",
+  "markRead": "Mark as read",
+  "markUnread": "Mark as unread",
+  "markReadNamed": "Mark the message from {{ name }} as read",
+  "markUnreadNamed": "Mark the message from {{ name }} as unread",
+  "delete": "Delete",
+  "deleteNamed": "Delete the message from {{ name }}",
+  "deleteHeading": "Delete the message from {{ name }}?",
+  "deleteDescription": "The message is deleted for good. This cannot be undone.",
+  "deleteConfirm": "Delete",
+  "deleted": "Message deleted"
+}

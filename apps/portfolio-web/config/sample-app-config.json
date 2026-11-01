@@ -1,0 +1,8 @@
+{
+  "apiBaseUrl": "/api",
+  "environment": "local",
+  "logLevel": "debug",
+  "siteUrl": "http://localhost:4000",
+  "allowIndexing": false,
+  "allowSignUp": true
+}

@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+
+.message-list__body {
+  max-width: 48rem;
+  margin-top: 2rem;
+}
+
+.message-list__items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

@@ -1,0 +1,32 @@
+@use 'styles/abstracts' as *;
+
+:host {
+  display: block;
+}
+
+.localized-field {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.localized-field__legend {
+  margin-bottom: 0.5rem;
+  padding: 0;
+  font-weight: 600;
+}
+
+.localized-field__description {
+  margin: -0.25rem 0 0.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.localized-field__languages {
+  display: grid;
+  gap: 1rem;
+
+  @include up(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}

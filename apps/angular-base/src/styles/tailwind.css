@@ -21,4 +21,6 @@
     'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
     'Courier New', monospace;
   --color-input-background: var(--input-background);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
 }

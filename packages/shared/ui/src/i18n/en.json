@@ -3,7 +3,8 @@
     "cancel": "Cancel",
     "close": "Close",
     "loading": "Loading …",
-    "retry": "Try again"
+    "retry": "Try again",
+    "breadcrumb": "Breadcrumb"
   },
   "failure": {
     "network": "The server cannot be reached. Please check your connection.",
@@ -45,9 +46,10 @@
       "linkHeading": "Link",
       "linkUrl": "Address",
       "linkUrlDescription": "A web address or mailto:name@example.org.",
-      "linkInvalid": "Please enter a valid web address.",
+      "linkInvalid": "Please enter a valid address.",
       "linkApply": "Apply",
-      "linkRemove": "Remove link"
+      "linkRemove": "Remove link",
+      "linkUrlDescriptionPage": "A web address, mailto:name@example.org, tel:+49… or a path of this site such as /privacy."
     }
   },
   "language": {

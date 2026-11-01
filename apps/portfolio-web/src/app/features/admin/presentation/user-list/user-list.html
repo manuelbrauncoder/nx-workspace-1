@@ -1,0 +1,39 @@
+<app-ui-breadcrumb [items]="_breadcrumb" />
+<h1 class="mt-2" #heading appUiText="h1" tabindex="-1">{{ 'userList.heading' | t }}</h1>
+<p class="mt-2" appUiText="lead">{{ 'userList.lead' | t }}</p>
+
+@if (_store.userMutationState().failure; as failure) {
+  <!-- 409: the backend protects the own account and the last admin. -->
+  <app-failure-alert
+    class="mt-6"
+    [failure]="failure"
+    [heading]="'userList.actionFailed' | t"
+    [message]="failure.kind === 'conflict' ? ('userList.conflict' | t) : undefined"
+  />
+}
+
+<app-async-content
+  class="user-list__body"
+  [state]="_store.usersState()"
+  [failureHeading]="'userList.loadFailed' | t"
+  [loadingLabel]="'userList.loading' | t"
+  (retry)="_store.reloadUsers()"
+  loadingIndicator="skeleton"
+  retryable
+>
+  <ng-template>
+    <ul class="user-list__grid">
+      @for (user of _store.users(); track user.id) {
+        <li>
+          <app-user-card
+            [user]="user"
+            [isMe]="user.id === _auth.me()?.id"
+            (toggleRole)="_toggleRole(user)"
+            (revokeSessions)="_revokeSessions(user)"
+            (remove)="_remove(user)"
+          />
+        </li>
+      }
+    </ul>
+  </ng-template>
+</app-async-content>

@@ -20,5 +20,8 @@
   },
   "docs": {
     "enabled": true
+  },
+  "auth": {
+    "signUpEnabled": true
   }
 }

@@ -1,0 +1,40 @@
+{
+  "title": "Neues Spiel",
+  "description": "Spieler eintragen, Spielende wählen und eine Partie 301 starten.",
+  "heading": "Neues Spiel",
+  "lead": "301 — schlicht und schnell.",
+  "players": {
+    "heading": "Spieler",
+    "hint": "Es wird in dieser Reihenfolge geworfen.",
+    "empty": "Noch niemand dabei. Trag mindestens einen Spieler ein.",
+    "moveUp": "{{ name }} nach oben",
+    "moveDown": "{{ name }} nach unten",
+    "remove": "{{ name }} entfernen",
+    "full": "Mehr als {{ max }} Spieler gehen nicht."
+  },
+  "add": {
+    "label": "Spieler hinzufügen",
+    "placeholder": "Name",
+    "submit": "Hinzufügen"
+  },
+  "recent": {
+    "heading": "Zuletzt",
+    "add": "{{ name }} hinzufügen"
+  },
+  "finish": {
+    "label": "Spielende",
+    "double": "Double-Out",
+    "straight": "Straight-Out",
+    "doubleHint": "Der letzte Wurf muss ein Double sein.",
+    "straightHint": "Wer genau auf 0 kommt, gewinnt, egal mit welchem Feld."
+  },
+  "validation": {
+    "duplicate": "Den Namen gibt es schon.",
+    "tooLong": "Bitte höchstens {{ max }} Zeichen."
+  },
+  "start": "Spiel starten",
+  "starting": "Spiel wird gestartet",
+  "playerCountOne": "1 Spieler",
+  "playerCountOther": "{{ count }} Spieler",
+  "startFailed": "Das Spiel konnte nicht gestartet werden"
+}

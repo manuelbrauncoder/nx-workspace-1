@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
 import { UiRichText } from './rich-text';
 
 describe('UiRichText', () => {
@@ -37,5 +38,22 @@ describe('UiRichText', () => {
     expect(content.innerHTML).toBe('<p>a</p>b');
     expect(run).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
+  });
+
+  it('follows a link within the site through the router', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    const fixture = TestBed.createComponent(UiRichText);
+    fixture.componentRef.setInput('html', '<p><a href="/privacy">Datenschutz</a></p>');
+    fixture.componentRef.setInput('profile', 'page');
+    await fixture.whenStable();
+
+    const link: HTMLAnchorElement = fixture.nativeElement.querySelector('a');
+    const click = new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 });
+    link.dispatchEvent(click);
+
+    expect(navigate).toHaveBeenCalledWith('/privacy');
+    expect(click.defaultPrevented).toBe(true);
+    expect(link.target).toBe('');
   });
 });

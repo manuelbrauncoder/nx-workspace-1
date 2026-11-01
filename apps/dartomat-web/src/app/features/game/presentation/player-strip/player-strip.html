@@ -1,0 +1,13 @@
+<ol class="player-strip" [attr.aria-label]="'gamePage.scoreboard' | t">
+  @for (player of players(); track player.id; let idx = $index) {
+    <li
+      class="player-strip__item"
+      #item
+      [attr.aria-current]="idx === currentIdx() ? 'true' : null"
+      [class.player-strip__item--current]="idx === currentIdx()"
+    >
+      <span class="player-strip__name">{{ player.name }}</span>
+      <span class="player-strip__score">{{ player.score }}</span>
+    </li>
+  }
+</ol>

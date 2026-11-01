@@ -1,0 +1,44 @@
+{
+  "title": "Forms · Showcase",
+  "heading": "Forms",
+  "lead": "Form controls from shared/form-controls, bound through Signal Forms.",
+  "controls": {
+    "heading": "All controls",
+    "description": "Every control comes with label, description and error messages. Errors appear after leaving the field or on submit."
+  },
+  "fields": {
+    "name": "Name",
+    "email": "Email",
+    "emailDescription": "Only used for follow-up questions.",
+    "about": "About me",
+    "notes": "Notes",
+    "notesDescription": "Formatted text, stored as HTML.",
+    "attachments": "Attachments",
+    "attachmentsDescription": "Drop zone for at most three files, the number is set through maxFiles.",
+    "birthday": "Birthday",
+    "role": "Role",
+    "newsletter": "Newsletter",
+    "newsletterDescription": "One mail a month at most.",
+    "terms": "I agree to the terms",
+    "customerNumber": "Customer number",
+    "customerNumberDescription": "Disabled through the form logic."
+  },
+  "roles": {
+    "developer": "Development",
+    "designer": "Design",
+    "product": "Product"
+  },
+  "validation": {
+    "name": "Please enter a name.",
+    "email": "Please enter a valid email address.",
+    "birthday": "Please pick a date.",
+    "role": "Please select a role.",
+    "terms": "Please agree to the terms."
+  },
+  "submit": "Submit",
+  "valid": "The form is valid.",
+  "value": {
+    "heading": "Current value",
+    "description": "The model behind the form, updated live."
+  }
+}

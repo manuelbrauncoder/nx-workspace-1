@@ -1,0 +1,18 @@
+@let section = projects();
+<section class="projects" id="projects" aria-labelledby="projects-heading" tabindex="-1">
+  <div class="page-container">
+    <div class="projects__header">
+      <h2 class="projects__heading" id="projects-heading" appUiText="section">
+        {{ section.headline | localized }}
+      </h2>
+      <p class="projects__intro">{{ section.description | localized }}</p>
+    </div>
+    <ul class="projects__list">
+      @for (project of section.items; track $index; let odd = $odd) {
+        <li class="projects__item">
+          <app-project-card [project]="project" [reversed]="odd" />
+        </li>
+      }
+    </ul>
+  </div>
+</section>

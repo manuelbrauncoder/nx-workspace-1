@@ -1,0 +1,20 @@
+<form class="flex flex-col gap-8" [formRoot]="_aboutForm">
+  <app-localized-field
+    [field]="_aboutForm.headline"
+    [label]="'sectionEditor.fields.headline' | t"
+  />
+  <app-localized-field
+    [field]="_aboutForm.description"
+    [label]="'sectionEditor.fields.description' | t"
+    multiline
+  />
+  <app-localized-field
+    [field]="_aboutForm.facts"
+    [label]="'sectionEditor.about.facts' | t"
+    [description]="'sectionEditor.onePerLine' | t"
+    multiline
+    rows="5"
+  />
+  <app-image-field [field]="_aboutForm.image" [label]="'sectionEditor.about.image' | t" />
+  <app-section-form-footer />
+</form>

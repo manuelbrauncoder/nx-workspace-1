@@ -2,6 +2,7 @@ import {
   isAllowedRichTextHref,
   RICH_TEXT_LINK_REL,
   RICH_TEXT_LINK_TARGET,
+  RichTextProfile,
 } from '@contracts/rich-text';
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
@@ -42,6 +43,8 @@ export const INITIAL_TOOLBAR_STATE: RichTextToolbarState = {
 
 interface RichTextEditorOptions {
   html: string;
+  /** Which links the editor accepts, see `@contracts/rich-text`. */
+  profile: RichTextProfile;
   /** Called with the new HTML after every change made in the editor. */
   onChange: (html: string) => void;
   /** Called whenever the content or the selection changed. */
@@ -74,8 +77,12 @@ export class RichTextEditor {
           link: {
             openOnClick: false,
             defaultProtocol: 'https',
-            HTMLAttributes: { rel: RICH_TEXT_LINK_REL, target: RICH_TEXT_LINK_TARGET },
-            isAllowedUri: (url) => isAllowedRichTextHref(url),
+            // A page links within the site too; `app-ui-rich-text` sets target and rel per link.
+            HTMLAttributes:
+              options.profile === 'page'
+                ? { rel: null, target: null }
+                : { rel: RICH_TEXT_LINK_REL, target: RICH_TEXT_LINK_TARGET },
+            isAllowedUri: (url) => isAllowedRichTextHref(url, options.profile),
           },
         }),
       ],

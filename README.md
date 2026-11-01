@@ -1,284 +1,149 @@
-# Nx Angular Repository
+# nx1 workspace
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+Nx monorepo with Angular apps, Express APIs and the libs they share. Everything needed to run it locally is on this page. Architecture, apps, libs and deployment are explained in [docs/](docs/README.md).
 
-✨ A repository showcasing key [Nx](https://nx.dev) features for Angular monorepos ✨
+## What is in here
 
-🚀 If you haven't connected to Nx Cloud yet, [complete your setup here](https://cloud.nx.app/get-started). Get faster builds with remote caching, distributed task execution, and self-healing CI. [See how your workspace can benefit](#nx-cloud).
+| App                                               | Kind                                  | Locally                 | Talks to                    |
+| ------------------------------------------------- | ------------------------------------- | ----------------------- | --------------------------- |
+| [angular-base](docs/apps/angular-base.md)         | Angular 22 with SSR, reference app    | <http://localhost:4000> | `express-api-base`          |
+| [express-api-base](docs/apps/express-api-base.md) | Express 5 + Drizzle, reference API    | <http://localhost:3000> | Postgres `express_api_base` |
+| [portfolio-web](docs/apps/portfolio-web.md)       | Angular 22 with SSR, portfolio site   | <http://localhost:4100> | `portfolio-api`             |
+| [portfolio-api](docs/apps/portfolio-api.md)       | Express 5 + Drizzle, portfolio CMS    | <http://localhost:3100> | Postgres `portfolio_api`    |
+| [dartomat-web](docs/apps/dartomat-web.md)         | Angular 22 with SSR, darts scoreboard | <http://localhost:4200> | `dartomat-api`              |
+| [dartomat-api](docs/apps/dartomat-api.md)         | Express 5 + Drizzle, darts games      | <http://localhost:3200> | Postgres `dartomat_api`     |
 
-## 📦 Project Overview
+The libs live in `packages/`: `core`, `ui`, `styles` and `helm-vega` for Angular, `server-core` and `server-auth` for the APIs, `contracts`, `portfolio-contracts` and `dartomat-contracts` as the wire format between both. See [Workspace](docs/workspace.md) for the full list with tags and aliases.
 
-This repository demonstrates a production-ready Angular monorepo with:
+## Prerequisites
 
-- **2 Applications**
+- **Node 24**, the exact version is in [.nvmrc](.nvmrc) (`nvm use`)
+- **pnpm** through Corepack, the version comes from `packageManager` in [package.json](package.json):
 
-  - `shop` - Angular e-commerce application with product listings and detail views
-  - `api` - Backend API with Docker support serving product data
+  ```bash
+  corepack enable
+  ```
 
-- **6 Libraries**
+- **Docker** for the local Postgres
 
-  - `@org/feature-products` - Product listing feature (Angular)
-  - `@org/feature-product-detail` - Product detail feature (Angular)
-  - `@org/data` - Data access layer for shop features
-  - `@org/shared-ui` - Shared UI components
-  - `@org/models` - Shared data models
-  - `@org/products` - API product service library
+## One-time setup
 
-- **E2E Testing**
-  - `shop-e2e` - Playwright tests for the shop application
+1. Install the dependencies:
 
-## 🚀 Quick Start
+   ```bash
+   pnpm install
+   ```
 
-```bash
-# Clone the repository
-git clone <your-fork-url>
-cd <your-repository-name>
+2. Start Postgres. The first start creates the databases `express_api_base`, `portfolio_api` and `dartomat_api` from [tools/postgres/init-databases.sql](tools/postgres/init-databases.sql):
 
-# Install dependencies
-# (Note: You may need --legacy-peer-deps)
-npm install
+   ```bash
+   docker compose up -d
+   ```
 
-# Serve the Angular shop application (this will simultaneously serve the API backend)
-npx nx run shop:serve
+   An existing volume from before keeps its databases. Create a missing one by hand, for example:
 
-# ...or you can serve the API separately
-npx nx run api:serve
+   ```bash
+   docker compose exec postgres createdb -U app portfolio_api
+   ```
 
-# Build all projects
-npx nx run-many -t build
+3. Give each API its `.env`. Copy the example and set `SESSION_SECRET` to at least 32 characters (`openssl rand -hex 32`). `DATABASE_URL` already matches the compose file:
 
-# Run tests
-npx nx run-many -t test
+   ```bash
+   cp apps/express-api-base/.env.example apps/express-api-base/.env
+   ```
 
-# Lint all projects
-npx nx run-many -t lint
+   ```bash
+   cp apps/portfolio-api/.env.example apps/portfolio-api/.env
+   ```
 
-# Run e2e tests
-npx nx run shop-e2e:e2e
+   ```bash
+   cp apps/dartomat-api/.env.example apps/dartomat-api/.env
+   ```
 
-# Run tasks in parallel
+4. Create the tables:
 
-npx nx run-many -t lint test build e2e --parallel=3
+   ```bash
+   pnpm nx run express-api-base:db:migrate
+   ```
 
-# Visualize the project graph
-npx nx graph
-```
+   ```bash
+   pnpm nx run portfolio-api:db:migrate
+   ```
 
-## ⭐ Featured Nx Capabilities
+   ```bash
+   pnpm nx run dartomat-api:db:migrate
+   ```
 
-This repository showcases several powerful Nx features:
+5. Load the initial content of the portfolio (sections and legal pages). Running it again is safe:
 
-### 1. 🔒 Module Boundaries
+   ```bash
+   pnpm nx run portfolio-api:db:seed
+   ```
 
-Enforces architectural constraints using tags. Each project has specific dependencies it can use:
+## Start developing
 
-- `scope:shared` - Can be used by all projects
-- `scope:shop` - Shop-specific libraries
-- `scope:api` - API-specific libraries
-- `type:feature` - Feature libraries
-- `type:data` - Data access libraries
-- `type:ui` - UI component libraries
-
-**Try it out:**
-
-```bash
-# See the current project graph and boundaries
-npx nx graph
-
-# View a specific project's details
-npx nx show project shop --web
-```
-
-[Learn more about module boundaries →](https://nx.dev/docs/features/enforce-module-boundaries)
-
-### 2. 🐳 Docker Integration
-
-The API project includes Docker support with automated targets and release management:
+One product at a time, API and frontend together in one terminal:
 
 ```bash
-# Build Docker image
-npx nx run api:docker:build
-
-# Run Docker container
-npx nx run api:docker:run
-
-# Release with automatic Docker image versioning
-npx nx release
+pnpm nx run-many -t serve -p express-api-base angular-base
 ```
-
-**Nx Release for Docker:** The repository is configured to use Nx Release for managing Docker image versioning and publishing. When running `nx release`, Docker images for the API project are automatically versioned and published based on the release configuration in `nx.json`. This integrates seamlessly with semantic versioning and changelog generation.
-
-[Learn more about Docker integration →](https://nx.dev/docs/guides/nx-release/release-docker-images)
-
-### 3. 🎭 Playwright E2E Testing
-
-End-to-end testing with Playwright is pre-configured:
 
 ```bash
-# Run e2e tests
-npx nx run shop-e2e:e2e
-
-# Run e2e tests in CI mode
-npx nx run shop-e2e:e2e-ci
+pnpm nx run-many -t serve -p portfolio-api portfolio-web
 ```
-
-[Learn more about E2E testing →](https://nx.dev/docs/technologies/test-tools/playwright)
-
-### 4. ⚡ Vitest for Unit Testing
-
-Fast unit testing with Vite for Angular libraries:
 
 ```bash
-# Test a specific library
-npx nx run data:test
-
-# Test all projects
-npx nx run-many -t test
+pnpm nx run-many -t serve -p dartomat-api dartomat-web
 ```
 
-[Learn more about Vite testing →](https://nx.dev/docs/technologies/build-tools/vite)
+The ports differ, so all products can run at the same time. The APIs restart on change (`tsx watch`), the Angular dev servers reload and render on the server as well.
 
-### 5. 🔧 Self-Healing CI
+On the first start each API with sign-in (not `dartomat-api`) creates an admin from `admin` in its `config/development.json`: `admin@mail.dev` with the password `dev-admin-password`. Sign in at `/sign-in`, in `portfolio-web` the admin area is at `/admin`.
 
-The CI pipeline includes `nx fix-ci` which automatically identifies and suggests fixes for common issues:
+To run the Angular Express server the way it runs in the container (for work on `src/server.ts`), build and serve in two terminals instead of `serve`:
 
 ```bash
-# In CI, this command provides automated fixes
-npx nx fix-ci
+pnpm nx build angular-base -c watch
 ```
-
-This feature helps maintain a healthy CI pipeline by automatically detecting and suggesting solutions for:
-
-- Missing dependencies
-- Incorrect task configurations
-- Cache invalidation issues
-- Common build failures
-
-[Learn more about self-healing CI →](https://nx.dev/docs/features/ci-features/self-healing-ci)
-
-## 📁 Project Structure
-
-```
-├── apps/
-│   ├── shop/           [scope:shop]    - Angular e-commerce app
-│   ├── shop-e2e/                       - E2E tests for shop
-│   └── api/            [scope:api]     - Backend API with Docker
-├── packages/
-│   ├── shop/
-│   │   ├── feature-products/        [scope:shop,type:feature] - Product listing
-│   │   ├── feature-product-detail/  [scope:shop,type:feature] - Product details
-│   │   ├── data/                    [scope:shop,type:data]    - Data access
-│   │   └── shared-ui/               [scope:shop,type:ui]      - UI components
-│   ├── api/
-│   │   └── products/    [scope:api]    - Product service
-│   └── shared/
-│       └── models/      [scope:shared,type:data] - Shared models
-├── nx.json             - Nx configuration
-├── tsconfig.json       - TypeScript configuration
-└── eslint.config.mjs   - ESLint with module boundary rules
-```
-
-## 🏷️ Understanding Tags
-
-This repository uses tags to enforce module boundaries:
-
-| Project            | Tags                         | Can Import From              |
-| ------------------ | ---------------------------- | ---------------------------- |
-| `shop`             | `scope:shop`                 | `scope:shop`, `scope:shared` |
-| `api`              | `scope:api`                  | `scope:api`, `scope:shared`  |
-| `feature-products` | `scope:shop`, `type:feature` | `scope:shop`, `scope:shared` |
-| `data`             | `scope:shop`, `type:data`    | `scope:shared`               |
-| `models`           | `scope:shared`, `type:data`  | Nothing (base library)       |
-
-## 📚 Useful Commands
 
 ```bash
-# Project exploration
-npx nx graph                                    # Interactive dependency graph
-npx nx list                                     # List installed plugins
-npx nx show project shop --web                 # View project details
-
-# Development
-npx nx run shop:serve                              # Serve Angular app
-npx nx run api:serve                               # Serve backend API
-npx nx run shop:build                              # Build Angular app
-npx nx run data:test                               # Test a specific library
-npx nx run feature-products:lint                   # Lint a specific library
-
-# Running multiple tasks
-npx nx run-many -t build                       # Build all projects
-npx nx run-many -t test --parallel=3          # Test in parallel
-npx nx run-many -t lint test build            # Run multiple targets
-
-# Affected commands (great for CI)
-npx nx affected -t build                       # Build only affected projects
-npx nx affected -t test                        # Test only affected projects
-
-# Docker operations
-npx nx run api:docker:build                        # Build Docker image
-npx nx run api:docker:run                          # Run Docker container
+pnpm nx server angular-base
 ```
 
-## 🎯 Adding New Features
+The API reference of each API is at `/docs` (<http://localhost:3000/docs>, <http://localhost:3100/docs>).
 
-### Generate a new Angular application:
+## Common commands
 
-```bash
-npx nx g @nx/angular:app my-app
-```
+| Command                                         | What it does                                   |
+| ----------------------------------------------- | ---------------------------------------------- |
+| `pnpm nx serve <app>`                           | Dev server of one app                          |
+| `pnpm nx test <project>`                        | Unit tests with Vitest (APIs need Postgres)    |
+| `pnpm nx lint <project>`                        | ESLint including the module boundaries         |
+| `pnpm nx typecheck <project>`                   | `tsc` over sources and specs                   |
+| `pnpm nx build <app>`                           | Production build into `dist/apps/<app>`        |
+| `pnpm nx affected -t lint typecheck test build` | Everything the current change affects          |
+| `pnpm nx run-many -t lint typecheck test build` | Everything for every project, as the CI does   |
+| `pnpm format:check`, `pnpm format:fix`          | Prettier over the whole repo                   |
+| `pnpm nx run <api>:db:generate`                 | New migration after changing a `*.table.ts`    |
+| `pnpm nx run <api>:db:studio`                   | Drizzle Studio on the database of the API      |
+| `pnpm nx graph`                                 | Projects and their dependencies in the browser |
 
-### Generate a new Angular library:
+Before a push run what the CI runs: `pnpm format:check` and `pnpm nx run-many -t lint typecheck test build`.
 
-```bash
-npx nx g @nx/angular:lib my-lib
-```
+## Troubleshooting
 
-### Generate a new Angular component:
+- **Port already in use**: an older dev server or a test run still holds it. Find it with `lsof -i :3000` and stop it
+- **API exits with a config error**: `.env` is missing or `SESSION_SECRET` is shorter than 32 characters
+- **`database "…" does not exist`**: the Postgres volume is older than the database. Create it with `createdb` as in step 2
+- **Frontend shows a network error**: the matching API is not running, or `apiBaseUrl` in the app's `config/app-config.json` points elsewhere
+- **API tests fail at the start**: Postgres is not running. The tests create their own `*_test` databases
 
-```bash
-npx nx g @nx/angular:component my-component --project=my-lib
-```
+## Releases
 
-### Generate a new API library:
+A tag `nx1-<app>-v<version>` (for example `nx1-portfolio-web-v1.2.0`) builds the Docker image of that app and pushes it to `ghcr.io/<owner>/nx1-<app>`. Details in [Deployment](docs/deployment.md).
 
-```bash
-npx nx g @nx/node:lib my-api-lib
-```
+## Further reading
 
-You can use `npx nx list` to see all available plugins and `npx nx list <plugin-name>` to see all generators for a specific plugin.
-
-## Nx Cloud
-
-Nx Cloud ensures a [fast and scalable CI](https://nx.dev/nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/docs/features/ci-features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/docs/features/ci-features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/docs/features/ci-features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/docs/features/ci-features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/docs/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## 🔗 Learn More
-
-- [Nx Documentation](https://nx.dev/docs)
-- [Angular Monorepo Tutorial](https://nx.dev/docs/getting-started/tutorials/angular-monorepo-tutorial)
-- [Module Boundaries](https://nx.dev/docs/features/enforce-module-boundaries)
-- [Docker Integration](https://nx.dev/docs/guides/nx-release/release-docker-images)
-- [Playwright Testing](https://nx.dev/docs/technologies/test-tools/playwright)
-- [Vite with Angular](https://nx.dev/docs/technologies/build-tools/vite)
-- [Nx Cloud](https://nx.dev/nx-cloud)
-- [Releasing Packages](https://nx.dev/docs/features/manage-releases)
-
-## 💬 Community
-
-Join the Nx community:
-
-- [Discord](https://go.nx.dev/community)
-- [X (Twitter)](https://twitter.com/nxdevtools)
-- [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [YouTube](https://www.youtube.com/@nxdevtools)
-- [Blog](https://nx.dev/blog)
+- [docs/README.md](docs/README.md): index of all docs
+- [docs/workspace.md](docs/workspace.md): projects, boundaries, aliases, adding an app or a lib
+- [CLAUDE.md](CLAUDE.md): the short rule set for code in this repo

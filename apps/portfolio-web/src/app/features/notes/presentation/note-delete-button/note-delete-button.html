@@ -1,0 +1,10 @@
+<button
+  [attr.aria-label]="'notes.delete.labelNamed' | t: { title: title() }"
+  (click)="_askForConfirmation()"
+  appUiButton
+  variant="ghost"
+  size="sm"
+  type="button"
+>
+  {{ 'notes.delete.label' | t }}
+</button>

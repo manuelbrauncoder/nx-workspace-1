@@ -1,0 +1,26 @@
+:host {
+  display: inline-block;
+}
+
+:host(.ui-toggle-group--full-width) {
+  display: block;
+
+  .ui-toggle-group {
+    width: 100%;
+  }
+
+  .ui-toggle-group__item {
+    flex: 1 1 0;
+  }
+}
+
+.ui-toggle-group__item {
+  height: var(--ui-toggle-group-item-height, auto);
+  font-weight: 600;
+}
+
+:host([data-variant='brand']) .ui-toggle-group__item[data-state='on'] {
+  background: var(--brand);
+  color: var(--brand-foreground);
+  font-weight: 800;
+}

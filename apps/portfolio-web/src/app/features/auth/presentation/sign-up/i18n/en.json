@@ -1,0 +1,26 @@
+{
+  "title": "Sign up",
+  "lead": "Create an account to save your content.",
+  "fields": {
+    "name": "Name",
+    "nameDescription": "Optional. This is how we address you.",
+    "email": "Email",
+    "password": "Password",
+    "passwordDescription": "At least {{ min }} characters."
+  },
+  "validation": {
+    "nameTooLong": "The name must not be longer than {{ max }} characters.",
+    "emailRequired": "Please enter your email address.",
+    "emailInvalid": "Please enter a valid email address.",
+    "passwordRequired": "Please choose a password.",
+    "passwordTooShort": "The password must be at least {{ min }} characters long.",
+    "passwordTooLong": "The password must not be longer than {{ max }} characters."
+  },
+  "submit": "Create account",
+  "submitting": "Creating account",
+  "signedUp": "Your account has been created",
+  "failed": "Signing up failed",
+  "emailTaken": "There is already an account with this email address.",
+  "hasAccount": "Already have an account?",
+  "toSignIn": "Sign in now"
+}

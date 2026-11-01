@@ -1,0 +1,25 @@
+{
+  "title": "Nachrichten",
+  "heading": "Nachrichten",
+  "lead": "Nachrichten aus dem Kontaktformular, die neueste zuerst. {{ unread }} ungelesen.",
+  "loading": "Nachrichten werden geladen",
+  "loadFailed": "Die Nachrichten konnten nicht geladen werden",
+  "actionFailed": "Die Aktion ist fehlgeschlagen",
+  "empty": {
+    "heading": "Keine Nachrichten",
+    "description": "Sobald jemand das Kontaktformular abschickt, steht die Nachricht hier."
+  },
+  "unread": "Ungelesen",
+  "reply": "Antworten",
+  "replySubject": "Deine Nachricht über das Kontaktformular",
+  "markRead": "Als gelesen markieren",
+  "markUnread": "Als ungelesen markieren",
+  "markReadNamed": "Nachricht von {{ name }} als gelesen markieren",
+  "markUnreadNamed": "Nachricht von {{ name }} als ungelesen markieren",
+  "delete": "Löschen",
+  "deleteNamed": "Nachricht von {{ name }} löschen",
+  "deleteHeading": "Nachricht von {{ name }} löschen?",
+  "deleteDescription": "Die Nachricht wird dauerhaft gelöscht. Das lässt sich nicht rückgängig machen.",
+  "deleteConfirm": "Löschen",
+  "deleted": "Nachricht gelöscht"
+}

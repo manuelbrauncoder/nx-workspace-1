@@ -1,7 +1,7 @@
 # Example production stack (Portainer + Traefik). Replace the image, host and paths.
 services:
   migrate:
-    image: ghcr.io/your-user/express-api-base:v1.0.0
+    image: ghcr.io/your-user/nx1-express-api-base:v1.0.0
     restart: 'no'
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
@@ -10,7 +10,7 @@ services:
     command: ['node', 'dist/scripts/migrate.js']
 
   api:
-    image: ghcr.io/your-user/express-api-base:v1.0.0
+    image: ghcr.io/your-user/nx1-express-api-base:v1.0.0
     restart: always
     depends_on:
       migrate:

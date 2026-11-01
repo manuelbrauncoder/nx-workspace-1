@@ -12,6 +12,8 @@ const LABELS = {
   showcase: 'Showcase',
   showcaseOverview: 'Übersicht',
   showcaseForms: 'Formulare',
+  about: 'Über mich',
+  projects: 'Projekte',
 };
 
 declare module '@core/i18n/translation-key' {
@@ -144,6 +146,30 @@ describe('UiNavMenu', () => {
 
       expect(trigger.getAttribute('aria-expanded')).toBe('true');
       expect(nav.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('Formulare');
+    });
+  });
+
+  describe('fragment links', () => {
+    @Component({
+      imports: [UiNavMenu],
+      template: `<app-ui-nav-menu [items]="items" label="Abschnitte" orientation="vertical" />`,
+    })
+    class FragmentHost {
+      readonly items: UiNavMenuItem[] = [
+        { labelKey: 'navMenuSpec.about', path: '/', fragment: 'about' },
+        { labelKey: 'navMenuSpec.projects', path: '/', fragment: 'projects' },
+      ];
+    }
+
+    it('links to the section and never marks it as current', async () => {
+      TestBed.configureTestingModule({
+        providers: [provideRouter([{ path: '**', component: FragmentHost }])],
+      });
+      const harness = await RouterTestingHarness.create('/');
+      const links = Array.from(harness.routeNativeElement!.querySelectorAll('a'));
+
+      expect(links.map((link) => link.getAttribute('href'))).toEqual(['/#about', '/#projects']);
+      expect(links.some((link) => link.hasAttribute('aria-current'))).toBe(false);
     });
   });
 });

@@ -1,0 +1,82 @@
+<form class="flex flex-col gap-8" [formRoot]="_projectsForm">
+  <app-localized-field
+    [field]="_projectsForm.headline"
+    [label]="'sectionEditor.fields.headline' | t"
+  />
+  <app-localized-field
+    [field]="_projectsForm.description"
+    [label]="'sectionEditor.fields.description' | t"
+    multiline
+  />
+
+  <section class="projects-form__items" aria-labelledby="projects-form-items">
+    <h2 id="projects-form-items" appUiText="h3">{{ 'sectionEditor.projects.heading' | t }}</h2>
+    @for (
+      item of _projectsForm.items;
+      track item;
+      let index = $index, first = $first, last = $last
+    ) {
+      <fieldset class="projects-form__item">
+        <legend class="projects-form__legend">
+          {{ 'sectionEditor.projects.item' | t: { number: index + 1 } }}
+        </legend>
+        <app-list-item-actions
+          class="projects-form__actions"
+          [name]="'sectionEditor.projects.item' | t: { number: index + 1 }"
+          [first]="first"
+          [last]="last"
+          (moveUp)="_move(index, -1)"
+          (moveDown)="_move(index, 1)"
+          (remove)="_remove(index)"
+        />
+        <app-form-text
+          [formField]="item.title"
+          [label]="'sectionEditor.projects.title' | t"
+          autocomplete="off"
+        />
+        <app-localized-field
+          [field]="item.description"
+          [label]="'sectionEditor.fields.description' | t"
+          multiline
+        />
+        <app-form-textarea
+          [formField]="item.stack"
+          [label]="'sectionEditor.projects.stack' | t"
+          [description]="'sectionEditor.onePerLine' | t"
+          rows="4"
+        />
+        <app-form-text
+          [formField]="item.testUrl"
+          [label]="'sectionEditor.projects.testUrl' | t"
+          [description]="'sectionEditor.optional' | t"
+          type="url"
+          autocomplete="off"
+        />
+        <app-form-text
+          [formField]="item.githubUrl"
+          [label]="'sectionEditor.projects.githubUrl' | t"
+          [description]="'sectionEditor.optional' | t"
+          type="url"
+          autocomplete="off"
+        />
+        <app-image-field [field]="item.image" [label]="'sectionEditor.projects.image' | t" />
+      </fieldset>
+    } @empty {
+      <p appUiText="muted">{{ 'sectionEditor.projects.empty' | t }}</p>
+    }
+    <button
+      class="self-start"
+      #addButton
+      [disabled]="_projectsForm.items.length >= _maxProjects"
+      (click)="_add()"
+      appUiButton
+      variant="outline"
+      type="button"
+    >
+      <app-ui-icon name="plus" />
+      {{ 'sectionEditor.projects.add' | t }}
+    </button>
+  </section>
+
+  <app-section-form-footer />
+</form>

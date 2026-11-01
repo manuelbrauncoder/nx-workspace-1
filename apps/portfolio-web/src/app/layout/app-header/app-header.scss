@@ -1,0 +1,55 @@
+@use 'styles/abstracts' as *;
+
+// Stays at the top while the long start page scrolls. On the host, its parent is the whole shell.
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: block;
+}
+
+.app-header {
+  border-bottom: 1px solid var(--border);
+  background-color: var(--background);
+}
+
+.app-header__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4rem;
+  padding-block: 0.75rem;
+
+  @include up(md) {
+    min-height: 4.75rem;
+  }
+}
+
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// Below `md` the links and the toggles move into the drawer, opened by the menu button.
+.app-header__nav,
+.app-header__toggle {
+  display: none;
+
+  @include up(md) {
+    display: block;
+  }
+}
+
+.app-header__nav {
+  @include up(md) {
+    margin-inline-end: 0.75rem;
+  }
+}
+
+.app-header__menu-button {
+  @include up(md) {
+    display: none;
+  }
+}

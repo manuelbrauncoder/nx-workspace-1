@@ -1,0 +1,29 @@
+<header class="app-header">
+  <div class="page-container app-header__bar">
+    <app-logo />
+    <div class="app-header__actions">
+      <app-ui-nav-menu
+        class="app-header__nav"
+        [items]="_items"
+        [label]="'layout.mainNavigation' | t"
+      />
+      <!-- Below `md` both toggles move into the drawer. -->
+      <app-language-toggle class="app-header__toggle" />
+      <app-theme-toggle class="app-header__toggle" />
+      <app-account-menu [showSignIn]="false" />
+      <button
+        class="app-header__menu-button"
+        [attr.aria-expanded]="drawerOpen()"
+        [attr.aria-label]="'layout.openMenu' | t"
+        (click)="drawerOpen.set(true)"
+        appUiButton
+        variant="outline"
+        size="icon-lg"
+        type="button"
+        aria-haspopup="dialog"
+      >
+        <app-ui-icon name="menu" />
+      </button>
+    </div>
+  </div>
+</header>

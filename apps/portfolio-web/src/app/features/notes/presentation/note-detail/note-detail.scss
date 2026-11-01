@@ -1,0 +1,29 @@
+.note-detail {
+  margin-top: 0.5rem;
+  max-width: 48rem;
+}
+
+.note-detail__meta {
+  margin-top: 0.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.note-detail__content {
+  margin-top: 2rem;
+}
+
+.note-detail__content--empty {
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+.note-detail__images {
+  margin-top: 2rem;
+}
+
+.note-detail__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}

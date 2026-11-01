@@ -6,6 +6,18 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["nx", "serve", "angular-base"],
       "port": 4000
+    },
+    {
+      "name": "dartomat-api",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "run", "dartomat-api:serve"],
+      "port": 3200
+    },
+    {
+      "name": "dartomat-web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "serve", "dartomat-web"],
+      "port": 4200
     }
   ]
 }

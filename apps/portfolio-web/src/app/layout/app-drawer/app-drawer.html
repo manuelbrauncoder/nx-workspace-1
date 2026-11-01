@@ -1,0 +1,22 @@
+<app-ui-sheet
+  [(open)]="open"
+  [heading]="'layout.navigation' | t"
+  (closed)="_onClosed()"
+  side="right"
+  fullWidth
+  hideHeading
+>
+  <!-- A click on the logo on the start page triggers no navigation that would close the drawer. -->
+  <app-logo (click)="open.set(false)" appUiSheetHeader />
+  <!-- A link to a section of the current page may trigger no navigation either. -->
+  <app-ui-nav-menu
+    [items]="_items"
+    [label]="'layout.mainNavigation' | t"
+    (click)="_closeOnLink($event)"
+    orientation="vertical"
+  />
+  <div class="app-drawer__settings">
+    <app-language-toggle />
+    <app-theme-toggle />
+  </div>
+</app-ui-sheet>

@@ -1,0 +1,10 @@
+{
+  "name": "Dartomat",
+  "short_name": "Dartomat",
+  "description": "301 — schlicht und schnell.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e1a14",
+  "theme_color": "#0e1a14",
+  "icons": [{ "src": "favicon.png", "type": "image/png", "sizes": "512x512" }]
+}
