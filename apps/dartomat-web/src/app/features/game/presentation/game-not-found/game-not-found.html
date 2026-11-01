@@ -1,0 +1,14 @@
+<div class="game-not-found">
+  <p class="game-not-found__wordmark">
+    <span class="game-not-found__marker" aria-hidden="true"></span>
+    {{ 'layout.appName' | t }}
+  </p>
+  <div class="game-not-found__body">
+    <h1 class="game-not-found__heading" appUiText="h1">{{ 'gamePage.notFound.heading' | t }}</h1>
+    <p appUiText="lead">{{ 'gamePage.notFound.description' | t }}</p>
+  </div>
+  <a class="game-not-found__action" appUiButton variant="brand" size="lg" routerLink="/setup">
+    {{ 'gamePage.notFound.backToSetup' | t }}
+    <app-ui-icon name="arrowRight" />
+  </a>
+</div>

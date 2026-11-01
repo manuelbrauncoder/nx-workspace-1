@@ -1,0 +1,15 @@
+{
+  "layout": {
+    "appName": "Dartomat"
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "heading": "Seite nicht gefunden",
+    "description": "Die Seite gibt es nicht oder sie wurde verschoben.",
+    "backToSetup": "Zur Spielerauswahl"
+  },
+  "seo": {
+    "defaultDescription": "Dartomat zählt deine Darts-Partie 301: Spieler eintragen, Würfe antippen, Checkout-Vorschlag sehen. Schlicht und schnell, auch auf dem Handy.",
+    "imageAlt": "Dartomat-Schriftzug mit gelber Wegmarkierung"
+  }
+}

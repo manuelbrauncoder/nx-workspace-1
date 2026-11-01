@@ -1,0 +1,66 @@
+{
+  "title": "Game",
+  "heading": "301 · {{ finish }}",
+  "doubleOut": "Double out",
+  "straightOut": "Straight out",
+  "loading": "Loading the game",
+  "loadFailed": "The game could not be loaded",
+  "writeFailed": "That did not work",
+  "undo": "Take back the last dart",
+  "openMenu": "Open options",
+  "scoreboard": "Scoreboard",
+  "current": {
+    "throws": "{{ name }} is up",
+    "checkout": "Checkout",
+    "noCheckout": "No checkout possible",
+    "turn": "Turn",
+    "openDart": "Dart {{ number }} open"
+  },
+  "keypad": {
+    "label": "Input",
+    "multiplier": "Multiplier",
+    "single": "Single",
+    "double": "Double",
+    "triple": "Triple",
+    "numbers": "Segments 1 to 20",
+    "specials": "Bull and miss",
+    "bull": "Bull 25",
+    "doubleBull": "Bull 50",
+    "miss": "Miss"
+  },
+  "menu": {
+    "heading": "Options",
+    "doubleOut": "Double out",
+    "doubleOutHint": "The last dart has to be a double.",
+    "copyLink": "Copy link to the game",
+    "linkCopied": "Link copied",
+    "copyFailed": "The link could not be copied",
+    "restart": "New game with the same players",
+    "abort": "Quit game"
+  },
+  "restart": {
+    "heading": "Start again?",
+    "description": "Everyone goes back to {{ score }}, the current score is lost.",
+    "confirm": "Start again",
+    "cancel": "Keep playing"
+  },
+  "abort": {
+    "heading": "Quit game?",
+    "description": "You go back to the player selection. The link of the game takes you back to the current score later.",
+    "confirm": "Quit game",
+    "cancel": "Keep playing"
+  },
+  "result": {
+    "wins": "{{ name }} wins",
+    "checkout": "Checked out with {{ dart }}.",
+    "standings": "Final standings",
+    "newGame": "New game",
+    "samePlayers": "Same players",
+    "backToSetup": "Back to player selection"
+  },
+  "notFound": {
+    "heading": "Game not found",
+    "description": "This game does not exist or has been removed. Check the link or start a new game.",
+    "backToSetup": "Go to player selection"
+  }
+}

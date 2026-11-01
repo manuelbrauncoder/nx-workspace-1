@@ -1,0 +1,7 @@
+{
+  "apiBaseUrl": "http://localhost:3200/api/v1",
+  "environment": "local",
+  "logLevel": "debug",
+  "siteUrl": "http://localhost:4200",
+  "allowIndexing": false
+}

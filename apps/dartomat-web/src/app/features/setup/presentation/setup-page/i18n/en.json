@@ -1,0 +1,40 @@
+{
+  "title": "New game",
+  "description": "Add the players, choose how to finish and start a game of 301.",
+  "heading": "New game",
+  "lead": "301 — plain and fast.",
+  "players": {
+    "heading": "Players",
+    "hint": "They throw in this order.",
+    "empty": "Nobody here yet. Add at least one player.",
+    "moveUp": "Move {{ name }} up",
+    "moveDown": "Move {{ name }} down",
+    "remove": "Remove {{ name }}",
+    "full": "More than {{ max }} players are not possible."
+  },
+  "add": {
+    "label": "Add player",
+    "placeholder": "Name",
+    "submit": "Add"
+  },
+  "recent": {
+    "heading": "Recently",
+    "add": "Add {{ name }}"
+  },
+  "finish": {
+    "label": "Finish",
+    "double": "Double out",
+    "straight": "Straight out",
+    "doubleHint": "The last dart has to be a double.",
+    "straightHint": "Whoever hits exactly 0 wins, with any segment."
+  },
+  "validation": {
+    "duplicate": "This name is already taken.",
+    "tooLong": "Please use at most {{ max }} characters."
+  },
+  "start": "Start game",
+  "starting": "Starting the game",
+  "playerCountOne": "1 player",
+  "playerCountOther": "{{ count }} players",
+  "startFailed": "The game could not be started"
+}

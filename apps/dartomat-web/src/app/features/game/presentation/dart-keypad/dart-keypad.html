@@ -1,0 +1,64 @@
+<section class="keypad" [attr.aria-label]="'gamePage.keypad.label' | t">
+  <app-ui-toggle-group
+    class="keypad__multipliers"
+    [(value)]="_multiplier"
+    [ariaLabel]="'gamePage.keypad.multiplier' | t"
+    [disabled]="disabled()"
+    [options]="_multipliers()"
+    fullWidth
+    variant="brand"
+  />
+
+  <div class="keypad__board">
+    <div class="keypad__grid" [attr.aria-label]="'gamePage.keypad.numbers' | t" role="group">
+      @for (number of _numbers; track number) {
+        <button
+          class="keypad__key"
+          [disabled]="disabled()"
+          (click)="_throw(number)"
+          appUiButton
+          type="button"
+          variant="ghost"
+        >
+          {{ number }}
+        </button>
+      }
+    </div>
+    <div
+      class="keypad__grid keypad__grid--specials"
+      [attr.aria-label]="'gamePage.keypad.specials' | t"
+      role="group"
+    >
+      <button
+        class="keypad__key keypad__key--special"
+        [disabled]="disabled()"
+        (click)="_throw(25)"
+        appUiButton
+        type="button"
+        variant="ghost"
+      >
+        {{ 'gamePage.keypad.bull' | t }}
+      </button>
+      <button
+        class="keypad__key keypad__key--special"
+        [disabled]="disabled()"
+        (click)="_throw(50)"
+        appUiButton
+        type="button"
+        variant="ghost"
+      >
+        {{ 'gamePage.keypad.doubleBull' | t }}
+      </button>
+      <button
+        class="keypad__key keypad__key--special keypad__key--miss"
+        [disabled]="disabled()"
+        (click)="_throw(0)"
+        appUiButton
+        type="button"
+        variant="ghost"
+      >
+        {{ 'gamePage.keypad.miss' | t }}
+      </button>
+    </div>
+  </div>
+</section>

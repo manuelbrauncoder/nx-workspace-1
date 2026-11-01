@@ -1,0 +1,64 @@
+:host {
+  display: block;
+}
+
+.keypad {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.keypad__multipliers {
+  --ui-toggle-group-item-height: 3.25rem;
+
+  font-size: 1.0625rem;
+}
+
+// Keys separated by hairlines: the board shows through the 1px gaps.
+.keypad__board {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--border);
+}
+
+.keypad__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+}
+
+.keypad__grid--specials {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.keypad__key {
+  width: 100%;
+  height: 4.125rem;
+  border-radius: 0;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 1.625rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+
+  &:hover {
+    background: var(--muted);
+  }
+
+  &:active {
+    background: var(--secondary);
+  }
+}
+
+.keypad__key--special {
+  background: var(--muted);
+  font-size: 1.25rem;
+}
+
+.keypad__key--miss {
+  color: var(--foreground-soft);
+}

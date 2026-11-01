@@ -1,0 +1,57 @@
+// The board fills the screen: header and players at the top, the keypad at the bottom.
+.game {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-inline: 0;
+}
+
+.game__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.game__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3.25rem;
+  padding: 0.25rem 0.5rem 0 1rem;
+}
+
+.game__title {
+  display: flex;
+  gap: 0.375rem;
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.game__tools {
+  display: flex;
+  gap: 0.125rem;
+}
+
+.game__stage {
+  flex: 1;
+  padding: 0 1rem;
+}
+
+.game__stage--center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 1.5rem;
+}
+
+.game__failure {
+  margin: 0 1rem 0.75rem;
+}
+
+.game__keypad {
+  padding: 0.25rem 0.75rem calc(1.25rem + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}

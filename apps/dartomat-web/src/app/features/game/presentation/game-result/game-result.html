@@ -1,0 +1,44 @@
+<section class="game-result" aria-labelledby="game-result-heading">
+  <div class="game-result__header">
+    <span class="game-result__trophy" aria-hidden="true"><app-ui-icon name="trophy" /></span>
+    <h2 class="game-result__heading" id="game-result-heading" appUiText="h2">
+      {{ 'gamePage.result.wins' | t: { name: winner().name } }}
+    </h2>
+    @if (_checkout(); as dart) {
+      <p appUiText="lead">{{ 'gamePage.result.checkout' | t: { dart } }}</p>
+    }
+  </div>
+
+  <div class="game-result__standings">
+    <h3 class="game-result__label" id="game-result-standings">
+      {{ 'gamePage.result.standings' | t }}
+    </h3>
+    <ol class="game-result__list" aria-labelledby="game-result-standings">
+      @for (standing of standings(); track standing.id) {
+        <li class="game-result__row" [class.game-result__row--winner]="standing.isWinner">
+          <span class="game-result__rank">{{ standing.rank }}</span>
+          <span class="game-result__name">{{ standing.name }}</span>
+          <span class="game-result__score">{{ standing.score }}</span>
+        </li>
+      }
+    </ol>
+  </div>
+
+  <div class="game-result__actions">
+    <button
+      class="game-result__restart"
+      [loading]="busy()"
+      (click)="restart.emit()"
+      appUiButton
+      size="lg"
+      type="button"
+      variant="brand"
+    >
+      <span>{{ 'gamePage.result.newGame' | t }}</span>
+      <span class="game-result__restart-hint">{{ 'gamePage.result.samePlayers' | t }}</span>
+    </button>
+    <a class="game-result__back" appUiButton size="lg" variant="ghost" routerLink="/setup">
+      {{ 'gamePage.result.backToSetup' | t }}
+    </a>
+  </div>
+</section>

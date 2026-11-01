@@ -1,0 +1,111 @@
+{
+  "name": "dartomat-web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/dartomat-web/src",
+  "tags": ["type:app", "scope:dartomat"],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/dartomat-web",
+        "browser": "apps/dartomat-web/src/main.ts",
+        "index": "apps/dartomat-web/src/index.html",
+        "tsConfig": "apps/dartomat-web/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/dartomat-web/public"
+          },
+          {
+            "glob": "**/*",
+            "input": "apps/dartomat-web/config",
+            "output": "config"
+          }
+        ],
+        "styles": [
+          "apps/dartomat-web/src/styles/tailwind.css",
+          "apps/dartomat-web/src/styles/styles.scss"
+        ],
+        "server": "apps/dartomat-web/src/main.server.ts",
+        "outputMode": "server",
+        "security": {
+          "allowedHosts": ["localhost"]
+        },
+        "ssr": {
+          "entry": "apps/dartomat-web/src/server.ts"
+        },
+        "stylePreprocessorOptions": {
+          "includePaths": ["packages/shared"]
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "800kB",
+              "maximumError": "1MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kB",
+              "maximumError": "8kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        },
+        "watch": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "watch": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4200
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "dartomat-web:build:production"
+        },
+        "development": {
+          "buildTarget": "dartomat-web:build:development"
+        }
+      }
+    },
+    "serve-ssr": {
+      "continuous": true,
+      "dependsOn": ["build"],
+      "command": "node dist/apps/dartomat-web/server/server.mjs"
+    },
+    "server": {
+      "continuous": true,
+      "command": "node --watch dist/apps/dartomat-web/server/server.mjs"
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^default"],
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit"
+      }
+    }
+  },
+  "implicitDependencies": ["styles"]
+}

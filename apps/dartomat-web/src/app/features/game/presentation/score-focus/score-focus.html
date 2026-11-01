@@ -1,0 +1,35 @@
+<p class="score-focus__player">{{ 'gamePage.current.throws' | t: { name: player().name } }}</p>
+<p class="score-focus__score">{{ player().score }}</p>
+
+<p class="score-focus__checkout" aria-live="polite">
+  @switch (checkout().status) {
+    @case ('ok') {
+      <span class="score-focus__checkout-label">{{ 'gamePage.current.checkout' | t }}</span>
+      <span class="sr-only">{{ _routeLabel() }}</span>
+      <span class="score-focus__checkout-route" aria-hidden="true">
+        @for (dart of _route(); track $index; let first = $first) {
+          @if (!first) {
+            <span class="score-focus__separator">·</span>
+          }
+          <span>{{ dart }}</span>
+        }
+      </span>
+    }
+    @case ('impossible') {
+      <span class="score-focus__checkout-label">{{ 'gamePage.current.noCheckout' | t }}</span>
+    }
+  }
+</p>
+
+<ol class="score-focus__turn" [attr.aria-label]="'gamePage.current.turn' | t">
+  @for (slot of _slots(); track slot.number) {
+    @if (slot.label; as label) {
+      <li class="score-focus__dart">{{ label }}</li>
+    } @else {
+      <li class="score-focus__dart score-focus__dart--open">
+        <span aria-hidden="true">{{ slot.number }}</span>
+        <span class="sr-only">{{ 'gamePage.current.openDart' | t: { number: slot.number } }}</span>
+      </li>
+    }
+  }
+</ol>
