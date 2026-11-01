@@ -19,6 +19,8 @@ New here: read the [README](../README.md) and [Workspace](workspace.md), then th
 | [express-api-base](apps/express-api-base.md) | Reference API: accounts, admin, notes with images                      |
 | [portfolio-web](apps/portfolio-web.md)       | The portfolio site with its admin area, in production                  |
 | [portfolio-api](apps/portfolio-api.md)       | The backend of the portfolio: CMS content, media, contact, legal pages |
+| [dartomat-web](apps/dartomat-web.md)         | Dartomat, a scoreboard for 301, mobile first                           |
+| [dartomat-api](apps/dartomat-api.md)         | The backend of Dartomat: games, darts, checkout                        |
 
 ## Libs
 
@@ -32,6 +34,7 @@ New here: read the [README](../README.md) and [Workspace](workspace.md), then th
 | [server-core](libs/server-core.md)                 | Base of every API: config, server, database, errors, images       |
 | [server-auth](libs/server-auth.md)                 | Accounts, sessions, guards, admin                                 |
 | [portfolio-contracts](libs/portfolio-contracts.md) | Wire format of the portfolio                                      |
+| [dartomat-contracts](libs/dartomat-contracts.md)   | Wire format of Dartomat                                           |
 
 ## Frontend
 

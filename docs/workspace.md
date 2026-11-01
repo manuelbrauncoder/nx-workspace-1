@@ -10,6 +10,8 @@ The repository is an [Nx](https://nx.dev) workspace with pnpm. Apps live in `app
 | `express-api-base`    | `apps/express-api-base`        | Express API | `type:api-app`, `scope:base`       | [express-api-base](apps/express-api-base.md)       |
 | `portfolio-web`       | `apps/portfolio-web`           | Angular app | `type:app`, `scope:portfolio`      | [portfolio-web](apps/portfolio-web.md)             |
 | `portfolio-api`       | `apps/portfolio-api`           | Express API | `type:api-app`, `scope:portfolio`  | [portfolio-api](apps/portfolio-api.md)             |
+| `dartomat-web`        | `apps/dartomat-web`            | Angular app | `type:app`, `scope:dartomat`       | [dartomat-web](apps/dartomat-web.md)               |
+| `dartomat-api`        | `apps/dartomat-api`            | Express API | `type:api-app`, `scope:dartomat`   | [dartomat-api](apps/dartomat-api.md)               |
 | `core`                | `packages/shared/core`         | Angular lib | `type:core`, `scope:shared`        | [core](libs/core.md)                               |
 | `ui`                  | `packages/shared/ui`           | Angular lib | `type:ui`, `scope:shared`          | [ui](libs/ui.md)                                   |
 | `styles`              | `packages/shared/styles`       | SCSS        | `type:styles`, `scope:shared`      | [styles](libs/styles.md)                           |
@@ -18,6 +20,7 @@ The repository is an [Nx](https://nx.dev) workspace with pnpm. Apps live in `app
 | `server-core`         | `packages/server/core`         | Node lib    | `type:server`, `scope:shared`      | [server-core](libs/server-core.md)                 |
 | `server-auth`         | `packages/server/auth`         | Node lib    | `type:server`, `scope:shared`      | [server-auth](libs/server-auth.md)                 |
 | `portfolio-contracts` | `packages/portfolio/contracts` | Zod schemas | `type:contract`, `scope:portfolio` | [portfolio-contracts](libs/portfolio-contracts.md) |
+| `dartomat-contracts`  | `packages/dartomat/contracts`  | Zod schemas | `type:contract`, `scope:dartomat`  | [dartomat-contracts](libs/dartomat-contracts.md)   |
 
 `pnpm nx graph` shows the projects and their dependencies in the browser.
 
@@ -47,6 +50,7 @@ Two tags per project decide what it may import. `@nx/enforce-module-boundaries` 
 | `scope:shared`    | `scope:shared`                    |
 | `scope:base`      | `scope:base`, `scope:shared`      |
 | `scope:portfolio` | `scope:portfolio`, `scope:shared` |
+| `scope:dartomat`  | `scope:dartomat`, `scope:shared`  |
 
 Inside an app, `no-restricted-imports` rules in its `eslint.config.mjs` add the layer rules of the features, see [Frontend architecture](frontend/architecture.md#how-it-is-enforced). Nx also rejects cycles between projects and relative imports into another project.
 
@@ -63,6 +67,7 @@ Defined in [tsconfig.base.json](../tsconfig.base.json):
 | `@server/core/*`         | `packages/server/core/src/*`                    |
 | `@server/auth/*`         | `packages/server/auth/src/*`                    |
 | `@portfolio/contracts/*` | `packages/portfolio/contracts/src/*`            |
+| `@dartomat/contracts/*`  | `packages/dartomat/contracts/src/*`             |
 | `@features/*`            | `src/app/features/*` of the app that imports it |
 | `@api/*`                 | `src/api/*` of the app that imports it          |
 

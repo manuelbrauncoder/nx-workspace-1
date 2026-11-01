@@ -76,7 +76,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 
 ## Architektur
 
-Nx-Workspace mit zwei Seiten: Angular-Apps (`apps/angular-base`, Libs in `packages/shared/`) und API-Apps (`apps/express-api-base`, Libs in `packages/server/`, siehe Abschnitt „API-Apps“). Beide teilen das Wire-Format über `packages/contracts`. Das Portfolio (`apps/portfolio-web`, `apps/portfolio-api`, `packages/portfolio/contracts`) ist genauso gebaut, Details in `docs/apps/` und `docs/portfolio/`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
+Nx-Workspace mit zwei Seiten: Angular-Apps (`apps/angular-base`, Libs in `packages/shared/`) und API-Apps (`apps/express-api-base`, Libs in `packages/server/`, siehe Abschnitt „API-Apps“). Beide teilen das Wire-Format über `packages/contracts`. Das Portfolio (`apps/portfolio-web`, `apps/portfolio-api`, `packages/portfolio/contracts`) und Dartomat (`apps/dartomat-web`, `apps/dartomat-api`, `packages/dartomat/contracts`) sind genauso gebaut, Details in `docs/apps/` und `docs/portfolio/`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
 
 Die Grenzen erzwingt ESLint an zwei Stellen: zwischen Projekten über Nx-Tags (`@nx/enforce-module-boundaries` in der Root-`eslint.config.mjs`), innerhalb der App über `no-restricted-imports` in `apps/angular-base/eslint.config.mjs`.
 
@@ -91,7 +91,7 @@ Die Grenzen erzwingt ESLint an zwei Stellen: zwischen Projekten über Nx-Tags (`
 | `type:api-app`  | `express-api-base`, …        | `type:server`, `type:contract`                     |
 | `type:server`   | `server-core`, `server-auth` | `type:server`, `type:contract`                     |
 
-Zweites Tag pro Projekt ist der Scope: `scope:shared` (alle Libs in `packages/shared`, `packages/server`, `packages/contracts`) darf nur von `scope:shared` abhängen, `scope:base` (angular-base, express-api-base) und `scope:portfolio` (portfolio-web, portfolio-api, portfolio-contracts) jeweils von sich selbst und `scope:shared`. Produkte importieren sich nie gegenseitig.
+Zweites Tag pro Projekt ist der Scope: `scope:shared` (alle Libs in `packages/shared`, `packages/server`, `packages/contracts`) darf nur von `scope:shared` abhängen, `scope:base` (angular-base, express-api-base) und `scope:portfolio` (portfolio-web, portfolio-api, portfolio-contracts) und `scope:dartomat` (dartomat-web, dartomat-api, dartomat-contracts) jeweils von sich selbst und `scope:shared`. Produkte importieren sich nie gegenseitig.
 
 `type:app` und `type:ui` dürfen zusätzlich von `type:contract` abhängen. Browser- und Server-Projekte importieren sich nie gegenseitig.
 
@@ -137,7 +137,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 ### Form Controls und UI-Wrapper
 
 - Spartan, `@ng-icons` und Tiptap (`@tiptap/*`) werden nur in der Lib `ui` importiert (`packages/shared/ui/src/ui/` und `packages/shared/ui/src/form-controls/`). Apps und `core` nutzen ausschließlich die Wrapper, so bleibt ein Tausch der UI-Library auf diese Lib begrenzt. Die Nx-Tags erzwingen das (`bannedExternalImports` für `type:app` und `type:core`, `type:helm` nur für `type:ui`)
-- Namensschema: Ordner `form-<name>/`, Selector `app-form-<name>`, Klasse `Form<Name>`. Vorhanden: `FormText`, `FormTextarea`, `FormRichText`, `FormFiles`, `FormDate`, `FormSelect`, `FormCheckbox`, `FormSwitch`
+- Namensschema: Ordner `form-<name>/`, Selector `app-form-<name>`, Klasse `Form<Name>`. Vorhanden: `FormText`, `FormTextarea`, `FormRichText`, `FormFiles`, `FormDate`, `FormSelect`, `FormToggleGroup`, `FormCheckbox`, `FormSwitch`
 - Jedes Control ist ein komplettes Feld mit Label, Beschreibung und Fehlermeldungen: `<app-form-text [formField]="_noteForm.title" label="Titel" />`
 - Die Controls sind Custom Controls von Signal Forms: `FormValueControl<T>` mit `value = model()` bzw. `FormCheckboxControl` mit `checked = model()`. Zustand (`errors`, `touched`, `disabled`, `required` usw.) kommt nur über die Inputs, die die `FormField`-Direktive bindet. Verlassen des Controls meldet der Output `touch`
 - Label, Beschreibung und Fehler rendert ausschließlich `FormControlShell` (`form-control-shell/`), jedes Control setzt sich per Content-Projection hinein. Fehler erscheinen erst, wenn das Feld `touched` ist (`visibleErrorMessages`)
@@ -156,7 +156,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 #### UI-Wrapper (`packages/shared/ui/src/ui/`)
 
 - Namensschema: Ordner `<name>/`, Klasse `Ui<Name>`, Selector `app-ui-<name>` (Element) bzw. `appUi<Name>` (Attribut auf einem nativen Element)
-- Vorhanden: `UiButton` (`button[appUiButton]`, `a[appUiButton]`, Variante `brand` mit den Tokens `--brand`/`--brand-foreground` der App), `UiText` (`appUiText`), `UiIcon`, `UiSpinner`, `UiSkeleton`, `UiCardImports`, `UiAlert`, `UiEmpty`, `UiAttachmentImports`, `UiRichText`, `UiMenuImports`, `UiNavMenu`, `UiBreadcrumb`, `UiSheet`, `UiDialog` mit `UiDialogService`, `UiConfirmDialogService`, `UiToastService` mit `UiToaster`
+- Vorhanden: `UiButton` (`button[appUiButton]`, `a[appUiButton]`, Variante `brand` mit den Tokens `--brand`/`--brand-foreground` der App), `UiText` (`appUiText`), `UiIcon`, `UiSpinner`, `UiSkeleton`, `UiCardImports`, `UiAlert`, `UiEmpty`, `UiAttachmentImports`, `UiRichText`, `UiMenuImports`, `UiNavMenu`, `UiBreadcrumb`, `UiSheet`, `UiDialog` mit `UiDialogService`, `UiConfirmDialogService`, `UiToastService` mit `UiToaster`, `UiToggleGroup` (`app-ui-toggle-group`, Segmented Control außerhalb von Formularen)
 - Jeder Wrapper trägt ein englisches JSDoc an der Klasse: ein Satz zum Zweck und ein `@example` mit der Benutzung (Template-Snippet, bei Services TypeScript). Inputs mit nicht offensichtlicher Bedeutung bekommen eine eigene Zeile
 - Dünne Wrapper setzen die Helm-Direktive über `hostDirectives` auf und reichen nur die benötigten Inputs durch. Spartan-Typen tauchen in der öffentlichen API nicht auf
 - Typografie nur über `appUiText` mit Variante: `<h1 appUiText="h1">`, `<p appUiText="lead">`. Das Element bestimmt die Semantik, die Variante nur die Optik. Große Varianten für Landingpages: `display`, `section`, `title`

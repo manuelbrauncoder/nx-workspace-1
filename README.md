@@ -4,14 +4,16 @@ Nx monorepo with Angular apps, Express APIs and the libs they share. Everything 
 
 ## What is in here
 
-| App                                               | Kind                                | Locally                 | Talks to                    |
-| ------------------------------------------------- | ----------------------------------- | ----------------------- | --------------------------- |
-| [angular-base](docs/apps/angular-base.md)         | Angular 22 with SSR, reference app  | <http://localhost:4000> | `express-api-base`          |
-| [express-api-base](docs/apps/express-api-base.md) | Express 5 + Drizzle, reference API  | <http://localhost:3000> | Postgres `express_api_base` |
-| [portfolio-web](docs/apps/portfolio-web.md)       | Angular 22 with SSR, portfolio site | <http://localhost:4100> | `portfolio-api`             |
-| [portfolio-api](docs/apps/portfolio-api.md)       | Express 5 + Drizzle, portfolio CMS  | <http://localhost:3100> | Postgres `portfolio_api`    |
+| App                                               | Kind                                  | Locally                 | Talks to                    |
+| ------------------------------------------------- | ------------------------------------- | ----------------------- | --------------------------- |
+| [angular-base](docs/apps/angular-base.md)         | Angular 22 with SSR, reference app    | <http://localhost:4000> | `express-api-base`          |
+| [express-api-base](docs/apps/express-api-base.md) | Express 5 + Drizzle, reference API    | <http://localhost:3000> | Postgres `express_api_base` |
+| [portfolio-web](docs/apps/portfolio-web.md)       | Angular 22 with SSR, portfolio site   | <http://localhost:4100> | `portfolio-api`             |
+| [portfolio-api](docs/apps/portfolio-api.md)       | Express 5 + Drizzle, portfolio CMS    | <http://localhost:3100> | Postgres `portfolio_api`    |
+| [dartomat-web](docs/apps/dartomat-web.md)         | Angular 22 with SSR, darts scoreboard | <http://localhost:4200> | `dartomat-api`              |
+| [dartomat-api](docs/apps/dartomat-api.md)         | Express 5 + Drizzle, darts games      | <http://localhost:3200> | Postgres `dartomat_api`     |
 
-The libs live in `packages/`: `core`, `ui`, `styles` and `helm-vega` for Angular, `server-core` and `server-auth` for the APIs, `contracts` and `portfolio-contracts` as the wire format between both. See [Workspace](docs/workspace.md) for the full list with tags and aliases.
+The libs live in `packages/`: `core`, `ui`, `styles` and `helm-vega` for Angular, `server-core` and `server-auth` for the APIs, `contracts`, `portfolio-contracts` and `dartomat-contracts` as the wire format between both. See [Workspace](docs/workspace.md) for the full list with tags and aliases.
 
 ## Prerequisites
 
@@ -32,7 +34,7 @@ The libs live in `packages/`: `core`, `ui`, `styles` and `helm-vega` for Angular
    pnpm install
    ```
 
-2. Start Postgres. The first start creates the databases `express_api_base` and `portfolio_api` from [tools/postgres/init-databases.sql](tools/postgres/init-databases.sql):
+2. Start Postgres. The first start creates the databases `express_api_base`, `portfolio_api` and `dartomat_api` from [tools/postgres/init-databases.sql](tools/postgres/init-databases.sql):
 
    ```bash
    docker compose up -d
@@ -54,6 +56,10 @@ The libs live in `packages/`: `core`, `ui`, `styles` and `helm-vega` for Angular
    cp apps/portfolio-api/.env.example apps/portfolio-api/.env
    ```
 
+   ```bash
+   cp apps/dartomat-api/.env.example apps/dartomat-api/.env
+   ```
+
 4. Create the tables:
 
    ```bash
@@ -62,6 +68,10 @@ The libs live in `packages/`: `core`, `ui`, `styles` and `helm-vega` for Angular
 
    ```bash
    pnpm nx run portfolio-api:db:migrate
+   ```
+
+   ```bash
+   pnpm nx run dartomat-api:db:migrate
    ```
 
 5. Load the initial content of the portfolio (sections and legal pages). Running it again is safe:
@@ -82,9 +92,13 @@ pnpm nx run-many -t serve -p express-api-base angular-base
 pnpm nx run-many -t serve -p portfolio-api portfolio-web
 ```
 
-The ports differ, so both products can run at the same time. The APIs restart on change (`tsx watch`), the Angular dev servers reload and render on the server as well.
+```bash
+pnpm nx run-many -t serve -p dartomat-api dartomat-web
+```
 
-On the first start each API creates an admin from `admin` in its `config/development.json`: `admin@mail.dev` with the password `dev-admin-password`. Sign in at `/sign-in`, in `portfolio-web` the admin area is at `/admin`.
+The ports differ, so all products can run at the same time. The APIs restart on change (`tsx watch`), the Angular dev servers reload and render on the server as well.
+
+On the first start each API with sign-in (not `dartomat-api`) creates an admin from `admin` in its `config/development.json`: `admin@mail.dev` with the password `dev-admin-password`. Sign in at `/sign-in`, in `portfolio-web` the admin area is at `/admin`.
 
 To run the Angular Express server the way it runs in the container (for work on `src/server.ts`), build and serve in two terminals instead of `serve`:
 

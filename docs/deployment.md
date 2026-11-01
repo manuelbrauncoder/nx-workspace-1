@@ -12,6 +12,8 @@ All images go to the GitHub Container Registry under the owner of the repository
 | `express-api-base` | `nx1-express-api-base-v1.2.0` | `ghcr.io/<owner>/nx1-express-api-base` | 3000 | [apps/express-api-base/Dockerfile](../apps/express-api-base/Dockerfile) |
 | `portfolio-web`    | `nx1-portfolio-web-v1.2.0`    | `ghcr.io/<owner>/nx1-portfolio-web`    | 4000 | [apps/portfolio-web/Dockerfile](../apps/portfolio-web/Dockerfile)       |
 | `portfolio-api`    | `nx1-portfolio-api-v1.2.0`    | `ghcr.io/<owner>/nx1-portfolio-api`    | 3000 | [apps/portfolio-api/Dockerfile](../apps/portfolio-api/Dockerfile)       |
+| `dartomat-web`     | `nx1-dartomat-web-v1.2.0`     | `ghcr.io/<owner>/nx1-dartomat-web`     | 4000 | [apps/dartomat-web/Dockerfile](../apps/dartomat-web/Dockerfile)         |
+| `dartomat-api`     | `nx1-dartomat-api-v1.2.0`     | `ghcr.io/<owner>/nx1-dartomat-api`     | 3000 | [apps/dartomat-api/Dockerfile](../apps/dartomat-api/Dockerfile)         |
 
 Each release publishes three image tags: the version without the prefix (`:v1.2.0`), `:latest` and `:sha-<short commit>`. Use the version in a stack, so a redeploy never pulls a different version by accident.
 
@@ -57,6 +59,8 @@ The paths inside the images are the same as before the monorepo, so a stack only
 | `portfolio-web`    | `node dist/portfolio-web/server/server.mjs`                          | mounted at `/app/dist/portfolio-web/browser/config/app-config.json` |
 | `express-api-base` | `node dist/index.js`, migrations with `node dist/scripts/migrate.js` | path in `CONFIG_PATH`                                               |
 | `portfolio-api`    | the same, plus `node dist/scripts/seed.js` for the initial content   | path in `CONFIG_PATH`                                               |
+| `dartomat-web`     | `node dist/dartomat-web/server/server.mjs`                           | mounted at `/app/dist/dartomat-web/browser/config/app-config.json`  |
+| `dartomat-api`     | `node dist/index.js`, migrations with `node dist/scripts/migrate.js` | path in `CONFIG_PATH`                                               |
 
 ## Angular apps
 
@@ -98,11 +102,11 @@ An API image contains the bundle in `dist/`, only the runtime dependencies of th
 
 `portfolio-api` also needs an SMTP account for forwarding contact messages: host, user and addresses go into `mail` of the config file, the password into `SMTP_PASSWORD`.
 
-Create the config file from `config/production.example.json` of the app ([express-api-base](../apps/express-api-base/config/production.example.json), [portfolio-api](../apps/portfolio-api/config/production.example.json)). The shared settings are explained in [Configuration](backend/configuration.md), those of the portfolio in [Portfolio API configuration](portfolio/api/configuration.md). Settings added to the shared libs later have defaults, so the file of an existing deployment stays valid.
+Create the config file from `config/production.example.json` of the app ([express-api-base](../apps/express-api-base/config/production.example.json), [portfolio-api](../apps/portfolio-api/config/production.example.json), [dartomat-api](../apps/dartomat-api/config/production.example.json)). The shared settings are explained in [Configuration](backend/configuration.md), those of the portfolio in [Portfolio API configuration](portfolio/api/configuration.md). Settings added to the shared libs later have defaults, so the file of an existing deployment stays valid.
 
 ### The stack
 
-`docker-compose.prod.example.yml` of each API app ([express-api-base](../apps/express-api-base/docker-compose.prod.example.yml), [portfolio-api](../apps/portfolio-api/docker-compose.prod.example.yml)) is a template for a Portainer stack behind Traefik. It defines two services:
+`docker-compose.prod.example.yml` of each API app ([express-api-base](../apps/express-api-base/docker-compose.prod.example.yml), [portfolio-api](../apps/portfolio-api/docker-compose.prod.example.yml), [dartomat-api](../apps/dartomat-api/docker-compose.prod.example.yml)) is a template for a Portainer stack behind Traefik. It defines two services:
 
 - **`migrate`** runs `node dist/scripts/migrate.js` and exits. It only gets `DATABASE_URL`
 - **`api`** starts only after `migrate` has finished successfully. It gets the config file, the uploads volume and the environment variables
