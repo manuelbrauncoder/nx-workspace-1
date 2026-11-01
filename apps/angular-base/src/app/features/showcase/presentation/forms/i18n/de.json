@@ -17,6 +17,7 @@
     "attachmentsDescription": "Drop-Zone für höchstens drei Dateien, die Anzahl ist über maxFiles einstellbar.",
     "birthday": "Geburtstag",
     "role": "Rolle",
+    "contactWay": "Kontaktweg",
     "newsletter": "Newsletter",
     "newsletterDescription": "Höchstens eine Mail im Monat.",
     "terms": "Ich stimme den Bedingungen zu",
@@ -27,6 +28,10 @@
     "developer": "Entwicklung",
     "designer": "Design",
     "product": "Produkt"
+  },
+  "contactWays": {
+    "mail": "E-Mail",
+    "phone": "Telefon"
   },
   "validation": {
     "name": "Bitte gib einen Namen ein.",

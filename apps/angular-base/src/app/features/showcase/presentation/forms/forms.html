@@ -46,6 +46,11 @@
         [options]="_roles()"
         [label]="'showcaseForms.fields.role' | t"
       />
+      <app-form-toggle-group
+        [formField]="_profileForm.contactWay"
+        [options]="_contactWays()"
+        [label]="'showcaseForms.fields.contactWay' | t"
+      />
       <app-form-switch
         [formField]="_profileForm.newsletter"
         [label]="'showcaseForms.fields.newsletter' | t"

@@ -17,6 +17,7 @@
     "attachmentsDescription": "Drop zone for at most three files, the number is set through maxFiles.",
     "birthday": "Birthday",
     "role": "Role",
+    "contactWay": "Contact by",
     "newsletter": "Newsletter",
     "newsletterDescription": "One mail a month at most.",
     "terms": "I agree to the terms",
@@ -27,6 +28,10 @@
     "developer": "Development",
     "designer": "Design",
     "product": "Product"
+  },
+  "contactWays": {
+    "mail": "Email",
+    "phone": "Phone"
   },
   "validation": {
     "name": "Please enter a name.",

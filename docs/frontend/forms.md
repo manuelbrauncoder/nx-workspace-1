@@ -112,16 +112,17 @@ private async _save(event: Event): Promise<void> {
 
 All controls share `label` (required) and `description` (optional). State such as errors, touched, disabled and required comes from the form through `[formField]` and is not set in the template.
 
-| Control        | Selector             | Value type      | Own inputs                            |
-| -------------- | -------------------- | --------------- | ------------------------------------- |
-| `FormText`     | `app-form-text`      | `string`        | `type`, `placeholder`, `autocomplete` |
-| `FormTextarea` | `app-form-textarea`  | `string`        | `placeholder`, `rows` (default 4)     |
-| `FormRichText` | `app-form-rich-text` | `string` (HTML) |                                       |
-| `FormFiles`    | `app-form-files`     | `File[]`        | `maxFiles`, `accept`, `maxFileSize`   |
-| `FormDate`     | `app-form-date`      | `Date \| null`  | `placeholder`                         |
-| `FormSelect`   | `app-form-select`    | `T \| null`     | `options` (required), `placeholder`   |
-| `FormCheckbox` | `app-form-checkbox`  | `boolean`       |                                       |
-| `FormSwitch`   | `app-form-switch`    | `boolean`       |                                       |
+| Control           | Selector                | Value type      | Own inputs                            |
+| ----------------- | ----------------------- | --------------- | ------------------------------------- |
+| `FormText`        | `app-form-text`         | `string`        | `type`, `placeholder`, `autocomplete` |
+| `FormTextarea`    | `app-form-textarea`     | `string`        | `placeholder`, `rows` (default 4)     |
+| `FormRichText`    | `app-form-rich-text`    | `string` (HTML) |                                       |
+| `FormFiles`       | `app-form-files`        | `File[]`        | `maxFiles`, `accept`, `maxFileSize`   |
+| `FormDate`        | `app-form-date`         | `Date \| null`  | `placeholder`                         |
+| `FormSelect`      | `app-form-select`       | `T \| null`     | `options` (required), `placeholder`   |
+| `FormToggleGroup` | `app-form-toggle-group` | `T \| null`     | `options` (required)                  |
+| `FormCheckbox`    | `app-form-checkbox`     | `boolean`       |                                       |
+| `FormSwitch`      | `app-form-switch`       | `boolean`       |                                       |
 
 All of them are shown on `/showcase/forms`.
 
@@ -206,6 +207,18 @@ private readonly _roles: FormSelectOption<Role>[] = [
 ```
 
 The control is generic over the value type. An option can be switched off with `disabled: true`. The field type is `T | null`, where `null` means nothing is selected.
+
+### `FormToggleGroup`
+
+```html
+<app-form-toggle-group
+  [formField]="_profileForm.contactWay"
+  [options]="_contactWays"
+  label="Kontaktweg"
+/>
+```
+
+For two to four options shown side by side as buttons, one of them always selected. It uses `app-ui-toggle-group` inside. For longer lists use `FormSelect`.
 
 ### `FormCheckbox` and `FormSwitch`
 

@@ -65,6 +65,13 @@
     "forms": "Formulare",
     "components": "Komponenten"
   },
+  "toggleGroup": {
+    "description": "app-ui-toggle-group wählt genau eine von wenigen Optionen, außerhalb eines Formulars. Varianten default, outline und brand, fullWidth verteilt die Breite.",
+    "label": "Zeitraum",
+    "day": "Tag",
+    "week": "Woche",
+    "month": "Monat"
+  },
   "sheet": {
     "description": "app-ui-sheet schiebt ein Panel vom Rand herein, z. B. für die mobile Navigation.",
     "open": "Sheet öffnen",

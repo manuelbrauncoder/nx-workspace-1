@@ -192,6 +192,8 @@ An inline script in [index.html](../../apps/angular-base/src/index.html) sets th
 
 The user switches the theme with `app-theme-toggle` in the app header.
 
+An app that exists in one theme only provides `FORCED_THEME_MODE` (`@core/theme/theme.service`), e.g. `{ provide: FORCED_THEME_MODE, useValue: 'dark' }`. `ThemeService` then keeps that mode, ignores the stored choice and `setMode()`. Such an app sets `class="dark"` on `<html>` in its `index.html` instead of the inline script and shows no `app-theme-toggle`. `dartomat-web` works this way.
+
 Components do not need to know about any of this. A component that uses tokens is themed automatically. Do not write `.dark` selectors in component SCSS. If a color has to differ between the themes, that is a new token.
 
 ## Accessibility

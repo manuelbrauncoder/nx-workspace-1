@@ -65,6 +65,13 @@
     "forms": "Forms",
     "components": "Components"
   },
+  "toggleGroup": {
+    "description": "app-ui-toggle-group selects exactly one of a few options, outside a form. Variants default, outline and brand; fullWidth shares the width.",
+    "label": "Period",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month"
+  },
   "sheet": {
     "description": "app-ui-sheet slides a panel in from the edge, e.g. for the mobile navigation.",
     "open": "Open sheet",

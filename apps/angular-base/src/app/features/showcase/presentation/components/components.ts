@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { I18nService } from '@core/i18n/i18n.service';
 import { LocalDatePipe } from '@core/i18n/local-date.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -22,6 +22,7 @@ import { UiSkeleton } from '@shared/ui/skeleton/skeleton';
 import { UiSpinner } from '@shared/ui/spinner/spinner';
 import { UiText } from '@shared/ui/text/text';
 import { UiToastService } from '@shared/ui/toast/toast.service';
+import { UiToggleGroup } from '@shared/ui/toggle-group/toggle-group';
 import { ShowcaseSection } from '../showcase-section/showcase-section';
 import { ExampleDialog } from './example-dialog/example-dialog';
 
@@ -55,6 +56,7 @@ interface Message {
     UiSkeleton,
     UiSpinner,
     UiText,
+    UiToggleGroup,
   ],
   styleUrl: './components.scss',
   templateUrl: './components.html',
@@ -99,6 +101,16 @@ export class Components {
   private readonly _loading = signal(false);
   private readonly _density = signal<Density>('comfortable');
   private readonly _sheetOpen = signal(false);
+  private readonly _period = signal<'day' | 'week' | 'month' | null>('week');
+  /** Computed, so the labels follow the language. */
+  private readonly _periods = computed(() => [
+    { value: 'day' as const, label: this._i18n.translate('showcaseComponents.toggleGroup.day') },
+    { value: 'week' as const, label: this._i18n.translate('showcaseComponents.toggleGroup.week') },
+    {
+      value: 'month' as const,
+      label: this._i18n.translate('showcaseComponents.toggleGroup.month'),
+    },
+  ]);
   private readonly _attachmentRemoved = signal(false);
   private readonly _lastAction = signal<Message>({ key: 'showcaseComponents.overlays.noAction' });
   private readonly _sampleDate = new Date(2026, 0, 12, 14, 5);

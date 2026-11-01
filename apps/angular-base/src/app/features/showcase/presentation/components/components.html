@@ -161,6 +161,32 @@
     </div>
   </app-showcase-section>
 
+  <app-showcase-section
+    [description]="'showcaseComponents.toggleGroup.description' | t"
+    heading="Toggle group"
+  >
+    <div class="flex flex-col gap-4">
+      <app-ui-toggle-group
+        [(value)]="_period"
+        [ariaLabel]="'showcaseComponents.toggleGroup.label' | t"
+        [options]="_periods()"
+      />
+      <app-ui-toggle-group
+        [(value)]="_period"
+        [ariaLabel]="'showcaseComponents.toggleGroup.label' | t"
+        [options]="_periods()"
+        variant="outline"
+      />
+      <app-ui-toggle-group
+        [(value)]="_period"
+        [ariaLabel]="'showcaseComponents.toggleGroup.label' | t"
+        [options]="_periods()"
+        fullWidth
+        variant="brand"
+      />
+    </div>
+  </app-showcase-section>
+
   <app-showcase-section [description]="'showcaseComponents.sheet.description' | t" heading="Sheet">
     <button (click)="_sheetOpen.set(true)" appUiButton variant="outline" type="button">
       {{ 'showcaseComponents.sheet.open' | t }}

@@ -82,6 +82,7 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 | `UiConfirmDialogService` | `confirm()`                                   | `@shared/ui/confirm-dialog/confirm-dialog.service` |
 | `UiToastService`         | `success()`, `info()`, `warning()`, `error()` | `@shared/ui/toast/toast.service`                   |
 | `UiToaster`              | `app-ui-toaster`                              | `@shared/ui/toast/toaster/toaster`                 |
+| `UiToggleGroup`          | `app-ui-toggle-group`                         | `@shared/ui/toggle-group/toggle-group`             |
 
 ### Button
 
@@ -461,6 +462,26 @@ Methods: `success`, `info`, `warning`, `error`. Options: `description` for a sec
 `app-ui-toaster` is the outlet. It is placed exactly once, in [app.html](../../apps/angular-base/src/app/app.html) next to the outermost router outlet, bound to the resolved theme.
 
 A failure the user has to act on does not belong in a toast. It stays on screen in an `app-failure-alert`. See [Error handling](error-handling.md#showing-failures).
+
+### Toggle group
+
+A row of buttons of which exactly one is selected, outside a form. In a Signal Form use `app-form-toggle-group`.
+
+```html
+<app-ui-toggle-group
+  [(value)]="_multiplier"
+  [options]="_multipliers"
+  ariaLabel="Multiplikator"
+  variant="brand"
+  fullWidth
+/>
+```
+
+- `options` are `{ value, label, disabled? }`, generic over the value type
+- `value` is two-way bound. Clicking the selected option again keeps it, so the value never becomes `null` by a click
+- `variant` is `default`, `outline` or `brand` (the selected option in the brand color of the app)
+- `fullWidth` lets the options share the width; the app sets their height through `--ui-toggle-group-item-height`
+- The group needs an accessible name: `ariaLabel`, or `ariaLabelledby` with the id of a visible heading
 
 ## Adding a wrapper
 

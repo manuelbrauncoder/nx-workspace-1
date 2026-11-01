@@ -19,11 +19,13 @@ import { FormSelect, FormSelectOption } from '@shared/form-controls/form-select/
 import { FormSwitch } from '@shared/form-controls/form-switch/form-switch';
 import { FormText } from '@shared/form-controls/form-text/form-text';
 import { FormTextarea } from '@shared/form-controls/form-textarea/form-textarea';
+import { FormToggleGroup } from '@shared/form-controls/form-toggle-group/form-toggle-group';
 import { UiButton } from '@shared/ui/button/button';
 import { UiText } from '@shared/ui/text/text';
 import { ShowcaseSection } from '../showcase-section/showcase-section';
 
 type Role = 'developer' | 'designer' | 'product';
+type ContactWay = 'mail' | 'phone';
 
 interface Profile {
   name: string;
@@ -33,6 +35,7 @@ interface Profile {
   attachments: File[];
   birthday: Date | null;
   role: Role | null;
+  contactWay: ContactWay;
   newsletter: boolean;
   terms: boolean;
   customerNumber: string;
@@ -52,6 +55,7 @@ interface Profile {
     FormSwitch,
     FormText,
     FormTextarea,
+    FormToggleGroup,
     UiButton,
     UiText,
     ShowcaseSection,
@@ -69,6 +73,11 @@ export class Forms {
     { value: 'product', label: this._i18n.translate('showcaseForms.roles.product') },
   ]);
 
+  private readonly _contactWays = computed(() => [
+    { value: 'mail' as const, label: this._i18n.translate('showcaseForms.contactWays.mail') },
+    { value: 'phone' as const, label: this._i18n.translate('showcaseForms.contactWays.phone') },
+  ]);
+
   private readonly _profile = signal<Profile>({
     name: '',
     email: '',
@@ -77,6 +86,7 @@ export class Forms {
     attachments: [],
     birthday: null,
     role: null,
+    contactWay: 'mail',
     newsletter: false,
     terms: false,
     customerNumber: 'K-2048',

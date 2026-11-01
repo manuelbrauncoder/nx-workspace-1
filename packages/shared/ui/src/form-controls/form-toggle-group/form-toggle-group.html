@@ -1,0 +1,22 @@
+<app-form-control-shell
+  #shell
+  [controlId]="_id"
+  [description]="description()"
+  [disabled]="disabled()"
+  [errors]="_errorMessages()"
+  [label]="label()"
+  [required]="required()"
+>
+  <app-ui-toggle-group
+    [ariaDescribedby]="shell.describedBy()"
+    [ariaLabelledby]="shell.labelId()"
+    [disabled]="disabled()"
+    [id]="_id"
+    [options]="options()"
+    [value]="value()"
+    (focusout)="_leave($event)"
+    (valueChange)="value.set($event)"
+    fullWidth
+    variant="outline"
+  />
+</app-form-control-shell>

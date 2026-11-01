@@ -1,10 +1,31 @@
 import { isPlatformBrowser } from '@angular/common';
-import { computed, DOCUMENT, effect, inject, PLATFORM_ID, Service, signal } from '@angular/core';
+import {
+  computed,
+  DOCUMENT,
+  effect,
+  inject,
+  InjectionToken,
+  PLATFORM_ID,
+  Service,
+  signal,
+} from '@angular/core';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 
 /** Must match the inline script in index.html. */
 export const THEME_STORAGE_KEY = 'theme';
+
+/**
+ * Pins an app to one color scheme, e.g. an app designed only in dark. `ThemeService` then
+ * ignores the stored choice and `setMode()`, and the app shows no theme toggle. Its
+ * `index.html` sets the class on `<html>` itself instead of running the inline script.
+ *
+ * @example
+ * providers: [{ provide: FORCED_THEME_MODE, useValue: 'dark' }]
+ */
+export const FORCED_THEME_MODE = new InjectionToken<'light' | 'dark' | null>('FORCED_THEME_MODE', {
+  factory: () => null,
+});
 
 const isThemeMode = (value: unknown): value is ThemeMode =>
   value === 'light' || value === 'dark' || value === 'system';
@@ -13,8 +34,9 @@ const isThemeMode = (value: unknown): value is ThemeMode =>
 export class ThemeService {
   private readonly _document = inject(DOCUMENT);
   private readonly _isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly _forced = inject(FORCED_THEME_MODE);
 
-  readonly mode = signal<ThemeMode>(this._readStoredMode());
+  readonly mode = signal<ThemeMode>(this._forced ?? this._readStoredMode());
   private readonly _systemDark = signal(false);
 
   readonly resolved = computed<'light' | 'dark'>(() => {
@@ -39,6 +61,9 @@ export class ThemeService {
   }
 
   setMode(mode: ThemeMode): void {
+    if (this._forced) {
+      return;
+    }
     this.mode.set(mode);
     try {
       localStorage.setItem(THEME_STORAGE_KEY, mode);
