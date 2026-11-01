@@ -85,6 +85,10 @@ export default defineConfig([
               sourceTag: 'scope:portfolio',
               onlyDependOnLibsWithTags: ['scope:portfolio', 'scope:shared'],
             },
+            {
+              sourceTag: 'scope:dartomat',
+              onlyDependOnLibsWithTags: ['scope:dartomat', 'scope:shared'],
+            },
             // Shared by both sides, so it may only use what runs in the browser and in Node.
             {
               sourceTag: 'type:contract',

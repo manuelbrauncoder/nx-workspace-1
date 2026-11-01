@@ -1,0 +1,44 @@
+# Example production stack (Portainer + Traefik). Replace the image, host and paths.
+services:
+  migrate:
+    image: ghcr.io/your-user/nx1-dartomat-api:v1.0.0
+    restart: 'no'
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    networks:
+      - api-network
+    command: ['node', 'dist/scripts/migrate.js']
+
+  api:
+    image: ghcr.io/your-user/nx1-dartomat-api:v1.0.0
+    restart: always
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    volumes:
+      # see config/production.example.json
+      - /api-config/dartomat-api/backend_config.json:/app/config/production.json:ro
+    environment:
+      NODE_ENV: production
+      CONFIG_PATH: /app/config/production.json
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      # required by the shared config, dartomat has no sign-in
+      SESSION_SECRET: ${SESSION_SECRET}
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web
+      - traefik.http.routers.dartomat-api.rule=Host(`dartomat-api.example.com`)
+      - traefik.http.routers.dartomat-api.entrypoints=websecure
+      - traefik.http.routers.dartomat-api.tls.certresolver=letsencrypt
+      - traefik.http.services.dartomat-api.loadbalancer.server.port=3000
+      - traefik.http.routers.dartomat-api.service=dartomat-api
+    networks:
+      - api-network
+      - web
+
+networks:
+  web:
+    external: true
+  api-network:
+    external: true
+    name: api-network

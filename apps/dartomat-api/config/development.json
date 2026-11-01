@@ -1,0 +1,26 @@
+{
+  "port": 3200,
+  "logLevel": "debug",
+  "trustProxy": false,
+  "cors": {
+    "origins": ["http://localhost:4200"]
+  },
+  "session": {
+    "cookieName": "sid",
+    "maxAgeDays": 1,
+    "secureCookie": false
+  },
+  "rateLimit": {
+    "authWindowMinutes": 15,
+    "authMaxRequests": 20,
+    "createGameWindowMinutes": 15,
+    "createGameMaxRequests": 100
+  },
+  "admin": {
+    "email": "admin@mail.dev",
+    "password": "unused-dev-password"
+  },
+  "docs": {
+    "enabled": true
+  }
+}

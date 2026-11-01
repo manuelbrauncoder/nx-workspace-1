@@ -25,7 +25,8 @@
       "@contracts/*": ["./packages/contracts/src/*"],
       "@server/core/*": ["./packages/server/core/src/*"],
       "@server/auth/*": ["./packages/server/auth/src/*"],
-      "@portfolio/contracts/*": ["./packages/portfolio/contracts/src/*"]
+      "@portfolio/contracts/*": ["./packages/portfolio/contracts/src/*"],
+      "@dartomat/contracts/*": ["./packages/dartomat/contracts/src/*"]
     }
   },
   "angularCompilerOptions": {
