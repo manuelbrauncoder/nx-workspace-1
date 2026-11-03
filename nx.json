@@ -104,5 +104,36 @@
       "style": "scss"
     }
   },
+  "release": {
+    "projects": [
+      "angular-base",
+      "express-api-base",
+      "portfolio-web",
+      "portfolio-api",
+      "dartomat-web",
+      "dartomat-api"
+    ],
+    "projectsRelationship": "independent",
+    "releaseTag": {
+      "pattern": "nx1-{projectName}-v{version}"
+    },
+    "version": {
+      "conventionalCommits": true,
+      "fallbackCurrentVersionResolver": "disk"
+    },
+    "changelog": {
+      "workspaceChangelog": false,
+      "projectChangelogs": {
+        "file": "{projectRoot}/CHANGELOG.md",
+        "createRelease": false
+      }
+    },
+    "git": {
+      "commit": true,
+      "tag": true,
+      "push": false,
+      "commitMessage": "chore(release): publish"
+    }
+  },
   "analytics": false
 }

@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "format:check": "prettier --check .",
-    "format:fix": "prettier --write ."
+    "format:fix": "prettier --write .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@angular/cdk": "22.0.0",
@@ -63,6 +64,8 @@
     "@angular/cli": "~22.2.0",
     "@angular/compiler-cli": "~22.2.0",
     "@angular/language-service": "~22.2.0",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
     "@eslint/js": "^10.0.1",
     "@nx/angular": "24.0.0",
     "@nx/devkit": "24.0.0",
@@ -104,6 +107,7 @@
     "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-playwright": "^1.6.2",
+    "husky": "^9.1.7",
     "jiti": "2.4.2",
     "jsdom": "^30.0.0",
     "jsonc-eslint-parser": "^2.1.0",
