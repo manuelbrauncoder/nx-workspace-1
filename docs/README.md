@@ -10,6 +10,7 @@ New here: read the [README](../README.md) and [Workspace](workspace.md), then th
 | --------------------------- | ----------------------------------------------------------------------------------------- |
 | [Workspace](workspace.md)   | Projects, tags and scopes, path aliases, Nx commands, conventions, adding an app or a lib |
 | [Deployment](deployment.md) | Images and release tags (`nx1-*`), the pipeline, running the images, Portainer stacks     |
+| [Releasing](releasing.md)   | Commit messages, versions per app, `nx release`, changelogs, the running version          |
 
 ## Apps
 

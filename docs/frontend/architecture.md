@@ -34,7 +34,8 @@ packages/shared/
 │   ├── state/                AsyncState, mutation, patchResource
 │   ├── testing/              test setup shared by every project
 │   ├── theme/                light and dark mode
-│   └── app-name.ts           the APP_NAME token every app sets
+│   ├── app-name.ts           the APP_NAME token every app sets
+│   └── app-version.ts        the APP_VERSION token, from the app's package.json
 ├── ui/src/                   @shared/*: UI used by several features
 │   ├── async-content/
 │   ├── failure-alert/

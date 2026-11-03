@@ -110,6 +110,7 @@ A new app reuses the libs and brings only what is its own:
 4. Its `src/test-setup.ts` calls `setupTestEnvironment()` with `APP_NAME` and `provideI18nTesting()`
 5. To use another Spartan style than vega, see [helm](libs/helm.md)
 6. Add a `Dockerfile`, a release tag `nx1-<app>-v*` and a publish job in `.github/workflows/ci.yml`, as for `angular-base`
+7. Add the app to `release.projects` in `nx.json`, give it a `package.json` with `name`, `version` and `private: true`, provide `APP_VERSION` from it in `app.config.ts`, and add its name to the scopes in `commitlint.config.mjs`, see [Releasing](releasing.md)
 
 ## Adding an API app
 
@@ -120,6 +121,7 @@ A new app reuses the libs and brings only what is its own:
 5. A database of its own: add `CREATE DATABASE <app>;` to [tools/postgres/init-databases.sql](../tools/postgres/init-databases.sql), and run `docker compose exec postgres createdb -U app <app>` once on an existing local volume. The test database needs its own name too (`DATABASE_URL` in `vitest.config.ts`), since Nx runs the tests of several projects at the same time
 6. `src/test/helpers.ts` wraps the helpers from `@server/auth/testing/helpers` with the app
 7. Add a release tag `nx1-<app>-v*` and a publish job in `.github/workflows/ci.yml`, as for `express-api-base`
+8. Add the app to `release.projects` in `nx.json`, set `version` in its `package.json`, pass it to `createServer({ version })`, and add its name to the scopes in `commitlint.config.mjs`, see [Releasing](releasing.md)
 
 ## Adding a lib
 

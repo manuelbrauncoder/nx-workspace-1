@@ -203,7 +203,10 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 - Der Job `checks` startet einen Postgres-Service für die Tests der API-Projekte
 - Jede App hat ihr eigenes Release-Tag `nx1-<app>-v*` (z. B. `nx1-portfolio-web-v1.2.0`). Es baut `apps/<app>/Dockerfile` aus dem Workspace-Root und schiebt das Image als `ghcr.io/<owner>/nx1-<app>` nach GHCR, getaggt mit der Version ohne Präfix, `latest` und `sha-<kurz>`. Node-Version steht in `.nvmrc`, pnpm-Version in `packageManager`
 - Nichts Umgebungsspezifisches im Image. Das Deployment mountet seine Config über `/app/dist/angular-base/browser/config/app-config.json` (das Image kopiert die Ausgabe aus `dist/apps/angular-base` dorthin) und setzt `NG_ALLOWED_HOSTS` auf die öffentlichen Hostnamen, sonst lehnt Angular SSR die Requests mit 400 ab
-- Details in `docs/deployment.md`
+- Commits folgen Conventional Commits (`<type>(<scope>): <beschreibung>`, Scopes in `commitlint.config.mjs`), ein commit-msg-Hook und die CI prüfen das. `fix` → Patch, `feat` → Minor, `!`/`BREAKING CHANGE` → Major, alle anderen Typen ändern keine Version. Welche Apps ein Commit betrifft, entscheiden die geänderten Dateien (auch über Libs), nicht der Scope
+- Releases nur über `pnpm nx release` (Version in der `package.json` der App, `CHANGELOG.md`, Commit, Tag `nx1-<app>-v*`), danach `git push --follow-tags`. Keine Tags von Hand setzen
+- Die laufende Version: Frontends über den Token `APP_VERSION` (`@core/app-version`, in `app.config.ts` aus der `package.json`), APIs über `createServer({ version })` in `/health`
+- Details in `docs/deployment.md` und `docs/releasing.md`
 
 ### Logging
 
