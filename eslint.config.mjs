@@ -7,14 +7,23 @@ import tseslint from 'typescript-eslint';
 const UI_LIBRARIES = ['@spartan-ng/*', '@ng-icons/*', '@tiptap/*'];
 
 /**
+ * The presets of Nx and typescript-eslint are typed with the config type of typescript-eslint,
+ * which `defineConfig` of ESLint 10 does not accept (its `languageOptions` lack an index
+ * signature). They work as they are; this only tells the type check of this file so.
+ * @param {unknown} configs
+ * @returns {import('eslint').Linter.Config[]}
+ */
+const asEslintConfigs = (configs) => /** @type {import('eslint').Linter.Config[]} */ (configs);
+
+/**
  * Rules for every project of the workspace. Project configs extend this file and add their own
  * restrictions, e.g. the layer rules of the features in `apps/angular-base/eslint.config.mjs`.
  * Angular projects add `eslint.angular.mjs` on top.
  */
 export default defineConfig([
-  ...nx.configs['flat/base'],
-  ...nx.configs['flat/typescript'],
-  ...nx.configs['flat/javascript'],
+  ...asEslintConfigs(nx.configs['flat/base']),
+  ...asEslintConfigs(nx.configs['flat/typescript']),
+  ...asEslintConfigs(nx.configs['flat/javascript']),
   {
     ignores: ['**/dist', '**/vite.config.*.timestamp*', '**/vitest.config.*.timestamp*'],
   },
@@ -102,7 +111,11 @@ export default defineConfig([
   },
   {
     files: ['**/*.ts'],
-    extends: [eslint.configs.recommended, tseslint.configs.recommended, tseslint.configs.stylistic],
+    extends: [
+      eslint.configs.recommended,
+      asEslintConfigs(tseslint.configs.recommended),
+      asEslintConfigs(tseslint.configs.stylistic),
+    ],
     rules: {
       // Added by the Nx presets. Signals and `@ViewChild` make `!` common in Angular code, and
       // `no-empty-object-type` from typescript-eslint already covers empty interfaces.
