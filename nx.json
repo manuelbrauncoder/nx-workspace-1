@@ -122,10 +122,15 @@
       "fallbackCurrentVersionResolver": "disk"
     },
     "changelog": {
+      "automaticFromRef": true,
       "workspaceChangelog": false,
       "projectChangelogs": {
         "file": "{projectRoot}/CHANGELOG.md",
-        "createRelease": false
+        "createRelease": false,
+        "entryWhenNoChanges": "No changes in this app itself, only in the shared libs it uses.",
+        "renderOptions": {
+          "authors": false
+        }
       }
     },
     "git": {
