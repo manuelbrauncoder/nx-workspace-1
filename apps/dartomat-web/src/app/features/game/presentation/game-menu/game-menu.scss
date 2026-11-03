@@ -33,3 +33,10 @@
   color: var(--destructive);
   font-weight: 700;
 }
+
+.game-menu__version {
+  margin: 0.5rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  text-align: center;
+}

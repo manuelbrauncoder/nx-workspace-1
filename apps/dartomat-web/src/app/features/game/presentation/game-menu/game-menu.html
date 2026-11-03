@@ -48,5 +48,10 @@
         </button>
       </li>
     </ul>
+    @if (_version) {
+      <p class="game-menu__version">
+        {{ 'layout.appName' | t }} · {{ 'common.version' | t: { version: _version } }}
+      </p>
+    }
   </div>
 </app-ui-sheet>

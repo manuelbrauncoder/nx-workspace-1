@@ -136,5 +136,8 @@
       <span>{{ 'setupPage.start' | t }}</span>
       <span class="setup__start-count">{{ _playerCount() }}</span>
     </button>
+    @if (_version) {
+      <p class="setup__version">{{ 'common.version' | t: { version: _version } }}</p>
+    }
   </div>
 </main>

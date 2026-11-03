@@ -7,6 +7,9 @@
         <app-ui-icon [label]="'layout.footer.love' | t" name="heart" />
         {{ 'layout.footer.inPlace' | t }}
       </p>
+      @if (_version) {
+        <p class="app-footer__version">{{ 'common.version' | t: { version: _version } }}</p>
+      }
     </div>
     <nav [attr.aria-label]="'layout.legalNavigation' | t">
       <ul class="app-footer__links">

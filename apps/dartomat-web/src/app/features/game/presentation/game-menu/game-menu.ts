@@ -1,4 +1,5 @@
-import { Component, input, model, output } from '@angular/core';
+import { Component, inject, input, model, output } from '@angular/core';
+import { APP_VERSION } from '@core/app-version';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { FormSwitch } from '@shared/form-controls/form-switch/form-switch';
 import { UiButton } from '@shared/ui/button/button';
@@ -21,4 +22,6 @@ export class GameMenu {
   readonly copyLink = output<void>();
   readonly restart = output<void>();
   readonly quit = output<void>();
+
+  private readonly _version = inject(APP_VERSION);
 }

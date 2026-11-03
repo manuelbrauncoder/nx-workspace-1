@@ -1,6 +1,7 @@
 import { afterNextRender, Component, computed, inject, signal } from '@angular/core';
 import { form, FormField, maxLength, submit, validate } from '@angular/forms/signals';
 import { Router } from '@angular/router';
+import { APP_VERSION } from '@core/app-version';
 import { I18nService } from '@core/i18n/i18n.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { FailureAlert } from '@shared/failure-alert/failure-alert';
@@ -36,6 +37,7 @@ export class SetupPage {
   private readonly _i18n = inject(I18nService);
 
   private readonly _playersMax = PLAYERS_MAX;
+  private readonly _version = inject(APP_VERSION);
 
   /** Enter in the field adds the player. */
   private readonly _newPlayer = signal({ name: '' });
