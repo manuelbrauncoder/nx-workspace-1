@@ -133,6 +133,9 @@
       "tag": true,
       "push": false,
       "commitMessage": "chore(release): publish"
+    },
+    "conventionalCommits": {
+      "useCommitScope": false
     }
   },
   "analytics": false
