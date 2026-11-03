@@ -9,6 +9,7 @@ import * as helpers from './helpers';
 export const app: Express = createServer({
   middleware: [sessionMiddleware],
   routes: { '/auth': authRouter, '/admin': adminRouter },
+  version: '0.0.0-test',
 });
 
 export const signedUpAgent = (email: string) => helpers.signedUpAgent(app, email);

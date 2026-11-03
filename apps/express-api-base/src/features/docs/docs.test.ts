@@ -6,6 +6,7 @@ import type { Router } from 'express';
 import sharp from 'sharp';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
+import packageJson from '../../../package.json';
 import { adminAgent, app, signedUpAgent } from '../../test/helpers.js';
 import { notesRouter } from '../notes/notes.routes.js';
 import { buildDocs } from './docs.document.js';
@@ -21,6 +22,11 @@ function routesOf(prefix: string, router: Router): string[] {
 }
 
 describe('docs', () => {
+  it('reports the version of the app in /health', async () => {
+    const health = await request(app).get('/health').expect(200);
+    expect(health.body).toEqual({ status: 'ok', version: packageJson.version });
+  });
+
   it('serves the spec and the docs page', async () => {
     const spec = await request(app).get('/docs/openapi.json').expect(200);
     expect(spec.body.openapi).toBe('3.1.0');
