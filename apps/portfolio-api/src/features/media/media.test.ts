@@ -67,6 +67,8 @@ describe('media', () => {
     expect(await readdir(config.uploads.dir)).toHaveLength(0);
   });
 
+  // Encoding the 64-megapixel image alone takes a few seconds, on a busy CI runner more than the
+  // default 5 seconds of a test.
   it('rejects an image with too many pixels, however small the file', async () => {
     const admin = await adminAgent();
     // 64 megapixels of one color compress to a few hundred kilobytes
@@ -76,7 +78,7 @@ describe('media', () => {
       .expect(400);
 
     expect(await readdir(config.uploads.dir)).toHaveLength(0);
-  });
+  }, 30_000);
 
   it('refuses to delete an image the portfolio still uses', async () => {
     const admin = await adminAgent();
