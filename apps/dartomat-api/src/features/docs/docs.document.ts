@@ -1,4 +1,5 @@
 import { buildOpenApiDocument, type OpenApiDocument } from '@server/core/openapi';
+import packageJson from '../../../package.json';
 import { apiPrefix } from '../../shared/api.js';
 import { registerGamesDocs } from '../games/games.openapi.js';
 
@@ -17,7 +18,7 @@ All errors have the shape \`{ "error": { "message": "...", "details": [...] } }\
 export function buildDocs(): OpenApiDocument {
   return buildOpenApiDocument({
     title: 'Dartomat API',
-    version: '1.0.0',
+    version: packageJson.version,
     description,
     prefix: apiPrefix,
     register: [registerGamesDocs],

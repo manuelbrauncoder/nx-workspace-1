@@ -14,7 +14,7 @@ The base of every API app. Knows no features.
 | File                       | What it holds                                                                              | Guide                                                             |
 | -------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
 | `config.ts`                | `config` with the shared keys, `extendConfig(fileShape, envShape?)` for the keys of an app | [Configuration](../backend/configuration.md)                      |
-| `server.ts`                | `createServer({ routes, middleware, prefix, docs })`, `startServer()`                      | [Backend architecture](../backend/architecture.md#request-flow)   |
+| `server.ts`                | `createServer({ routes, middleware, prefix, docs, version })`, `startServer()`             | [Backend architecture](../backend/architecture.md#request-flow)   |
 | `errors.ts`, `validate.ts` | `HttpError` with helpers like `notFound()`, `parse()` for request input                    | [Backend architecture](../backend/architecture.md#error-handling) |
 | `logger.ts`                | pino, redacts `Cookie` and `Set-Cookie`                                                    | [Authentication](../backend/authentication.md#rate-limiting)      |
 | `middleware/`              | Error handler, origin check against CSRF, `createRateLimit()`                              | [Authentication](../backend/authentication.md#csrf-protection)    |

@@ -82,7 +82,12 @@ export function buildOpenApiDocument({
     path: '/health',
     tags: ['System'],
     summary: 'Health check',
-    responses: { 200: jsonResponse('The API is running', z.object({ status: z.literal('ok') })) },
+    responses: {
+      200: jsonResponse(
+        'The API is running, with the version of the app',
+        z.object({ status: z.literal('ok'), version: z.string() }),
+      ),
+    },
   });
 
   return new OpenApiGeneratorV31([...system.definitions, ...definitions]).generateDocument({

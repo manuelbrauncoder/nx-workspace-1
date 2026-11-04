@@ -1,6 +1,7 @@
 import { registerAdminDocs } from '@server/auth/admin.openapi';
 import { registerAuthDocs } from '@server/auth/auth.openapi';
 import { buildOpenApiDocument, type OpenApiDocument } from '@server/core/openapi';
+import packageJson from '../../../package.json';
 import { apiPrefix } from '../../shared/api.js';
 import { registerContactDocs } from '../contact/contact.openapi.js';
 import { registerLegalDocs } from '../legal/legal.openapi.js';
@@ -29,7 +30,7 @@ All errors have the shape \`{ "error": { "message": "...", "details": [...] } }\
 export function buildDocs(): OpenApiDocument {
   return buildOpenApiDocument({
     title: 'Portfolio API',
-    version: '1.0.0',
+    version: packageJson.version,
     description,
     prefix: apiPrefix,
     register: [

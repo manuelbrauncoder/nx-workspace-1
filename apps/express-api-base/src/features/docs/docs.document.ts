@@ -1,6 +1,7 @@
 import { registerAdminDocs } from '@server/auth/admin.openapi';
 import { registerAuthDocs } from '@server/auth/auth.openapi';
 import { buildOpenApiDocument, type OpenApiDocument } from '@server/core/openapi';
+import packageJson from '../../../package.json';
 import { registerNotesDocs } from '../notes/notes.openapi.js';
 
 const description = `
@@ -18,7 +19,7 @@ All errors have the shape \`{ "error": { "message": "...", "details": [...] } }\
 export function buildDocs(): OpenApiDocument {
   return buildOpenApiDocument({
     title: 'Express API Base',
-    version: '1.0.0',
+    version: packageJson.version,
     description,
     register: [registerAuthDocs, registerNotesDocs, registerAdminDocs],
   });

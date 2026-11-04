@@ -17,12 +17,15 @@ All images go to the GitHub Container Registry under the owner of the repository
 
 Each release publishes three image tags: the version without the prefix (`:v1.2.0`), `:latest` and `:sha-<short commit>`. Use the version in a stack, so a redeploy never pulls a different version by accident.
 
+Tags are created by `nx release`, which also raises the version in the app's `package.json` and writes its changelog. How it works and how commit messages decide the version: [Releasing](releasing.md). In short:
+
 ```bash
-git tag nx1-portfolio-web-v1.2.0
-git push origin nx1-portfolio-web-v1.2.0
+pnpm nx release --dry-run
+pnpm nx release
+git push --follow-tags origin main
 ```
 
-Set the tag on the commit on `main` that should be released (`git checkout main && git pull` first). The apps are released independently, a tag only builds the image of its app.
+The apps are released independently, a tag only builds the image of its app.
 
 New packages on GHCR are private and not linked to the repository. Make them public or add the registry with a token (`read:packages`) to the server, e.g. under _Registries_ in Portainer.
 
@@ -30,11 +33,12 @@ New packages on GHCR are private and not linked to the repository. Make them pub
 
 The job `checks` runs on a push to `main`, on every pull request and on a release tag:
 
-| Step                           | Command                                         |
-| ------------------------------ | ----------------------------------------------- |
-| Install                        | `pnpm install --frozen-lockfile`                |
-| Format check                   | `pnpm format:check`                             |
-| Lint, type check, tests, build | `pnpm nx affected -t lint typecheck test build` |
+| Step                            | Command                                          |
+| ------------------------------- | ------------------------------------------------ |
+| Install                         | `pnpm install --frozen-lockfile`                 |
+| Format check                    | `pnpm format:check`                              |
+| Commit messages (pull requests) | `pnpm exec commitlint --from <base> --to <head>` |
+| Lint, type check, tests, build  | `pnpm nx affected -t lint typecheck test build`  |
 
 - `nx affected` only runs the projects a change touches, compared with the last successful run on `main` (`nrwl/nx-set-shas`). A release tag runs every project with `nx run-many`
 - The job starts a Postgres service for the tests of the API projects. Each project creates and migrates its own test database

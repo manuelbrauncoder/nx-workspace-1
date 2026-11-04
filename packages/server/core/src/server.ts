@@ -23,6 +23,8 @@ export interface ServerOptions {
   prefix?: string;
   /** Builds the OpenAPI document, served under /docs when `docs.enabled` is set in the config. */
   docs?: () => OpenApiDocument;
+  /** Version of the app, from its `package.json`. `/health` reports it. */
+  version: string;
 }
 
 /**
@@ -30,7 +32,13 @@ export interface ServerOptions {
  * origins, the origin check against CSRF, JSON bodies, `/health`, `/docs`, a 404 for unknown
  * routes and the error handler.
  */
-export function createServer({ middleware = [], routes, prefix, docs }: ServerOptions): Express {
+export function createServer({
+  middleware = [],
+  routes,
+  prefix,
+  docs,
+  version,
+}: ServerOptions): Express {
   const app = express();
   app.set('trust proxy', config.trustProxy);
 
@@ -42,7 +50,7 @@ export function createServer({ middleware = [], routes, prefix, docs }: ServerOp
   app.use(express.json({ limit: '1mb' }));
 
   app.get('/health', (_req, res) => {
-    res.json({ status: 'ok' });
+    res.json({ status: 'ok', version });
   });
 
   if (docs && config.docs.enabled) app.use('/docs', docsRouter(docs()));

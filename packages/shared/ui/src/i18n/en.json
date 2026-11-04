@@ -4,7 +4,8 @@
     "close": "Close",
     "loading": "Loading …",
     "retry": "Try again",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "version": "Version {{ version }}"
   },
   "failure": {
     "network": "The server cannot be reached. Please check your connection.",

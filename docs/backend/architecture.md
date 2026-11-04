@@ -73,7 +73,7 @@ There are two layers on purpose: **routes** know about HTTP, **services** know a
 3. **CORS**, allowing only the origins from the config, with credentials.
 4. **Origin check**, the CSRF protection. See [Authentication](authentication.md#csrf-protection).
 5. **JSON body parser**, limited to 1 MB.
-6. `/health` and, if enabled, `/docs`. They are mounted before the session middleware, so they never touch the session store.
+6. `/health` (answers `{ status: 'ok', version }` with the version passed to `createServer({ version })` from the app's `package.json`, see [Releasing](../releasing.md#seeing-the-running-version)) and, if enabled, `/docs`. They are mounted before the session middleware, so they never touch the session store.
 7. **Session middleware**, then the `/auth`, `/notes` and `/admin` routers. With `createServer({ prefix: '/api/v1' })` they are mounted below the prefix, `/health` and `/docs` stay at the root (portfolio-api does this). Pass the same `prefix` to `buildOpenApiDocument()`, the features register their paths without it.
 8. **404 handler** for unknown routes.
 9. **Error handler**.

@@ -4,7 +4,8 @@
     "close": "Schließen",
     "loading": "Wird geladen …",
     "retry": "Erneut versuchen",
-    "breadcrumb": "Navigationspfad"
+    "breadcrumb": "Navigationspfad",
+    "version": "Version {{ version }}"
   },
   "failure": {
     "network": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",

@@ -140,7 +140,7 @@ Before a push run what the CI runs: `pnpm format:check` and `pnpm nx run-many -t
 
 ## Releases
 
-A tag `nx1-<app>-v<version>` (for example `nx1-portfolio-web-v1.2.0`) builds the Docker image of that app and pushes it to `ghcr.io/<owner>/nx1-<app>`. Details in [Deployment](docs/deployment.md).
+Commit messages follow Conventional Commits (`feat(dartomat-web): …`, `fix: …`), a hook checks them. `pnpm nx release` derives the next version of each app from them, writes its changelog and tags it `nx1-<app>-v<version>`; pushing the tag builds the Docker image `ghcr.io/<owner>/nx1-<app>`. Details in [Releasing](docs/releasing.md) and [Deployment](docs/deployment.md).
 
 ## Further reading
 
