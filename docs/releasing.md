@@ -78,6 +78,8 @@ git switch main && git pull
 
    Writes the new versions into the `package.json` files, the entries into the `CHANGELOG.md` files, makes one commit `chore(release): publish` and one tag per released app. Nothing is pushed. Only some apps: `pnpm nx release --projects=dartomat-web,dartomat-api`.
 
+   At the end Nx asks whether to publish. Either answer is fine: publishing does nothing here (the target `nx-release-publish` of every app is `nx:noop`), the images are built by CI from the tags.
+
 3. Push the commit and the tags:
 
    ```bash
@@ -112,5 +114,6 @@ The `release` block in [nx.json](../nx.json):
 | `conventionalCommits.useCommitScope: false`          | A commit counts for the apps whose files it changes, whatever its scope                                            |
 | `changelog.automaticFromRef`                         | The first changelog of an app starts at the first commit (older commits do not follow the format and are left out) |
 | `git.push: false`                                    | `nx release` never pushes, you do                                                                                  |
+| `nx-release-publish: nx:noop` in each `project.json` | Nothing to publish, `nx release` ends without an error. Without the target Nx stops with exit code 1 after tagging |
 
-A new app is added to `release.projects`, gets `name`, `version` and `private: true` in its `package.json` and its scope in `commitlint.config.mjs`.
+A new app is added to `release.projects`, gets `name`, `version` and `private: true` in its `package.json`, the target `"nx-release-publish": { "executor": "nx:noop" }` in its `project.json` and its scope in `commitlint.config.mjs`.

@@ -62,6 +62,9 @@
       "options": {
         "buildTarget": "build"
       }
+    },
+    "nx-release-publish": {
+      "executor": "nx:noop"
     }
   }
 }
