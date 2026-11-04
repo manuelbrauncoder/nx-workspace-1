@@ -15,3 +15,5 @@ packages/shared/helm-*/
 .cursor/
 .gemini/
 .codex/
+# Written by nx release, kept as generated.
+apps/*/CHANGELOG.md

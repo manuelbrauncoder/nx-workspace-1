@@ -105,6 +105,9 @@
         "cwd": "{projectRoot}",
         "command": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit"
       }
+    },
+    "nx-release-publish": {
+      "executor": "nx:noop"
     }
   },
   "implicitDependencies": ["styles"]

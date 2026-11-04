@@ -68,6 +68,9 @@
       "options": {
         "cwd": "{projectRoot}"
       }
+    },
+    "nx-release-publish": {
+      "executor": "nx:noop"
     }
   }
 }
