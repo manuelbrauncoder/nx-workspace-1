@@ -198,13 +198,13 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 
 ### CI und Deployment
 
-- Pipeline in `.github/workflows/ci.yml`: Format-Check und `nx affected -t lint typecheck test build` bei Push auf `main` und bei Pull Requests, `nx run-many` bei Release-Tags. Dieselben Befehle vor dem Push lokal ausführen (`pnpm format:check`, `pnpm nx affected -t lint typecheck test build`)
+- Pipeline in `.github/workflows/ci.yml`: Format-Check und `nx affected -t lint typecheck test build` bei Push auf `main` und bei Pull Requests, `nx run-many -p <app>` nur für die App eines Release-Tags, jeweils mit `--parallel=4`. Dieselben Befehle vor dem Push lokal ausführen (`pnpm format:check`, `pnpm nx affected -t lint typecheck test build`)
 - Vitest mit Analog prüft keine Typen, deshalb gibt es pro Projekt das Target `typecheck`, das auch die Specs mit `tsc` prüft
 - Der Job `checks` startet einen Postgres-Service für die Tests der API-Projekte
 - Jede App hat ihr eigenes Release-Tag `nx1-<app>-v*` (z. B. `nx1-portfolio-web-v1.2.0`). Es baut `apps/<app>/Dockerfile` aus dem Workspace-Root und schiebt das Image als `ghcr.io/<owner>/nx1-<app>` nach GHCR, getaggt mit der Version ohne Präfix, `latest` und `sha-<kurz>`. Node-Version steht in `.nvmrc`, pnpm-Version in `packageManager`
 - Nichts Umgebungsspezifisches im Image. Das Deployment mountet seine Config über `/app/dist/angular-base/browser/config/app-config.json` (das Image kopiert die Ausgabe aus `dist/apps/angular-base` dorthin) und setzt `NG_ALLOWED_HOSTS` auf die öffentlichen Hostnamen, sonst lehnt Angular SSR die Requests mit 400 ab
 - Commits folgen Conventional Commits (`<type>(<scope>): <beschreibung>`, Scopes in `commitlint.config.mjs`), ein commit-msg-Hook und die CI prüfen das. `fix` → Patch, `feat` → Minor, `!`/`BREAKING CHANGE` → Major, alle anderen Typen ändern keine Version. Welche Apps ein Commit betrifft, entscheiden die geänderten Dateien (auch über Libs), nicht der Scope
-- Releases nur über `pnpm nx release` (Version in der `package.json` der App, `CHANGELOG.md`, Commit, Tag `nx1-<app>-v*`), danach `git push --follow-tags`. Keine Tags von Hand setzen
+- Releases nur über `pnpm nx release` (Version in der `package.json` der App, `CHANGELOG.md`, Commit, Tag `nx1-<app>-v*`), danach `pnpm release:push` (pusht `main` und jeden Tag einzeln, bei mehr als drei Tags in einem Push startet GitHub keinen Workflow). Keine Tags von Hand setzen, kein `git push --follow-tags`
 - Die laufende Version: Frontends über den Token `APP_VERSION` (`@core/app-version`, in `app.config.ts` aus der `package.json`), APIs über `createServer({ version })` in `/health`
 - Details in `docs/deployment.md` und `docs/releasing.md`
 

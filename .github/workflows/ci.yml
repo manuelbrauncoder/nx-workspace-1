@@ -82,13 +82,18 @@ jobs:
         if: github.event_name == 'pull_request'
         run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
-      # A release tag checks everything, a branch or pull request only what the change affects.
+      # A branch or pull request checks what the change affects. A release tag checks only its
+      # app (nx1-dartomat-web-v1.2.0 → dartomat-web): the commit was checked on main before
+      # `nx release` tagged it, and its libs are built along with it.
+      # Four tasks at a time, one per core of the runner.
       - name: Lint, typecheck, unit tests, build
         run: |
           if [ "${{ github.ref_type }}" = "tag" ]; then
-            pnpm nx run-many -t lint typecheck test build
+            app="${GITHUB_REF_NAME#nx1-}"
+            app="${app%-v*}"
+            pnpm nx run-many -t lint typecheck test build -p "$app" --parallel=4
           else
-            pnpm nx affected -t lint typecheck test build
+            pnpm nx affected -t lint typecheck test build --parallel=4
           fi
 
   publish-angular-base:

@@ -83,14 +83,23 @@ git switch main && git pull
 3. Push the commit and the tags:
 
    ```bash
-   git push --follow-tags origin main
+   pnpm release:push
    ```
 
-   Each new tag starts the publish job of its app in the [pipeline](deployment.md#the-pipeline). The image tag is the version: `nx1-dartomat-web-v1.3.0` becomes `ghcr.io/<owner>/nx1-dartomat-web:v1.3.0`.
+   [tools/scripts/push-release.sh](../tools/scripts/push-release.sh) pushes `main` and then each tag of the release commit in a push of its own. Do not use `git push --follow-tags`: GitHub starts no workflow for tags when more than three are pushed at once, so no image would be built.
+
+   Each new tag starts the pipeline for its app: the checks of that app only (the commit was checked on `main` already), then the publish job in the [pipeline](deployment.md#the-pipeline). The image tag is the version: `nx1-dartomat-web-v1.3.0` becomes `ghcr.io/<owner>/nx1-dartomat-web:v1.3.0`.
 
 4. Deploy: raise the image tag in the stack of the app in the `server-setup` repo and deploy it there.
 
 **Forcing a version**, e.g. a major the commits do not show: `pnpm nx release major --projects=dartomat-web` (or `minor`, `patch`, `2.0.0`).
+
+**A tag that started no pipeline** (e.g. pushed together with more than three others): delete it on GitHub and push it again on its own. Pushing an existing tag again starts nothing.
+
+```bash
+git push origin :refs/tags/nx1-dartomat-web-v1.3.0
+git push origin refs/tags/nx1-dartomat-web-v1.3.0
+```
 
 **A mistake before pushing:** `git reset --hard HEAD~1` and delete the local tags with `git tag -d <tag>`. After pushing, do not move a tag; release a new patch instead.
 
