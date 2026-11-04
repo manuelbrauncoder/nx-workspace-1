@@ -48,13 +48,6 @@
       "exclude": ["packages/shared/helm-*/**"]
     },
     {
-      "plugin": "@nx/docker",
-      "options": {
-        "buildTarget": "docker:build",
-        "runTarget": "docker:run"
-      }
-    },
-    {
       "plugin": "@nx/js/typescript",
       "options": {
         "typecheck": {

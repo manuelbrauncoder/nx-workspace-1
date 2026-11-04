@@ -69,7 +69,6 @@
     "@eslint/js": "^10.0.1",
     "@nx/angular": "24.0.0",
     "@nx/devkit": "24.0.0",
-    "@nx/docker": "24.0.0",
     "@nx/eslint": "24.0.0",
     "@nx/eslint-plugin": "24.0.0",
     "@nx/js": "24.0.0",
