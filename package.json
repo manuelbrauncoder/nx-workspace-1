@@ -7,7 +7,8 @@
   "scripts": {
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "release:push": "bash tools/scripts/push-release.sh"
   },
   "dependencies": {
     "@angular/cdk": "22.0.0",
