@@ -22,7 +22,7 @@ Tags are created by `nx release`, which also raises the version in the app's `pa
 ```bash
 pnpm nx release --dry-run
 pnpm nx release
-git push --follow-tags origin main
+pnpm release:push
 ```
 
 The apps are released independently, a tag only builds the image of its app.
@@ -33,14 +33,14 @@ New packages on GHCR are private and not linked to the repository. Make them pub
 
 The job `checks` runs on a push to `main`, on every pull request and on a release tag:
 
-| Step                            | Command                                          |
-| ------------------------------- | ------------------------------------------------ |
-| Install                         | `pnpm install --frozen-lockfile`                 |
-| Format check                    | `pnpm format:check`                              |
-| Commit messages (pull requests) | `pnpm exec commitlint --from <base> --to <head>` |
-| Lint, type check, tests, build  | `pnpm nx affected -t lint typecheck test build`  |
+| Step                            | Command                                                                                    |
+| ------------------------------- | ------------------------------------------------------------------------------------------ |
+| Install                         | `pnpm install --frozen-lockfile`                                                           |
+| Format check                    | `pnpm format:check`                                                                        |
+| Commit messages (pull requests) | `pnpm exec commitlint --from <base> --to <head>`                                           |
+| Lint, type check, tests, build  | `pnpm nx affected -t lint typecheck test build --parallel=4` (a release tag: only its app) |
 
-- `nx affected` only runs the projects a change touches, compared with the last successful run on `main` (`nrwl/nx-set-shas`). A release tag runs every project with `nx run-many`
+- `nx affected` only runs the projects a change touches, compared with the last successful run on `main` (`nrwl/nx-set-shas`). A release tag runs only the projects of its app with `nx run-many -p <app>`, the commit was already checked on `main`. There is no cache between runs: Nx 24 keeps its cache per machine, restoring `.nx/cache` on a new runner is ignored, a shared cache needs a remote cache such as Nx Cloud
 - The job starts a Postgres service for the tests of the API projects. Each project creates and migrates its own test database
 - The Node version comes from [.nvmrc](../.nvmrc), the pnpm version from `packageManager` in [package.json](../package.json). A new Node major is changed in `.nvmrc`, in `devEngines` in `package.json` and in the base images of the Dockerfiles
 - A newer commit on the same branch or pull request cancels the running check, a release is never cancelled
