@@ -33,5 +33,7 @@ COPY --from=build /app/dist/apps/dartomat-api/package.json ./
 COPY --from=build /app/dist/apps/dartomat-api ./dist
 # SQL migrations, applied by: node dist/scripts/migrate.js
 COPY apps/dartomat-api/drizzle ./drizzle
+# Runs as the unprivileged user `node` (uid 1000). The API writes no files.
+USER node
 EXPOSE 3000
 CMD ["node", "dist/index.js"]

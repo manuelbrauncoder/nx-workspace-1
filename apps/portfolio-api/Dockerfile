@@ -35,5 +35,9 @@ COPY --from=build /app/dist/apps/portfolio-api ./dist
 COPY apps/portfolio-api/drizzle ./drizzle
 # initial portfolio content, loaded by: node dist/scripts/seed.js
 COPY apps/portfolio-api/seed ./seed
+# Runs as the unprivileged user `node` (uid 1000). The API only writes to uploads/: the folder
+# exists here for a start without a mount, a mounted host folder has to belong to uid 1000.
+RUN mkdir uploads && chown node:node uploads
+USER node
 EXPOSE 3000
 CMD ["node", "dist/index.js"]

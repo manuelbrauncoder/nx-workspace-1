@@ -33,5 +33,9 @@ COPY --from=build /app/dist/apps/express-api-base/package.json ./
 COPY --from=build /app/dist/apps/express-api-base ./dist
 # SQL migrations, applied by: node dist/scripts/migrate.js
 COPY apps/express-api-base/drizzle ./drizzle
+# Runs as the unprivileged user `node` (uid 1000). The API only writes to uploads/: the folder
+# exists here for a start without a mount, a mounted host folder has to belong to uid 1000.
+RUN mkdir uploads && chown node:node uploads
+USER node
 EXPOSE 3000
 CMD ["node", "dist/index.js"]
