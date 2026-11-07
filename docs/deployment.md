@@ -92,17 +92,17 @@ docker run -p 4000:4000 \
 
 ## API apps
 
-An API image contains the bundle in `dist/`, only the runtime dependencies of the app (from a lockfile pruned by `nx prune-lockfile`), the migrations in `drizzle/` and, for `portfolio-api`, the initial content in `seed/`.
+An API image contains the bundle in `dist/`, only the runtime dependencies of the app (from a lockfile pruned by `nx prune-lockfile`), the migrations in `drizzle/` and, for `portfolio-api`, the initial content in `seed/`. It runs as the unprivileged user `node` (uid 1000), like the Angular images.
 
 ### What the server needs
 
-| Item           | Details                                                                                         |
-| -------------- | ----------------------------------------------------------------------------------------------- |
-| PostgreSQL     | Reachable from the containers; the connection string goes into `DATABASE_URL`                   |
-| Config file    | A JSON file on the host, mounted read-only into the container; its path goes into `CONFIG_PATH` |
-| Uploads folder | A host folder or volume mounted at `/app/uploads`, so images survive a redeploy                 |
-| Secrets        | `SESSION_SECRET` (at least 32 characters) and the database credentials, as stack variables      |
-| Reverse proxy  | Terminates HTTPS and forwards to port 3000                                                      |
+| Item           | Details                                                                                                                                         |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| PostgreSQL     | Reachable from the containers; the connection string goes into `DATABASE_URL`                                                                   |
+| Config file    | A JSON file on the host, mounted read-only into the container; its path goes into `CONFIG_PATH`                                                 |
+| Uploads folder | A host folder or volume mounted at `/app/uploads`, so images survive a redeploy. It must belong to uid 1000: `sudo chown -R 1000:1000 <folder>` |
+| Secrets        | `SESSION_SECRET` (at least 32 characters) and the database credentials, as stack variables                                                      |
+| Reverse proxy  | Terminates HTTPS and forwards to port 3000                                                                                                      |
 
 `portfolio-api` also needs an SMTP account for forwarding contact messages: host, user and addresses go into `mail` of the config file, the password into `SMTP_PASSWORD`.
 
@@ -157,7 +157,7 @@ In the stack:
 
 - [ ] `SESSION_SECRET` is a long random value that is not used anywhere else
 - [ ] `NODE_ENV` is `production`
-- [ ] The uploads folder is mounted and writable by the container
+- [ ] The uploads folder is mounted and belongs to uid 1000, the user of the container
 - [ ] The config file is mounted and `CONFIG_PATH` points to the path inside the container
 
 On the domain: frontend and API share the same registrable domain (e.g. `app.example.com` and `api.example.com`), see [Authentication](backend/authentication.md#frontend-integration).

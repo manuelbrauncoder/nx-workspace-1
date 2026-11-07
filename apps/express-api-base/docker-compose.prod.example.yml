@@ -18,6 +18,7 @@ services:
     volumes:
       # see config/production.example.json
       - /api-config/api/backend_config.json:/app/config/production.json:ro
+      # must belong to uid 1000, the user of the image: sudo chown -R 1000:1000 /api-data/api/uploads
       - /api-data/api/uploads:/app/uploads
     environment:
       NODE_ENV: production
