@@ -81,6 +81,14 @@ What only the portfolio apps have. The overview is on the app pages [portfolio-w
 | [CMS content](portfolio/api/cms-content.md)     | Portfolio sections, media, contact messages, legal pages, seed          |
 | [Configuration](portfolio/api/configuration.md) | The config file of `portfolio-api`, mail and `publicUrl`                |
 
+## Vyte (planned)
+
+Event planning with a guest list and a personal link per guest. Not built yet, the folders `apps/vyte-web` and `apps/vyte-api` only hold a README.
+
+| Page                          | What it covers                                                        |
+| ----------------------------- | --------------------------------------------------------------------- |
+| [Specification](vyte/spec.md) | Roles, domain model, flows, API and web draft, open questions (draft) |
+
 ## Conventions in these docs
 
 - Code samples are taken from the repository. The link above a sample points to the file it comes from.
