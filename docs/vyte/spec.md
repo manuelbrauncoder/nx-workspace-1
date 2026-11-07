@@ -4,7 +4,7 @@ Status: **draft**, to be refined before the projects are generated. Nothing here
 
 ## 1. Overview
 
-vyte plans an event and keeps its guest list. The host creates an event, adds the guests and sends each of them a personal link. The guest opens the link, sees the event and accepts or declines, saying how many companions they bring. The host can invite other people to work on the list with them.
+vyte plans an event and keeps its guest list. The host creates an event, adds the guests and sends each of them a personal link. The guest opens the link, sees the event and accepts or declines, saying how many companions they bring. The host can invite other people to work on the list with them. Before the invitations go out, a save-the-date link announces the date. On the day itself, guests upload their own photos through a QR code on their place card or on a stand.
 
 ### Goals of v1
 
@@ -15,6 +15,8 @@ vyte plans an event and keeps its guest list. The host creates an event, adds th
 - Work on an event together: the owner invites editors through a link and can hand the event over
 - Closed sign-up: an admin creates an account by name and shares a link, the person sets email and password there
 - Past events move to an archive, guest links then only say that the event is over
+- A save-the-date link per event, shared before the guest list is ready
+- Guests upload their own photos, 6 per guest by default (config): through a QR code on a printed place card, or through a shared QR code on a stand when there are no fixed seats
 - German and English, mobile first, accessible (WCAG AA)
 
 ### Not in v1
@@ -24,34 +26,39 @@ vyte plans an event and keeps its guest list. The host creates an event, adds th
 - Names of companions, households with one answer per person, own questions per event (diet, allergies): the message of the guest covers it
 - Embedded maps
 - Payments, tickets, seating plans, check-in at the door
-- Guests seeing each other
+- Guests seeing each other or the photos of others
 - Reminders and notifications
 
 ## 2. Roles
 
-| Role   | Who                                                      | Account |
-| ------ | -------------------------------------------------------- | ------- |
-| Admin  | Role `admin` of `server-auth`, creates accounts          | yes     |
-| Owner  | Created the event or took it over, exactly one per event | yes     |
-| Editor | Joined through an invite link of the owner               | yes     |
-| Guest  | Is on the guest list, has a personal link                | no      |
+| Role    | Who                                                                  | Account |
+| ------- | -------------------------------------------------------------------- | ------- |
+| Admin   | Role `admin` of `server-auth`, creates accounts                      | yes     |
+| Owner   | Created the event or took it over, exactly one per event             | yes     |
+| Editor  | Joined through an invite link of the owner                           | yes     |
+| Guest   | Is on the guest list, has a personal link and a photo link           | no      |
+| Visitor | Has the save-the-date link or scans the photo stand, unknown to vyte | no      |
 
 Accounts are the shared accounts of `server-auth`. Sign-up is off (`auth.signUpEnabled: false`), accounts come from an account link of an admin (section 4) or from an editor invite. The admin role has no rights on events it is not a member of.
 
-| Action                                         | Owner | Editor |   Guest (own link)   |
-| ---------------------------------------------- | :---: | :----: | :------------------: |
-| See the event and the guest list               |   ✓   |   ✓    | event only, no list  |
-| Edit the event and its images                  |   ✓   |   ✓    |          –           |
-| Add, edit, remove guests; renew a guest link   |   ✓   |   ✓    |          –           |
-| See all answers and counts; export CSV         |   ✓   |   ✓    |   own answer only    |
-| Answer: accept or decline, companions, message |   –   |   –    | ✓ until the deadline |
-| Record an answer for a guest                   |   ✓   |   ✓    |          –           |
-| Create or revoke invite links for editors      |   ✓   |   –    |          –           |
-| Remove an editor; hand the event to an editor  |   ✓   |   –    |          –           |
-| Leave the event                                |   –   |   ✓    |          –           |
-| Delete the event                               |   ✓   |   –    |          –           |
+| Action                                                     | Owner | Editor |    Guest (own link)    |
+| ---------------------------------------------------------- | :---: | :----: | :--------------------: |
+| See the event and the guest list                           |   ✓   |   ✓    |  event only, no list   |
+| Edit the event and its images                              |   ✓   |   ✓    |           –            |
+| Add, edit, remove guests; renew a guest link               |   ✓   |   ✓    |           –            |
+| See all answers and counts; export CSV                     |   ✓   |   ✓    |    own answer only     |
+| Answer: accept or decline, companions, message             |   –   |   –    |  ✓ until the deadline  |
+| Record an answer for a guest                               |   ✓   |   ✓    |           –            |
+| Save the date and photo stand: turn on or off, renew links |   ✓   |   ✓    |           –            |
+| Print place cards and the stand                            |   ✓   |   ✓    |           –            |
+| Upload photos up to the limit, delete own                  |   –   |   –    | ✓ in the upload window |
+| See, hide and delete all photos; download them as ZIP      |   ✓   |   ✓    |    own photos only     |
+| Create or revoke invite links for editors                  |   ✓   |   –    |           –            |
+| Remove an editor; hand the event to an editor              |   ✓   |   –    |           –            |
+| Leave the event                                            |   –   |   ✓    |           –            |
+| Delete the event                                           |   ✓   |   –    |           –            |
 
-A past event is read-only for everyone: hosts can still read it, export the list and delete it (owner).
+A past event is read-only for everyone: hosts can still read it, export the list, manage the photos and delete it (owner). Photos can be uploaded until the upload window closes.
 
 ## 3. Domain model
 
@@ -65,6 +72,16 @@ Limits become constants in `vyte-contracts` (like `notes-limits`).
 | Images per event      | 6          |
 | Companions per guest  | 10         |
 | Events per user       | none in v1 |
+
+The photo limits are config of `vyte-api`, not constants, so they change without a release. The API sends the limit and what is left with every answer of a photo route, the web app never hardcodes them.
+
+| Config key                  | Default | Meaning                                                       |
+| --------------------------- | ------- | ------------------------------------------------------------- |
+| `photos.maxPerGuest`        | 6       | photos per guest through their photo link                     |
+| `photos.maxPerDevice`       | 6       | photos per device through the photo stand                     |
+| `photos.maxPerEvent`        | 1000    | all photos of an event, a cap against abuse                   |
+| `photos.uploadDaysAfterEnd` | 7       | days after the end of the event until uploads close           |
+| `photos.maxImageWidth`      | 2560    | width photos are scaled down to, larger than the event images |
 
 ### Event
 
@@ -80,9 +97,14 @@ Limits become constants in `vyte-contracts` (like `notes-limits`).
 | `endsAt`                 | timestamp with tz | optional, not before `startsAt`. All-day: midnight of the last day, the event lasts until the end of that day                                                                      |
 | `timeZone`               | IANA name         | required, from the browser of the creator, e.g. `Europe/Berlin`. Times are shown in it for everyone                                                                                |
 | `rsvpDeadline`           | timestamp with tz | optional, not after `startsAt`. Without one, answers are open until `startsAt`                                                                                                     |
+| `saveTheDateToken`       | text or null      | 32 random bytes, base64url. `null` = save the date is off. Renewing it replaces it                                                                                                 |
+| `saveTheDateNote`        | text              | optional, at most 500 characters, plain text on the save-the-date page, e.g. "Einladung folgt im Frühjahr"                                                                         |
+| `photoStandToken`        | text or null      | 32 random bytes, base64url. `null` = the photo stand is off. Renewing it replaces it                                                                                               |
 | `createdAt`, `updatedAt` | timestamp         |                                                                                                                                                                                    |
 
 **Past**: an event is past after `endsAt`, without `endsAt` at the end of the day of `startsAt` (both in `timeZone`). Nothing is stored for it, the API computes it.
+
+**Upload window**: photos can be uploaded from `startsAt` until `photos.uploadDaysAfterEnd` days after the event is past. Also computed, not stored.
 
 ### EventImage
 
@@ -120,22 +142,37 @@ The owner can revoke an open invite (delete it). An expired or used invite answe
 
 ### Guest
 
-| Field                    | Type                                    | Rules                                                                     |
-| ------------------------ | --------------------------------------- | ------------------------------------------------------------------------- |
-| `id`                     | uuid                                    |                                                                           |
-| `eventId`                | uuid                                    | deleted with the event                                                    |
-| `name`                   | text                                    | required, 1–100 characters, as the host writes it ("Familie Weber")       |
-| `note`                   | text                                    | optional, at most 500 characters, only for hosts                          |
-| `maxCompanions`          | integer                                 | 0–10. 0 = comes alone, 1 = plus one, more for couples and families        |
-| `token`                  | text                                    | 32 random bytes, base64url, unique. Renewing it replaces it               |
-| `response`               | `'pending' \| 'accepted' \| 'declined'` | starts as `pending`                                                       |
-| `companions`             | integer                                 | 0–`maxCompanions`, only meaningful when accepted, 0 otherwise             |
-| `message`                | text                                    | optional, at most 500 characters, written by the guest                    |
-| `answeredBy`             | `'guest' \| 'host'` or null             | who gave the last answer; `host` shows "vom Host eingetragen" in the list |
-| `respondedAt`            | timestamp                               | time of the last answer                                                   |
-| `createdAt`, `updatedAt` | timestamp                               |                                                                           |
+| Field                    | Type                                    | Rules                                                                                                                                           |
+| ------------------------ | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                     | uuid                                    |                                                                                                                                                 |
+| `eventId`                | uuid                                    | deleted with the event                                                                                                                          |
+| `name`                   | text                                    | required, 1–100 characters, as the host writes it ("Familie Weber")                                                                             |
+| `note`                   | text                                    | optional, at most 500 characters, only for hosts                                                                                                |
+| `maxCompanions`          | integer                                 | 0–10. 0 = comes alone, 1 = plus one, more for couples and families                                                                              |
+| `token`                  | text                                    | 32 random bytes, base64url, unique. Renewing it replaces it                                                                                     |
+| `photoToken`             | text                                    | 32 random bytes, base64url, unique. Separate from `token`, so a place card on the table only allows uploading photos, never changing the answer |
+| `response`               | `'pending' \| 'accepted' \| 'declined'` | starts as `pending`                                                                                                                             |
+| `companions`             | integer                                 | 0–`maxCompanions`, only meaningful when accepted, 0 otherwise                                                                                   |
+| `message`                | text                                    | optional, at most 500 characters, written by the guest                                                                                          |
+| `answeredBy`             | `'guest' \| 'host'` or null             | who gave the last answer; `host` shows "vom Host eingetragen" in the list                                                                       |
+| `respondedAt`            | timestamp                               | time of the last answer                                                                                                                         |
+| `createdAt`, `updatedAt` | timestamp                               |                                                                                                                                                 |
 
 A couple or family is one guest with an allowance ("Familie Weber", +3): one link, one answer for all. Lowering `maxCompanions` below the companions already given lowers `companions` to the new maximum; the list marks the guest so the hosts can tell them.
+
+### EventPhoto
+
+| Field                         | Type                 | Rules                                                                                                |
+| ----------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------- |
+| `id`                          | uuid                 |                                                                                                      |
+| `eventId`                     | uuid                 | deleted with the event, the files go too                                                             |
+| `source`                      | `'guest' \| 'stand'` | through a photo link or through the photo stand                                                      |
+| `guestId`                     | uuid or null         | the guest of the photo link; set null when the guest is removed, the photo stays                     |
+| `deviceId`                    | text or null         | the device cookie of the photo stand (section 8)                                                     |
+| `uploaderName`                | text                 | the guest's name at upload time, or the name a stand visitor typed (optional, at most 60 characters) |
+| `filename`, `width`, `height` | text, integer        | WebP from `processImage()` with `photos.maxImageWidth`, metadata such as GPS dropped                 |
+| `hidden`                      | boolean              | default `false`; hosts hide a photo without deleting it                                              |
+| `createdAt`                   | timestamp            |                                                                                                      |
 
 ### AccountInvite (in `server-auth`)
 
@@ -169,7 +206,7 @@ This is a new part of the shared `server-auth`, not of vyte: closed sign-up with
 
 1. Hosts add a guest with name, allowance of companions and an optional note
 2. Or they paste a list, one name per line (empty lines ignored, up to 100), with one allowance for all. Each name becomes a guest; allowances are adjusted per guest afterwards
-3. Each guest card has "Link kopieren" and, where the device offers it, "Teilen" (Web Share API with a short text and the link)
+3. Each guest card has "Link kopieren" and, where the device offers it, "Teilen" (Web Share API with the link and a short text, e.g. "Du bist eingeladen: <Titel> am <Datum>". The final wording comes with the design, this example applies until then)
 4. "Link erneuern" replaces the token after a confirmation; the old link stops working. For a link that went to the wrong person
 5. "Antwort eintragen" lets a host set answer and companions for a guest who answered in person. The guest can still change it through the link
 6. Editing name, note or allowance never changes the answer. Removing a guest asks first and ends their link
@@ -185,6 +222,31 @@ This is a new part of the shared `server-auth`, not of vyte: closed sign-up with
 6. After the event the page only shows the title and "Das Event ist vorbei", no details, no images
 7. An unknown or renewed token shows "Einladung nicht gefunden" with status 404
 
+### Save the date (`/save-the-date/:token`)
+
+1. On the event page hosts turn on save the date and copy or share its link, e.g. into a group chat. It works without a guest list
+2. Visitors see cover image, title, date (time only if not all-day), `locationName` (not the address), `saveTheDateNote` and "Einladung folgt"
+3. "Zum Kalender hinzufügen" downloads an `.ics` file. The guest page offers the same with the full address
+4. The link keeps working after the invitations went out. It shows "Nicht gefunden" (404) when the host turns it off or renews it, and "Das Event ist vorbei" once the event is past
+
+### Photos
+
+Two ways in, both optional, both only during the upload window:
+
+- **Place cards**: for events with fixed seats. `/events/:id/print` prints a folding card per guest with name and a QR code of their photo link (`/photos/:token`). Hosts choose all guests or only those who accepted. Several cards per A4 page, to cut and fold
+- **Photo stand**: for events without fixed seats. Hosts turn on the stand, `/events/:id/print` prints an A5 card with a QR code of `/stand/:token` for tables or the entrance
+
+The upload page:
+
+1. Shows the event title, "Deine Fotos" and how many are left
+2. Through a place card it greets the guest by name. On the stand, visitors may type a name (optional) so the hosts know who took the photos
+3. One or more photos at once, from the camera or the gallery, up to the limit. Each upload shows progress; a failed photo can be retried
+4. Visitors see and delete their own photos: by photo link the ones of that guest, on the stand the ones of this device
+5. Before the window opens: "Ab <Datum> kannst du hier Fotos hochladen". After it closes: "Der Upload ist beendet"
+6. A hint says that the hosts see the photos and that people on them should agree
+
+For hosts, `/events/:id/photos` shows all photos as a grid with the name of the uploader, newest first. They open a photo large, hide or show it, delete it, and download all visible photos as a ZIP. The event page shows the count.
+
 ### Collaborators
 
 1. On the team page the owner creates an invite link and copies or shares it
@@ -198,7 +260,7 @@ This is a new part of the shared `server-auth`, not of vyte: closed sign-up with
 ### Past events
 
 - `/events` shows "Kommend" and "Vergangen"
-- A past event opens read-only: no editing, no guest changes, no invites. Hosts can export the list and the owner can delete the event
+- A past event opens read-only: no editing, no guest changes, no invites. Hosts can export the list and the owner can delete the event. Photos stay manageable, uploads run until the window closes
 - Nothing is deleted automatically
 
 ### Deleting an account
@@ -287,27 +349,71 @@ Both reuse `signUp()` and `startSession()` of `server-auth` and ignore `auth.sig
 | `PUT /rsvp/{token}`                  | `{ response, companions, message }`, `{ invitation }`. 409 after the deadline                                                 |
 | `GET /rsvp/{token}/images/{imageId}` | an image of the event, so the guest page needs no session. 404 once the event is past                                         |
 
+`GET /rsvp/{token}/calendar` answers with the `.ics` file of the event, with the full address.
+
+### Save the date and photo stand (session required, owner or editor)
+
+| Method and path                                  | Content                                                                 |
+| ------------------------------------------------ | ----------------------------------------------------------------------- |
+| `PUT /events/{id}/save-the-date`                 | `{ note }`, turns it on (creates a token if there is none), `{ event }` |
+| `DELETE /events/{id}/save-the-date`              | turns it off, `{ event }`                                               |
+| `POST /events/{id}/save-the-date/token`          | new token, `{ event }`                                                  |
+| `PUT /events/{id}/photo-stand`                   | turns it on, `{ event }`                                                |
+| `DELETE /events/{id}/photo-stand`                | turns it off, `{ event }`                                               |
+| `POST /events/{id}/photo-stand/token`            | new token, `{ event }`                                                  |
+| `POST /events/{id}/guests/{guestId}/photo-token` | new photo token, `{ guest }`; a printed card stops working              |
+
+### Photos for hosts (session required, owner or editor)
+
+| Method and path                        | Content                                                            |
+| -------------------------------------- | ------------------------------------------------------------------ |
+| `GET /events/{id}/photos`              | `{ photos }` with uploader and `hidden`, newest first              |
+| `GET /events/{id}/photos/{photoId}`    | the WebP file                                                      |
+| `PATCH /events/{id}/photos/{photoId}`  | `{ hidden }`, `{ photo }`                                          |
+| `DELETE /events/{id}/photos/{photoId}` | 204                                                                |
+| `GET /events/{id}/photos/archive`      | a ZIP of all visible photos, streamed, named `<uploader>-<n>.webp` |
+
+### Save the date and uploads (public, rate limited per IP)
+
+| Method and path                                                   | Content                                                                                          |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `GET /save-the-date/{token}`                                      | `{ saveTheDate }`: title, date, `allDay`, `timeZone`, `locationName`, note, cover image, `past`  |
+| `GET /save-the-date/{token}/calendar`                             | the `.ics` file, location without address                                                        |
+| `GET /save-the-date/{token}/cover`                                | the cover image                                                                                  |
+| `GET /photos/{token}`                                             | `{ upload }`: event title, guest name, own photos, limit, left, window open or not and its times |
+| `POST /photos/{token}`                                            | `FormData` with one file, `{ upload }`. 409 outside the window or when the limit is reached      |
+| `GET /photos/{token}/{photoId}`                                   | an own photo                                                                                     |
+| `DELETE /photos/{token}/{photoId}`                                | deletes an own photo, `{ upload }`                                                               |
+| `GET /stand/{token}`                                              | `{ upload }` like above, for the photos of this device                                           |
+| `POST /stand/{token}`                                             | `FormData` with one file and an optional `name`. Sets the device cookie on the first upload      |
+| `GET /stand/{token}/{photoId}`, `DELETE /stand/{token}/{photoId}` | own photo of this device                                                                         |
+
 Schemas live in `vyte-contracts` (the account invites in `contracts`, next to `auth`), the OpenAPI document lists every route (`docs.test.ts`).
 
 ## 7. Web draft
 
 Built like `angular-base`: SSR, app shell with header and footer, sign-in of the `auth` feature, legal pages. No sign-up page.
 
-| Route                                    | Feature  | Guard        | Content                                                                     |
-| ---------------------------------------- | -------- | ------------ | --------------------------------------------------------------------------- |
-| `/`                                      | `home`   | –            | What vyte is and sign-in. Signed in: redirect to `/events`                  |
-| `/events`                                | `events` | `authGuard`  | Own events, upcoming and past, "Neues Event"                                |
-| `/events/new`                            | `events` | `authGuard`  | Form of a new event                                                         |
-| `/events/:id`                            | `events` | `authGuard`  | Event details, counts, links to guests and team                             |
-| `/events/:id/edit`                       | `events` | `authGuard`  | Form of the event, images                                                   |
-| `/events/:id/guests`                     | `guests` | `authGuard`  | Guest list with filter, add one or a list, edit, record answers, links, CSV |
-| `/events/:id/team`                       | `team`   | `authGuard`  | Members, invite links and handover (owner), leave (editor)                  |
-| `/invite/:token`                         | `invite` | –            | Accept an invite: sign in or create an account right there                  |
-| `/rsvp/:token`                           | `rsvp`   | –            | The guest page, without app shell, mobile first                             |
-| `/welcome/:token`                        | `auth`   | `guestGuard` | Create an account from an admin link                                        |
-| `/admin/users`                           | `admin`  | `adminGuard` | Accounts, open account links, "Konto anlegen"                               |
-| `/sign-in`                               | `auth`   | `guestGuard` | from `angular-base`                                                         |
-| `/imprint`, `/privacy`, `/accessibility` | `legal`  | –            | from `angular-base`, `SITE_OWNER`                                           |
+| Route                                    | Feature         | Guard        | Content                                                                     |
+| ---------------------------------------- | --------------- | ------------ | --------------------------------------------------------------------------- |
+| `/`                                      | `home`          | –            | What vyte is and sign-in. Signed in: redirect to `/events`                  |
+| `/events`                                | `events`        | `authGuard`  | Own events, upcoming and past, "Neues Event"                                |
+| `/events/new`                            | `events`        | `authGuard`  | Form of a new event                                                         |
+| `/events/:id`                            | `events`        | `authGuard`  | Event details, counts, links to guests and team                             |
+| `/events/:id/edit`                       | `events`        | `authGuard`  | Form of the event, images                                                   |
+| `/events/:id/guests`                     | `guests`        | `authGuard`  | Guest list with filter, add one or a list, edit, record answers, links, CSV |
+| `/events/:id/team`                       | `team`          | `authGuard`  | Members, invite links and handover (owner), leave (editor)                  |
+| `/events/:id/photos`                     | `photos`        | `authGuard`  | All photos, hide, delete, ZIP download                                      |
+| `/events/:id/print`                      | `print`         | `authGuard`  | Place cards and the stand card, print layout without app shell              |
+| `/invite/:token`                         | `invite`        | –            | Accept an invite: sign in or create an account right there                  |
+| `/rsvp/:token`                           | `rsvp`          | –            | The guest page, without app shell, mobile first                             |
+| `/save-the-date/:token`                  | `save-the-date` | –            | Save the date, without app shell                                            |
+| `/photos/:token`                         | `upload`        | –            | Upload page of a guest (place card)                                         |
+| `/stand/:token`                          | `upload`        | –            | Upload page of the photo stand                                              |
+| `/welcome/:token`                        | `auth`          | `guestGuard` | Create an account from an admin link                                        |
+| `/admin/users`                           | `admin`         | `adminGuard` | Accounts, open account links, "Konto anlegen"                               |
+| `/sign-in`                               | `auth`          | `guestGuard` | from `angular-base`                                                         |
+| `/imprint`, `/privacy`, `/accessibility` | `legal`         | –            | from `angular-base`, `SITE_OWNER`                                           |
 
 - `/` is the only page in the sitemap; every other route has `index: false`
 - Dates through `localDate`, but in the event's `timeZone`, not the one of the browser (needs an option in `LocalDatePipe`); all-day events show dates only
@@ -315,38 +421,52 @@ Built like `angular-base`: SSR, app shell with header and footer, sign-in of the
 - The gallery on the guest page opens an image large in `app-ui-dialog`
 - Guest rows as cards, not a table, as in the admin area of the portfolio
 - The CSV comes from the API as a file; the button is a link to the export route, the browser sends the cookie
+- QR codes through a new wrapper `UiQrCode` (`app-ui-qr-code`) in the lib `ui`, rendered as SVG so it prints sharp and works in SSR. The QR library is imported only there, like Spartan
+- Printing through print CSS (`@media print`, `@page`), no PDF on the server. The page shows a preview and "Drucken" calls `window.print()`
+- The photo input accepts JPEG, PNG, WebP and AVIF, not HEIC: iOS then hands over a JPEG. To check on a real iPhone
+- Uploads go one file per request, so progress shows per photo and one failure does not lose the others
 
 ### Look
 
-Own brand for vyte with light and dark mode. Colors, fonts and the Spartan style are decided before the web app is generated, with `/frontend-design`, and then written down here.
+Own brand for vyte with light and dark mode. Colors, fonts and the Spartan style come from a design made with Claude Design before the web app is generated, and are then written down here.
 
 ## 8. Security and privacy
 
-- Tokens (guests, editor invites, account links): 32 random bytes from `crypto.randomBytes`, base64url, compared through a unique index. They are stored as they are, because hosts copy guest links again later
+- Tokens (guests, photo links, save the date, photo stand, editor invites, account links): 32 random bytes from `crypto.randomBytes`, base64url, compared through a unique index. They are stored as they are, because hosts copy guest links again later
 - A guest token only reads its event (without guest list) and answers for its own guest; after the event it reveals only the title
-- Token pages (`/rsvp/…`, `/invite/…`, `/welcome/…`) send `Referrer-Policy: no-referrer`, so the token does not leak to other sites. The API already sends it through `helmet`
+- Token pages (`/rsvp/…`, `/photos/…`, `/stand/…`, `/save-the-date/…`, `/invite/…`, `/welcome/…`) send `Referrer-Policy: no-referrer`, so the token does not leak to other sites. The API already sends it through `helmet`
 - Rate limits per IP with `createRateLimit()` from `server-core` on every public token route; account creation through a token also counts against the rate limit of sign-up
 - Guest page shows names of the hosts only if they set one, never an email
 - Names, notes and messages of guests are personal data: a section in the privacy policy, deleted with the event. Hosts are responsible for the data of their guests. The message hint asks for food wishes, so guests may write about allergies: the privacy policy mentions it
 - The OpenStreetMap link is a plain link, nothing is loaded from OpenStreetMap until the guest clicks it
 - Ownership: every query of a member route filters through `event_members` and the user id
 - CSV: cells starting with `=`, `+`, `-` or `@` get a leading `'`, so a spreadsheet does not run them as formulas
+- A photo link only uploads and shows the photos of its guest. The place card lies open on the table, so it must not reveal the answer, the message or other guests
+- The save-the-date link may travel through group chats: it shows `locationName` only, no address, no guest names
+- Photo stand: the device cookie is a random id, http-only, `SameSite=Lax`, path `/api/v1/stand`, 30 days. It is needed for the upload limit and to show own photos, so it is strictly necessary and needs no consent banner. Clearing it gets a new allowance, which `photos.maxPerEvent` and the rate limit cap
+- Photos show people: they are personal data, a section in the privacy policy, deleted with the event. `processImage()` drops EXIF and GPS. Hidden photos are not in the ZIP
+- Storage: 1000 photos of about 0.5 MB as WebP make about 500 MB per event at most, on `/mnt/data/vyte-api`
 
 ## 9. Technical frame
 
-| Item          | Value                                                                                                                                                                                                                                                                |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Projects      | `vyte-web` (`apps/vyte-web`), `vyte-api` (`apps/vyte-api`), `vyte-contracts` (`packages/vyte/contracts`, alias `@vyte/contracts/*`)                                                                                                                                  |
-| Tags          | `type:app` / `type:api-app` / `type:contract`, each with `scope:vyte`                                                                                                                                                                                                |
-| Libs          | web: `core`, `ui`, `styles`, `contracts`, `vyte-contracts`; API: `server-core`, `server-auth`, `contracts`, `vyte-contracts`                                                                                                                                         |
-| Shared change | account links in `server-auth` and `contracts` (table, service, routes, OpenAPI, tests). `db:generate` of every API app and of `server-auth`. Released as a feature of the other API apps too, which only gain the table                                             |
-| Config        | `auth.signUpEnabled: false`, own rate limits for the token routes through `extendConfig()`                                                                                                                                                                           |
-| Ports         | API 3300, web 4300, so all products run side by side                                                                                                                                                                                                                 |
-| Database      | `vyte_api` (entry in `tools/postgres/init-databases.sql`), tests `vyte_api_test`                                                                                                                                                                                     |
-| Release       | tags `nx1-vyte-web-v*` and `nx1-vyte-api-v*`, images `ghcr.io/<owner>/nx1-vyte-*`, publish jobs in `ci.yml`                                                                                                                                                          |
-| Commit scopes | `vyte-web`, `vyte-api`, `vyte-contracts` in `commitlint.config.mjs`                                                                                                                                                                                                  |
-| Images        | API image as user `node` with an uploads folder owned by uid 1000, like `portfolio-api`                                                                                                                                                                              |
-| Docs          | `docs/apps/vyte-web.md`, `docs/apps/vyte-api.md`, `docs/libs/vyte-contracts.md`, this spec, entries in `docs/README.md` and `docs/workspace.md`, scope `scope:vyte` in `CLAUDE.md`, account links in `docs/libs/server-auth.md` and `docs/backend/authentication.md` |
+| Item                  | Value                                                                                                                                                                                                                                                                                                                        |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Projects              | `vyte-web` (`apps/vyte-web`), `vyte-api` (`apps/vyte-api`), `vyte-contracts` (`packages/vyte/contracts`, alias `@vyte/contracts/*`)                                                                                                                                                                                          |
+| Tags                  | `type:app` / `type:api-app` / `type:contract`, each with `scope:vyte`                                                                                                                                                                                                                                                        |
+| Libs                  | web: `core`, `ui`, `styles`, `contracts`, `vyte-contracts`; API: `server-core`, `server-auth`, `contracts`, `vyte-contracts`                                                                                                                                                                                                 |
+| Shared change         | account links in `server-auth` and `contracts` (table, service, routes, OpenAPI, tests). `db:generate` of every API app and of `server-auth`. Released as a feature of the other API apps too, which only gain the table                                                                                                     |
+| Config                | `auth.signUpEnabled: false`, `photos.*` (section 3) and own rate limits for the token routes through `extendConfig()`                                                                                                                                                                                                        |
+| Shared change, images | `processImage()` of `server-core` gets an optional maximum width, the photos use `photos.maxImageWidth`                                                                                                                                                                                                                      |
+| Shared change, QR     | `UiQrCode` in `ui` with a QR library (e.g. `qrcode`), entry on the showcase page                                                                                                                                                                                                                                             |
+| Dependencies          | a ZIP library for the archive (e.g. `archiver`), in `apps/vyte-api/package.json` and the root `package.json`                                                                                                                                                                                                                 |
+| Ports                 | API 3300, web 4300, so all products run side by side                                                                                                                                                                                                                                                                         |
+| Domain                | <https://vyte.manuel-braun.net> for web and API. Traefik sends `/api/` and `/health` to `vyte-api`, everything else to `vyte-web`, like `dartomat`. `apiBaseUrl` is `https://vyte.manuel-braun.net/api/v1`, `siteUrl` and `cors.origins` the site itself. Web and API share one origin, so the session cookie is first-party |
+| Stacks                | `stacks/vyte-web` and `stacks/vyte-api` in the server setup, data under `/mnt/data/vyte-api` with the uploads owned by uid 1000                                                                                                                                                                                              |
+| Database              | `vyte_api` (entry in `tools/postgres/init-databases.sql`), tests `vyte_api_test`                                                                                                                                                                                                                                             |
+| Release               | tags `nx1-vyte-web-v*` and `nx1-vyte-api-v*`, images `ghcr.io/<owner>/nx1-vyte-*`, publish jobs in `ci.yml`                                                                                                                                                                                                                  |
+| Commit scopes         | `vyte-web`, `vyte-api`, `vyte-contracts` in `commitlint.config.mjs`                                                                                                                                                                                                                                                          |
+| Images                | API image as user `node` with an uploads folder owned by uid 1000, like `portfolio-api`                                                                                                                                                                                                                                      |
+| Docs                  | `docs/apps/vyte-web.md`, `docs/apps/vyte-api.md`, `docs/libs/vyte-contracts.md`, this spec, entries in `docs/README.md` and `docs/workspace.md`, scope `scope:vyte` in `CLAUDE.md`, account links in `docs/libs/server-auth.md` and `docs/backend/authentication.md`                                                         |
 
 Reference projects: `express-api-base` for the API with auth and images, `angular-base` for the web app with auth, legal pages and app shell, `portfolio-web` for the admin user list, `dartomat-*` for a product with its own contracts lib and `/api/v1`.
 
@@ -369,11 +489,16 @@ Reference projects: `express-api-base` for the API with auth and images, `angula
 | Ownership            | the owner can hand the event to an editor                                                                                                   |
 | Sign-up              | closed; admin creates an account by name and shares a link, the person sets email and password. An editor invite can also create an account |
 | Export               | CSV in v1                                                                                                                                   |
-| Look                 | own brand, decided with `/frontend-design` before the web app                                                                               |
+| Save the date        | one link per event, no names, can be turned off and renewed                                                                                 |
+| Guest photos         | optional, 6 per guest by default, config of the API                                                                                         |
+| Place card QR        | its own photo link per guest, separate from the invitation link                                                                             |
+| Without fixed seats  | a photo stand with one shared QR code, anonymous with an optional name, 6 per device                                                        |
+| Who sees photos      | hosts all of them, a guest or device only its own                                                                                           |
+| Look                 | own brand, designed later with Claude Design                                                                                                |
+| Account links        | valid 7 days, no renewing: the admin revokes a link and creates a new one                                                                   |
+| Share text           | comes with the design, until then "Du bist eingeladen: <Titel> am <Datum>"                                                                  |
+| Domain               | `vyte.manuel-braun.net` for web and API, the API under `/api/`                                                                              |
 
 ## 11. Open questions
 
-1. **Look**: colors, fonts and Spartan style (see 7)
-2. **Account links**: is 7 days right, and should an admin also be able to renew a link?
-3. **Share text**: the text that goes with a shared guest link, e.g. "Du bist eingeladen: <Titel> am <Datum>"
-4. **Domain**: where vyte runs, for `siteUrl`, `cors.origins` and the stacks in the server setup
+None right now. The look follows with the design in Claude Design, new questions come up while it is built.
