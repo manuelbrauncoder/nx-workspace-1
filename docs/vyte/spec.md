@@ -428,7 +428,23 @@ Built like `angular-base`: SSR, app shell with header and footer, sign-in of the
 
 ### Look
 
-Own brand for vyte with light and dark mode. Colors, fonts and the Spartan style come from a design made with Claude Design before the web app is generated, and are then written down here.
+Direction **Konfetti**: bright, cheerful and clear, a little playful but not loud. The designs of the guest pages live on the canvas [vyte Design](https://claude.ai/artifact/L45ESAH65DizNnJ1cuw2Bg) (private): invitation, answer sent, event over, save the date, photo upload by place card and by stand. A snapshot with previews that open in the browser is in [design/](design/README.md).
+
+| Token       | Value     | Use                                                       |
+| ----------- | --------- | --------------------------------------------------------- |
+| `--brand`   | `#FFE45C` | ground of the guest pages                                 |
+| ink         | `#1A1A2E` | text, borders, offset shadows                             |
+| surface     | `#FFFFFF` | cards, inputs, chips                                      |
+| `--primary` | `#1F3BD6` | primary buttons, selected answer, links; white text on it |
+| decor       | `#FF5A3C` | decorative shapes only, never behind text                 |
+| soft        | `#FFF6C7` | hints and the quoted message of a guest                   |
+| muted text  | `#55546A` | secondary text on white                                   |
+
+- **Fonts**: Unbounded (600, 800) for headings, numbers and primary buttons; DM Sans (400, 500, 700) for text. Self-hosted in `base/_fonts.scss` of the app, not loaded from Google, so no request leaves the site
+- **Shapes**: cards with a 3 px ink border, radius 28 px and an offset shadow of 3 px without blur; controls with radius 16 px, primary buttons with a 2 px shadow; date, time and place as pill chips
+- **Images**: the cover image as a photo with a white frame, tilted by 1°
+- **Decor**: at most two flat shapes per screen (a circle, a half circle) behind the content, `aria-hidden`
+- **Contrast**: every pair above reaches at least 4.5:1, links in `#1F3BD6` also on the yellow ground
 
 ## 8. Security and privacy
 
@@ -494,11 +510,13 @@ Reference projects: `express-api-base` for the API with auth and images, `angula
 | Place card QR        | its own photo link per guest, separate from the invitation link                                                                             |
 | Without fixed seats  | a photo stand with one shared QR code, anonymous with an optional name, 6 per device                                                        |
 | Who sees photos      | hosts all of them, a guest or device only its own                                                                                           |
-| Look                 | own brand, designed later with Claude Design                                                                                                |
+| Look                 | Konfetti: yellow ground, ink borders, blue primary, Unbounded and DM Sans (see 7)                                                           |
 | Account links        | valid 7 days, no renewing: the admin revokes a link and creates a new one                                                                   |
 | Share text           | comes with the design, until then "Du bist eingeladen: <Titel> am <Datum>"                                                                  |
 | Domain               | `vyte.manuel-braun.net` for web and API, the API under `/api/`                                                                              |
 
 ## 11. Open questions
 
-None right now. The look follows with the design in Claude Design, new questions come up while it is built.
+1. **Host pages**: event list, event page, guest list, team, photos and the print layouts are not designed yet. Same Konfetti look, but calmer for working with lists?
+2. **Dark mode**: the guest pages are light. Do the host pages get a dark variant, and how does Konfetti look in it?
+3. **Spartan style**: Konfetti changes borders, radii and shadows a lot. A new helm lib for vyte, or `helm-vega` with the vyte tokens?

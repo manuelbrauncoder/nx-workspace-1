@@ -17,3 +17,6 @@ packages/shared/helm-*/
 .codex/
 # Written by nx release, kept as generated.
 apps/*/CHANGELOG.md
+# Snapshot of the vyte design canvas, kept byte for byte.
+docs/vyte/design/canvas/
+docs/vyte/design/previews/

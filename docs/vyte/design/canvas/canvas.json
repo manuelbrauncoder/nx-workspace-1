@@ -1,0 +1,32 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-08T10:00:00Z" },
+  "title": "vyte Design",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 1720, "title": "A · Ticket" },
+    "Abendkarte.dc.html": { "x": 470, "y": 0, "w": 390, "h": 1780, "title": "B · Abendkarte" },
+    "Konfetti.dc.html": { "x": 940, "y": 0, "w": 390, "h": 1720, "title": "C · Konfetti" },
+    "Antwort.dc.html": { "x": 0, "y": 2200, "w": 390, "h": 1180, "title": "Antwort gesendet" },
+    "Vorbei.dc.html": { "x": 470, "y": 2200, "w": 390, "h": 844, "title": "Event vorbei" },
+    "SaveTheDate.dc.html": { "x": 940, "y": 2200, "w": 390, "h": 1180, "title": "Save the Date" },
+    "Fotos.dc.html": { "x": 1410, "y": 2200, "w": 390, "h": 1300, "title": "Fotos · Namensschild" },
+    "Aufsteller.dc.html": { "x": 1880, "y": 2200, "w": 390, "h": 1200, "title": "Fotos · Aufsteller" }
+  },
+  "order": [
+    "Main.dc.html",
+    "Abendkarte.dc.html",
+    "Konfetti.dc.html",
+    "Antwort.dc.html",
+    "Vorbei.dc.html",
+    "SaveTheDate.dc.html",
+    "Fotos.dc.html",
+    "Aufsteller.dc.html"
+  ],
+  "notes": {
+    "title": { "x": 0, "y": -300, "text": "Gastseite · drei Richtungen", "kind": "title1", "maxW": 1330 },
+    "konfetti": { "x": 0, "y": 1900, "text": "Konfetti · weitere Seiten für Gäste", "kind": "title1", "maxW": 2270 }
+  },
+  "designSystems": []
+}

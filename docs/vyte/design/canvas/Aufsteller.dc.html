@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Fotos hochladen, Aufsteller</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&amp;family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1F3BD6}a:hover{color:#122896}
+input::placeholder{color:#62617A}
+</style>
+</helmet>
+<main style="position: relative; overflow: hidden; width: 390px; min-height: 1200px; box-sizing: border-box; padding: 16px 16px 32px; display: flex; flex-direction: column; gap: 20px; background: {{ground}}; color: #1A1A2E; font-family: 'DM Sans', system-ui, sans-serif; font-size: 16px; line-height: 1.5;">
+
+<div aria-hidden="true" style="position: absolute; top: 80px; right: -50px; width: 140px; height: 140px; border-radius: 50%; background: #FF5A3C;"></div>
+<div aria-hidden="true" style="position: absolute; top: 760px; left: -50px; width: 110px; height: 55px; border-radius: 0 0 110px 110px; background: #1F3BD6;"></div>
+
+<div style="position: relative; display: flex; align-items: center; height: 44px; padding: 0 4px;">
+<span style="font-family: Unbounded, system-ui, sans-serif; font-weight: 800; font-size: 22px;">vyte</span>
+</div>
+
+<div style="position: relative; display: flex; flex-direction: column; gap: 10px; padding: 8px 4px 0;">
+<p style="margin: 0; font-weight: 700; font-size: 17px;">Annas 30. Geburtstag</p>
+<h1 style="margin: 0; font-family: Unbounded, system-ui, sans-serif; font-weight: 800; font-size: 40px; line-height: 1.02; letter-spacing: -0.03em; text-wrap: balance;">Teilt eure Fotos vom&#160;Abend</h1>
+</div>
+
+<form style="position: relative; background: #FFFFFF; border: 3px solid #1A1A2E; border-radius: 28px; box-shadow: 3px 3px 0 #1A1A2E; padding: 22px 20px; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<label for="uploader-name" style="font-weight: 700;">Dein Name <span style="font-weight: 400; color: #55546A;">(optional)</span></label>
+<input id="uploader-name" type="text" autocomplete="name" placeholder="Damit Anna &amp; Jonas wissen, von wem die Fotos sind" style="box-sizing: border-box; width: 100%; min-height: 52px; padding: 0 14px; border-radius: 16px; border: 3px solid #1A1A2E; font: inherit; color: #1A1A2E;">
+</div>
+<p style="margin: 0; font-weight: 700; font-size: 18px;">Bis zu 6 Fotos von diesem Handy</p>
+<div>
+<label for="stand-input" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; border: 3px solid #1A1A2E; border-radius: 16px; background: {{accent}}; color: #FFFFFF; font-family: Unbounded, system-ui, sans-serif; font-weight: 600; font-size: 16px; box-shadow: 2px 2px 0 #1A1A2E; cursor: pointer;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+Fotos auswählen
+</label>
+<input id="stand-input" type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple="" style="position: absolute; width: 1px; height: 1px; opacity: 0;">
+</div>
+<p style="margin: 0; font-size: 14px; color: #55546A; text-wrap: pretty;">Aus der Kamera oder der Galerie. Hochladen geht bis Sonntag, 21. März.</p>
+</form>
+
+<section aria-labelledby="device-heading" style="position: relative; display: flex; flex-direction: column; gap: 12px;">
+<h2 id="device-heading" style="margin: 0; padding: 0 4px; font-family: Unbounded, system-ui, sans-serif; font-weight: 800; font-size: 20px;">Deine Fotos</h2>
+<div style="padding: 28px 20px; border: 3px dashed #1A1A2E; border-radius: 20px; text-align: center; font-weight: 500;">Von diesem Handy sind noch keine Fotos da.</div>
+</section>
+
+<p style="position: relative; margin: 0; padding: 14px 16px; border-radius: 16px; background: #FFF6C7; border: 2px solid #1A1A2E; font-size: 15px; font-weight: 500; text-wrap: pretty;">Anna &amp; Jonas sehen alle Fotos, andere Gäste nicht. Fragt bitte kurz, bevor ihr Leute fotografiert.</p>
+
+<footer style="position: relative; display: flex; justify-content: center; gap: 16px; font-size: 13px; font-weight: 500;">
+<span>Erstellt mit vyte</span>
+<a href="#">Impressum</a>
+<a href="#">Datenschutz</a>
+</footer>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"ground":{"editor":"color","default":"#FFE45C","options":["#FFE45C","#B8F2D6","#FFC9DE"]},"accent":{"editor":"color","default":"#1F3BD6","options":["#1F3BD6","#1A1A2E","#B4231A"]},"$preview":{"width":390,"height":1200}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+ground: this.props.ground ?? '#FFE45C',
+accent: this.props.accent ?? '#1F3BD6'
+};
+}
+}
+</script>
+</body>
+</html>
