@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "event_members_one_owner_idx" ON "event_members" USING btree ("event_id") WHERE "event_members"."role" = 'owner';

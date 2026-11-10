@@ -84,4 +84,4 @@ If a file cannot be removed from disk, a warning is logged and the request still
 - **No replace:** an image cannot be swapped in place. Delete it and upload the new one; the new image gets a new id.
 - **No explicit order:** images are returned in upload order. Reordering would need a `position` column.
 - **One size:** only the scaled original is stored, no thumbnails.
-- **Files outlive deleted users:** there is no endpoint to delete a user. If one is added, it must remove the user's image files, because the database cascade only removes rows.
+- **Files of deleted users:** the database cascade only removes rows. When an admin deletes a user (`DELETE /admin/users/:id`), the hook registered with `onUserDeleted()` removes their image files after the deletion

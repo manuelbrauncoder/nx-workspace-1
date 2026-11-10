@@ -5,12 +5,17 @@ import {
 import { adminRouter } from '@server/auth/admin.routes';
 import { authRouter } from '@server/auth/auth.routes';
 import { sessionMiddleware } from '@server/auth/auth.session';
+import { onUserDeleted } from '@server/auth/user-deletion';
 import { createServer } from '@server/core/server';
 import packageJson from '../package.json';
 import { buildDocs } from './features/docs/docs.document.js';
+import { eventsRouter } from './features/events/events.routes.js';
+import { removeEventsOfUser } from './features/events/events.user-deletion.js';
 import { apiPrefix } from './shared/api.js';
 
 export function createApp() {
+  onUserDeleted(removeEventsOfUser);
+
   return createServer({
     prefix: apiPrefix,
     middleware: [sessionMiddleware],
@@ -20,6 +25,7 @@ export function createApp() {
       '/admin/account-invites': accountInvitesAdminRouter,
       '/auth': authRouter,
       '/admin': adminRouter,
+      '/events': eventsRouter,
     },
     docs: buildDocs,
     // Kept up to date by `nx release`, reported by /health.

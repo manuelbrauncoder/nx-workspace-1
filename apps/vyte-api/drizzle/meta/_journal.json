@@ -15,6 +15,20 @@
       "when": 1794341852380,
       "tag": "0001_mighty_lyja",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794342674655,
+      "tag": "0002_cute_firebrand",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794343241829,
+      "tag": "0003_sticky_katie_power",
+      "breakpoints": true
     }
   ]
 }

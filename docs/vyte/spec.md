@@ -93,7 +93,7 @@ The photo limits are config of `vyte-api`, not constants, so they change without
 | `locationName`           | text              | optional, at most 200 characters, e.g. "Gartenhaus"                                                                                                                                |
 | `address`                | text              | optional, at most 500 characters, line breaks allowed. When set, the pages show a link "In Karte öffnen" to OpenStreetMap (`https://www.openstreetmap.org/search?query=<address>`) |
 | `allDay`                 | boolean           | default `false`                                                                                                                                                                    |
-| `startsAt`               | timestamp with tz | required. All-day: midnight of the first day in `timeZone`                                                                                                                         |
+| `startsAt`               | timestamp with tz | required. All-day: midnight of the first day in `timeZone`; the API uses only its local day                                                                                        |
 | `endsAt`                 | timestamp with tz | optional, not before `startsAt`. All-day: midnight of the last day, the event lasts until the end of that day                                                                      |
 | `timeZone`               | IANA name         | required, from the browser of the creator, e.g. `Europe/Berlin`. Times are shown in it for everyone                                                                                |
 | `rsvpDeadline`           | timestamp with tz | optional, not after `startsAt`. Without one, answers are open until `startsAt`                                                                                                     |
@@ -309,7 +309,7 @@ Creating the account reuses `hashPassword()`, `insertUser()` and `startSession()
 | `GET /events/{id}`                     | member        | `{ event }` with role, counts, images and `past`                   |
 | `PATCH /events/{id}`                   | owner, editor | changes fields, `{ event }`                                        |
 | `DELETE /events/{id}`                  | owner         | 204, also for a past event                                         |
-| `POST /events/{id}/images`             | owner, editor | `FormData` with files, appended up to 6, `{ images }`              |
+| `POST /events/{id}/images`             | owner, editor | `FormData` with files, appended up to 6 (409 beyond), `{ images }` |
 | `PUT /events/{id}/images/order`        | owner, editor | `{ ids }` in the new order, `{ images }`                           |
 | `DELETE /events/{id}/images/{imageId}` | owner, editor | `{ images }`                                                       |
 | `GET /events/{id}/images/{imageId}`    | member        | the WebP file                                                      |

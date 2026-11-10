@@ -6,12 +6,15 @@ import {
 } from '@server/auth/account-invites.routes';
 import { adminRouter } from '@server/auth/admin.routes';
 import { authRouter } from '@server/auth/auth.routes';
+import { eventImageSchema, eventSchema } from '@vyte/contracts/events';
 import type { Router } from 'express';
+import sharp from 'sharp';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import packageJson from '../../../package.json';
 import { apiPrefix } from '../../shared/api.js';
 import { adminAgent, app, signedUpAgent } from '../../test/helpers.js';
+import { eventsRouter } from '../events/events.routes.js';
 import { buildDocs } from './docs.document.js';
 
 /** "POST /api/v1/auth/sign-in" for every route registered on the router. */
@@ -50,6 +53,7 @@ describe('docs', () => {
       ...routesOf(`${apiPrefix}/admin/account-invites`, accountInvitesAdminRouter),
       ...routesOf(`${apiPrefix}/auth`, authRouter),
       ...routesOf(`${apiPrefix}/admin`, adminRouter),
+      ...routesOf(`${apiPrefix}/events`, eventsRouter),
     ];
 
     expect(documented.sort()).toEqual(implemented.sort());
@@ -66,6 +70,42 @@ describe('docs', () => {
     for (const user of list.body.users) {
       expect(userSchema.strict().safeParse(user).error).toBeUndefined();
     }
+  });
+
+  it('documents the event shapes the API really returns', async () => {
+    const agent = await signedUpAgent('ada@example.com');
+    const created = await agent
+      .post(`${apiPrefix}/events`)
+      .send({
+        title: 'Party',
+        description: '<p>Hi</p>',
+        locationName: 'Garden',
+        startsAt: '2999-06-10T16:00:00.000Z',
+        endsAt: '2999-06-10T20:00:00.000Z',
+        rsvpDeadline: '2999-06-01T16:00:00.000Z',
+        timeZone: 'Europe/Berlin',
+      })
+      .expect(201);
+    expect(eventSchema.strict().safeParse(created.body.event).error).toBeUndefined();
+    const { id } = created.body.event;
+
+    const png = await sharp({ create: { width: 40, height: 20, channels: 3, background: 'red' } })
+      .png()
+      .toBuffer();
+    const upload = await agent
+      .post(`${apiPrefix}/events/${id}/images`)
+      .attach('images', png, 'a.png')
+      .expect(201);
+    expect(upload.body.images).toHaveLength(1);
+    expect(eventImageSchema.strict().safeParse(upload.body.images[0]).error).toBeUndefined();
+
+    const read = await agent.get(`${apiPrefix}/events/${id}`).expect(200);
+    expect(read.body.event.images).toHaveLength(1);
+    expect(eventSchema.strict().safeParse(read.body.event).error).toBeUndefined();
+
+    const list = await agent.get(`${apiPrefix}/events`).expect(200);
+    expect(list.body.events).toHaveLength(1);
+    expect(eventSchema.strict().safeParse(list.body.events[0]).error).toBeUndefined();
   });
 
   it('documents the account link shapes the API really returns', async () => {
