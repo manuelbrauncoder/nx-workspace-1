@@ -1,3 +1,4 @@
+import { DrizzleQueryError } from 'drizzle-orm';
 import type { ErrorRequestHandler } from 'express';
 import { MulterError } from 'multer';
 import { HttpError } from '../errors';
@@ -23,7 +24,13 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, next) => {
 
   const httpError = toHttpError(error);
   if (!httpError) {
-    logger.error({ err: error }, 'Unhandled error');
+    // A failed query carries its parameters (tokens, emails, password hashes) in its message and
+    // fields; log the database error and the SQL without them.
+    if (error instanceof DrizzleQueryError) {
+      logger.error({ err: error.cause, query: error.query }, 'Unhandled error');
+    } else {
+      logger.error({ err: error }, 'Unhandled error');
+    }
     res.status(500).json({ error: { message: 'Internal server error' } });
     return;
   }
