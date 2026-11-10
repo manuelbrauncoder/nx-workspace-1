@@ -1,3 +1,4 @@
+import { registerAccountInviteDocs } from '@server/auth/account-invites.openapi';
 import { registerAdminDocs } from '@server/auth/admin.openapi';
 import { registerAuthDocs } from '@server/auth/auth.openapi';
 import { buildOpenApiDocument, type OpenApiDocument } from '@server/core/openapi';
@@ -10,7 +11,8 @@ under \`/api/v1\`; only \`/health\` is not.
 
 Authentication uses an HTTP-only session cookie, set by sign-in. Browser clients must send
 requests with credentials (\`credentials: "include"\` in fetch, \`withCredentials: true\` in
-Angular). Sign-up is closed: accounts come from an admin.
+Angular). Sign-up is closed: an admin creates an account link, the person sets email and
+password through it.
 
 All errors have the shape \`{ "error": { "message": "...", "details": [...] } }\`.
 `;
@@ -22,6 +24,6 @@ export function buildDocs(): OpenApiDocument {
     version: packageJson.version,
     description,
     prefix: apiPrefix,
-    register: [registerAuthDocs, registerAdminDocs],
+    register: [registerAuthDocs, registerAccountInviteDocs, registerAdminDocs],
   });
 }

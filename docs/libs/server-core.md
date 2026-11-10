@@ -11,17 +11,17 @@ The base of every API app. Knows no features.
 
 ## Contents
 
-| File                       | What it holds                                                                              | Guide                                                             |
-| -------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| `config.ts`                | `config` with the shared keys, `extendConfig(fileShape, envShape?)` for the keys of an app | [Configuration](../backend/configuration.md)                      |
-| `server.ts`                | `createServer({ routes, middleware, prefix, docs, version })`, `startServer()`             | [Backend architecture](../backend/architecture.md#request-flow)   |
-| `errors.ts`, `validate.ts` | `HttpError` with helpers like `notFound()`, `parse()` for request input                    | [Backend architecture](../backend/architecture.md#error-handling) |
-| `logger.ts`                | pino, redacts `Cookie` and `Set-Cookie`                                                    | [Authentication](../backend/authentication.md#rate-limiting)      |
-| `middleware/`              | Error handler, origin check against CSRF, `createRateLimit()`                              | [Authentication](../backend/authentication.md#csrf-protection)    |
-| `db/`                      | `db`, `pool`, `runMigrations()`                                                            | [Database](../backend/database.md)                                |
-| `images.ts`                | Image processing with sharp: pixel limit, WebP, save, remove                               | [Notes and images](../backend/notes-and-images.md)                |
-| `openapi.ts`               | Helpers for the `*.openapi.ts` of the features, `buildOpenApiDocument()`                   | [Backend architecture](../backend/architecture.md)                |
-| `testing/global-setup.ts`  | Creates and migrates the test database of a project                                        | [Testing](../backend/testing.md)                                  |
+| File                       | What it holds                                                                                                                         | Guide                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `config.ts`                | `config` with the shared keys, `extendConfig(fileShape, envShape?)` for the keys of an app                                            | [Configuration](../backend/configuration.md)                              |
+| `server.ts`                | `createServer({ routes, middleware, prefix, docs, version })`, `startServer()`                                                        | [Backend architecture](../backend/architecture.md#request-flow)           |
+| `errors.ts`, `validate.ts` | `HttpError` with helpers like `notFound()`, `parse()` for request input                                                               | [Backend architecture](../backend/architecture.md#error-handling)         |
+| `logger.ts`                | pino, redacts `Cookie`, `Set-Cookie`, `Referer` and `Location`, masks token segments of URLs (`redactTokens()`, `serializeRequest()`) | [Authentication](../backend/authentication.md#what-the-request-log-keeps) |
+| `middleware/`              | Error handler (logs failed queries without their parameters), origin check against CSRF, `createRateLimit()`                          | [Authentication](../backend/authentication.md#csrf-protection)            |
+| `db/`                      | `db`, `pool`, `runMigrations()`                                                                                                       | [Database](../backend/database.md)                                        |
+| `images.ts`                | Image processing with sharp: pixel limit, WebP, save, remove                                                                          | [Notes and images](../backend/notes-and-images.md)                        |
+| `openapi.ts`               | Helpers for the `*.openapi.ts` of the features, `buildOpenApiDocument()`                                                              | [Backend architecture](../backend/architecture.md)                        |
+| `testing/global-setup.ts`  | Creates and migrates the test database of a project                                                                                   | [Testing](../backend/testing.md)                                          |
 
 ## Rules
 

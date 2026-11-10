@@ -290,15 +290,15 @@ Routes under `/api/v1` like `dartomat-api`, `/health` and `/docs` at the root. A
 
 ### Accounts (`server-auth`)
 
-| Method and path                      | Who    | Content                                                                                          |
-| ------------------------------------ | ------ | ------------------------------------------------------------------------------------------------ |
-| `GET /admin/account-invites`         | admin  | `{ invites }`: open account links                                                                |
-| `POST /admin/account-invites`        | admin  | `{ name }`, `{ invite }` with token and expiry                                                   |
-| `DELETE /admin/account-invites/{id}` | admin  | 204                                                                                              |
-| `GET /auth/account-invites/{token}`  | public | `{ invite }`: the name                                                                           |
-| `POST /auth/account-invites/{token}` | public | `{ name, email, password }`, creates the account and signs in, `{ user }`. 409 for a taken email |
+| Method and path                      | Who    | Content                                                                                                                                                  |
+| ------------------------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /admin/account-invites`         | admin  | `{ invites }`: open account links                                                                                                                        |
+| `POST /admin/account-invites`        | admin  | `{ name }`, `{ invite }` with token and expiry                                                                                                           |
+| `DELETE /admin/account-invites/{id}` | admin  | 204                                                                                                                                                      |
+| `GET /auth/account-invites/{token}`  | public | `{ invite }`: the name                                                                                                                                   |
+| `POST /auth/account-invites/{token}` | public | `{ email, password, name? }` (without a name the account takes the one of the link), creates the account and signs in, `{ user }`. 409 for a taken email |
 
-Both reuse `signUp()` and `startSession()` of `server-auth` and ignore `auth.signUpEnabled`.
+Creating the account reuses `hashPassword()`, `insertUser()` and `startSession()` of `server-auth`: the password is hashed first, then the user is inserted and the link marked used in one transaction with the link locked. Both ignore `auth.signUpEnabled`.
 
 ### Events (session required)
 
@@ -451,7 +451,7 @@ Direction **Konfetti**: bright, cheerful and clear, a little playful but not lou
 - Tokens (guests, photo links, save the date, photo stand, editor invites, account links): 32 random bytes from `crypto.randomBytes`, base64url, compared through a unique index. They are stored as they are, because hosts copy guest links again later
 - A guest token only reads its event (without guest list) and answers for its own guest; after the event it reveals only the title
 - Token pages (`/rsvp/…`, `/photos/…`, `/stand/…`, `/save-the-date/…`, `/invite/…`, `/welcome/…`) send `Referrer-Policy: no-referrer`, so the token does not leak to other sites. The API already sends it through `helmet`
-- Rate limits per IP with `createRateLimit()` from `server-core` on every public token route; account creation through a token also counts against the rate limit of sign-up
+- Rate limits per IP with `createRateLimit()` from `server-core` on every public token route that writes (answers, uploads, accepting an invite or account link); account creation through a token also counts against the rate limit of sign-up. Reading a token (`GET`) has no per-IP limit: the web app renders those pages on the server, so every guest would arrive from the server's IP. A token of 32 random bytes cannot be guessed, and every unknown token answers the same 404
 - Guest page shows names of the hosts only if they set one, never an email
 - Names, notes and messages of guests are personal data: a section in the privacy policy, deleted with the event. Hosts are responsible for the data of their guests. The message hint asks for food wishes, so guests may write about allergies: the privacy policy mentions it
 - The OpenStreetMap link is a plain link, nothing is loaded from OpenStreetMap until the guest clicks it

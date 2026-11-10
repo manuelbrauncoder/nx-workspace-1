@@ -14,14 +14,15 @@ packages/server/core/src/           @server/core/*: what every API app is built 
   db/db.ts                          Postgres pool and the Drizzle instance
   db/migrate.ts                     runs migrations (used by the script and the tests)
   errors.ts                         HttpError and helpers like notFound()
-  logger.ts                         pino logger
+  logger.ts                         pino logger, masks token segments in the request log
   validate.ts                       parse(): zod validation for request input
   openapi.ts                        helpers for the feature openapi files, buildOpenApiDocument()
   middleware/                       error handler, origin check
   testing/global-setup.ts           creates and migrates the test database
 packages/server/auth/src/           @server/auth/*: accounts for every API app
-  users.table.ts, sessions.table.ts
-  auth.*.ts                         sign-up, sign-in, sign-out, sessions, guards
+  users.table.ts, sessions.table.ts, account-invites.table.ts
+  auth.*.ts                         sign-up, sign-in, sign-out, sessions, guards, hashing and inserting users
+  account-invites.*.ts              account links for closed sign-up: service, routers, OpenAPI
   admin.*.ts                        user management for admins, the first admin
   user-deletion.ts                  onUserDeleted(): cleanup hooks of features
   rate-limit.ts                     rate limit for the auth endpoints
@@ -68,7 +69,7 @@ There are two layers on purpose: **routes** know about HTTP, **services** know a
 
 `createServer()` in [`packages/server/core/src/server.ts`](../../packages/server/core/src/server.ts) registers the middleware in this order, [`apps/express-api-base/src/app.ts`](../../apps/express-api-base/src/app.ts) passes the session middleware and the routers:
 
-1. **Request logging** (`pino-http`).
+1. **Request logging** (`pino-http`). Token segments of the URL are logged as `[token]`, see [Authentication](authentication.md#what-the-request-log-keeps).
 2. **Security headers** (`helmet`). `Cross-Origin-Resource-Policy` is set to `same-site` so a frontend on a sibling subdomain can embed images from the API.
 3. **CORS**, allowing only the origins from the config, with credentials.
 4. **Origin check**, the CSRF protection. See [Authentication](authentication.md#csrf-protection).
@@ -76,7 +77,7 @@ There are two layers on purpose: **routes** know about HTTP, **services** know a
 6. `/health` (answers `{ status: 'ok', version }` with the version passed to `createServer({ version })` from the app's `package.json`, see [Releasing](../releasing.md#seeing-the-running-version)) and, if enabled, `/docs`. They are mounted before the session middleware, so they never touch the session store.
 7. **Session middleware**, then the `/auth`, `/notes` and `/admin` routers. With `createServer({ prefix: '/api/v1' })` they are mounted below the prefix, `/health` and `/docs` stay at the root (portfolio-api does this). Pass the same `prefix` to `buildOpenApiDocument()`, the features register their paths without it.
 8. **404 handler** for unknown routes.
-9. **Error handler**.
+9. **Error handler**. A failed query is logged without its parameters.
 
 ## Validation
 

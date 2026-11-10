@@ -1,3 +1,7 @@
+import {
+  accountInvitesAdminRouter,
+  accountInvitesRouter,
+} from '@server/auth/account-invites.routes';
 import { adminRouter } from '@server/auth/admin.routes';
 import { authRouter } from '@server/auth/auth.routes';
 import { sessionMiddleware } from '@server/auth/auth.session';
@@ -10,7 +14,10 @@ export function createApp() {
   return createServer({
     prefix: apiPrefix,
     middleware: [sessionMiddleware],
+    // sign-up is closed: accounts come from account links; listed first by convention
     routes: {
+      '/auth/account-invites': accountInvitesRouter,
+      '/admin/account-invites': accountInvitesAdminRouter,
       '/auth': authRouter,
       '/admin': adminRouter,
     },

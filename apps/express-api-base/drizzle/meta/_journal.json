@@ -15,6 +15,13 @@
       "when": 1791315907525,
       "tag": "0001_cuddly_white_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794341849376,
+      "tag": "0002_bent_stature",
+      "breakpoints": true
     }
   ]
 }

@@ -35,6 +35,33 @@ describe('auth wiring', () => {
     }
   });
 
+  it('creates an account through an account link while sign-up is closed', async () => {
+    const admin = await adminAgent();
+    const created = await admin
+      .post('/api/v1/admin/account-invites')
+      .send({ name: 'Ada' })
+      .expect(201);
+    const { token } = created.body.invite;
+
+    config.auth.signUpEnabled = false;
+    try {
+      const preview = await request(app).get(`/api/v1/auth/account-invites/${token}`).expect(200);
+      expect(preview.body).toEqual({ invite: { name: 'Ada' } });
+
+      const agent = request.agent(app);
+      const res = await agent
+        .post(`/api/v1/auth/account-invites/${token}`)
+        .send({ email: 'ada@example.com', password: 'correct-horse' })
+        .expect(201);
+      expect(res.body.user).toMatchObject({ email: 'ada@example.com', name: 'Ada', role: 'user' });
+      await agent.get('/api/v1/auth/me').expect(200);
+    } finally {
+      config.auth.signUpEnabled = true;
+    }
+
+    await request(app).get(`/api/v1/auth/account-invites/${token}`).expect(404);
+  });
+
   it('signs the seeded admin in under the prefix', async () => {
     const agent = await adminAgent();
     const res = await agent.get('/api/v1/auth/me').expect(200);

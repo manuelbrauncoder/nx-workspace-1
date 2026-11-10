@@ -1,6 +1,6 @@
 # vyte-api
 
-The backend of vyte, event planning with a guest list and a personal link per guest. Right now it is the skeleton: the accounts and the admin endpoints of `server-auth` on the shared infrastructure of `server-core`. The events, guests and answers follow the [specification](../vyte/spec.md). Built like `express-api-base`, so this page only covers what differs.
+The backend of vyte, event planning with a guest list and a personal link per guest. Right now it is the skeleton: the accounts of `server-auth` (sign-in, account links, the admin endpoints) on the shared infrastructure of `server-core`. The events, guests and answers follow the [specification](../vyte/spec.md). Built like `express-api-base`, so this page only covers what differs.
 
 | Item     | Value                                                                                          |
 | -------- | ---------------------------------------------------------------------------------------------- |
@@ -31,25 +31,27 @@ Then, every time:
 pnpm nx serve vyte-api
 ```
 
-The targets are those of [express-api-base](express-api-base.md#running-it). The first start creates the admin from `admin` in [config/development.json](../../apps/vyte-api/config/development.json), it is the only account until the account links of the specification exist.
+The targets are those of [express-api-base](express-api-base.md#running-it). The first start creates the admin from `admin` in [config/development.json](../../apps/vyte-api/config/development.json). The admin creates further accounts through account links.
 
 ## Endpoints
 
 All under `/api/v1`, only `/health` and `/docs` are at the root.
 
-| Path       | From          | Content                                                                      |
-| ---------- | ------------- | ---------------------------------------------------------------------------- |
-| `/auth/…`  | `server-auth` | Sign-in, sign-out, `/auth/me`; `POST /auth/sign-up` answers 403 while closed |
-| `/admin/…` | `server-auth` | Users for admins: list, change role, delete, revoke sessions                 |
-| `/health`  | `server-core` | `{ "status": "ok", "version": "…" }` with the version of `package.json`      |
-| `/docs`    | `server-core` | OpenAPI document and Swagger UI, when `docs.enabled` is set                  |
+| Path                           | From          | Content                                                                      |
+| ------------------------------ | ------------- | ---------------------------------------------------------------------------- |
+| `/auth/…`                      | `server-auth` | Sign-in, sign-out, `/auth/me`; `POST /auth/sign-up` answers 403 while closed |
+| `/auth/account-invites/:token` | `server-auth` | Account links: read the name, create the account and sign in (public)        |
+| `/admin/…`                     | `server-auth` | Users for admins: list, change role, delete, revoke sessions                 |
+| `/admin/account-invites`       | `server-auth` | Account links for admins: list open ones, create, revoke                     |
+| `/health`                      | `server-core` | `{ "status": "ok", "version": "…" }` with the version of `package.json`      |
+| `/docs`                        | `server-core` | OpenAPI document and Swagger UI, when `docs.enabled` is set                  |
 
 The event routes (events, guests, answers, photos) are not there yet. The spec lists them in [section 6](../vyte/spec.md#6-api-draft).
 
 ## Differences to express-api-base
 
 - **Route prefix**: `createServer({ prefix: '/api/v1' })`, the OpenAPI document adds the same prefix
-- **Sign-up closed**: `auth.signUpEnabled` is `false` in development and production. The shared sign-up route stays and answers 403. Accounts are meant to come from an admin, but the account links of the spec are not built yet
+- **Sign-up closed**: `auth.signUpEnabled` is `false` in development and production. The shared sign-up route stays and answers 403. Accounts come from account links of an admin, see [server-auth](../libs/server-auth.md#in-an-app). Both account link routers are mounted here. Links work once and for 7 days, see [Authentication](../backend/authentication.md#account-links)
 - **Cookie**: `sid` in development, `__Host-sid` in production (`session.cookieName`). The `__Host-` prefix requires `Secure`, which production sets
 - **Docs off in production**: `docs.enabled` is `false` in [production.example.json](../../apps/vyte-api/config/production.example.json), so `/docs` is not mounted there
 - **Port**: 3300 locally, 3000 in the container, so all products run side by side

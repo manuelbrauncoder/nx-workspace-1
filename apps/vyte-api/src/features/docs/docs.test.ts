@@ -1,4 +1,9 @@
+import { accountInviteSchema, publicAccountInviteSchema } from '@contracts/account-invites';
 import { userSchema } from '@contracts/auth';
+import {
+  accountInvitesAdminRouter,
+  accountInvitesRouter,
+} from '@server/auth/account-invites.routes';
 import { adminRouter } from '@server/auth/admin.routes';
 import { authRouter } from '@server/auth/auth.routes';
 import type { Router } from 'express';
@@ -41,6 +46,8 @@ describe('docs', () => {
       .filter((route) => route !== 'GET /health');
 
     const implemented = [
+      ...routesOf(`${apiPrefix}/auth/account-invites`, accountInvitesRouter),
+      ...routesOf(`${apiPrefix}/admin/account-invites`, accountInvitesAdminRouter),
       ...routesOf(`${apiPrefix}/auth`, authRouter),
       ...routesOf(`${apiPrefix}/admin`, adminRouter),
     ];
@@ -59,5 +66,26 @@ describe('docs', () => {
     for (const user of list.body.users) {
       expect(userSchema.strict().safeParse(user).error).toBeUndefined();
     }
+  });
+
+  it('documents the account link shapes the API really returns', async () => {
+    const admin = await adminAgent();
+    const created = await admin
+      .post(`${apiPrefix}/admin/account-invites`)
+      .send({ name: 'Ada' })
+      .expect(201);
+    expect(accountInviteSchema.strict().safeParse(created.body.invite).error).toBeUndefined();
+
+    const list = await admin.get(`${apiPrefix}/admin/account-invites`).expect(200);
+    expect(list.body.invites).toHaveLength(1);
+    expect(accountInviteSchema.strict().safeParse(list.body.invites[0]).error).toBeUndefined();
+
+    const token = created.body.invite.token;
+    const publicInvite = await request(app)
+      .get(`${apiPrefix}/auth/account-invites/${token}`)
+      .expect(200);
+    expect(
+      publicAccountInviteSchema.strict().safeParse(publicInvite.body.invite).error,
+    ).toBeUndefined();
   });
 });
