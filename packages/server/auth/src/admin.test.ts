@@ -1,4 +1,6 @@
 import { config } from '@server/core/config';
+import { db } from '@server/core/db/db';
+import { sql } from 'drizzle-orm';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { seedAdmin } from './admin.seed';
@@ -120,6 +122,23 @@ describe('admin', () => {
 
     remove();
     expect(steps).toEqual(['before true', 'after']);
+  });
+
+  it('has signed the user out before the hooks of the features run', async () => {
+    const admin = await adminAgent();
+    const user = await signedUpAgent('ada@example.com');
+    const id = await idOf(user);
+    const sessions = sql`SELECT count(*)::int AS n FROM session WHERE sess::jsonb ->> 'userId' = ${id}`;
+    const seen: number[] = [];
+    const remove = onUserDeleted(async () => {
+      const result = await db.execute(sessions);
+      seen.push((result.rows[0] as { n: number }).n);
+    });
+
+    await admin.delete(`/admin/users/${id}`).expect(204);
+
+    remove();
+    expect(seen).toEqual([0]);
   });
 
   it('revokes all sessions of a user, who can sign in again', async () => {

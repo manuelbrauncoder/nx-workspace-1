@@ -113,12 +113,23 @@ At every start the API checks whether an admin exists. If none does, it creates 
 | ---------------------------------- | ------------------------------------------------------------ |
 | `GET /admin/users`                 | Lists all users, oldest first                                |
 | `PATCH /admin/users/:id`           | Sets the role: `{ "role": "admin" }` or `{ "role": "user" }` |
-| `DELETE /admin/users/:id`          | Deletes the user with their sessions, notes and images       |
+| `DELETE /admin/users/:id`          | Deletes the user, see [Deleting a user](#deleting-a-user)    |
 | `DELETE /admin/users/:id/sessions` | Signs the user out on all devices                            |
 
 - Without a session they answer 401, for a normal user 403.
 - An admin cannot change their own role or delete their own account (409). At least one admin therefore always remains.
 - The role is read from the database on every request. Removing admin rights takes effect immediately; the user's sessions stay valid.
+
+### Deleting a user
+
+`deleteUser()` in [`admin.service.ts`](../../packages/server/auth/src/admin.service.ts) runs in this order:
+
+1. Revokes the user's sessions, so the user cannot write anything while the hooks run.
+2. Runs the hooks registered with `onUserDeleted()` ([`user-deletion.ts`](../../packages/server/auth/src/user-deletion.ts)). A hook removes what the database cascade does not cover, e.g. the files of a feature, or the events the user owns in `vyte-api`, which the hook deletes before the user.
+3. Deletes the user in a transaction, which also revokes the sessions again. The rows that cascade (memberships, notes, image rows) go with it.
+4. Runs the cleanups the hooks returned, e.g. removing the image files, once the deletion is committed.
+
+If step 3 fails, the work of the hooks stays done, so the deletion is not all-or-nothing.
 
 To protect other routes the same way:
 

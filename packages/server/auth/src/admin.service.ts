@@ -27,6 +27,8 @@ export async function setRole(actorId: string, userId: string, role: Role) {
 export async function deleteUser(actorId: string, userId: string) {
   if (userId === actorId) throw conflict('You cannot delete your own account');
 
+  // signed out first, so the user cannot create rows while the hooks of the features run
+  await revokeSessions(userId);
   const cleanUp = await prepareUserDeletion(userId);
 
   // rows of features go with the user (cascade); their files are removed afterwards

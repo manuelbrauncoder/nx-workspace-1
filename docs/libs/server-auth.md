@@ -19,7 +19,7 @@ Accounts for every API app: users and sessions, sign-up and sign-in, guards, the
 | `auth.*.ts`                           | Sign-up (switchable with `auth.signUpEnabled`), sign-in, sign-out, `/auth/me`, the session middleware, `requireAuth`, `requireAdmin`, `currentUserId()`, `hashPassword()`, `insertUser()` |
 | `account-invites.*.ts`                | Account links: the service, the two opt-in routers `accountInvitesAdminRouter` and `accountInvitesRouter`, their OpenAPI entries `registerAccountInviteDocs()`                            |
 | `admin.*.ts`                          | Users for admins, `seedAdmin()` for the first admin                                                                                                                                       |
-| `user-deletion.ts`                    | `onUserDeleted()`: cleanup hooks of features when an admin deletes a user                                                                                                                 |
+| `user-deletion.ts`                    | `onUserDeleted()`: cleanup hooks of features when an admin deletes a user. The sessions of the user are revoked before the hooks run                                                      |
 | `rate-limit.ts`                       | The rate limit of sign-up, sign-in and creating an account from a link                                                                                                                    |
 | `testing/`                            | `signedUpAgent()`, `adminAgent()`, `resetAuthTables()` for the tests of the apps                                                                                                          |
 
