@@ -40,6 +40,7 @@ Rules for the API apps (`apps/*-api`, `packages/server/*`). They add to the conv
 - Counting limits (guests per event, editors, images, `photos.maxPerGuest`, `photos.maxPerDevice`, `photos.maxPerEvent`) are checked on the server, inside the transaction that inserts, with the parent row locked. A check before the transaction lets parallel requests pass the limit
 - Time windows (RSVP deadline, upload window, past events) are checked on the server against the event's `timeZone`, never trusted from the client
 - Pasted lists and bulk inserts have a maximum (100 names)
+- Server rendering: when the web app renders a token page on the server, its read request reaches the API from the server's own IP, not the guest's. A per-IP limit on those `GET` routes counts every guest as one client. Limit the writes and uploads the browser sends itself per IP; give the server-rendered reads no per-IP limit or a separate high one, and never trust a client IP forwarded by the web server
 
 ## Uploads
 
