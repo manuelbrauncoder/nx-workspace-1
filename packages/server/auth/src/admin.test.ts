@@ -1,15 +1,27 @@
 import { config } from '@server/core/config';
+import { db } from '@server/core/db/db';
+import { logger } from '@server/core/logger';
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { seedAdmin } from './admin.seed';
 import { adminAgent, app, signedUpAgent } from './testing/test-app';
 import { onUserDeleted } from './user-deletion';
+import { users } from './users.table';
 
 const UNKNOWN_ID = '00000000-0000-4000-8000-000000000000';
 
 async function idOf(agent: Awaited<ReturnType<typeof signedUpAgent>>): Promise<string> {
   const me = await agent.get('/auth/me').expect(200);
   return me.body.user.id;
+}
+
+/** Makes process.exit throw instead of ending the test run, and silences the fatal log. */
+function mockExit() {
+  const exit = vi.spyOn(process, 'exit').mockImplementation(() => {
+    throw new Error('process.exit');
+  });
+  const fatal = vi.spyOn(logger, 'fatal').mockImplementation(() => undefined);
+  return { exit, fatal };
 }
 
 describe('admin', () => {
@@ -20,6 +32,74 @@ describe('admin', () => {
     const list = await admin.get('/admin/users').expect(200);
     expect(list.body.users).toHaveLength(1);
     expect(list.body.users[0]).toMatchObject({ email: config.admin.email, role: 'admin' });
+  });
+
+  it('ends the process instead of creating an admin with a placeholder password in production', async () => {
+    const { exit, fatal } = mockExit();
+    try {
+      await expect(seedAdmin({ admin: config.admin, nodeEnv: 'production' })).rejects.toThrow(
+        'process.exit',
+      );
+
+      expect(exit).toHaveBeenCalledWith(1);
+      expect(fatal).toHaveBeenCalledWith(expect.stringContaining('placeholder'));
+      expect(fatal).not.toHaveBeenCalledWith(expect.stringContaining(config.admin.password));
+      expect(await db.select().from(users)).toHaveLength(0);
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  it('creates the admin with a strong password in production', async () => {
+    const admin = { email: 'ops@example.com', password: 'a-long-production-password' };
+    await seedAdmin({ admin, nodeEnv: 'production' });
+
+    const agent = request.agent(app);
+    await agent.post('/auth/sign-in').send(admin).expect(200);
+    const me = await agent.get('/auth/me').expect(200);
+    expect(me.body.user.role).toBe('admin');
+  });
+
+  it('accepts a placeholder in production once the admin has another password', async () => {
+    await seedAdmin({
+      admin: { email: config.admin.email, password: 'a-long-production-password' },
+      nodeEnv: 'production',
+    });
+    const { exit } = mockExit();
+    try {
+      await expect(
+        seedAdmin({ admin: config.admin, nodeEnv: 'production' }),
+      ).resolves.toBeUndefined();
+      expect(exit).not.toHaveBeenCalled();
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  it('ends the process in production while an admin still has a placeholder password', async () => {
+    // created by an older version, which did not check the password
+    await seedAdmin({ admin: config.admin, nodeEnv: 'test' });
+    const { exit, fatal } = mockExit();
+    try {
+      const settings = { admin: config.admin, nodeEnv: 'production' as const };
+      await expect(seedAdmin(settings)).rejects.toThrow('process.exit');
+
+      expect(exit).toHaveBeenCalledWith(1);
+      expect(fatal).toHaveBeenCalledWith(expect.stringContaining(config.admin.email));
+      expect(fatal).not.toHaveBeenCalledWith(expect.stringContaining(config.admin.password));
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
+  it('replaces the placeholder password of an admin with a strong configured one in production', async () => {
+    const old = await adminAgent();
+    const admin = { email: config.admin.email, password: 'a-long-production-password' };
+    await seedAdmin({ admin, nodeEnv: 'production' });
+
+    await old.get('/admin/users').expect(401);
+    await request(app).post('/auth/sign-in').send(config.admin).expect(401);
+    await request(app).post('/auth/sign-in').send(admin).expect(200);
   });
 
   it('does not promote an existing account with the admin email', async () => {
