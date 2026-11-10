@@ -73,7 +73,9 @@ Every user has a role, `user` (the default) or `admin`. It is part of the user o
 
 At every start the API checks whether an admin exists. If none does, it creates one from `admin.email` and `admin.password` in the JSON config file ([`admin.seed.ts`](../../packages/server/auth/src/admin.seed.ts)). This happens before the server accepts requests, so nobody can sign up with that email first.
 
+- In production (`NODE_ENV=production`) the password must not be a placeholder from the committed config files and must have at least 16 characters. Otherwise the API logs the reason and exits without creating the admin ([`admin.password.ts`](../../packages/server/auth/src/admin.password.ts)).
 - Once an admin exists, the two settings are no longer used. Changing `admin.password` later does not change the account's password.
+- One exception in production: at every start the API checks each admin's password against the placeholders. An admin who still has one (created by a version without the check) gets `admin.password` as new password and all their sessions are signed out. If `admin.password` is not strong either, the API exits. There is no other way to change an admin's password.
 - If the email already belongs to a normal user, that user is not promoted; the API logs a warning and starts without an admin.
 
 ### Admin endpoints
