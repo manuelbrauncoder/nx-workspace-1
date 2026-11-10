@@ -80,7 +80,10 @@ jobs:
       # request must follow Conventional Commits (commitlint.config.mjs).
       - name: Commit messages
         if: github.event_name == 'pull_request'
-        run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: pnpm exec commitlint --from "$BASE_SHA" --to "$HEAD_SHA" --verbose
 
       # A branch or pull request checks what the change affects. A release tag checks only its
       # app (nx1-dartomat-web-v1.2.0 → dartomat-web): the commit was checked on main before
@@ -88,7 +91,7 @@ jobs:
       # Four tasks at a time, one per core of the runner.
       - name: Lint, typecheck, unit tests, build
         run: |
-          if [ "${{ github.ref_type }}" = "tag" ]; then
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
             app="${GITHUB_REF_NAME#nx1-}"
             app="${app%-v*}"
             pnpm nx run-many -t lint typecheck test build -p "$app" --parallel=4
@@ -121,13 +124,21 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Tag `nx1-angular-base-v1.2.0` becomes image `ghcr.io/<owner>/nx1-angular-base:v1.2.0`.
+      # Expressions reach the script only through env, never pasted into it.
       - name: Set image metadata
         id: meta
+        env:
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
-          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/nx1-angular-base" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#nx1-angular-base-}" >> "$GITHUB_OUTPUT"
-          echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+          owner="$(printf '%s' "$REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
+          tag="${GITHUB_REF_NAME#nx1-angular-base-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::The release tag must end in v<major>.<minor>.<patch>, got $GITHUB_REF_NAME"
+            exit 1
+          fi
+          echo "image=ghcr.io/${owner}/nx1-angular-base" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
@@ -143,14 +154,18 @@ jobs:
             ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
 
       - name: Deployment summary
+        env:
+          IMAGE: ${{ steps.meta.outputs.image }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          SHORT_SHA: ${{ steps.meta.outputs.short_sha }}
         run: |
           {
             echo "## Image published"
             echo ""
-            echo "**Tag:** \`${{ steps.meta.outputs.tag }}\`"
-            echo "**Commit:** \`sha-${{ steps.meta.outputs.short_sha }}\`"
+            echo "**Tag:** \`${TAG}\`"
+            echo "**Commit:** \`sha-${SHORT_SHA}\`"
             echo ""
-            echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
+            echo "Pull: \`${IMAGE}:${TAG}\`"
             echo ""
             echo "Runtime listens on port **4000** (\`PORT\`). Mount the runtime config over \`/app/dist/angular-base/browser/config/app-config.json\` and set \`NG_ALLOWED_HOSTS\` to the public host names."
           } >> "$GITHUB_STEP_SUMMARY"
@@ -180,13 +195,21 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Tag `nx1-express-api-base-v1.2.0` becomes image `ghcr.io/<owner>/nx1-express-api-base:v1.2.0`.
+      # Expressions reach the script only through env, never pasted into it.
       - name: Set image metadata
         id: meta
+        env:
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
-          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/nx1-express-api-base" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#nx1-express-api-base-}" >> "$GITHUB_OUTPUT"
-          echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+          owner="$(printf '%s' "$REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
+          tag="${GITHUB_REF_NAME#nx1-express-api-base-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::The release tag must end in v<major>.<minor>.<patch>, got $GITHUB_REF_NAME"
+            exit 1
+          fi
+          echo "image=ghcr.io/${owner}/nx1-express-api-base" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
@@ -202,14 +225,18 @@ jobs:
             ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
 
       - name: Deployment summary
+        env:
+          IMAGE: ${{ steps.meta.outputs.image }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          SHORT_SHA: ${{ steps.meta.outputs.short_sha }}
         run: |
           {
             echo "## Image published"
             echo ""
-            echo "**Tag:** \`${{ steps.meta.outputs.tag }}\`"
-            echo "**Commit:** \`sha-${{ steps.meta.outputs.short_sha }}\`"
+            echo "**Tag:** \`${TAG}\`"
+            echo "**Commit:** \`sha-${SHORT_SHA}\`"
             echo ""
-            echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
+            echo "Pull: \`${IMAGE}:${TAG}\`"
             echo ""
             echo "The API listens on port **3000** (\`port\` in the config file). Mount the config file and set \`CONFIG_PATH\`, \`DATABASE_URL\` and \`SESSION_SECRET\`. Apply migrations with \`node dist/scripts/migrate.js\` before starting the API."
           } >> "$GITHUB_STEP_SUMMARY"
@@ -239,13 +266,21 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Tag `nx1-portfolio-web-v1.2.0` becomes image `ghcr.io/<owner>/nx1-portfolio-web:v1.2.0`.
+      # Expressions reach the script only through env, never pasted into it.
       - name: Set image metadata
         id: meta
+        env:
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
-          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/nx1-portfolio-web" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#nx1-portfolio-web-}" >> "$GITHUB_OUTPUT"
-          echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+          owner="$(printf '%s' "$REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
+          tag="${GITHUB_REF_NAME#nx1-portfolio-web-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::The release tag must end in v<major>.<minor>.<patch>, got $GITHUB_REF_NAME"
+            exit 1
+          fi
+          echo "image=ghcr.io/${owner}/nx1-portfolio-web" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
@@ -261,14 +296,18 @@ jobs:
             ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
 
       - name: Deployment summary
+        env:
+          IMAGE: ${{ steps.meta.outputs.image }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          SHORT_SHA: ${{ steps.meta.outputs.short_sha }}
         run: |
           {
             echo "## Image published"
             echo ""
-            echo "**Tag:** \`${{ steps.meta.outputs.tag }}\`"
-            echo "**Commit:** \`sha-${{ steps.meta.outputs.short_sha }}\`"
+            echo "**Tag:** \`${TAG}\`"
+            echo "**Commit:** \`sha-${SHORT_SHA}\`"
             echo ""
-            echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
+            echo "Pull: \`${IMAGE}:${TAG}\`"
             echo ""
             echo "Runtime listens on port **4000** (\`PORT\`). Mount the runtime config over \`/app/dist/portfolio-web/browser/config/app-config.json\` and set \`NG_ALLOWED_HOSTS\` to the public host names."
           } >> "$GITHUB_STEP_SUMMARY"
@@ -298,13 +337,21 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Tag `nx1-portfolio-api-v1.2.0` becomes image `ghcr.io/<owner>/nx1-portfolio-api:v1.2.0`.
+      # Expressions reach the script only through env, never pasted into it.
       - name: Set image metadata
         id: meta
+        env:
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
-          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/nx1-portfolio-api" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#nx1-portfolio-api-}" >> "$GITHUB_OUTPUT"
-          echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+          owner="$(printf '%s' "$REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
+          tag="${GITHUB_REF_NAME#nx1-portfolio-api-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::The release tag must end in v<major>.<minor>.<patch>, got $GITHUB_REF_NAME"
+            exit 1
+          fi
+          echo "image=ghcr.io/${owner}/nx1-portfolio-api" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
@@ -320,14 +367,18 @@ jobs:
             ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
 
       - name: Deployment summary
+        env:
+          IMAGE: ${{ steps.meta.outputs.image }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          SHORT_SHA: ${{ steps.meta.outputs.short_sha }}
         run: |
           {
             echo "## Image published"
             echo ""
-            echo "**Tag:** \`${{ steps.meta.outputs.tag }}\`"
-            echo "**Commit:** \`sha-${{ steps.meta.outputs.short_sha }}\`"
+            echo "**Tag:** \`${TAG}\`"
+            echo "**Commit:** \`sha-${SHORT_SHA}\`"
             echo ""
-            echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
+            echo "Pull: \`${IMAGE}:${TAG}\`"
             echo ""
             echo "The API listens on port **3000** (\`port\` in the config file). Mount the config file and set \`CONFIG_PATH\`, \`DATABASE_URL\` and \`SESSION_SECRET\`. Apply migrations with \`node dist/scripts/migrate.js\` before starting the API, and load the initial content once with \`node dist/scripts/seed.js\`. Set \`SMTP_PASSWORD\` while \`mail.enabled\` is true."
           } >> "$GITHUB_STEP_SUMMARY"
@@ -357,13 +408,21 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Tag `nx1-dartomat-web-v1.2.0` becomes image `ghcr.io/<owner>/nx1-dartomat-web:v1.2.0`.
+      # Expressions reach the script only through env, never pasted into it.
       - name: Set image metadata
         id: meta
+        env:
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
-          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/nx1-dartomat-web" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#nx1-dartomat-web-}" >> "$GITHUB_OUTPUT"
-          echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+          owner="$(printf '%s' "$REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
+          tag="${GITHUB_REF_NAME#nx1-dartomat-web-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::The release tag must end in v<major>.<minor>.<patch>, got $GITHUB_REF_NAME"
+            exit 1
+          fi
+          echo "image=ghcr.io/${owner}/nx1-dartomat-web" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
@@ -379,14 +438,18 @@ jobs:
             ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
 
       - name: Deployment summary
+        env:
+          IMAGE: ${{ steps.meta.outputs.image }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          SHORT_SHA: ${{ steps.meta.outputs.short_sha }}
         run: |
           {
             echo "## Image published"
             echo ""
-            echo "**Tag:** \`${{ steps.meta.outputs.tag }}\`"
-            echo "**Commit:** \`sha-${{ steps.meta.outputs.short_sha }}\`"
+            echo "**Tag:** \`${TAG}\`"
+            echo "**Commit:** \`sha-${SHORT_SHA}\`"
             echo ""
-            echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
+            echo "Pull: \`${IMAGE}:${TAG}\`"
             echo ""
             echo "Runtime listens on port **4000** (\`PORT\`). Mount the runtime config over \`/app/dist/dartomat-web/browser/config/app-config.json\` and set \`NG_ALLOWED_HOSTS\` to the public host names."
           } >> "$GITHUB_STEP_SUMMARY"
@@ -416,13 +479,21 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Tag `nx1-dartomat-api-v1.2.0` becomes image `ghcr.io/<owner>/nx1-dartomat-api:v1.2.0`.
+      # Expressions reach the script only through env, never pasted into it.
       - name: Set image metadata
         id: meta
+        env:
+          REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
-          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
-          echo "image=ghcr.io/${OWNER}/nx1-dartomat-api" >> "$GITHUB_OUTPUT"
-          echo "tag=${GITHUB_REF_NAME#nx1-dartomat-api-}" >> "$GITHUB_OUTPUT"
-          echo "short_sha=$(echo '${{ github.sha }}' | cut -c1-7)" >> "$GITHUB_OUTPUT"
+          owner="$(printf '%s' "$REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')"
+          tag="${GITHUB_REF_NAME#nx1-dartomat-api-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::The release tag must end in v<major>.<minor>.<patch>, got $GITHUB_REF_NAME"
+            exit 1
+          fi
+          echo "image=ghcr.io/${owner}/nx1-dartomat-api" >> "$GITHUB_OUTPUT"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
@@ -438,14 +509,18 @@ jobs:
             ${{ steps.meta.outputs.image }}:sha-${{ steps.meta.outputs.short_sha }}
 
       - name: Deployment summary
+        env:
+          IMAGE: ${{ steps.meta.outputs.image }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          SHORT_SHA: ${{ steps.meta.outputs.short_sha }}
         run: |
           {
             echo "## Image published"
             echo ""
-            echo "**Tag:** \`${{ steps.meta.outputs.tag }}\`"
-            echo "**Commit:** \`sha-${{ steps.meta.outputs.short_sha }}\`"
+            echo "**Tag:** \`${TAG}\`"
+            echo "**Commit:** \`sha-${SHORT_SHA}\`"
             echo ""
-            echo "Pull: \`${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}\`"
+            echo "Pull: \`${IMAGE}:${TAG}\`"
             echo ""
             echo "The API listens on port **3000** (\`port\` in the config file). Mount the config file and set \`CONFIG_PATH\`, \`DATABASE_URL\` and \`SESSION_SECRET\`. Apply migrations with \`node dist/scripts/migrate.js\` before starting the API. \`SESSION_SECRET\` is required by the shared config only, dartomat has no sign-in."
           } >> "$GITHUB_STEP_SUMMARY"
