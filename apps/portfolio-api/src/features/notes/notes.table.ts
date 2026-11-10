@@ -9,7 +9,7 @@ export const notes = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     title: text().notNull(),
-    // sanitized HTML, see notes.sanitize.ts
+    // sanitized HTML, see sanitizeRichText in @server/core/rich-text
     description: text().notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),

@@ -7,6 +7,7 @@ import {
   removeImages,
   saveImage,
 } from '@server/core/images';
+import { sanitizeRichText } from '@server/core/rich-text';
 import {
   type CreateEventInput,
   eventTimesError,
@@ -15,7 +16,6 @@ import {
 } from '@vyte/contracts/events';
 import { EVENT_IMAGES_MAX } from '@vyte/contracts/events-limits';
 import { and, asc, count, eq, inArray, sql } from 'drizzle-orm';
-import { sanitizeEventDescription } from './events.sanitize.js';
 import { eventImages, eventMembers, events } from './events.table.js';
 import { isPast } from './events.time.js';
 
@@ -115,7 +115,7 @@ export async function createEvent(userId: string, input: CreateEventInput) {
   return db.transaction(async (tx) => {
     const [event] = await tx
       .insert(events)
-      .values({ ...input, description: sanitizeEventDescription(input.description) })
+      .values({ ...input, description: sanitizeRichText(input.description) })
       .returning();
     await tx.insert(eventMembers).values({ eventId: event!.id, userId, role: 'owner' });
     return toEvent(event!, 'owner', new Map());
@@ -136,7 +136,7 @@ export async function updateEvent(userId: string, eventId: string, input: Update
       .set({
         ...input,
         description:
-          input.description === undefined ? undefined : sanitizeEventDescription(input.description),
+          input.description === undefined ? undefined : sanitizeRichText(input.description),
         updatedAt: new Date(),
       })
       .where(eq(events.id, eventId))

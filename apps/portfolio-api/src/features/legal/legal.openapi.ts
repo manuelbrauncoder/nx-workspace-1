@@ -53,8 +53,10 @@ export function registerLegalDocs(registry: OpenAPIRegistry) {
         'Admin only. Send `de`, `en` or both; each sent language replaces its stored HTML as a ' +
         'whole. With both languages a missing page is created, with one it is a 404. The ' +
         'HTML is sanitized to the formats of the editor: `p`, `br`, `h2`, `h3`, `ul`, `ol`, ' +
-        '`li`, `blockquote`, `strong`, `em` and `a` with an `http`, `https`, `mailto`, `tel` ' +
-        'or relative `href`; everything else is removed. The web app renders the `h1`.',
+        '`li`, `blockquote`, `strong`, `em` and `a` with an absolute `http`, `https` or ' +
+        '`mailto` link, a `tel:` number or a path of the site starting with a single `/`; a ' +
+        'link with any other `href` loses its attributes and everything else is removed. The ' +
+        'web app renders the `h1`.',
       request: { body: jsonContent(legalPageUpdateSchema) },
       responses: {
         200: jsonResponse('The changed page', z.object({ [key]: legalPageSchema })),
