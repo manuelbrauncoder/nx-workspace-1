@@ -13,7 +13,7 @@ These points need no change and should stay when the pipeline is reworked:
 - Node from `.nvmrc`, pnpm from `packageManager`, `--frozen-lockfile`, pnpm store cache
 - Commit messages checked with commitlint, because `nx release` derives versions from them
 - One release tag per app, `pnpm release:push` works around the three-tag limit of GitHub
-- Docker layer cache in GHA with one scope per app, `.dockerignore` keeps docs and agent folders out
+- Docker layer cache in GHA with one scope per app, `.dockerignore` keeps docs, agent folders and local secrets out
 - Images are environment-neutral, the step summary says what a deployment has to mount and set
 - The Postgres password `app` in the service is fine as it is. The database only exists inside the job, and the value matches `docker-compose.yml`, which the Vitest configs expect. A GitHub secret would add nothing here
 
@@ -232,6 +232,8 @@ Every image is kept under its version, so going back means deploying an older ta
 ## Low priority
 
 ### 12. Expressions inline in `run` scripts
+
+**Done:** the `checks` job and the six publish jobs pass every expression through `env:`. The publish jobs also check the tag format (`vX.Y.Z`), see [Deployment](deployment.md#images-and-release-tags).
 
 `${{ github.event.pull_request.base.sha }}`, `${{ github.ref_type }}` and `${{ github.repository_owner }}` are written directly into shell scripts. All three values are safe today (SHAs, a fixed keyword, a GitHub login), so this is not a vulnerability. The rule of thumb from the skill is still to pass every expression via `env:`, so that a later edit with a branch name or PR title does not open a script injection. Findings 5, 6 and 8 already move most of them.
 

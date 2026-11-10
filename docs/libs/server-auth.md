@@ -16,7 +16,7 @@ Accounts for every API app: users and sessions, sign-up and sign-in, guards, the
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `users.table.ts`, `sessions.table.ts` | The tables `users` and `session`                                                                                                                        |
 | `auth.*.ts`                           | Sign-up (switchable with `auth.signUpEnabled`), sign-in, sign-out, `/auth/me`, the session middleware, `requireAuth`, `requireAdmin`, `currentUserId()` |
-| `admin.*.ts`                          | Users for admins, `seedAdmin()` for the first admin                                                                                                     |
+| `admin.*.ts`                          | Users for admins, `seedAdmin()` for the first admin, `admin.password.ts` checks its password in production                                              |
 | `user-deletion.ts`                    | `onUserDeleted()`: cleanup hooks of features when an admin deletes a user                                                                               |
 | `rate-limit.ts`                       | The rate limit of sign-up and sign-in                                                                                                                   |
 | `testing/`                            | `signedUpAgent()`, `adminAgent()`, `resetAuthTables()` for the tests of the apps                                                                        |
