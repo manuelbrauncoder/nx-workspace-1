@@ -1,6 +1,6 @@
 ---
 name: docs-sync
-description: Brings the docs in line with the code after a change: docs/vyte/spec.md, docs/apps/*.md, docs/libs/*.md, docs/README.md, docs/workspace.md and CLAUDE.md. Use after a feature, endpoint, config key or rule changed. Edits Markdown only; asks when code and spec disagree.
+description: 'Brings the docs in line with the code after a change: docs/vyte/spec.md, docs/apps/*.md, docs/libs/*.md, docs/README.md, docs/workspace.md and CLAUDE.md. Use after a feature, endpoint, config key or rule changed. Edits Markdown only; asks when code and spec disagree.'
 tools: Read, Grep, Glob, Edit, Write, Bash
 model: haiku
 ---
