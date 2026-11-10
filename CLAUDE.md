@@ -76,7 +76,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 
 ## Architektur
 
-Nx-Workspace mit zwei Seiten: Angular-Apps (`apps/angular-base`, Libs in `packages/shared/`) und API-Apps (`apps/express-api-base`, Libs in `packages/server/`, siehe Abschnitt „API-Apps“). Beide teilen das Wire-Format über `packages/contracts`. Das Portfolio (`apps/portfolio-web`, `apps/portfolio-api`, `packages/portfolio/contracts`) und Dartomat (`apps/dartomat-web`, `apps/dartomat-api`, `packages/dartomat/contracts`) sind genauso gebaut, Details in `docs/apps/` und `docs/portfolio/`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
+Nx-Workspace mit zwei Seiten: Angular-Apps (`apps/angular-base`, Libs in `packages/shared/`) und API-Apps (`apps/express-api-base`, Libs in `packages/server/`, siehe Abschnitt „API-Apps“). Beide teilen das Wire-Format über `packages/contracts`. Das Portfolio (`apps/portfolio-web`, `apps/portfolio-api`, `packages/portfolio/contracts`), Dartomat (`apps/dartomat-web`, `apps/dartomat-api`, `packages/dartomat/contracts`) und Vyte (`apps/vyte-api`, `packages/vyte/contracts`, die Web-App folgt) sind genauso gebaut, Details in `docs/apps/`, `docs/portfolio/` und `docs/vyte/`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
 
 Die Grenzen erzwingt ESLint an zwei Stellen: zwischen Projekten über Nx-Tags (`@nx/enforce-module-boundaries` in der Root-`eslint.config.mjs`), innerhalb der App über `no-restricted-imports` in `apps/angular-base/eslint.config.mjs`.
 
@@ -91,7 +91,7 @@ Die Grenzen erzwingt ESLint an zwei Stellen: zwischen Projekten über Nx-Tags (`
 | `type:api-app`  | `express-api-base`, …        | `type:server`, `type:contract`                     |
 | `type:server`   | `server-core`, `server-auth` | `type:server`, `type:contract`                     |
 
-Zweites Tag pro Projekt ist der Scope: `scope:shared` (alle Libs in `packages/shared`, `packages/server`, `packages/contracts`) darf nur von `scope:shared` abhängen, `scope:base` (angular-base, express-api-base) und `scope:portfolio` (portfolio-web, portfolio-api, portfolio-contracts) und `scope:dartomat` (dartomat-web, dartomat-api, dartomat-contracts) jeweils von sich selbst und `scope:shared`. Produkte importieren sich nie gegenseitig.
+Zweites Tag pro Projekt ist der Scope: `scope:shared` (alle Libs in `packages/shared`, `packages/server`, `packages/contracts`) darf nur von `scope:shared` abhängen, `scope:base` (angular-base, express-api-base) und `scope:portfolio` (portfolio-web, portfolio-api, portfolio-contracts) und `scope:dartomat` (dartomat-web, dartomat-api, dartomat-contracts) und `scope:vyte` (vyte-api, vyte-contracts) jeweils von sich selbst und `scope:shared`. Produkte importieren sich nie gegenseitig.
 
 `type:app` und `type:ui` dürfen zusätzlich von `type:contract` abhängen. Browser- und Server-Projekte importieren sich nie gegenseitig.
 

@@ -1,0 +1,32 @@
+{
+  "port": 3300,
+  "logLevel": "debug",
+  "trustProxy": false,
+  "cors": {
+    "origins": ["http://localhost:4300"]
+  },
+  "session": {
+    "cookieName": "sid",
+    "maxAgeDays": 7,
+    "secureCookie": false
+  },
+  "rateLimit": {
+    "authWindowMinutes": 15,
+    "authMaxRequests": 20
+  },
+  "auth": {
+    "signUpEnabled": false
+  },
+  "admin": {
+    "email": "admin@mail.dev",
+    "password": "dev-admin-password"
+  },
+  "docs": {
+    "enabled": true
+  },
+  "uploads": {
+    "dir": "./uploads",
+    "maxFileSizeMb": 10,
+    "maxImageWidth": 2000
+  }
+}

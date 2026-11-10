@@ -98,6 +98,10 @@ export default defineConfig([
               sourceTag: 'scope:dartomat',
               onlyDependOnLibsWithTags: ['scope:dartomat', 'scope:shared'],
             },
+            {
+              sourceTag: 'scope:vyte',
+              onlyDependOnLibsWithTags: ['scope:vyte', 'scope:shared'],
+            },
             // Shared by both sides, so it may only use what runs in the browser and in Node.
             {
               sourceTag: 'type:contract',

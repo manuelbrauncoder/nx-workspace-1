@@ -21,6 +21,8 @@ The repository is an [Nx](https://nx.dev) workspace with pnpm. Apps live in `app
 | `server-auth`         | `packages/server/auth`         | Node lib    | `type:server`, `scope:shared`      | [server-auth](libs/server-auth.md)                 |
 | `portfolio-contracts` | `packages/portfolio/contracts` | Zod schemas | `type:contract`, `scope:portfolio` | [portfolio-contracts](libs/portfolio-contracts.md) |
 | `dartomat-contracts`  | `packages/dartomat/contracts`  | Zod schemas | `type:contract`, `scope:dartomat`  | [dartomat-contracts](libs/dartomat-contracts.md)   |
+| `vyte-api`            | `apps/vyte-api`                | Express API | `type:api-app`, `scope:vyte`       | [vyte-api](apps/vyte-api.md)                       |
+| `vyte-contracts`      | `packages/vyte/contracts`      | Zod schemas | `type:contract`, `scope:vyte`      | [vyte-contracts](libs/vyte-contracts.md)           |
 
 `pnpm nx graph` shows the projects and their dependencies in the browser.
 
@@ -51,6 +53,7 @@ Two tags per project decide what it may import. `@nx/enforce-module-boundaries` 
 | `scope:base`      | `scope:base`, `scope:shared`      |
 | `scope:portfolio` | `scope:portfolio`, `scope:shared` |
 | `scope:dartomat`  | `scope:dartomat`, `scope:shared`  |
+| `scope:vyte`      | `scope:vyte`, `scope:shared`      |
 
 Inside an app, `no-restricted-imports` rules in its `eslint.config.mjs` add the layer rules of the features, see [Frontend architecture](frontend/architecture.md#how-it-is-enforced). Nx also rejects cycles between projects and relative imports into another project.
 
@@ -68,6 +71,7 @@ Defined in [tsconfig.base.json](../tsconfig.base.json):
 | `@server/auth/*`         | `packages/server/auth/src/*`                    |
 | `@portfolio/contracts/*` | `packages/portfolio/contracts/src/*`            |
 | `@dartomat/contracts/*`  | `packages/dartomat/contracts/src/*`             |
+| `@vyte/contracts/*`      | `packages/vyte/contracts/src/*`                 |
 | `@features/*`            | `src/app/features/*` of the app that imports it |
 | `@api/*`                 | `src/api/*` of the app that imports it          |
 

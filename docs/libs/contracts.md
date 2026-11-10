@@ -2,12 +2,12 @@
 
 The wire format shared by the API apps and the Angular apps: Zod schemas of requests and responses, the DTO types derived from them, the limits both sides check and the rich text rules. Runs in Node and in the browser, so it imports nothing but `zod`.
 
-| Item    | Value                                              |
-| ------- | -------------------------------------------------- |
-| Folder  | [packages/contracts](../../packages/contracts/src) |
-| Alias   | `@contracts/*`, e.g. `@contracts/notes`            |
-| Tags    | `type:contract`, `scope:shared`                    |
-| Used by | all four apps, `ui`, `server-core`, `server-auth`  |
+| Item    | Value                                                                                                                |
+| ------- | -------------------------------------------------------------------------------------------------------------------- |
+| Folder  | [packages/contracts](../../packages/contracts/src)                                                                   |
+| Alias   | `@contracts/*`, e.g. `@contracts/notes`                                                                              |
+| Tags    | `type:contract`, `scope:shared`                                                                                      |
+| Used by | `angular-base`, `portfolio-web`, `express-api-base`, `portfolio-api`, `vyte-api`, `ui`, `server-core`, `server-auth` |
 
 ## Contents
 

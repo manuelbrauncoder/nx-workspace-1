@@ -1,0 +1,45 @@
+# Example production stack (Portainer + Traefik). Replace the image, host and paths.
+services:
+  migrate:
+    image: ghcr.io/your-user/nx1-vyte-api:v1.0.0
+    restart: 'no'
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    networks:
+      - api-network
+    command: ['node', 'dist/scripts/migrate.js']
+
+  api:
+    image: ghcr.io/your-user/nx1-vyte-api:v1.0.0
+    restart: always
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    volumes:
+      # see config/production.example.json
+      - /mnt/data/vyte-api/config.json:/app/config/production.json:ro
+      # must belong to uid 1000, the user of the image: sudo chown -R 1000:1000 /mnt/data/vyte-api/uploads
+      - /mnt/data/vyte-api/uploads:/app/uploads
+    environment:
+      NODE_ENV: production
+      CONFIG_PATH: /app/config/production.json
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      SESSION_SECRET: ${SESSION_SECRET}
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web
+      - traefik.http.routers.vyte-api.rule=Host(`vyte.manuel-braun.net`) && (PathPrefix(`/api/`) || Path(`/health`))
+      - traefik.http.routers.vyte-api.entrypoints=websecure
+      - traefik.http.routers.vyte-api.tls.certresolver=letsencrypt
+      - traefik.http.services.vyte-api.loadbalancer.server.port=3000
+      - traefik.http.routers.vyte-api.service=vyte-api
+    networks:
+      - api-network
+      - web
+
+networks:
+  web:
+    external: true
+  api-network:
+    external: true
+    name: api-network

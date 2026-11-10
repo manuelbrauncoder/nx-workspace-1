@@ -26,7 +26,8 @@
       "@server/core/*": ["./packages/server/core/src/*"],
       "@server/auth/*": ["./packages/server/auth/src/*"],
       "@portfolio/contracts/*": ["./packages/portfolio/contracts/src/*"],
-      "@dartomat/contracts/*": ["./packages/dartomat/contracts/src/*"]
+      "@dartomat/contracts/*": ["./packages/dartomat/contracts/src/*"],
+      "@vyte/contracts/*": ["./packages/vyte/contracts/src/*"]
     }
   },
   "angularCompilerOptions": {

@@ -1,0 +1,32 @@
+{
+  "port": 3000,
+  "logLevel": "info",
+  "trustProxy": 1,
+  "cors": {
+    "origins": ["https://vyte.manuel-braun.net"]
+  },
+  "session": {
+    "cookieName": "__Host-sid",
+    "maxAgeDays": 7,
+    "secureCookie": true
+  },
+  "rateLimit": {
+    "authWindowMinutes": 15,
+    "authMaxRequests": 20
+  },
+  "auth": {
+    "signUpEnabled": false
+  },
+  "admin": {
+    "email": "admin@mail.dev",
+    "password": "change-me-before-deploying"
+  },
+  "docs": {
+    "enabled": false
+  },
+  "uploads": {
+    "dir": "./uploads",
+    "maxFileSizeMb": 10,
+    "maxImageWidth": 2000
+  }
+}

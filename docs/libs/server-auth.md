@@ -8,7 +8,7 @@ Accounts for every API app: users and sessions, sign-up and sign-in, guards, the
 | Alias   | `@server/auth/*`, e.g. `@server/auth/auth.middleware`  |
 | Tags    | `type:server`, `scope:shared`                          |
 | Uses    | `server-core`, `contracts`                             |
-| Used by | `express-api-base`, `portfolio-api`                    |
+| Used by | `express-api-base`, `portfolio-api`, `vyte-api`        |
 
 ## Contents
 

@@ -1,0 +1,8 @@
+{
+  "name": "vyte-contracts",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/vyte/contracts/src",
+  "tags": ["type:contract", "scope:vyte"],
+  "targets": {}
+}

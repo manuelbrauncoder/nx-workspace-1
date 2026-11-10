@@ -5,3 +5,4 @@
 CREATE DATABASE express_api_base;
 CREATE DATABASE portfolio_api;
 CREATE DATABASE dartomat_api;
+CREATE DATABASE vyte_api;

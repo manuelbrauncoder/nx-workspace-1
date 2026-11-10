@@ -1,6 +1,6 @@
 # vyte: specification
 
-Status: **draft**, to be refined before the projects are generated. Nothing here is built yet. The folders [apps/vyte-web](../../apps/vyte-web) and [apps/vyte-api](../../apps/vyte-api) only hold a README.
+Status: **draft**, still being refined. The API has started: [apps/vyte-api](../../apps/vyte-api) holds the accounts and the admin, see [vyte-api](../apps/vyte-api.md). Events, guests and the web app are not built yet, [apps/vyte-web](../../apps/vyte-web) only holds a README.
 
 ## 1. Overview
 

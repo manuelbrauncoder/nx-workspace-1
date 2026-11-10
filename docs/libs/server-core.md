@@ -2,12 +2,12 @@
 
 The base of every API app. Knows no features.
 
-| Item    | Value                                                  |
-| ------- | ------------------------------------------------------ |
-| Folder  | [packages/server/core](../../packages/server/core/src) |
-| Alias   | `@server/core/*`, e.g. `@server/core/errors`           |
-| Tags    | `type:server`, `scope:shared`                          |
-| Used by | `express-api-base`, `portfolio-api`, `server-auth`     |
+| Item    | Value                                                          |
+| ------- | -------------------------------------------------------------- |
+| Folder  | [packages/server/core](../../packages/server/core/src)         |
+| Alias   | `@server/core/*`, e.g. `@server/core/errors`                   |
+| Tags    | `type:server`, `scope:shared`                                  |
+| Used by | `express-api-base`, `portfolio-api`, `vyte-api`, `server-auth` |
 
 ## Contents
 
