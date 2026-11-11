@@ -5,7 +5,7 @@ import { Router } from 'express';
 import { config } from '../../config/index.js';
 import { noStore } from '../../shared/no-store.js';
 import { tokenParams } from '../../shared/token-params.js';
-import { answer, getImageFile, getInvitation } from './rsvp.service.js';
+import { answer, getCalendar, getImageFile, getInvitation } from './rsvp.service.js';
 
 /**
  * The guest page's side of a personal link, public, mounted at `/rsvp`. Reading has no rate
@@ -31,6 +31,12 @@ rsvpRouter.put('/:token', noStore, answerRateLimit, async (req, res) => {
   const { token } = tokenParams(rsvpParamsSchema, req, NOT_INVITED);
   const input = parse(rsvpSchema, req.body);
   res.json({ invitation: await answer(token, input) });
+});
+
+rsvpRouter.get('/:token/calendar', noStore, async (req, res) => {
+  const { token } = tokenParams(rsvpParamsSchema, req, NOT_INVITED);
+  const file = await getCalendar(token);
+  res.attachment('event.ics').type('text/calendar; charset=utf-8').send(file);
 });
 
 rsvpRouter.get('/:token/images/:imageId', async (req, res) => {

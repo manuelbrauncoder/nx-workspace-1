@@ -5,7 +5,9 @@ import {
   EVENT_IMAGES_MAX,
   EVENT_LOCATION_NAME_MAX_LENGTH,
   EVENT_TITLE_MAX_LENGTH,
+  SAVE_THE_DATE_NOTE_MAX_LENGTH,
 } from './events-limits';
+import { tokenSchema } from './token';
 
 /** True for a time zone the runtime knows, e.g. `Europe/Berlin`. */
 export function isTimeZone(value: string): boolean {
@@ -122,9 +124,42 @@ export const eventSchema = z.object({
   past: z.boolean(),
   images: z.array(eventImageSchema),
   counts: eventCountsSchema,
+  /** The save-the-date link, `null` while it is off. */
+  saveTheDate: z.object({ token: tokenSchema, note: z.string().nullable() }).nullable(),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });
+
+/** Turns save the date on, or changes its note; an empty note counts as none. */
+export const saveTheDateSettingsSchema = z.object({
+  note: z
+    .string()
+    .trim()
+    .max(SAVE_THE_DATE_NOTE_MAX_LENGTH)
+    .nullish()
+    .transform((value) => value || null),
+});
+
+export const saveTheDateParamsSchema = z.object({ token: tokenSchema });
+
+/** What anyone with the link sees: no address, no names. After the event only the title. */
+export const saveTheDateSchema = z.discriminatedUnion('past', [
+  z.object({
+    past: z.literal(false),
+    title: z.string(),
+    allDay: z.boolean(),
+    startsAt: z.iso.datetime(),
+    endsAt: z.iso.datetime().nullable(),
+    timeZone: z.string(),
+    locationName: z.string().nullable(),
+    note: z.string().nullable(),
+    /** Served by GET /save-the-date/:token/cover; `null` without images. */
+    cover: z.object({ width: z.number().int(), height: z.number().int() }).nullable(),
+  }),
+  z.object({ past: z.literal(true), title: z.string() }),
+]);
+
+export const saveTheDateResponseSchema = z.object({ saveTheDate: saveTheDateSchema });
 
 export const eventResponseSchema = z.object({ event: eventSchema });
 export const eventsResponseSchema = z.object({ events: z.array(eventSchema) });
@@ -134,6 +169,7 @@ export const eventImagesResponseSchema = z.object({ images: z.array(eventImageSc
 export type CreateEventInput = z.output<typeof createEventSchema>;
 export type UpdateEventInput = z.output<typeof updateEventSchema>;
 export type ReorderEventImagesInput = z.output<typeof reorderEventImagesSchema>;
+export type SaveTheDateSettingsInput = z.output<typeof saveTheDateSettingsSchema>;
 export type MemberRole = z.output<typeof memberRoleSchema>;
 
 // The wire format as a client sees it. Times are ISO 8601 strings.
@@ -145,3 +181,6 @@ export type EventImagesResponseDto = z.output<typeof eventImagesResponseSchema>;
 export type CreateEventDto = z.input<typeof createEventSchema>;
 export type UpdateEventDto = z.input<typeof updateEventSchema>;
 export type ReorderEventImagesDto = z.input<typeof reorderEventImagesSchema>;
+export type SaveTheDateDto = z.output<typeof saveTheDateSchema>;
+export type SaveTheDateResponseDto = z.output<typeof saveTheDateResponseSchema>;
+export type SaveTheDateSettingsDto = z.input<typeof saveTheDateSettingsSchema>;

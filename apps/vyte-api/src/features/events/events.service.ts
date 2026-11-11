@@ -125,6 +125,9 @@ function toEvent(
     past: isPast(event),
     images: images.get(event.id) ?? [],
     counts: counts.get(event.id) ?? noGuests,
+    saveTheDate: event.saveTheDateToken
+      ? { token: event.saveTheDateToken, note: event.saveTheDateNote }
+      : null,
     createdAt: event.createdAt,
     updatedAt: event.updatedAt,
   };

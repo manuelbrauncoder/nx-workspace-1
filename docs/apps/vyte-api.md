@@ -37,25 +37,27 @@ The targets are those of [express-api-base](express-api-base.md#running-it). The
 
 All under `/api/v1`, only `/health` and `/docs` are at the root.
 
-| Path                                         | From          | Content                                                                                |
-| -------------------------------------------- | ------------- | -------------------------------------------------------------------------------------- |
-| `/auth/…`                                    | `server-auth` | Sign-in, sign-out, `/auth/me`; `POST /auth/sign-up` answers 403 while closed           |
-| `/auth/account-invites/:token`               | `server-auth` | Account links: read the name, create the account and sign in (public)                  |
-| `/admin/…`                                   | `server-auth` | Users for admins: list, change role, delete, revoke sessions                           |
-| `/admin/account-invites`                     | `server-auth` | Account links for admins: list open ones, create, revoke                               |
-| `/events/…`                                  | `vyte-api`    | Events and their images, see [Events](#events)                                         |
-| `/events/:id/guests/…`                       | `vyte-api`    | The guest list for the hosts, see [Guests](#guests)                                    |
-| `/events/:id/members`, `/owner`, `/invites…` | `vyte-api`    | The team: members, hand-over and editor invites, see [Team](#team)                     |
-| `/rsvp/:token…`                              | `vyte-api`    | The personal link of a guest: read and answer, public, see [Guest links](#guest-links) |
-| `/invites/:token…`                           | `vyte-api`    | The link of an editor invite: read, accept, or sign up through it, see [Team](#team)   |
-| `/health`                                    | `server-core` | `{ "status": "ok", "version": "…" }` with the version of `package.json`                |
-| `/docs`                                      | `server-core` | OpenAPI document and Swagger UI, when `docs.enabled` is set                            |
+| Path                                         | From          | Content                                                                                                 |
+| -------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------- |
+| `/auth/…`                                    | `server-auth` | Sign-in, sign-out, `/auth/me`; `POST /auth/sign-up` answers 403 while closed                            |
+| `/auth/account-invites/:token`               | `server-auth` | Account links: read the name, create the account and sign in (public)                                   |
+| `/admin/…`                                   | `server-auth` | Users for admins: list, change role, delete, revoke sessions                                            |
+| `/admin/account-invites`                     | `server-auth` | Account links for admins: list open ones, create, revoke                                                |
+| `/events/…`                                  | `vyte-api`    | Events and their images, see [Events](#events)                                                          |
+| `/events/:id/guests/…`                       | `vyte-api`    | The guest list for the hosts, see [Guests](#guests)                                                     |
+| `/events/:id/members`, `/owner`, `/invites…` | `vyte-api`    | The team: members, hand-over and editor invites, see [Team](#team)                                      |
+| `/rsvp/:token…`                              | `vyte-api`    | The personal link of a guest: read and answer, public, see [Guest links](#guest-links)                  |
+| `/invites/:token…`                           | `vyte-api`    | The link of an editor invite: read, accept, or sign up through it, see [Team](#team)                    |
+| `/events/:id/save-the-date…`                 | `vyte-api`    | Save the date of an event, turned on, off and renewed by the hosts, see [Save the date](#save-the-date) |
+| `/save-the-date/:token…`                     | `vyte-api`    | The public save-the-date link: page, calendar file and cover, see [Save the date](#save-the-date)       |
+| `/health`                                    | `server-core` | `{ "status": "ok", "version": "…" }` with the version of `package.json`                                 |
+| `/docs`                                      | `server-core` | OpenAPI document and Swagger UI, when `docs.enabled` is set                                             |
 
-Not there yet: save the date, the photo stand and photos, the CSV export and the calendar files. The spec lists them in [section 6](../vyte/spec.md#6-api-draft).
+Not there yet: the photo stand and photos, the CSV export. The spec lists them in [section 6](../vyte/spec.md#6-api-draft).
 
 ## Events
 
-Code in [src/features/events](../../apps/vyte-api/src/features/events): `events.table.ts` (tables `events`, `event_members`, `event_images`), `events.routes.ts`, `events.service.ts`, `events.images.ts` (multer), `events.time.ts` (past), `events.user-deletion.ts`. The schemas are in [vyte-contracts](../libs/vyte-contracts.md).
+Code in [src/features/events](../../apps/vyte-api/src/features/events): `events.table.ts` (tables `events`, `event_members`, `event_images`), `events.routes.ts`, `events.service.ts`, `events.images.ts` (multer), `events.time.ts` (past, local dates), `events.calendar.ts` (the `.ics` files, see [Calendar files](#calendar-files)), `events.user-deletion.ts`. The schemas are in [vyte-contracts](../libs/vyte-contracts.md).
 
 | Method and path                        | Who           | Content                                                                       |
 | -------------------------------------- | ------------- | ----------------------------------------------------------------------------- |
@@ -73,7 +75,8 @@ Rules in short:
 
 - **404 or 403**: an event the user is not a member of is a 404, never a 403. An editor who deletes the event gets a 403.
 - **Roles**: `event_members` holds the owner and the editors, every member route reads it. Creating an event inserts exactly one owner. Only the hand-over changes roles, see [Team](#team). The database does not enforce a single owner.
-- **Past events** are computed, nothing is stored. An event is over at `endsAt`; an all-day event at the end of its last day; without an end at the end of the day it starts. All in the event's `timeZone`. Writes answer 409, the files stay readable, the owner can still delete. An editor can still leave, see [Team](#team).
+- **Past events** are computed, nothing is stored. An event is over at `endsAt`; an all-day event at the end of its last day; without an end at the end of the day it starts. All in the event's `timeZone`. Writes answer 409, the files stay readable, the owner can still delete. An editor can still leave, see [Team](#team). Turning a save-the-date link off still works, see [Save the date](#save-the-date).
+- **Caching**: the JSON answers of the event routes (`GET`, `POST`, `PATCH`) send `Cache-Control: no-store`, because they carry the save-the-date link. The image files keep `private, immutable`.
 - **Uploads**: membership and past are checked before multer reads the body, so a non-member or a past event never gets files parsed. Multer takes no text fields. Files above `uploads.maxFileSizeMb` answer 413.
 - **Images**: up to 6 per event, `position` 0 is the cover. All-or-nothing: one invalid file or a passed limit stores nothing. More than 6 in total answers 409, and so does a request with 7 files. A request with 8 or more files is cut off by multer before the service runs and answers 400. Each file goes through `processImage()` and `saveImage()` of `server-core`, stored as WebP. Deleting an image renumbers the rest.
 - **Description**: sanitized with `sanitizeRichText()` of `@server/core/rich-text` to `RICH_TEXT_TAGS`; a link keeps its `href` only if `isAllowedRichTextHref(…, 'text')` of `@contracts/rich-text` allows it (absolute `http`, `https` or `mailto`).
@@ -115,6 +118,7 @@ Code in [src/features/rsvp](../../apps/vyte-api/src/features/rsvp): `rsvp.routes
 | `GET /rsvp/{token}`                  | `{ invitation }`, see below                                                            |
 | `PUT /rsvp/{token}`                  | `{ response, companions, message }` of the guest, `{ invitation }` with the new answer |
 | `GET /rsvp/{token}/images/{imageId}` | an image of the event, the WebP file                                                   |
+| `GET /rsvp/{token}/calendar`         | the `.ics` file of the event with place name and address, 404 once the event is past   |
 
 Rules in short:
 
@@ -122,24 +126,24 @@ Rules in short:
 - **Open until**: the `rsvpDeadline`, or the start of the event without one. Not after that and not once the event is past, `PUT` answers 409 `Answers are closed`. Companions are checked against the allowance (400). A decline counts no companions. The message is stored trimmed, an empty one means none.
 - **Same 404 for every bad link**: unknown, renewed, removed, malformed. The body is the same.
 - **Rate limit**: only `PUT` is limited, per client IP, with `rateLimit.rsvpWindowMinutes` and `rateLimit.rsvpMaxRequests` (429 when exceeded). `GET` has no limit, because the web app renders the page on the server and every guest arrives from the same IP. A token of 32 random bytes cannot be guessed.
-- **Caching**: the invitation answers and `PUT` send `Cache-Control: no-store`. Images send `private, no-cache`, so a renewed link or the end of the event takes effect at once.
-- **Not there yet**: `GET /rsvp/{token}/calendar` (the `.ics` file).
+- **Caching**: the invitation answers, `PUT` and the calendar file send `Cache-Control: no-store`. Images send `private, no-cache`, so a renewed link or the end of the event takes effect at once.
+- **Calendar**: the same 404 as a bad link once the event is past. The file is described in [Calendar files](#calendar-files).
 
 ## Team
 
 Code in [src/features/team](../../apps/vyte-api/src/features/team): `team.table.ts` (table `editor_invites`), `team.routes.ts` (mounted at `/events/:id`, `requireAuth` per route), `team.service.ts`, `team.openapi.ts`. Code in [src/features/invites](../../apps/vyte-api/src/features/invites): `invites.routes.ts` (mounted at `/invites`), `invites.service.ts`, `invites.openapi.ts`. The schemas are in [vyte-contracts](../libs/vyte-contracts.md#contents). The link routes read their token through `tokenParams()` in [src/shared/token-params.ts](../../apps/vyte-api/src/shared/token-params.ts), the guest links do the same.
 
-| Method and path                          | Who                        | Content                                                                                       |
-| ---------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------------- |
-| `GET /events/{id}/members`               | member                     | `{ members }`: owner first, then the editors by join time                                     |
-| `DELETE /events/{id}/members/{userId}`   | owner; editor for themself | 204; removes an editor or leaves, the owner cannot be removed (409)                           |
-| `PUT /events/{id}/owner`                 | owner                      | `{ userId }` of an editor, swaps the roles, `{ members }`                                     |
-| `GET /events/{id}/invites`               | owner                      | `{ invites }`: open invites with their tokens, `no-store`                                     |
-| `POST /events/{id}/invites`              | owner                      | 201, `{ invite }` with token and expiry, `no-store`                                           |
-| `DELETE /events/{id}/invites/{inviteId}` | owner                      | 204, only an unused invite                                                                    |
-| `GET /invites/{token}`                   | anyone                     | `{ invite }`: event title, start, `allDay`, `timeZone`, the owner's name if set, `no-store`   |
-| `POST /invites/{token}/accept`           | signed in                  | `{ event }`, the caller is an editor now                                                      |
-| `POST /invites/{token}/sign-up`          | anyone                     | 201, `{ event }`; `{ email, password, name? }` creates the account, signs in, makes an editor |
+| Method and path                          | Who                        | Content                                                                                                   |
+| ---------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `GET /events/{id}/members`               | member                     | `{ members }`: owner first, then the editors by join time                                                 |
+| `DELETE /events/{id}/members/{userId}`   | owner; editor for themself | 204; removes an editor or leaves, the owner cannot be removed (409)                                       |
+| `PUT /events/{id}/owner`                 | owner                      | `{ userId }` of an editor, swaps the roles, `{ members }`                                                 |
+| `GET /events/{id}/invites`               | owner                      | `{ invites }`: open invites with their tokens, `no-store`                                                 |
+| `POST /events/{id}/invites`              | owner                      | 201, `{ invite }` with token and expiry, `no-store`                                                       |
+| `DELETE /events/{id}/invites/{inviteId}` | owner                      | 204, only an unused invite                                                                                |
+| `GET /invites/{token}`                   | anyone                     | `{ invite }`: event title, start, `allDay`, `timeZone`, the owner's name if set, `no-store`               |
+| `POST /invites/{token}/accept`           | signed in                  | `{ event }`, the caller is an editor now, `no-store`                                                      |
+| `POST /invites/{token}/sign-up`          | anyone                     | 201, `{ event }`; `{ email, password, name? }` creates the account, signs in, makes an editor, `no-store` |
 
 Rules in short:
 
@@ -152,7 +156,40 @@ Rules in short:
 - **Same 404 for every dead link**: unknown, malformed, used, expired, revoked, or one to a past event. The body is the same on all three routes.
 - **Rate limit**: accepting and signing up count against the sign-up limit of `server-auth`. Reading the link has none.
 - **Locks**: the event row first, then the invite row. Two people with one link make exactly one editor.
-- **Caching**: the routes that return tokens send `Cache-Control: no-store`.
+- **Caching**: the routes that return tokens send `Cache-Control: no-store`. That includes accepting and signing up through an invite, because they answer with the event and its save-the-date link.
+
+## Save the date
+
+Code in [src/features/save-the-date](../../apps/vyte-api/src/features/save-the-date): `save-the-date.routes.ts` (host router at `/events/:id/save-the-date`, public router at `/save-the-date`), `save-the-date.service.ts`, `save-the-date.openapi.ts`. The table `events` has the columns `save_the_date_token` (unique, `null` while it is off) and `save_the_date_note`. The schemas are in [vyte-contracts](../libs/vyte-contracts.md#contents).
+
+| Method and path                         | Who           | Content                                                                                                                       |
+| --------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `PUT /events/{id}/save-the-date`        | owner, editor | `{ note }` (optional, empty means none); turns it on, creates the link once, or changes the note, `{ event }`                 |
+| `DELETE /events/{id}/save-the-date`     | owner, editor | turns it off and removes the note, `{ event }`; also after the event                                                          |
+| `POST /events/{id}/save-the-date/token` | owner, editor | new link, `{ event }`; the old one answers 404 from now on                                                                    |
+| `GET /save-the-date/{token}`            | public        | `{ saveTheDate }`: title, date, `allDay`, `timeZone`, place name, note, cover size; after the event only `past` and the title |
+| `GET /save-the-date/{token}/calendar`   | public        | the `.ics` file with the place name only, 404 once the event is past                                                          |
+| `GET /save-the-date/{token}/cover`      | public        | the image at position 0, `private, no-cache`; 404 without an image or once the event is past                                  |
+
+Rules in short:
+
+- **Host routes**: `requireAuth` and `Cache-Control: no-store`. A non-member gets 404, as everywhere in the events.
+- **Turning on and renewing** need an upcoming event (409 on a past one). Renewing while it is off answers 404. A change of the note needs an upcoming event too.
+- **Turning off** works after the event, so a link that went somewhere unwanted can still be stopped. It removes the note as well.
+- **Public link**: one token per event, no session. An unknown, renewed, turned-off or malformed link answers the same 404 with the same body. Once the event is past, the page shows only the title, and the calendar file and the cover answer 404.
+- **Privacy**: the link shows the place name, never the address or the names of hosts and guests.
+- **Rate limit**: none on the reads, because the web app renders the page on the server and every visitor would share its IP. The save-the-date routes have no public writes.
+- **Caching**: the host routes and the page send `no-store`. The cover is `private, no-cache`, so turning the link off or renewing it takes effect at once.
+
+## Calendar files
+
+Code in [src/features/events/events.calendar.ts](../../apps/vyte-api/src/features/events/events.calendar.ts): `calendarFile()` builds the file, `fullLocation()` joins place name and address. The guest link ([Guest links](#guest-links)) and the save the date ([Save the date](#save-the-date)) use it. The file is served as `event.ics` with `text/calendar; charset=utf-8` and `no-store`.
+
+- **Format**: RFC 5545 with CRLF line ends. Lines longer than 75 octets are folded. Backslash, comma, semicolon and line breaks in text are escaped, control characters are dropped.
+- **Identity**: `UID` is `<eventId>@vyte`, `DTSTAMP` is the time of the download.
+- **Timed events**: `DTSTART` and `DTEND` in UTC. Without an end, `DTEND` is left out.
+- **All-day events**: `DTSTART` and `DTEND` as dates (`VALUE=DATE`) in the event's time zone. The end is exclusive, the day after the last day.
+- **Location**: the guest link puts place name and address into `LOCATION`, the save the date only the place name.
 
 ## Differences to express-api-base
 

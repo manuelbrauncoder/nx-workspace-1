@@ -27,6 +27,9 @@ export const events = pgTable('events', {
   endsAt: timestamp('ends_at', { withTimezone: true }),
   timeZone: text('time_zone').notNull(),
   rsvpDeadline: timestamp('rsvp_deadline', { withTimezone: true }),
+  // the save-the-date link; null while it is off, renewing replaces it
+  saveTheDateToken: text('save_the_date_token').unique(),
+  saveTheDateNote: text('save_the_date_note'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });

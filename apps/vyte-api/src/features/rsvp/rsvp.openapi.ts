@@ -47,6 +47,22 @@ export function registerRsvpDocs(registry: OpenAPIRegistry) {
   registry.registerPath({
     ...base,
     method: 'get',
+    path: '/rsvp/{token}/calendar',
+    summary: 'Calendar file of an invitation',
+    description: `An \`.ics\` file with place name and address. 404 once the event is over. ${notFoundNote}`,
+    request: { params: rsvpParamsSchema },
+    responses: {
+      200: {
+        description: 'The calendar file',
+        content: { 'text/calendar': { schema: { type: 'string', format: 'binary' } } },
+      },
+      ...errorResponses(404),
+    },
+  });
+
+  registry.registerPath({
+    ...base,
+    method: 'get',
     path: '/rsvp/{token}/images/{imageId}',
     summary: 'Get an image of the event',
     description: `So the guest page needs no session. 404 once the event is over. ${notFoundNote}`,

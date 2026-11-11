@@ -43,6 +43,13 @@
       "when": 1794417999596,
       "tag": "0005_abnormal_tiger_shark",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794419390367,
+      "tag": "0006_silly_gamma_corps",
+      "breakpoints": true
     }
   ]
 }

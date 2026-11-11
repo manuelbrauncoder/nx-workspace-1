@@ -8,6 +8,7 @@ import {
   updateEventSchema,
 } from '@vyte/contracts/events';
 import { type RequestHandler, Router } from 'express';
+import { noStore } from '../../shared/no-store.js';
 import { uploadImages } from './events.images.js';
 import {
   addImages,
@@ -22,6 +23,8 @@ import {
   updateEvent,
 } from './events.service.js';
 
+// `noStore` on the answers with an event: they carry the save-the-date link. Not on the
+// image files, which may be cached.
 export const eventsRouter = Router();
 
 /** Membership and the past-event rule before multer reads the files. */
@@ -33,21 +36,21 @@ const canUpload: RequestHandler = async (req, _res, next) => {
 
 eventsRouter.use(requireAuth);
 
-eventsRouter.get('/', async (req, res) => {
+eventsRouter.get('/', noStore, async (req, res) => {
   res.json({ events: await listEvents(currentUserId(req)) });
 });
 
-eventsRouter.post('/', async (req, res) => {
+eventsRouter.post('/', noStore, async (req, res) => {
   const event = await createEvent(currentUserId(req), parse(createEventSchema, req.body));
   res.status(201).json({ event });
 });
 
-eventsRouter.get('/:id', async (req, res) => {
+eventsRouter.get('/:id', noStore, async (req, res) => {
   const { id } = parse(eventParamsSchema, req.params);
   res.json({ event: await getEvent(currentUserId(req), id) });
 });
 
-eventsRouter.patch('/:id', async (req, res) => {
+eventsRouter.patch('/:id', noStore, async (req, res) => {
   const { id } = parse(eventParamsSchema, req.params);
   const event = await updateEvent(currentUserId(req), id, parse(updateEventSchema, req.body));
   res.json({ event });

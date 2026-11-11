@@ -485,4 +485,72 @@ describe('rsvp', () => {
       await request(app).get(`${rsvp}/${guest.token}/images/${imageId}`).expect(404);
     });
   });
+
+  describe('GET /rsvp/:token/calendar', () => {
+    it('serves the calendar file with place name and address, without a session', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const event = await createEvent(ada);
+      const guest = await addGuest(ada, event.id);
+
+      const res = await request(app).get(`${rsvp}/${guest.token}/calendar`).expect(200);
+      expect(res.headers['content-type']).toBe('text/calendar; charset=utf-8');
+      expect(res.headers['content-disposition']).toContain('attachment');
+      expect(res.headers['content-disposition']).toContain('event.ics');
+      expect(res.headers['cache-control']).toContain('no-store');
+      expect(res.text).toContain('BEGIN:VCALENDAR\r\n');
+      expect(res.text).toContain(`UID:${event.id}@vyte\r\n`);
+      expect(res.text).toContain('SUMMARY:Summer party\r\n');
+      expect(res.text).toContain('LOCATION:Garden\\, Main street 1\r\n');
+      expect(res.text).not.toContain(guest.token);
+      expect(res.text).not.toContain('Grace');
+    });
+
+    it('has the address alone, or no LOCATION without place and address', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const onlyAddress = await createEvent(ada, { locationName: null });
+      const none = await createEvent(ada, { locationName: null, address: null });
+      const a = await addGuest(ada, onlyAddress.id);
+      const b = await addGuest(ada, none.id);
+
+      const withAddress = await request(app).get(`${rsvp}/${a.token}/calendar`).expect(200);
+      expect(withAddress.text).toContain('LOCATION:Main street 1\r\n');
+      const without = await request(app).get(`${rsvp}/${b.token}/calendar`).expect(200);
+      expect(without.text).not.toContain('LOCATION');
+    });
+
+    it('works while the event is running', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const event = await createEvent(ada);
+      const guest = await addGuest(ada, event.id);
+      await makeRunning(event.id);
+      await request(app).get(`${rsvp}/${guest.token}/calendar`).expect(200);
+    });
+
+    it('answers 404 once the event is over', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const event = await createEvent(ada);
+      const guest = await addGuest(ada, event.id);
+      await makePast(event.id);
+      const res = await request(app).get(`${rsvp}/${guest.token}/calendar`).expect(404);
+      const other = await request(app)
+        .get(`${rsvp}/${'a'.repeat(43)}/calendar`)
+        .expect(404);
+      expect(res.body).toEqual(other.body);
+    });
+
+    it('answers the same 404 for unknown, malformed, renewed and removed tokens', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const event = await createEvent(ada);
+      const renewed = await addGuest(ada, event.id);
+      const removed = await addGuest(ada, event.id, { name: 'Gone' });
+      await ada.post(`${base}/${event.id}/guests/${renewed.id}/token`).expect(200);
+      await ada.delete(`${base}/${event.id}/guests/${removed.id}`).expect(204);
+
+      const bodies = [];
+      for (const token of ['a'.repeat(43), 'abc', renewed.token, removed.token]) {
+        bodies.push((await request(app).get(`${rsvp}/${token}/calendar`).expect(404)).body);
+      }
+      for (const body of bodies) expect(body).toEqual(bodies[0]);
+    });
+  });
 });

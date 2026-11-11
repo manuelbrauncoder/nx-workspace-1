@@ -6,9 +6,9 @@ import {
   GUEST_NOTE_MAX_LENGTH,
   GUESTS_BULK_MAX,
 } from './guests-limits';
+import { tokenSchema } from './token';
 
-/** A token link: 32 random bytes, base64url without padding. */
-export const tokenSchema = z.string().regex(/^[A-Za-z0-9_-]{43}$/);
+export { tokenSchema };
 
 const name = z.string().trim().min(1).max(GUEST_NAME_MAX_LENGTH);
 // An empty string counts as "no note".

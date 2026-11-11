@@ -7,7 +7,7 @@ import {
 import { adminRouter } from '@server/auth/admin.routes';
 import { authRouter } from '@server/auth/auth.routes';
 import { db } from '@server/core/db/db';
-import { eventImageSchema, eventSchema } from '@vyte/contracts/events';
+import { eventImageSchema, eventSchema, saveTheDateSchema } from '@vyte/contracts/events';
 import { guestSchema, invitationSchema } from '@vyte/contracts/guests';
 import { editorInviteSchema, memberSchema, publicEditorInviteSchema } from '@vyte/contracts/team';
 import { eq } from 'drizzle-orm';
@@ -23,6 +23,10 @@ import { events } from '../events/events.table.js';
 import { guestsRouter } from '../guests/guests.routes.js';
 import { invitesRouter } from '../invites/invites.routes.js';
 import { rsvpRouter } from '../rsvp/rsvp.routes.js';
+import {
+  saveTheDateRouter,
+  saveTheDateSettingsRouter,
+} from '../save-the-date/save-the-date.routes.js';
 import { teamRouter } from '../team/team.routes.js';
 import { buildDocs } from './docs.document.js';
 
@@ -44,6 +48,12 @@ function strictInvitation(value: unknown) {
       ? past.strict()
       : open.extend({ event: open.shape.event.strict(), guest: open.shape.guest.strict() }).strict()
   ).safeParse(value);
+}
+
+/** `saveTheDateSchema` is a union, so each variant is made strict here. */
+function strictSaveTheDate(value: unknown) {
+  const [open, past] = saveTheDateSchema.options;
+  return ((value as { past?: boolean })?.past ? past : open).strict().safeParse(value);
 }
 
 describe('docs', () => {
@@ -77,6 +87,8 @@ describe('docs', () => {
       ...routesOf(`${apiPrefix}/rsvp`, rsvpRouter),
       ...routesOf(`${apiPrefix}/events/{id}`, teamRouter),
       ...routesOf(`${apiPrefix}/invites`, invitesRouter),
+      ...routesOf(`${apiPrefix}/events/{id}/save-the-date`, saveTheDateSettingsRouter),
+      ...routesOf(`${apiPrefix}/save-the-date`, saveTheDateRouter),
     ];
 
     expect(documented.sort()).toEqual(implemented.sort());
@@ -246,5 +258,57 @@ describe('docs', () => {
     for (const member of handOver.body.members) {
       expect(memberSchema.strict().safeParse(member).error).toBeUndefined();
     }
+  });
+
+  it('documents the save-the-date shapes the API really returns', async () => {
+    const agent = await signedUpAgent('ada@example.com');
+    const created = await agent
+      .post(`${apiPrefix}/events`)
+      .send({
+        title: 'Party',
+        locationName: 'Garden',
+        startsAt: '2999-06-10T16:00:00.000Z',
+        timeZone: 'Europe/Berlin',
+      })
+      .expect(201);
+    const { id } = created.body.event;
+    const png = await sharp({ create: { width: 40, height: 20, channels: 3, background: 'red' } })
+      .png()
+      .toBuffer();
+    await agent.post(`${apiPrefix}/events/${id}/images`).attach('images', png, 'a.png').expect(201);
+
+    const on = await agent
+      .put(`${apiPrefix}/events/${id}/save-the-date`)
+      .send({ note: 'Details follow' })
+      .expect(200);
+    expect(eventSchema.strict().safeParse(on.body.event).error).toBeUndefined();
+    expect(on.body.event.saveTheDate).toEqual({
+      token: expect.any(String),
+      note: 'Details follow',
+    });
+
+    const { token } = on.body.event.saveTheDate;
+    const upcoming = await request(app).get(`${apiPrefix}/save-the-date/${token}`).expect(200);
+    expect(upcoming.body.saveTheDate.past).toBe(false);
+    expect(upcoming.body.saveTheDate.cover).not.toBeNull();
+    expect(strictSaveTheDate(upcoming.body.saveTheDate).error).toBeUndefined();
+
+    const off = await agent.delete(`${apiPrefix}/events/${id}/save-the-date`).expect(200);
+    expect(eventSchema.strict().safeParse(off.body.event).error).toBeUndefined();
+    const again = await agent.put(`${apiPrefix}/events/${id}/save-the-date`).send({}).expect(200);
+    const renewed = await agent.post(`${apiPrefix}/events/${id}/save-the-date/token`).expect(200);
+    expect(eventSchema.strict().safeParse(renewed.body.event).error).toBeUndefined();
+
+    // the strict schema holds for the variant after the event
+    await db
+      .update(events)
+      .set({ startsAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), endsAt: null })
+      .where(eq(events.id, id));
+    const past = await request(app)
+      .get(`${apiPrefix}/save-the-date/${renewed.body.event.saveTheDate.token}`)
+      .expect(200);
+    expect(past.body.saveTheDate).toEqual({ past: true, title: 'Party' });
+    expect(strictSaveTheDate(past.body.saveTheDate).error).toBeUndefined();
+    expect(again.body.event.saveTheDate.note).toBeNull();
   });
 });

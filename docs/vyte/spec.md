@@ -1,6 +1,6 @@
 # vyte: specification
 
-Status: **draft**, still being refined. The API has started: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list, the guest links and the team (members, hand-over, editor invites), see [vyte-api](../apps/vyte-api.md). Save the date, photos and the web app are not built yet, [apps/vyte-web](../../apps/vyte-web) only holds a README.
+Status: **draft**, still being refined. The API has started: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list, the guest links, the team (members, hand-over, editor invites) and the save the date, see [vyte-api](../apps/vyte-api.md). Photos and the web app are not built yet, [apps/vyte-web](../../apps/vyte-web) only holds a README.
 
 ## 1. Overview
 
@@ -58,7 +58,7 @@ Accounts are the shared accounts of `server-auth`. Sign-up is off (`auth.signUpE
 | Leave the event                                            |   –   |   ✓    |           –            |
 | Delete the event                                           |   ✓   |   –    |           –            |
 
-A past event is read-only for everyone: hosts can still read it, export the list, manage the photos and delete it (owner). An editor can still leave it. Photos can be uploaded until the upload window closes.
+A past event is read-only for everyone: hosts can still read it, export the list, manage the photos and delete it (owner). An editor can still leave it. Photos can be uploaded until the upload window closes. The one exception is the save the date: its link can still be turned off after the event, so a link that went somewhere unwanted can be stopped.
 
 ## 3. Domain model
 
@@ -261,7 +261,7 @@ For hosts, `/events/:id/photos` shows all photos as a grid with the name of the 
 ### Past events
 
 - `/events` shows "Kommend" and "Vergangen"
-- A past event opens read-only: no editing, no guest changes, no invites. Hosts can export the list and the owner can delete the event. An editor can still leave. Photos stay manageable, uploads run until the window closes
+- A past event opens read-only: no editing, no guest changes, no invites. Hosts can export the list and the owner can delete the event. An editor can still leave. Photos stay manageable, uploads run until the window closes. The save the date can be turned off, but not turned on or renewed
 - Nothing is deleted automatically
 
 ### Deleting an account
@@ -287,7 +287,7 @@ The event page shows the counts, the guest page the list.
 
 ## 6. API draft
 
-Routes under `/api/v1` like `dartomat-api`, `/health` and `/docs` at the root. Answers wrapped in an object, errors in the usual format `{ error: { message, details? } }`. An event the user is not a member of answers with 404, a lacking role (editor wants to delete) with 403, a write to a past event with 409.
+Routes under `/api/v1` like `dartomat-api`, `/health` and `/docs` at the root. Answers wrapped in an object, errors in the usual format `{ error: { message, details? } }`. An event the user is not a member of answers with 404, a lacking role (editor wants to delete) with 403, a write to a past event with 409. Exceptions that only take something away stay open after the event: deleting the event, an editor leaving, turning the save-the-date link off.
 
 ### Accounts (`server-auth`)
 
@@ -350,19 +350,19 @@ Creating the account reuses `hashPassword()`, `insertUser()` and `startSession()
 | `PUT /rsvp/{token}`                  | `{ response, companions, message }`, `{ invitation }`. 409 after the deadline, or after the start without one (section 3)     |
 | `GET /rsvp/{token}/images/{imageId}` | an image of the event, so the guest page needs no session. 404 once the event is past                                         |
 
-`GET /rsvp/{token}/calendar` answers with the `.ics` file of the event, with the full address.
+`GET /rsvp/{token}/calendar` answers with the `.ics` file of the event, with the full address. 404 once the event is past.
 
 ### Save the date and photo stand (session required, owner or editor)
 
-| Method and path                                  | Content                                                                 |
-| ------------------------------------------------ | ----------------------------------------------------------------------- |
-| `PUT /events/{id}/save-the-date`                 | `{ note }`, turns it on (creates a token if there is none), `{ event }` |
-| `DELETE /events/{id}/save-the-date`              | turns it off, `{ event }`                                               |
-| `POST /events/{id}/save-the-date/token`          | new token, `{ event }`                                                  |
-| `PUT /events/{id}/photo-stand`                   | turns it on, `{ event }`                                                |
-| `DELETE /events/{id}/photo-stand`                | turns it off, `{ event }`                                               |
-| `POST /events/{id}/photo-stand/token`            | new token, `{ event }`                                                  |
-| `POST /events/{id}/guests/{guestId}/photo-token` | new photo token, `{ guest }`; a printed card stops working              |
+| Method and path                                  | Content                                                                                                                 |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `PUT /events/{id}/save-the-date`                 | `{ note }`, turns it on (creates a token if there is none) or changes the note, `{ event }`; 409 once the event is past |
+| `DELETE /events/{id}/save-the-date`              | turns it off and removes the note, `{ event }`; also after the event, so a leaked link can still be stopped             |
+| `POST /events/{id}/save-the-date/token`          | new token, `{ event }`; 404 while it is off, 409 once the event is past                                                 |
+| `PUT /events/{id}/photo-stand`                   | turns it on, `{ event }`                                                                                                |
+| `DELETE /events/{id}/photo-stand`                | turns it off, `{ event }`                                                                                               |
+| `POST /events/{id}/photo-stand/token`            | new token, `{ event }`                                                                                                  |
+| `POST /events/{id}/guests/{guestId}/photo-token` | new photo token, `{ guest }`; a printed card stops working                                                              |
 
 ### Photos for hosts (session required, owner or editor)
 
@@ -374,20 +374,20 @@ Creating the account reuses `hashPassword()`, `insertUser()` and `startSession()
 | `DELETE /events/{id}/photos/{photoId}` | 204                                                                |
 | `GET /events/{id}/photos/archive`      | a ZIP of all visible photos, streamed, named `<uploader>-<n>.webp` |
 
-### Save the date and uploads (public, rate limited per IP)
+### Save the date and uploads (public, only writes rate limited per IP)
 
-| Method and path                                                   | Content                                                                                          |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `GET /save-the-date/{token}`                                      | `{ saveTheDate }`: title, date, `allDay`, `timeZone`, `locationName`, note, cover image, `past`  |
-| `GET /save-the-date/{token}/calendar`                             | the `.ics` file, location without address                                                        |
-| `GET /save-the-date/{token}/cover`                                | the cover image                                                                                  |
-| `GET /photos/{token}`                                             | `{ upload }`: event title, guest name, own photos, limit, left, window open or not and its times |
-| `POST /photos/{token}`                                            | `FormData` with one file, `{ upload }`. 409 outside the window or when the limit is reached      |
-| `GET /photos/{token}/{photoId}`                                   | an own photo                                                                                     |
-| `DELETE /photos/{token}/{photoId}`                                | deletes an own photo, `{ upload }`                                                               |
-| `GET /stand/{token}`                                              | `{ upload }` like above, for the photos of this device                                           |
-| `POST /stand/{token}`                                             | `FormData` with one file and an optional `name`. Sets the device cookie on the first upload      |
-| `GET /stand/{token}/{photoId}`, `DELETE /stand/{token}/{photoId}` | own photo of this device                                                                         |
+| Method and path                                                   | Content                                                                                                                                                            |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GET /save-the-date/{token}`                                      | `{ saveTheDate }`: title, date, `allDay`, `timeZone`, `locationName`, note, cover size, `past`; once the event is past only `past` and the title. Not rate limited |
+| `GET /save-the-date/{token}/calendar`                             | the `.ics` file, location without address; 404 once the event is past. Not rate limited                                                                            |
+| `GET /save-the-date/{token}/cover`                                | the cover image; 404 without one or once the event is past. Not rate limited                                                                                       |
+| `GET /photos/{token}`                                             | `{ upload }`: event title, guest name, own photos, limit, left, window open or not and its times                                                                   |
+| `POST /photos/{token}`                                            | `FormData` with one file, `{ upload }`. 409 outside the window or when the limit is reached                                                                        |
+| `GET /photos/{token}/{photoId}`                                   | an own photo                                                                                                                                                       |
+| `DELETE /photos/{token}/{photoId}`                                | deletes an own photo, `{ upload }`                                                                                                                                 |
+| `GET /stand/{token}`                                              | `{ upload }` like above, for the photos of this device                                                                                                             |
+| `POST /stand/{token}`                                             | `FormData` with one file and an optional `name`. Sets the device cookie on the first upload                                                                        |
+| `GET /stand/{token}/{photoId}`, `DELETE /stand/{token}/{photoId}` | own photo of this device                                                                                                                                           |
 
 Schemas live in `vyte-contracts` (the account invites in `contracts`, next to `auth`), the OpenAPI document lists every route (`docs.test.ts`).
 
@@ -453,6 +453,7 @@ Direction **Konfetti**: bright, cheerful and clear, a little playful but not lou
 - A guest token only reads its event (without guest list) and answers for its own guest; after the event it reveals only the title
 - Token pages (`/rsvp/…`, `/photos/…`, `/stand/…`, `/save-the-date/…`, `/invite/…`, `/welcome/…`) send `Referrer-Policy: no-referrer`, so the token does not leak to other sites. The API already sends it through `helmet`
 - Rate limits per IP with `createRateLimit()` from `server-core` on every public token route that writes (answers, uploads, accepting an invite or account link); account creation through a token also counts against the rate limit of sign-up. Reading a token (`GET`) has no per-IP limit: the web app renders those pages on the server, so every guest would arrive from the server's IP. A token of 32 random bytes cannot be guessed, and every unknown token answers the same 404
+- Answers that carry a live token send `Cache-Control: no-store`: event answers (with the save-the-date link), guest lists, invites, guest link answers and the calendar files. The event images are `private, immutable`, the guest and save-the-date images `private, no-cache`, so a renewed link or the end of the event takes effect at once
 - Guest page shows names of the hosts only if they set one, never an email
 - Names, notes and messages of guests are personal data: a section in the privacy policy, deleted with the event. Hosts are responsible for the data of their guests. The message hint asks for food wishes, so guests may write about allergies: the privacy policy mentions it
 - The OpenStreetMap link is a plain link, nothing is loaded from OpenStreetMap until the guest clicks it

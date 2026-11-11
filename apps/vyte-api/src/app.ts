@@ -14,6 +14,10 @@ import { removeEventsOfUser } from './features/events/events.user-deletion.js';
 import { guestsRouter } from './features/guests/guests.routes.js';
 import { invitesRouter } from './features/invites/invites.routes.js';
 import { rsvpRouter } from './features/rsvp/rsvp.routes.js';
+import {
+  saveTheDateRouter,
+  saveTheDateSettingsRouter,
+} from './features/save-the-date/save-the-date.routes.js';
 import { teamRouter } from './features/team/team.routes.js';
 import { apiPrefix } from './shared/api.js';
 
@@ -30,10 +34,12 @@ export function createApp() {
       '/auth': authRouter,
       '/admin': adminRouter,
       '/events/:id/guests': guestsRouter,
+      '/events/:id/save-the-date': saveTheDateSettingsRouter,
       '/events/:id': teamRouter,
       '/events': eventsRouter,
       '/rsvp': rsvpRouter,
       '/invites': invitesRouter,
+      '/save-the-date': saveTheDateRouter,
     },
     docs: buildDocs,
     // Kept up to date by `nx release`, reported by /health.

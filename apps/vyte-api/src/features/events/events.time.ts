@@ -33,6 +33,16 @@ function localMidnight(year: number, month: number, day: number, timeZone: strin
   return new Date(guess - offsetMs(new Date(first), timeZone));
 }
 
+/** The local date of `instant` in `timeZone`, month 1–12. */
+export function localDate(instant: Date, timeZone: string) {
+  const local = new Date(instant.getTime() + offsetMs(instant, timeZone));
+  return {
+    year: local.getUTCFullYear(),
+    month: local.getUTCMonth() + 1,
+    day: local.getUTCDate(),
+  };
+}
+
 /** The next midnight in `timeZone` after `instant`: the end of its local day. */
 export function endOfLocalDay(instant: Date, timeZone: string): Date {
   const local = new Date(instant.getTime() + offsetMs(instant, timeZone));

@@ -23,14 +23,14 @@ invitesRouter.get('/:token', noStore, async (req, res) => {
   res.json({ invite: await getPublicInvite(token) });
 });
 
-invitesRouter.post('/:token/accept', requireAuth, authRateLimit, async (req, res) => {
+invitesRouter.post('/:token/accept', requireAuth, authRateLimit, noStore, async (req, res) => {
   const { token } = tokenParams(inviteTokenParamsSchema, req, NOT_INVITED);
   const userId = currentUserId(req);
   const eventId = await acceptInvite(userId, token);
   res.json({ event: await getEvent(userId, eventId) });
 });
 
-invitesRouter.post('/:token/sign-up', authRateLimit, async (req, res) => {
+invitesRouter.post('/:token/sign-up', authRateLimit, noStore, async (req, res) => {
   const { token } = tokenParams(inviteTokenParamsSchema, req, NOT_INVITED);
   const input = parse(inviteSignUpSchema, req.body);
   const { userId, eventId } = await signUpWithInvite(token, input);

@@ -14,15 +14,15 @@ New here: read the [README](../README.md) and [Workspace](workspace.md), then th
 
 ## Apps
 
-| App                                          | What it is                                                             |
-| -------------------------------------------- | ---------------------------------------------------------------------- |
-| [angular-base](apps/angular-base.md)         | Reference Angular app: SSR, i18n, sign-in, notes, showcase             |
-| [express-api-base](apps/express-api-base.md) | Reference API: accounts, admin, notes with images                      |
-| [portfolio-web](apps/portfolio-web.md)       | The portfolio site with its admin area, in production                  |
-| [portfolio-api](apps/portfolio-api.md)       | The backend of the portfolio: CMS content, media, contact, legal pages |
-| [dartomat-web](apps/dartomat-web.md)         | Dartomat, a scoreboard for 301, mobile first                           |
-| [dartomat-api](apps/dartomat-api.md)         | The backend of Dartomat: games, darts, checkout                        |
-| [vyte-api](apps/vyte-api.md)                 | The backend of vyte: accounts, events, guest lists and guest links     |
+| App                                          | What it is                                                                     |
+| -------------------------------------------- | ------------------------------------------------------------------------------ |
+| [angular-base](apps/angular-base.md)         | Reference Angular app: SSR, i18n, sign-in, notes, showcase                     |
+| [express-api-base](apps/express-api-base.md) | Reference API: accounts, admin, notes with images                              |
+| [portfolio-web](apps/portfolio-web.md)       | The portfolio site with its admin area, in production                          |
+| [portfolio-api](apps/portfolio-api.md)       | The backend of the portfolio: CMS content, media, contact, legal pages         |
+| [dartomat-web](apps/dartomat-web.md)         | Dartomat, a scoreboard for 301, mobile first                                   |
+| [dartomat-api](apps/dartomat-api.md)         | The backend of Dartomat: games, darts, checkout                                |
+| [vyte-api](apps/vyte-api.md)                 | The backend of vyte: accounts, events, guest lists, guest links, save the date |
 
 ## Libs
 
@@ -85,7 +85,7 @@ What only the portfolio apps have. The overview is on the app pages [portfolio-w
 
 ## Vyte (in progress)
 
-Event planning with a guest list and a personal link per guest. The API is in progress: accounts, admin, events, the guest list and the guest links exist, the photos follow the spec. The web app is not built yet, the folder `apps/vyte-web` only holds a README.
+Event planning with a guest list and a personal link per guest. The API is in progress: accounts, admin, events, the guest list, the guest links, the team and the save the date exist, the photos follow the spec. The web app is not built yet, the folder `apps/vyte-web` only holds a README.
 
 | Page                            | What it covers                                                                |
 | ------------------------------- | ----------------------------------------------------------------------------- |

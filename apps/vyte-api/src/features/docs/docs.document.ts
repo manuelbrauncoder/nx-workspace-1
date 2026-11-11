@@ -8,6 +8,7 @@ import { registerEventsDocs } from '../events/events.openapi.js';
 import { registerGuestsDocs } from '../guests/guests.openapi.js';
 import { registerInvitesDocs } from '../invites/invites.openapi.js';
 import { registerRsvpDocs } from '../rsvp/rsvp.openapi.js';
+import { registerSaveTheDateDocs } from '../save-the-date/save-the-date.openapi.js';
 import { registerTeamDocs } from '../team/team.openapi.js';
 
 const description = `
@@ -38,6 +39,7 @@ export function buildDocs(): OpenApiDocument {
       registerRsvpDocs,
       registerTeamDocs,
       registerInvitesDocs,
+      registerSaveTheDateDocs,
     ],
   });
 }
