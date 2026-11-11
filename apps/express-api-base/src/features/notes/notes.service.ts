@@ -2,9 +2,9 @@ import type { CreateNoteInput, UpdateNoteInput } from '@contracts/notes';
 import { db } from '@server/core/db/db';
 import { badRequest, notFound } from '@server/core/errors';
 import { imagePath, processImage, removeImages, saveImage } from '@server/core/images';
+import { sanitizeRichText } from '@server/core/rich-text';
 import { and, asc, count, desc, eq, inArray } from 'drizzle-orm';
 import { config } from '../../config/index.js';
-import { sanitizeDescription } from './notes.sanitize.js';
 import { noteImages, notes } from './notes.table.js';
 
 const noteColumns = {
@@ -67,7 +67,7 @@ export async function createNote(userId: string, input: CreateNoteInput) {
     .values({
       userId,
       title: input.title,
-      description: sanitizeDescription(input.description),
+      description: sanitizeRichText(input.description),
     })
     .returning(noteColumns);
 
@@ -80,7 +80,7 @@ export async function updateNote(userId: string, noteId: string, input: UpdateNo
     .set({
       title: input.title,
       description:
-        input.description === undefined ? undefined : sanitizeDescription(input.description),
+        input.description === undefined ? undefined : sanitizeRichText(input.description),
       updatedAt: new Date(),
     })
     .where(ownedNote(userId, noteId))

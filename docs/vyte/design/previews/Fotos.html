@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fotos hochladen, Namensschild</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&amp;family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#1F3BD6}a:hover{color:#122896}
+</style>
+</head>
+<body>
+<main style="position: relative; overflow: hidden; width: 390px; min-height: 1300px; box-sizing: border-box; padding: 16px 16px 32px; display: flex; flex-direction: column; gap: 20px; background: #FFE45C; color: #1A1A2E; font-family: 'DM Sans', system-ui, sans-serif; font-size: 16px; line-height: 1.5;">
+
+<div aria-hidden="true" style="position: absolute; top: 80px; right: -50px; width: 140px; height: 140px; border-radius: 50%; background: #FF5A3C;"></div>
+
+<div style="position: relative; display: flex; align-items: center; height: 44px; padding: 0 4px;">
+<span style="font-family: Unbounded, system-ui, sans-serif; font-weight: 800; font-size: 22px;">vyte</span>
+</div>
+
+<div style="position: relative; display: flex; flex-direction: column; gap: 10px; padding: 8px 4px 0;">
+<p style="margin: 0; font-weight: 700; font-size: 17px;">Annas 30. Geburtstag</p>
+<h1 style="margin: 0; font-family: Unbounded, system-ui, sans-serif; font-weight: 800; font-size: 38px; line-height: 1.02; letter-spacing: -0.03em; text-wrap: balance;">Hey Familie Weber, teilt eure&#160;Fotos</h1>
+</div>
+
+<section style="position: relative; background: #FFFFFF; border: 3px solid #1A1A2E; border-radius: 28px; box-shadow: 3px 3px 0 #1A1A2E; padding: 22px 20px; display: flex; flex-direction: column; gap: 18px;">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+<p style="margin: 0; font-weight: 700; font-size: 18px;">Noch 3 von 6 Fotos</p>
+<div aria-hidden="true" style="display: flex; gap: 6px;">
+<span style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #1A1A2E; background: #1F3BD6;"></span>
+<span style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #1A1A2E; background: #1F3BD6;"></span>
+<span style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #1A1A2E; background: #1F3BD6;"></span>
+<span style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #1A1A2E; background: #FFFFFF;"></span>
+<span style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #1A1A2E; background: #FFFFFF;"></span>
+<span style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid #1A1A2E; background: #FFFFFF;"></span>
+</div>
+</div>
+<div>
+<label for="photo-input" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 56px; border: 3px solid #1A1A2E; border-radius: 16px; background: #1F3BD6; color: #FFFFFF; font-family: Unbounded, system-ui, sans-serif; font-weight: 600; font-size: 16px; box-shadow: 2px 2px 0 #1A1A2E; cursor: pointer;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+Fotos auswählen
+</label>
+<input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp,image/avif" multiple="" style="position: absolute; width: 1px; height: 1px; opacity: 0;">
+</div>
+<p style="margin: 0; font-size: 14px; color: #55546A; text-wrap: pretty;">Aus der Kamera oder der Galerie. Hochladen geht bis Sonntag, 21. März.</p>
+</section>
+
+<section aria-labelledby="own-heading" style="position: relative; display: flex; flex-direction: column; gap: 12px;">
+<h2 id="own-heading" style="margin: 0; padding: 0 4px; font-family: Unbounded, system-ui, sans-serif; font-weight: 800; font-size: 20px;">Eure Fotos</h2>
+<ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+<li style="position: relative; aspect-ratio: 1 / 1; border: 3px solid #1A1A2E; border-radius: 16px; overflow: hidden; background: #F4E7B0; display: flex; align-items: center; justify-content: center; color: #4D4A2E;">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Foto 1"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="M21 16l-5-5-8 8"></path></svg>
+<button type="button" aria-label="Foto 1 löschen" style="position: absolute; top: 6px; right: 6px; width: 44px; height: 44px; border-radius: 50%; border: 2px solid #1A1A2E; background: #FFFFFF; color: #1A1A2E; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+</button>
+</li>
+<li style="position: relative; aspect-ratio: 1 / 1; border: 3px solid #1A1A2E; border-radius: 16px; overflow: hidden; background: #E9DDA2; display: flex; align-items: center; justify-content: center; color: #4D4A2E;">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Foto 2"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="M21 16l-5-5-8 8"></path></svg>
+<button type="button" aria-label="Foto 2 löschen" style="position: absolute; top: 6px; right: 6px; width: 44px; height: 44px; border-radius: 50%; border: 2px solid #1A1A2E; background: #FFFFFF; color: #1A1A2E; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>
+</button>
+</li>
+<li style="position: relative; aspect-ratio: 1 / 1; border: 3px solid #1A1A2E; border-radius: 16px; overflow: hidden; background: #FFFFFF; display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 10px; padding: 16px; box-sizing: border-box;">
+<span style="font-weight: 700; text-align: center;">Lädt hoch …</span>
+<div role="progressbar" aria-label="Foto 3 wird hochgeladen" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" style="height: 12px; border: 2px solid #1A1A2E; border-radius: 999px; overflow: hidden; background: #FFFFFF;">
+<div style="width: 60%; height: 100%; background: #1F3BD6;"></div>
+</div>
+<span style="font-size: 14px; color: #55546A; text-align: center;">60 %</span>
+</li>
+</ul>
+</section>
+
+<p style="position: relative; margin: 0; padding: 14px 16px; border-radius: 16px; background: #FFF6C7; border: 2px solid #1A1A2E; font-size: 15px; font-weight: 500; text-wrap: pretty;">Anna &amp; Jonas sehen alle Fotos, andere Gäste nicht. Fragt bitte kurz, bevor ihr Leute fotografiert.</p>
+
+<footer style="position: relative; display: flex; justify-content: center; gap: 16px; font-size: 13px; font-weight: 500;">
+<span>Erstellt mit vyte</span>
+<a href="#">Impressum</a>
+<a href="#">Datenschutz</a>
+</footer>
+</main>
+</body>
+</html>

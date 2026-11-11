@@ -76,7 +76,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 
 ## Architektur
 
-Nx-Workspace mit zwei Seiten: Angular-Apps (`apps/angular-base`, Libs in `packages/shared/`) und API-Apps (`apps/express-api-base`, Libs in `packages/server/`, siehe Abschnitt „API-Apps“). Beide teilen das Wire-Format über `packages/contracts`. Das Portfolio (`apps/portfolio-web`, `apps/portfolio-api`, `packages/portfolio/contracts`) und Dartomat (`apps/dartomat-web`, `apps/dartomat-api`, `packages/dartomat/contracts`) sind genauso gebaut, Details in `docs/apps/` und `docs/portfolio/`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
+Nx-Workspace mit zwei Seiten: Angular-Apps (`apps/angular-base`, Libs in `packages/shared/`) und API-Apps (`apps/express-api-base`, Libs in `packages/server/`, siehe Abschnitt „API-Apps“). Beide teilen das Wire-Format über `packages/contracts`. Das Portfolio (`apps/portfolio-web`, `apps/portfolio-api`, `packages/portfolio/contracts`), Dartomat (`apps/dartomat-web`, `apps/dartomat-api`, `packages/dartomat/contracts`) und Vyte (`apps/vyte-api`, `packages/vyte/contracts`, die Web-App folgt) sind genauso gebaut, Details in `docs/apps/`, `docs/portfolio/` und `docs/vyte/`. Tasks laufen immer über Nx (`pnpm nx …`). Innerhalb einer App feature-basierte Clean Architecture, Abhängigkeiten zeigen nur in eine Richtung: `presentation → application → domain → api`.
 
 Die Grenzen erzwingt ESLint an zwei Stellen: zwischen Projekten über Nx-Tags (`@nx/enforce-module-boundaries` in der Root-`eslint.config.mjs`), innerhalb der App über `no-restricted-imports` in `apps/angular-base/eslint.config.mjs`.
 
@@ -91,7 +91,7 @@ Die Grenzen erzwingt ESLint an zwei Stellen: zwischen Projekten über Nx-Tags (`
 | `type:api-app`  | `express-api-base`, …        | `type:server`, `type:contract`                     |
 | `type:server`   | `server-core`, `server-auth` | `type:server`, `type:contract`                     |
 
-Zweites Tag pro Projekt ist der Scope: `scope:shared` (alle Libs in `packages/shared`, `packages/server`, `packages/contracts`) darf nur von `scope:shared` abhängen, `scope:base` (angular-base, express-api-base) und `scope:portfolio` (portfolio-web, portfolio-api, portfolio-contracts) und `scope:dartomat` (dartomat-web, dartomat-api, dartomat-contracts) jeweils von sich selbst und `scope:shared`. Produkte importieren sich nie gegenseitig.
+Zweites Tag pro Projekt ist der Scope: `scope:shared` (alle Libs in `packages/shared`, `packages/server`, `packages/contracts`) darf nur von `scope:shared` abhängen, `scope:base` (angular-base, express-api-base) und `scope:portfolio` (portfolio-web, portfolio-api, portfolio-contracts) und `scope:dartomat` (dartomat-web, dartomat-api, dartomat-contracts) und `scope:vyte` (vyte-api, vyte-contracts) jeweils von sich selbst und `scope:shared`. Produkte importieren sich nie gegenseitig.
 
 `type:app` und `type:ui` dürfen zusätzlich von `type:contract` abhängen. Browser- und Server-Projekte importieren sich nie gegenseitig.
 
@@ -269,9 +269,9 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 
 ### Aufbau
 
-- `packages/contracts/src/` (Lib `contracts`, Alias `@contracts/*`): Zod-Schemas des Wire-Formats für Requests und Responses (`notes`, `auth`, `errors`), daraus abgeleitete Typen (`*Dto`, `*Input`), Limits als Konstanten ohne Zod (`notes-limits`) und die Rich-Text-Regeln (`rich-text`). Läuft in Node und im Browser, importiert nur `zod`
-- `packages/server/core/src/` (Lib `server-core`, Alias `@server/core/*`): `config` und `extendConfig(fileShape, envShape?)`, `logger` (redacted Cookie und Set-Cookie), `errors`, `validate`, Middleware (Error-Handler, Origin-Check), `db/db` und `db/migrate`, OpenAPI-Helfer mit `buildOpenApiDocument()`, `createServer({ prefix })` und `startServer()`, `images` (Bildverarbeitung mit Pixel-Limit), `createRateLimit()`, `testing/global-setup`. Kennt keine Features
-- `packages/server/auth/src/` (Lib `server-auth`, Alias `@server/auth/*`): Tabellen `users` und `session`, Registrieren, Anmelden, Abmelden, `/auth/me`, Session-Middleware, Guards `requireAuth`/`requireAdmin`, `currentUserId(req)`, Rate-Limit, Admin-Endpunkte, `seedAdmin()`, `onUserDeleted()`, Test-Helfer. Kennt keine Features
+- `packages/contracts/src/` (Lib `contracts`, Alias `@contracts/*`): Zod-Schemas des Wire-Formats für Requests und Responses (`notes`, `auth`, `account-invites`, `errors`), daraus abgeleitete Typen (`*Dto`, `*Input`), Limits als Konstanten ohne Zod (`notes-limits`) und die Rich-Text-Regeln (`rich-text`). Läuft in Node und im Browser, importiert nur `zod`
+- `packages/server/core/src/` (Lib `server-core`, Alias `@server/core/*`): `config` und `extendConfig(fileShape, envShape?)`, `logger` (redacted Cookie, Set-Cookie, Referer, Location und Token-Segmente der URL, fehlgeschlagene Queries ohne Parameter), `errors`, `validate`, Middleware (Error-Handler, Origin-Check), `db/db` und `db/migrate`, OpenAPI-Helfer mit `buildOpenApiDocument()`, `createServer({ prefix })` und `startServer()`, `images` (Bildverarbeitung mit Pixel-Limit), `createRateLimit()`, `rich-text` (`sanitizeRichText()`, Regeln aus `@contracts/rich-text`), `testing/global-setup`. Kennt keine Features
+- `packages/server/auth/src/` (Lib `server-auth`, Alias `@server/auth/*`): Tabellen `users` und `session`, Registrieren, Anmelden, Abmelden, `/auth/me`, Session-Middleware, Guards `requireAuth`/`requireAdmin`, `currentUserId(req)`, Rate-Limit, Admin-Endpunkte, `seedAdmin()`, `onUserDeleted()`, Account-Links für geschlossene Registrierung (Tabelle `account_invites`, opt-in über `accountInvitesRouter` und `accountInvitesAdminRouter`), Test-Helfer. Kennt keine Features
 - `apps/express-api-base/`: die Features (`notes`, `docs`), die App-Config-Erweiterung (`uploads`), `config/`, `drizzle/`, `Dockerfile`, `docker-compose.prod.example.yml`
 - Der Workspace ist ESM (`"type": "module"` in der Root-`package.json`). Sonst lädt `tsx` im Dev-Modus die Server-Libs als CommonJS, und Top-Level-Await bricht
 - Die App wird gebündelt, Imports brauchen keine `.js`-Endung (ältere Dateien haben sie noch, beides geht). Die npm-Pakete bleiben extern und stehen in `apps/express-api-base/package.json`, die das Image installiert. Ein neues Runtime-Paket dort und in der Root-`package.json` eintragen
@@ -287,7 +287,7 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 - Ein Ordner pro Feature in `src/features/<name>/` der App, eine Datei pro Rolle `<name>.<rolle>.ts`: `*.table.ts` (Drizzle, über den Glob in `drizzle.config.ts` gefunden), `*.routes.ts` (dünner Router: `parse()`, Service aufrufen, antworten), `*.service.ts` (Logik und alle DB-Zugriffe, wirft `HttpError`), `*.openapi.ts` (`register<Name>Docs(registry)`), `*.test.ts` (supertest gegen die ganze App)
 - Schemas für Request und Response in `packages/contracts`, wenn ein Frontend die Endpunkte nutzt, sonst neben dem Feature
 - Ein Feature registrieren: Router in `routes` von `createServer()` in `src/app.ts`, Register-Funktion in `register` von `src/features/docs/docs.document.ts`, Router in die Liste in `docs.test.ts`
-- Räumt ein Feature beim Löschen eines Users mehr auf als die DB-Kaskade (z. B. Dateien), registriert es in `src/app.ts` einen Hook mit `onUserDeleted()`. Admin kennt keine Features
+- Räumt ein Feature beim Löschen eines Users mehr auf als die DB-Kaskade (z. B. Dateien), registriert es in `src/app.ts` einen Hook mit `onUserDeleted()`. Der Hook läuft in der Transaktion, die den User löscht, und bekommt sie als zweites Argument (`(userId, tx)`). Admin kennt keine Features
 
 ### Konventionen über Dateien hinweg
 
@@ -298,7 +298,7 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 - **CSRF**: keine Tokens. Der Origin-Check lehnt zustandsändernde Requests ab, deren `Origin` nicht in `config.cors.origins` (oder der eigene) ist
 - **Besitz**: Services filtern jede Query nach `userId`, eine fremde Ressource ist ein 404, kein 403
 - **Docs per Test synchron**: `docs.test.ts` schlägt fehl, wenn eine Route ohne OpenAPI-Eintrag existiert oder umgekehrt, und prüft echte Antworten gegen die Schemas mit `.strict()`
-- **Rich Text**: `notes.sanitize.ts` erlaubt genau `RICH_TEXT_TAGS` aus `@contracts/rich-text`, dieselbe Liste wie der Editor im Frontend
+- **Rich Text**: `sanitizeRichText()` aus `@server/core/rich-text` erlaubt genau `RICH_TEXT_TAGS` aus `@contracts/rich-text`, dieselbe Liste wie der Editor im Frontend. Ein Link behält sein `href` nur, wenn `isAllowedRichTextHref()` es erlaubt (Profil `text` für Notizen und Events, `page` für Rechtsseiten). Jede API-App ruft diese Funktion vor dem Speichern auf, eigene Sanitizer gibt es nicht
 
 ### Tests
 

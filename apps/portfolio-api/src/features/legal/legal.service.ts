@@ -2,8 +2,8 @@ import { type LegalPageKey, type LegalPageUpdate, legalPageKeys } from '@portfol
 import type { Language } from '@portfolio/contracts/portfolio';
 import { db } from '@server/core/db/db';
 import { notFound } from '@server/core/errors';
+import { sanitizeRichText } from '@server/core/rich-text';
 import { eq, sql } from 'drizzle-orm';
-import { sanitizeLegalHtml } from './legal.sanitize.js';
 import { legalPages } from './legal.table.js';
 
 const toPage = (row: typeof legalPages.$inferSelect) => ({ ...row.html, updatedAt: row.updatedAt });
@@ -36,7 +36,8 @@ export async function legalPageExists(key: LegalPageKey) {
   return row !== undefined;
 }
 
-const sanitized = (html?: string) => (html === undefined ? undefined : sanitizeLegalHtml(html));
+const sanitized = (html?: string) =>
+  html === undefined ? undefined : sanitizeRichText(html, 'page').trim();
 
 /**
  * Changes the sent languages of a page; the HTML is sanitized before it is stored. With both

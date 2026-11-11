@@ -15,6 +15,7 @@ const ERROR_DESCRIPTIONS = {
   409: 'Conflict with existing data, or an admin changing their own account',
   413: 'Upload too large',
   429: 'Too many attempts',
+  503: 'Busy at the moment, try again shortly',
 } as const;
 
 export function createRegistry() {

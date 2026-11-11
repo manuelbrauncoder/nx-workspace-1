@@ -1,6 +1,7 @@
 import { config } from '@server/core/config';
 import { db } from '@server/core/db/db';
 import { logger } from '@server/core/logger';
+import { eq, sql } from 'drizzle-orm';
 import request from 'supertest';
 import { describe, expect, it, vi } from 'vitest';
 import { seedAdmin } from './admin.seed';
@@ -200,6 +201,59 @@ describe('admin', () => {
 
     remove();
     expect(steps).toEqual(['before true', 'after']);
+  });
+
+  it('rolls the whole deletion back when a hook throws', async () => {
+    const admin = await adminAgent();
+    const user = await signedUpAgent('ada@example.com');
+    const id = await idOf(user);
+    const remove = onUserDeleted(async () => {
+      throw new Error('hook failed');
+    });
+    const silence = vi.spyOn(logger, 'error').mockImplementation(() => undefined);
+
+    try {
+      const res = await admin.delete(`/admin/users/${id}`);
+      expect(res.status).toBe(500);
+    } finally {
+      remove();
+      silence.mockRestore();
+    }
+
+    expect(await db.select({ id: users.id }).from(users).where(eq(users.id, id))).toHaveLength(1);
+  });
+
+  it('hands the hooks a working transaction in which the user still exists', async () => {
+    const admin = await adminAgent();
+    const user = await signedUpAgent('ada@example.com');
+    const id = await idOf(user);
+    const seen: string[] = [];
+    const remove = onUserDeleted(async (userId, tx) => {
+      const rows = await tx.select({ email: users.email }).from(users).where(eq(users.id, userId));
+      seen.push(...rows.map((row) => row.email));
+    });
+
+    await admin.delete(`/admin/users/${id}`).expect(204);
+
+    remove();
+    expect(seen).toEqual(['ada@example.com']);
+  });
+
+  it('has signed the user out before the hooks of the features run', async () => {
+    const admin = await adminAgent();
+    const user = await signedUpAgent('ada@example.com');
+    const id = await idOf(user);
+    const sessions = sql`SELECT count(*)::int AS n FROM session WHERE sess::jsonb ->> 'userId' = ${id}`;
+    const seen: number[] = [];
+    const remove = onUserDeleted(async () => {
+      const result = await db.execute(sessions);
+      seen.push((result.rows[0] as { n: number }).n);
+    });
+
+    await admin.delete(`/admin/users/${id}`).expect(204);
+
+    remove();
+    expect(seen).toEqual([0]);
   });
 
   it('revokes all sessions of a user, who can sign in again', async () => {

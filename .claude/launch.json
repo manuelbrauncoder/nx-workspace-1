@@ -18,6 +18,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["nx", "serve", "dartomat-web"],
       "port": 4200
+    },
+    {
+      "name": "vyte-api",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "run", "vyte-api:serve"],
+      "port": 3300
     }
   ]
 }

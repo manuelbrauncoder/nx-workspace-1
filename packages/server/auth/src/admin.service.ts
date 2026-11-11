@@ -27,13 +27,17 @@ export async function setRole(actorId: string, userId: string, role: Role) {
 export async function deleteUser(actorId: string, userId: string) {
   if (userId === actorId) throw conflict('You cannot delete your own account');
 
-  const cleanUp = await prepareUserDeletion(userId);
+  // signed out first, so the user cannot create rows while the hooks of the features run
+  await revokeSessions(userId);
 
-  // rows of features go with the user (cascade); their files are removed afterwards
-  await db.transaction(async (tx) => {
+  // the hooks run in the same transaction as the delete, so what they decide still holds when
+  // the user is gone; rows of features go with the user (cascade), files are removed afterwards
+  const cleanUp = await db.transaction(async (tx) => {
+    const cleanups = await prepareUserDeletion(userId, tx);
     const deleted = await tx.delete(users).where(eq(users.id, userId)).returning({ id: users.id });
     if (deleted.length === 0) throw notFound('User not found');
     await revokeSessions(userId, tx);
+    return cleanups;
   });
 
   await cleanUp();

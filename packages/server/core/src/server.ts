@@ -6,7 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import { config } from './config';
 import { pool } from './db/db';
 import { notFound } from './errors';
-import { logger } from './logger';
+import { logger, serializeRequest } from './logger';
 import { errorHandler } from './middleware/error-handler';
 import { originCheck } from './middleware/origin-check';
 import type { OpenApiDocument } from './openapi';
@@ -42,7 +42,7 @@ export function createServer({
   const app = express();
   app.set('trust proxy', config.trustProxy);
 
-  app.use(pinoHttp({ logger }));
+  app.use(pinoHttp({ logger, serializers: { req: serializeRequest } }));
   // same-site lets the frontend on a sibling subdomain embed images served by this API
   app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
   app.use(cors({ origin: config.cors.origins, credentials: true }));

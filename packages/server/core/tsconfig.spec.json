@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../dist/out-tsc",
+    "target": "ES2024",
+    "lib": ["ES2024"],
+    "types": ["node", "vitest/globals"],
+    "noUncheckedIndexedAccess": true
+  },
+  "include": ["src/**/*.test.ts", "*.ts"]
+}

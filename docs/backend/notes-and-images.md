@@ -23,10 +23,10 @@ Every user only sees and changes their own notes. All queries in [`notes.service
 
 ## Description sanitizing
 
-The description is HTML from a rich-text editor. Because it will be rendered in a browser, the server cleans it before saving ([`notes.sanitize.ts`](../../apps/express-api-base/src/features/notes/notes.sanitize.ts)):
+The description is HTML from a rich-text editor. Because it will be rendered in a browser, the server cleans it before saving with `sanitizeRichText(html)` from [`@server/core/rich-text`](../../packages/server/core/src/rich-text.ts). Every API app uses the same function; the profile `text` applies to notes and event descriptions:
 
 - **Kept:** the tags of `RICH_TEXT_TAGS` in [`@contracts/rich-text`](../../packages/contracts/src/rich-text.ts): `p`, `br`, `h2`, `h3`, `blockquote`, `strong`, `em`, `ul`, `ol`, `li`, `a`. The editor of the Angular app follows the same list, so the server keeps exactly what the editor can produce.
-- **Links:** only `http`, `https` and `mailto` targets. Every link gets `target="_blank"` and `rel="noopener noreferrer nofollow"`.
+- **Links:** the `href` stays only if `isAllowedRichTextHref(href, 'text')` accepts it, that is an absolute `http`, `https` or `mailto` link. Paths of the site (`/privacy`) and protocol-relative links (`//example.com`) are dropped. A rejected link stays as a plain `<a>` without attributes, so its text remains. External `http` and `https` links get `target="_blank"` and `rel="noopener noreferrer nofollow"`; `mailto` links get neither.
 - **Removed:** everything else, including `script`, `style`, `iframe`, `img`, event handlers such as `onclick`, and all other attributes.
 
 Invalid HTML is not rejected; the unsafe parts are silently dropped. To allow more formatting (for example tables), extend `RICH_TEXT_TAGS` and add the format to the editor and the styles of the frontend.
@@ -84,4 +84,4 @@ If a file cannot be removed from disk, a warning is logged and the request still
 - **No replace:** an image cannot be swapped in place. Delete it and upload the new one; the new image gets a new id.
 - **No explicit order:** images are returned in upload order. Reordering would need a `position` column.
 - **One size:** only the scaled original is stored, no thumbnails.
-- **Files outlive deleted users:** there is no endpoint to delete a user. If one is added, it must remove the user's image files, because the database cascade only removes rows.
+- **Files of deleted users:** the database cascade only removes rows. When an admin deletes a user (`DELETE /admin/users/:id`), the hook registered with `onUserDeleted()` removes their image files after the deletion

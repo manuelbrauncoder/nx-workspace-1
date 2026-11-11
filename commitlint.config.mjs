@@ -11,6 +11,8 @@ const scopes = [
   'portfolio-api',
   'dartomat-web',
   'dartomat-api',
+  'vyte-web',
+  'vyte-api',
   // libs
   'core',
   'ui',
@@ -21,6 +23,7 @@ const scopes = [
   'server-auth',
   'portfolio-contracts',
   'dartomat-contracts',
+  'vyte-contracts',
   // across the workspace
   'workspace',
   'deps',

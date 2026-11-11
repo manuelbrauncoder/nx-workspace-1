@@ -16,11 +16,25 @@ export const publicUser = {
 // Verified when the email is unknown, so both sign-in failures take the same time.
 const dummyHash = await argon2.hash('dummy-password');
 
+export function hashPassword(password: string) {
+  return argon2.hash(password);
+}
+
 export async function signUp(input: SignUpInput) {
-  const passwordHash = await argon2.hash(input.password);
-  const [user] = await db
+  return insertUser({ ...input, passwordHash: await hashPassword(input.password) });
+}
+
+/**
+ * Inserts the user with an already hashed password. `executor` lets a caller do it inside its
+ * own transaction, with the slow hashing done before the transaction starts.
+ */
+export async function insertUser(
+  input: { email: string; name: string | null; passwordHash: string },
+  executor: Pick<typeof db, 'insert'> = db,
+) {
+  const [user] = await executor
     .insert(users)
-    .values({ email: input.email, name: input.name, passwordHash })
+    .values({ email: input.email, name: input.name, passwordHash: input.passwordHash })
     .onConflictDoNothing({ target: users.email })
     .returning(publicUser);
 

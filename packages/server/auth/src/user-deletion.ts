@@ -1,8 +1,17 @@
+import type { db } from '@server/core/db/db';
+
+/** The transaction that deletes the user. */
+export type UserDeletionExecutor = Pick<typeof db, 'select' | 'insert' | 'update' | 'delete'>;
+
 /**
- * Runs before a user is deleted, e.g. to collect the files of the user. What it returns runs
- * after the deletion is committed, e.g. to remove those files.
+ * Runs inside the transaction that deletes the user, before the delete, e.g. to collect the files
+ * of the user or to delete rows the cascade does not reach. What it returns runs after the
+ * deletion is committed, e.g. to remove those files.
  */
-export type UserDeletionHook = (userId: string) => Promise<(() => Promise<void>) | void>;
+export type UserDeletionHook = (
+  userId: string,
+  tx: UserDeletionExecutor,
+) => Promise<(() => Promise<void>) | void>;
 
 const hooks = new Set<UserDeletionHook>();
 
@@ -22,9 +31,14 @@ export function onUserDeleted(hook: UserDeletionHook): () => void {
   return () => hooks.delete(hook);
 }
 
-/** Runs the hooks before the deletion and returns what has to run after it. */
-export async function prepareUserDeletion(userId: string): Promise<() => Promise<void>> {
-  const cleanups = await Promise.all([...hooks].map((hook) => hook(userId)));
+/** Runs the hooks inside the deleting transaction and returns what has to run after it. */
+export async function prepareUserDeletion(
+  userId: string,
+  tx: UserDeletionExecutor,
+): Promise<() => Promise<void>> {
+  // one after another: they share the transaction
+  const cleanups: Awaited<ReturnType<UserDeletionHook>>[] = [];
+  for (const hook of hooks) cleanups.push(await hook(userId, tx));
   return async () => {
     for (const cleanup of cleanups) await cleanup?.();
   };

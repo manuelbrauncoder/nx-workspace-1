@@ -14,28 +14,30 @@ New here: read the [README](../README.md) and [Workspace](workspace.md), then th
 
 ## Apps
 
-| App                                          | What it is                                                             |
-| -------------------------------------------- | ---------------------------------------------------------------------- |
-| [angular-base](apps/angular-base.md)         | Reference Angular app: SSR, i18n, sign-in, notes, showcase             |
-| [express-api-base](apps/express-api-base.md) | Reference API: accounts, admin, notes with images                      |
-| [portfolio-web](apps/portfolio-web.md)       | The portfolio site with its admin area, in production                  |
-| [portfolio-api](apps/portfolio-api.md)       | The backend of the portfolio: CMS content, media, contact, legal pages |
-| [dartomat-web](apps/dartomat-web.md)         | Dartomat, a scoreboard for 301, mobile first                           |
-| [dartomat-api](apps/dartomat-api.md)         | The backend of Dartomat: games, darts, checkout                        |
+| App                                          | What it is                                                                                  |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [angular-base](apps/angular-base.md)         | Reference Angular app: SSR, i18n, sign-in, notes, showcase                                  |
+| [express-api-base](apps/express-api-base.md) | Reference API: accounts, admin, notes with images                                           |
+| [portfolio-web](apps/portfolio-web.md)       | The portfolio site with its admin area, in production                                       |
+| [portfolio-api](apps/portfolio-api.md)       | The backend of the portfolio: CMS content, media, contact, legal pages                      |
+| [dartomat-web](apps/dartomat-web.md)         | Dartomat, a scoreboard for 301, mobile first                                                |
+| [dartomat-api](apps/dartomat-api.md)         | The backend of Dartomat: games, darts, checkout                                             |
+| [vyte-api](apps/vyte-api.md)                 | The backend of vyte: accounts, events, guest lists, CSV, guest links, save the date, photos |
 
 ## Libs
 
-| Lib                                                | What it is                                                        |
-| -------------------------------------------------- | ----------------------------------------------------------------- |
-| [core](libs/core.md)                               | Angular infrastructure: config, errors, i18n, SEO, logging, state |
-| [ui](libs/ui.md)                                   | UI wrappers, form controls, toggles                               |
-| [styles](libs/styles.md)                           | Global SCSS                                                       |
-| [helm](libs/helm.md)                               | Generated Spartan components, one lib per style                   |
-| [contracts](libs/contracts.md)                     | Wire format shared by APIs and Angular apps                       |
-| [server-core](libs/server-core.md)                 | Base of every API: config, server, database, errors, images       |
-| [server-auth](libs/server-auth.md)                 | Accounts, sessions, guards, admin                                 |
-| [portfolio-contracts](libs/portfolio-contracts.md) | Wire format of the portfolio                                      |
-| [dartomat-contracts](libs/dartomat-contracts.md)   | Wire format of Dartomat                                           |
+| Lib                                                | What it is                                                                         |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| [core](libs/core.md)                               | Angular infrastructure: config, errors, i18n, SEO, logging, state                  |
+| [ui](libs/ui.md)                                   | UI wrappers, form controls, toggles                                                |
+| [styles](libs/styles.md)                           | Global SCSS                                                                        |
+| [helm](libs/helm.md)                               | Generated Spartan components, one lib per style                                    |
+| [contracts](libs/contracts.md)                     | Wire format shared by APIs and Angular apps                                        |
+| [server-core](libs/server-core.md)                 | Base of every API: config, server, database, errors, images                        |
+| [server-auth](libs/server-auth.md)                 | Accounts, sessions, guards, admin                                                  |
+| [portfolio-contracts](libs/portfolio-contracts.md) | Wire format of the portfolio                                                       |
+| [dartomat-contracts](libs/dartomat-contracts.md)   | Wire format of Dartomat                                                            |
+| [vyte-contracts](libs/vyte-contracts.md)           | Wire format of vyte: event, guest and photo limits, event, guest and photo schemas |
 
 ## Frontend
 
@@ -80,6 +82,15 @@ What only the portfolio apps have. The overview is on the app pages [portfolio-w
 | [Legal pages](portfolio/web/legal-pages.md)     | Imprint, privacy, accessibility and cookies as CMS content              |
 | [CMS content](portfolio/api/cms-content.md)     | Portfolio sections, media, contact messages, legal pages, seed          |
 | [Configuration](portfolio/api/configuration.md) | The config file of `portfolio-api`, mail and `publicUrl`                |
+
+## Vyte (API complete for v1, web app in progress)
+
+Event planning with a guest list and a personal link per guest. The API is complete for v1: accounts, admin, events, the guest list with its CSV export, the guest links, the team, the save the date and the guest photos exist. The web app follows; it is not built yet, the folder `apps/vyte-web` only holds a README.
+
+| Page                            | What it covers                                                                |
+| ------------------------------- | ----------------------------------------------------------------------------- |
+| [Specification](vyte/spec.md)   | Roles, domain model, flows, API and web draft, open questions (draft)         |
+| [Design](vyte/design/README.md) | Snapshot of the design canvas, the Konfetti look, previews of the guest pages |
 
 ## Conventions in these docs
 

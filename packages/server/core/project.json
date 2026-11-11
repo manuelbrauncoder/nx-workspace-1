@@ -4,5 +4,14 @@
   "projectType": "library",
   "sourceRoot": "packages/server/core/src",
   "tags": ["type:server", "scope:shared"],
-  "targets": {}
+  "targets": {
+    "typecheck": {
+      "cache": true,
+      "inputs": ["default", "^default"],
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "tsc -p tsconfig.lib.json --noEmit && tsc -p tsconfig.spec.json --noEmit"
+      }
+    }
+  }
 }
