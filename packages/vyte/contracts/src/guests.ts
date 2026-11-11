@@ -55,6 +55,8 @@ export const guestSchema = z.object({
   note: z.string().nullable(),
   maxCompanions: z.number().int(),
   token: tokenSchema,
+  /** The photo link of the place card; only uploads, never the answer. */
+  photoToken: tokenSchema,
   response: guestResponseValueSchema,
   companions: z.number().int(),
   /** The allowance was lowered below the companions given; the hosts should tell the guest. */

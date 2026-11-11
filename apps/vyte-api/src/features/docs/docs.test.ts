@@ -9,6 +9,7 @@ import { authRouter } from '@server/auth/auth.routes';
 import { db } from '@server/core/db/db';
 import { eventImageSchema, eventSchema, saveTheDateSchema } from '@vyte/contracts/events';
 import { guestSchema, invitationSchema } from '@vyte/contracts/guests';
+import { photoSchema, uploadSchema } from '@vyte/contracts/photos';
 import { editorInviteSchema, memberSchema, publicEditorInviteSchema } from '@vyte/contracts/team';
 import { eq } from 'drizzle-orm';
 import type { Router } from 'express';
@@ -22,6 +23,12 @@ import { eventsRouter } from '../events/events.routes.js';
 import { events } from '../events/events.table.js';
 import { guestsRouter } from '../guests/guests.routes.js';
 import { invitesRouter } from '../invites/invites.routes.js';
+import {
+  photoLinkRouter,
+  photosRouter,
+  photoStandSettingsRouter,
+  standRouter,
+} from '../photos/photos.routes.js';
 import { rsvpRouter } from '../rsvp/rsvp.routes.js';
 import {
   saveTheDateRouter,
@@ -89,6 +96,10 @@ describe('docs', () => {
       ...routesOf(`${apiPrefix}/invites`, invitesRouter),
       ...routesOf(`${apiPrefix}/events/{id}/save-the-date`, saveTheDateSettingsRouter),
       ...routesOf(`${apiPrefix}/save-the-date`, saveTheDateRouter),
+      ...routesOf(`${apiPrefix}/events/{id}/photos`, photosRouter),
+      ...routesOf(`${apiPrefix}/events/{id}/photo-stand`, photoStandSettingsRouter),
+      ...routesOf(`${apiPrefix}/photos`, photoLinkRouter),
+      ...routesOf(`${apiPrefix}/stand`, standRouter),
     ];
 
     expect(documented.sort()).toEqual(implemented.sort());
@@ -310,5 +321,94 @@ describe('docs', () => {
     expect(past.body.saveTheDate).toEqual({ past: true, title: 'Party' });
     expect(strictSaveTheDate(past.body.saveTheDate).error).toBeUndefined();
     expect(again.body.event.saveTheDate.note).toBeNull();
+  });
+
+  it('documents the photo shapes the API really returns', async () => {
+    const agent = await signedUpAgent('ada@example.com');
+    const created = await agent
+      .post(`${apiPrefix}/events`)
+      .send({ title: 'Party', startsAt: '2999-06-10T16:00:00.000Z', timeZone: 'Europe/Berlin' })
+      .expect(201);
+    const { id } = created.body.event;
+    expect(created.body.event.photoStand).toBeNull();
+    expect(eventSchema.strict().safeParse(created.body.event).error).toBeUndefined();
+    const guest = (
+      await agent.post(`${apiPrefix}/events/${id}/guests`).send({ name: 'Grace' }).expect(201)
+    ).body.guest;
+    expect(guestSchema.strict().safeParse(guest).error).toBeUndefined();
+    const renewedGuest = await agent
+      .post(`${apiPrefix}/events/${id}/guests/${guest.id}/photo-token`)
+      .expect(200);
+    expect(guestSchema.strict().safeParse(renewedGuest.body.guest).error).toBeUndefined();
+
+    const on = await agent.put(`${apiPrefix}/events/${id}/photo-stand`).expect(200);
+    expect(eventSchema.strict().safeParse(on.body.event).error).toBeUndefined();
+    expect(on.body.event.photoStand).toEqual({ token: expect.any(String) });
+    const renewed = await agent.post(`${apiPrefix}/events/${id}/photo-stand/token`).expect(200);
+    expect(eventSchema.strict().safeParse(renewed.body.event).error).toBeUndefined();
+    const list = await agent.get(`${apiPrefix}/events`).expect(200);
+    expect(eventSchema.strict().safeParse(list.body.events[0]).error).toBeUndefined();
+
+    // before the event starts, the page is closed
+    const closed = await request(app)
+      .get(`${apiPrefix}/photos/${renewedGuest.body.guest.photoToken}`)
+      .expect(200);
+    expect(closed.body.upload.open).toBe(false);
+    expect(uploadSchema.strict().safeParse(closed.body.upload).error).toBeUndefined();
+
+    await db
+      .update(events)
+      .set({ startsAt: new Date(Date.now() - 60 * 60 * 1000), endsAt: null })
+      .where(eq(events.id, id));
+    const png = await sharp({ create: { width: 40, height: 20, channels: 3, background: 'red' } })
+      .png()
+      .toBuffer();
+
+    const byLink = await request(app)
+      .post(`${apiPrefix}/photos/${renewedGuest.body.guest.photoToken}`)
+      .attach('photo', png, 'a.png')
+      .expect(201);
+    expect(byLink.body.upload.open).toBe(true);
+    expect(byLink.body.upload.photos).toHaveLength(1);
+    expect(uploadSchema.strict().safeParse(byLink.body.upload).error).toBeUndefined();
+    const page = await request(app)
+      .get(`${apiPrefix}/photos/${renewedGuest.body.guest.photoToken}`)
+      .expect(200);
+    expect(uploadSchema.strict().safeParse(page.body.upload).error).toBeUndefined();
+
+    const standToken = renewed.body.event.photoStand.token;
+    const deviceRes = await request(app)
+      .post(`${apiPrefix}/stand/${standToken}/device`)
+      .expect(204);
+    const device = (deviceRes.headers['set-cookie'] as unknown as string[])[0]!.split(';')[0]!;
+    const atStand = await request(app)
+      .post(`${apiPrefix}/stand/${standToken}`)
+      .set('Cookie', device)
+      .field('name', 'Linus')
+      .attach('photo', png, 'a.png')
+      .expect(201);
+    expect(atStand.body.upload.guestName).toBeNull();
+    expect(uploadSchema.strict().safeParse(atStand.body.upload).error).toBeUndefined();
+    const standPage = await request(app)
+      .get(`${apiPrefix}/stand/${standToken}`)
+      .set('Cookie', device)
+      .expect(200);
+    expect(uploadSchema.strict().safeParse(standPage.body.upload).error).toBeUndefined();
+
+    const photos = await agent.get(`${apiPrefix}/events/${id}/photos`).expect(200);
+    expect(photos.body.photos).toHaveLength(2);
+    for (const photo of photos.body.photos) {
+      expect(photoSchema.strict().safeParse(photo).error).toBeUndefined();
+    }
+    const hidden = await agent
+      .patch(`${apiPrefix}/events/${id}/photos/${photos.body.photos[0].id}`)
+      .send({ hidden: true })
+      .expect(200);
+    expect(photoSchema.strict().safeParse(hidden.body.photo).error).toBeUndefined();
+    expect(hidden.body.photo.hidden).toBe(true);
+
+    const off = await agent.delete(`${apiPrefix}/events/${id}/photo-stand`).expect(200);
+    expect(eventSchema.strict().safeParse(off.body.event).error).toBeUndefined();
+    expect(off.body.event.photoStand).toBeNull();
   });
 });

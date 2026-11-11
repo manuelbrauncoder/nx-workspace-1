@@ -1,6 +1,6 @@
 # vyte-api
 
-The backend of vyte, event planning with a guest list and a personal link per guest. It has the accounts of `server-auth` (sign-in, account links, the admin endpoints) and the events with their images, on the shared infrastructure of `server-core`. The guests and answers follow the [specification](../vyte/spec.md). Built like `express-api-base`, so this page only covers what differs.
+The backend of vyte, event planning with a guest list and a personal link per guest. It has the accounts of `server-auth` (sign-in, account links, the admin endpoints), the events with their images, the save the date and the guest photos, on the shared infrastructure of `server-core`. The guests and answers follow the [specification](../vyte/spec.md). Built like `express-api-base`, so this page only covers what differs.
 
 | Item     | Value                                                                                          |
 | -------- | ---------------------------------------------------------------------------------------------- |
@@ -50,10 +50,13 @@ All under `/api/v1`, only `/health` and `/docs` are at the root.
 | `/invites/:token…`                           | `vyte-api`    | The link of an editor invite: read, accept, or sign up through it, see [Team](#team)                    |
 | `/events/:id/save-the-date…`                 | `vyte-api`    | Save the date of an event, turned on, off and renewed by the hosts, see [Save the date](#save-the-date) |
 | `/save-the-date/:token…`                     | `vyte-api`    | The public save-the-date link: page, calendar file and cover, see [Save the date](#save-the-date)       |
+| `/photos/:token…`                            | `vyte-api`    | The photo link of a guest (place card): upload and see or delete own photos, see [Photos](#photos)      |
+| `/stand/:token…`                             | `vyte-api`    | The photo stand (shared QR code): device cookie, upload and own photos, see [Photos](#photos)           |
+| `/events/:id/photos…`, `/photo-stand…`       | `vyte-api`    | Host gallery with ZIP, and the photo stand turned on, off and renewed, see [Photos](#photos)            |
 | `/health`                                    | `server-core` | `{ "status": "ok", "version": "…" }` with the version of `package.json`                                 |
 | `/docs`                                      | `server-core` | OpenAPI document and Swagger UI, when `docs.enabled` is set                                             |
 
-Not there yet: the photo stand and photos, the CSV export. The spec lists them in [section 6](../vyte/spec.md#6-api-draft).
+Not there yet: the CSV export. The spec describes it in [section 5](../vyte/spec.md#5-guest-list-overview).
 
 ## Events
 
@@ -65,7 +68,7 @@ Code in [src/features/events](../../apps/vyte-api/src/features/events): `events.
 | `POST /events`                         | signed in     | 201, `{ event }`; the caller becomes owner                                    |
 | `GET /events/{id}`                     | member        | `{ event }` with `role`, `counts`                                             |
 | `PATCH /events/{id}`                   | owner, editor | `{ event }`, any subset of the fields                                         |
-| `DELETE /events/{id}`                  | owner         | 204, also for a past event; the images go with it                             |
+| `DELETE /events/{id}`                  | owner         | 204, also for a past event; the images and photos go with it                  |
 | `POST /events/{id}/images`             | owner, editor | multipart field `images`, 201, `{ images }`, appended                         |
 | `PUT /events/{id}/images/order`        | owner, editor | `{ ids }` lists every image once, `{ images }`; the first is the cover        |
 | `GET /events/{id}/images/{imageId}`    | member        | the WebP file, `Cache-Control: private, immutable`                            |
@@ -76,26 +79,27 @@ Rules in short:
 - **404 or 403**: an event the user is not a member of is a 404, never a 403. An editor who deletes the event gets a 403.
 - **Roles**: `event_members` holds the owner and the editors, every member route reads it. Creating an event inserts exactly one owner. Only the hand-over changes roles, see [Team](#team). The database does not enforce a single owner.
 - **Past events** are computed, nothing is stored. An event is over at `endsAt`; an all-day event at the end of its last day; without an end at the end of the day it starts. All in the event's `timeZone`. Writes answer 409, the files stay readable, the owner can still delete. An editor can still leave, see [Team](#team). Turning a save-the-date link off still works, see [Save the date](#save-the-date).
-- **Caching**: the JSON answers of the event routes (`GET`, `POST`, `PATCH`) send `Cache-Control: no-store`, because they carry the save-the-date link. The image files keep `private, immutable`.
+- **Caching**: the JSON answers of the event routes (`GET`, `POST`, `PATCH`) send `Cache-Control: no-store`, because they carry the save-the-date link and the photo stand link (`photoStand`, `null` while it is off). The image files keep `private, immutable`.
 - **Uploads**: membership and past are checked before multer reads the body, so a non-member or a past event never gets files parsed. Multer takes no text fields. Files above `uploads.maxFileSizeMb` answer 413.
 - **Images**: up to 6 per event, `position` 0 is the cover. All-or-nothing: one invalid file or a passed limit stores nothing. More than 6 in total answers 409, and so does a request with 7 files. A request with 8 or more files is cut off by multer before the service runs and answers 400. Each file goes through `processImage()` and `saveImage()` of `server-core`, stored as WebP. Deleting an image renumbers the rest.
 - **Description**: sanitized with `sanitizeRichText()` of `@server/core/rich-text` to `RICH_TEXT_TAGS`; a link keeps its `href` only if `isAllowedRichTextHref(…, 'text')` of `@contracts/rich-text` allows it (absolute `http`, `https` or `mailto`).
 - **Counts**: every event answer carries `counts` (`invited`, `coming`, `declined`, `pending`, `atMost`), computed from the guest list in one query per list, see section 5 of the [specification](../vyte/spec.md#5-guest-list-overview). `coming` is the accepted guests plus their companions, `atMost` all guests plus all allowances
-- **Deleting a user**: `events.user-deletion.ts` registers an `onUserDeleted()` hook. The hook runs in the transaction that deletes the user and gets it. It locks every event the user is a member of, then deletes the events the user owns, and removes their files after the commit. Memberships as editor go with the user. If the hook throws, the deletion is rolled back. See [Authentication](../backend/authentication.md#deleting-a-user).
+- **Deleting a user**: `events.user-deletion.ts` registers an `onUserDeleted()` hook. The hook runs in the transaction that deletes the user and gets it. It locks every event the user is a member of, then deletes the events the user owns, and removes their files (images and photos) after the commit. Memberships as editor go with the user. If the hook throws, the deletion is rolled back. See [Authentication](../backend/authentication.md#deleting-a-user).
 
 ## Guests
 
 Code in [src/features/guests](../../apps/vyte-api/src/features/guests): `guests.table.ts` (table `guests`, cascade with the event), `guests.routes.ts` (mounted at `/events/:id/guests`), `guests.service.ts`, `guests.openapi.ts`. The schemas are in [vyte-contracts](../libs/vyte-contracts.md#contents), the tokens come from `src/shared/token.ts`.
 
-| Method and path                              | Who           | Content                                                      |
-| -------------------------------------------- | ------------- | ------------------------------------------------------------ |
-| `GET /events/{id}/guests`                    | member        | `{ guests }` with tokens, by name; also for a past event     |
-| `POST /events/{id}/guests`                   | owner, editor | 201, `{ guest }`                                             |
-| `POST /events/{id}/guests/bulk`              | owner, editor | `{ names, maxCompanions }`, 201, `{ guests }`                |
-| `PATCH /events/{id}/guests/{guestId}`        | owner, editor | name, note or `maxCompanions`, `{ guest }`                   |
-| `PUT /events/{id}/guests/{guestId}/response` | owner, editor | `{ response, companions }` recorded by a host, `{ guest }`   |
-| `DELETE /events/{id}/guests/{guestId}`       | owner, editor | 204; the personal link stops working                         |
-| `POST /events/{id}/guests/{guestId}/token`   | owner, editor | new link, `{ guest }`; the old token answers 404 from now on |
+| Method and path                                  | Who           | Content                                                                                                            |
+| ------------------------------------------------ | ------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `GET /events/{id}/guests`                        | member        | `{ guests }` with tokens, by name; also for a past event                                                           |
+| `POST /events/{id}/guests`                       | owner, editor | 201, `{ guest }`                                                                                                   |
+| `POST /events/{id}/guests/bulk`                  | owner, editor | `{ names, maxCompanions }`, 201, `{ guests }`                                                                      |
+| `PATCH /events/{id}/guests/{guestId}`            | owner, editor | name, note or `maxCompanions`, `{ guest }`                                                                         |
+| `PUT /events/{id}/guests/{guestId}/response`     | owner, editor | `{ response, companions }` recorded by a host, `{ guest }`                                                         |
+| `DELETE /events/{id}/guests/{guestId}`           | owner, editor | 204; the personal link stops working                                                                               |
+| `POST /events/{id}/guests/{guestId}/token`       | owner, editor | new link, `{ guest }`; the old token answers 404 from now on                                                       |
+| `POST /events/{id}/guests/{guestId}/photo-token` | owner, editor | new photo link, `{ guest }`; the old one answers 404, 409 once the upload window has closed. See [Photos](#photos) |
 
 Rules in short:
 
@@ -105,7 +109,7 @@ Rules in short:
 - **Lowering the allowance**: if the guest has more companions than the new `maxCompanions`, the companions drop to it and `companionsReduced` becomes `true`. The next answer, by the host or by the guest, clears the flag.
 - **Edits never change the answer**: name, note and allowance are the only fields `PATCH` takes.
 - **Locks**: a write locks the event row, so limits are counted against a stable list. Answers and allowance changes lock the guest row, so two answers at once end as one of them.
-- **Tokens**: 32 random bytes, base64url, unique. The link is never in a query string, see [Authentication](../backend/authentication.md#what-the-request-log-keeps).
+- **Tokens**: 32 random bytes, base64url, unique. A guest has two: `token` for the answer link and `photoToken` for the photo link, which only uploads photos and never shows or changes the answer. The link is never in a query string, see [Authentication](../backend/authentication.md#what-the-request-log-keeps).
 - **Caching**: the whole router sends `Cache-Control: no-store`, the lists carry live tokens.
 - **Not there yet**: `GET /events/{id}/guests/export` (CSV).
 
@@ -181,6 +185,46 @@ Rules in short:
 - **Rate limit**: none on the reads, because the web app renders the page on the server and every visitor would share its IP. The save-the-date routes have no public writes.
 - **Caching**: the host routes and the page send `no-store`. The cover is `private, no-cache`, so turning the link off or renewing it takes effect at once.
 
+## Photos
+
+Code in [src/features/photos](../../apps/vyte-api/src/features/photos): `photos.table.ts` (table `event_photos`, cascade with the event, `guest_id` set null with the guest), `photos.routes.ts` (the photo link at `/photos`, the stand at `/stand`, the host gallery at `/events/:id/photos`, the stand settings at `/events/:id/photo-stand`), `photos.service.ts`, `photos.openapi.ts`. The ZIP writer is [src/shared/zip.ts](../../apps/vyte-api/src/shared/zip.ts), the device cookie helper [src/shared/cookies.ts](../../apps/vyte-api/src/shared/cookies.ts). The schemas are in [vyte-contracts](../libs/vyte-contracts.md#contents). The limits are config, see [section 3](../vyte/spec.md#3-domain-model).
+
+| Method and path                        | Who                | Content                                                                                                |
+| -------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------ |
+| `GET /photos/{token}`                  | public             | `{ upload }`: event title, guest name, own photos, `limit`, `left`, `open`, `opensAt`, `closesAt`      |
+| `POST /photos/{token}`                 | public             | multipart with one file in `photo`, 201, `{ upload }`                                                  |
+| `GET /photos/{token}/{photoId}`        | public             | an own photo, the WebP file                                                                            |
+| `DELETE /photos/{token}/{photoId}`     | public             | 200, `{ upload }` without the photo; also outside the window                                           |
+| `GET /stand/{token}`                   | public             | `{ upload }` with the photos of this device, `guestName` is `null`                                     |
+| `POST /stand/{token}/device`           | public             | 204; sets the device cookie `vyte_stand_device` if the device has none                                 |
+| `POST /stand/{token}`                  | public             | multipart with one file in `photo` and an optional `name`, 201, `{ upload }`; 409 without the cookie   |
+| `GET /stand/{token}/{photoId}`         | public, own device | an own photo of this device                                                                            |
+| `DELETE /stand/{token}/{photoId}`      | public, own device | 200, `{ upload }`; also outside the window                                                             |
+| `GET /events/{id}/photos`              | member             | `{ photos }` newest first, with `uploaderName` and `hidden`; also after the event                      |
+| `GET /events/{id}/photos/archive`      | member             | ZIP of the visible photos, `photos.zip`, entries `<uploader>-<n>.webp`                                 |
+| `GET /events/{id}/photos/{photoId}`    | member             | the WebP file, hidden ones too                                                                         |
+| `PATCH /events/{id}/photos/{photoId}`  | owner, editor      | `{ hidden }`, 200 with `{ photo }`                                                                     |
+| `DELETE /events/{id}/photos/{photoId}` | owner, editor      | 204                                                                                                    |
+| `PUT /events/{id}/photo-stand`         | owner, editor      | turns it on and creates its link once, `{ event }`; 409 once the event is past                         |
+| `DELETE /events/{id}/photo-stand`      | owner, editor      | turns it off, `{ event }`; also after the event, the photos stay                                       |
+| `POST /events/{id}/photo-stand/token`  | owner, editor      | new link, `{ event }`; the old one answers 404; 404 while it is off, 409 once the upload window closed |
+
+Rules in short:
+
+- **Window**: uploads are open from `startsAt` until `photos.uploadDaysAfterEnd` days after the end, computed like past events in `uploadWindow()`. Outside it an upload answers 409. Renewing a link works until the window closes, so a link that went around can be stopped after the event.
+- **Limits**: `photos.maxPerGuest` per guest through the photo link, `photos.maxPerDevice` per device at the stand, `photos.maxPerStand` photos through the stand in all, `photos.maxPerEvent` in all. Each one beyond answers 409. The guest's count and the device's count are the ones an upload sees in `left`.
+- **Checks twice**: link, window and limits are checked before multer reads the body (`assertCanUpload()`), so a refused upload costs no file. They are checked again after the image is stored, under the lock of the event row, and the link is resolved again there. Parallel uploads cannot pass a limit; the file of a refused upload is removed.
+- **Parallel uploads**: at most 8 uploads are read at once in the process. More answer 503 before their body is read. Image processing runs two at a time.
+- **Images**: one file per request in `photo`. Accepted are the formats `processImage()` allows (JPEG, PNG, WebP, GIF and AVIF; SVG is refused), stored as WebP, metadata dropped. Both sides are bounded to `photos.maxImageWidth`, the aspect ratio is kept. The guest upload takes no text field, the stand takes only `name`.
+- **Device**: `POST /stand/{token}/device` gives the device its id, once, so parallel first uploads of one phone share it. The cookie holds 32 random bytes, base64url. It is http-only, `SameSite=Lax`, path `/api/v1/stand`, 30 days, and `Secure` where the session cookie is. An upload without it answers 409, and a device sees and deletes only the photos with its own id. Without the cookie the page shows no photos.
+- **Names**: the stand's `name` is trimmed, at most 60 characters, and has no control, format or private-use characters; empty means none. A guest's photo takes the guest's name at upload time. Removing a guest keeps the photo, with `guestId` set to `null`.
+- **Rate limit**: uploads, the device call and the deletes through the public links count per client IP against `rateLimit.uploadWindowMinutes` and `rateLimit.uploadMaxRequests` (429). Reads have no limit, because the web app renders on the server.
+- **One answer for every dead link**: unknown, renewed, turned off or malformed links answer the same 404 with the same body on every route.
+- **Archive**: the ZIP is written as it is read, without compression, since WebP is compressed already. Entries are named `<uploader>-<n>.webp` (letters and digits of the name, counted without case). Hidden photos are left out, a file that has vanished is skipped. The sizes are summed before the first byte: more than 4 GiB answers 409, as ZIP without ZIP64 cannot hold it. Once the download has started, an error cuts the connection and is logged. No package is used, `src/shared/zip.ts` writes the archive itself.
+- **Hiding**: `PATCH` changes only what the ZIP takes. A hidden photo stays in the host list and its file stays served.
+- **Deleting**: a photo's file goes with the photo, the photos go with their event, and with an owner's events when the owner is deleted (see [Events](#events)).
+- **Caching**: photo files send `private, no-cache`, so a deleted photo or a renewed link takes effect at once. The JSON answers, the ZIP and the device call send `Cache-Control: no-store`.
+
 ## Calendar files
 
 Code in [src/features/events/events.calendar.ts](../../apps/vyte-api/src/features/events/events.calendar.ts): `calendarFile()` builds the file, `fullLocation()` joins place name and address. The guest link ([Guest links](#guest-links)) and the save the date ([Save the date](#save-the-date)) use it. The file is served as `event.ics` with `text/calendar; charset=utf-8` and `no-store`.
@@ -198,5 +242,6 @@ Code in [src/features/events/events.calendar.ts](../../apps/vyte-api/src/feature
 - **Cookie**: `sid` in development, `__Host-sid` in production (`session.cookieName`). The `__Host-` prefix requires `Secure`, which production sets
 - **Docs off in production**: `docs.enabled` is `false` in [production.example.json](../../apps/vyte-api/config/production.example.json), so `/docs` is not mounted there
 - **Port**: 3300 locally, 3000 in the container, so all products run side by side
-- **Uploads**: the events store their files in the `uploads` folder of the base config, the Dockerfile and the stack provide it
-- **Config**: own keys in [src/config/index.ts](../../apps/vyte-api/src/config/index.ts), merged into the shared `rateLimit`: `rateLimit.rsvpWindowMinutes` (15 in development) and `rateLimit.rsvpMaxRequests` (60). Both are required, there is no default. The spec adds `photos.*` for the photo routes, see [section 3](../vyte/spec.md#3-domain-model)
+- **Uploads**: the events and the guest photos store their files in the `uploads` folder of the base config, the Dockerfile and the stack provide it
+- **Cookie**: the photo stand sets its own cookie `vyte_stand_device`, see [Photos](#photos). It is not the session
+- **Config**: own keys in [src/config/index.ts](../../apps/vyte-api/src/config/index.ts), merged into the shared `rateLimit`: `rateLimit.rsvpWindowMinutes` (15 in development) and `rateLimit.rsvpMaxRequests` (60). Both are required, there is no default. `rateLimit.uploadWindowMinutes` (default 15) and `rateLimit.uploadMaxRequests` (default 200) have defaults, so an older config stays valid. The `photos.*` keys (limits of the guest photos) have defaults too, the values are in [section 3](../vyte/spec.md#3-domain-model) of the spec and in [Photos](#photos)

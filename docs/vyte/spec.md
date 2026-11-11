@@ -1,6 +1,6 @@
 # vyte: specification
 
-Status: **draft**, still being refined. The API has started: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list, the guest links, the team (members, hand-over, editor invites) and the save the date, see [vyte-api](../apps/vyte-api.md). Photos and the web app are not built yet, [apps/vyte-web](../../apps/vyte-web) only holds a README.
+Status: **draft**, still being refined. The API has started: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list, the guest links, the team (members, hand-over, editor invites), the save the date and the guest photos, see [vyte-api](../apps/vyte-api.md). The web app is not built yet, [apps/vyte-web](../../apps/vyte-web) only holds a README.
 
 ## 1. Overview
 
@@ -41,22 +41,22 @@ vyte plans an event and keeps its guest list. The host creates an event, adds th
 
 Accounts are the shared accounts of `server-auth`. Sign-up is off (`auth.signUpEnabled: false`), accounts come from an account link of an admin (section 4) or from an editor invite. The admin role has no rights on events it is not a member of.
 
-| Action                                                     | Owner | Editor |    Guest (own link)    |
-| ---------------------------------------------------------- | :---: | :----: | :--------------------: |
-| See the event and the guest list                           |   ✓   |   ✓    |  event only, no list   |
-| Edit the event and its images                              |   ✓   |   ✓    |           –            |
-| Add, edit, remove guests; renew a guest link               |   ✓   |   ✓    |           –            |
-| See all answers and counts; export CSV                     |   ✓   |   ✓    |    own answer only     |
-| Answer: accept or decline, companions, message             |   –   |   –    |  ✓ until the deadline  |
-| Record an answer for a guest                               |   ✓   |   ✓    |           –            |
-| Save the date and photo stand: turn on or off, renew links |   ✓   |   ✓    |           –            |
-| Print place cards and the stand                            |   ✓   |   ✓    |           –            |
-| Upload photos up to the limit, delete own                  |   –   |   –    | ✓ in the upload window |
-| See, hide and delete all photos; download them as ZIP      |   ✓   |   ✓    |    own photos only     |
-| Create or revoke invite links for editors                  |   ✓   |   –    |           –            |
-| Remove an editor; hand the event to an editor              |   ✓   |   –    |           –            |
-| Leave the event                                            |   –   |   ✓    |           –            |
-| Delete the event                                           |   ✓   |   –    |           –            |
+| Action                                                     | Owner | Editor |                  Guest (own link)                  |
+| ---------------------------------------------------------- | :---: | :----: | :------------------------------------------------: |
+| See the event and the guest list                           |   ✓   |   ✓    |                event only, no list                 |
+| Edit the event and its images                              |   ✓   |   ✓    |                         –                          |
+| Add, edit, remove guests; renew a guest link               |   ✓   |   ✓    |                         –                          |
+| See all answers and counts; export CSV                     |   ✓   |   ✓    |                  own answer only                   |
+| Answer: accept or decline, companions, message             |   –   |   –    |                ✓ until the deadline                |
+| Record an answer for a guest                               |   ✓   |   ✓    |                         –                          |
+| Save the date and photo stand: turn on or off, renew links |   ✓   |   ✓    |                         –                          |
+| Print place cards and the stand                            |   ✓   |   ✓    |                         –                          |
+| Upload photos up to the limit, delete own                  |   –   |   –    | upload in the upload window, delete own also after |
+| See, hide and delete all photos; download them as ZIP      |   ✓   |   ✓    |                  own photos only                   |
+| Create or revoke invite links for editors                  |   ✓   |   –    |                         –                          |
+| Remove an editor; hand the event to an editor              |   ✓   |   –    |                         –                          |
+| Leave the event                                            |   –   |   ✓    |                         –                          |
+| Delete the event                                           |   ✓   |   –    |                         –                          |
 
 A past event is read-only for everyone: hosts can still read it, export the list, manage the photos and delete it (owner). An editor can still leave it. Photos can be uploaded until the upload window closes. The one exception is the save the date: its link can still be turned off after the event, so a link that went somewhere unwanted can be stopped.
 
@@ -73,15 +73,16 @@ Limits become constants in `vyte-contracts` (like `notes-limits`).
 | Companions per guest  | 10                                          |
 | Events per user       | none in v1                                  |
 
-The photo limits are config of `vyte-api`, not constants, so they change without a release. The API sends the limit and what is left with every answer of a photo route, the web app never hardcodes them.
+The photo limits are config of `vyte-api`, not constants, so they change without a release. The API sends the limit and what is left with every answer of a photo route, the web app never hardcodes them. Each key has a default, so a config without them stays valid. The upload rate limit (`rateLimit.uploadWindowMinutes`, default 15, and `rateLimit.uploadMaxRequests`, default 200, per client IP) is described in section 8.
 
-| Config key                  | Default | Meaning                                                       |
-| --------------------------- | ------- | ------------------------------------------------------------- |
-| `photos.maxPerGuest`        | 6       | photos per guest through their photo link                     |
-| `photos.maxPerDevice`       | 6       | photos per device through the photo stand                     |
-| `photos.maxPerEvent`        | 1000    | all photos of an event, a cap against abuse                   |
-| `photos.uploadDaysAfterEnd` | 7       | days after the end of the event until uploads close           |
-| `photos.maxImageWidth`      | 2560    | width photos are scaled down to, larger than the event images |
+| Config key                  | Default | Meaning                                                                                                               |
+| --------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
+| `photos.maxPerGuest`        | 6       | photos per guest through their photo link                                                                             |
+| `photos.maxPerDevice`       | 6       | photos per device through the photo stand                                                                             |
+| `photos.maxPerEvent`        | 1000    | all photos of an event, at most 65 535 (a ZIP without ZIP64 holds that many), a cap against abuse                     |
+| `photos.maxPerStand`        | 500     | photos through the photo stand in all, so one stand link cannot fill the event                                        |
+| `photos.uploadDaysAfterEnd` | 7       | days after the end of the event until uploads close                                                                   |
+| `photos.maxImageWidth`      | 2560    | width and height photos are scaled down to, aspect ratio kept, larger than the event images (`uploads.maxImageWidth`) |
 
 ### Event
 
@@ -99,7 +100,7 @@ The photo limits are config of `vyte-api`, not constants, so they change without
 | `rsvpDeadline`           | timestamp with tz | optional, not after `startsAt`. Without one, answers are open until `startsAt`                                                                                                     |
 | `saveTheDateToken`       | text or null      | 32 random bytes, base64url. `null` = save the date is off. Renewing it replaces it                                                                                                 |
 | `saveTheDateNote`        | text              | optional, at most 500 characters, plain text on the save-the-date page, e.g. "Einladung folgt im Frühjahr"                                                                         |
-| `photoStandToken`        | text or null      | 32 random bytes, base64url. `null` = the photo stand is off. Renewing it replaces it                                                                                               |
+| `photoStandToken`        | text or null      | 32 random bytes, base64url. `null` = the photo stand is off. Renewing it replaces it. The API answers it as `photoStand: { token }`, or `null`                                     |
 | `createdAt`, `updatedAt` | timestamp         |                                                                                                                                                                                    |
 
 **Past**: an event is past after `endsAt`, without `endsAt` at the end of the day of `startsAt` (both in `timeZone`). Nothing is stored for it, the API computes it.
@@ -163,17 +164,17 @@ A couple or family is one guest with an allowance ("Familie Weber", +3): one lin
 
 ### EventPhoto
 
-| Field                         | Type                 | Rules                                                                                                |
-| ----------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------- |
-| `id`                          | uuid                 |                                                                                                      |
-| `eventId`                     | uuid                 | deleted with the event, the files go too                                                             |
-| `source`                      | `'guest' \| 'stand'` | through a photo link or through the photo stand                                                      |
-| `guestId`                     | uuid or null         | the guest of the photo link; set null when the guest is removed, the photo stays                     |
-| `deviceId`                    | text or null         | the device cookie of the photo stand (section 8)                                                     |
-| `uploaderName`                | text                 | the guest's name at upload time, or the name a stand visitor typed (optional, at most 60 characters) |
-| `filename`, `width`, `height` | text, integer        | WebP from `processImage()` with `photos.maxImageWidth`, metadata such as GPS dropped                 |
-| `hidden`                      | boolean              | default `false`; hosts hide a photo without deleting it                                              |
-| `createdAt`                   | timestamp            |                                                                                                      |
+| Field                         | Type                 | Rules                                                                                                                |
+| ----------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `id`                          | uuid                 |                                                                                                                      |
+| `eventId`                     | uuid                 | deleted with the event, the files go too                                                                             |
+| `source`                      | `'guest' \| 'stand'` | through a photo link or through the photo stand                                                                      |
+| `guestId`                     | uuid or null         | the guest of the photo link; set null when the guest is removed, the photo stays                                     |
+| `deviceId`                    | text or null         | the id of the device cookie `vyte_stand_device` of the photo stand (section 8)                                       |
+| `uploaderName`                | text or null         | the guest's name at upload time, or the name a stand visitor typed (optional, at most 60 characters); `null` if none |
+| `filename`, `width`, `height` | text, integer        | WebP from `processImage()`, bounded to `photos.maxImageWidth` on both sides, metadata such as GPS dropped            |
+| `hidden`                      | boolean              | default `false`; hosts hide a photo without deleting it                                                              |
+| `createdAt`                   | timestamp            |                                                                                                                      |
 
 ### AccountInvite (in `server-auth`)
 
@@ -241,12 +242,15 @@ The upload page:
 
 1. Shows the event title, "Deine Fotos" and how many are left
 2. Through a place card it greets the guest by name. On the stand, visitors may type a name (optional) so the hosts know who took the photos
-3. One or more photos at once, from the camera or the gallery, up to the limit. Each upload shows progress; a failed photo can be retried
-4. Visitors see and delete their own photos: by photo link the ones of that guest, on the stand the ones of this device
-5. Before the window opens: "Ab <Datum> kannst du hier Fotos hochladen". After it closes: "Der Upload ist beendet"
-6. A hint says that the hosts see the photos and that people on them should agree
+3. On the stand, the page first asks the API once for the device id (`POST /stand/{token}/device`, which sets the device cookie). Without it an upload answers 409
+4. One or more photos at once, from the camera or the gallery, up to the limit. Each upload shows progress; a failed photo can be retried
+5. Visitors see and delete their own photos: by photo link the ones of that guest, on the stand the ones of this device
+6. Before the window opens: "Ab <Datum> kannst du hier Fotos hochladen". After it closes: "Der Upload ist beendet"
+7. A hint says that the hosts see the photos and that people on them should agree
 
-For hosts, `/events/:id/photos` shows all photos as a grid with the name of the uploader, newest first. They open a photo large, hide or show it, delete it, and download all visible photos as a ZIP. The event page shows the count.
+Hosts can renew a photo link, the one of a place card or the one of the stand, also after the event, as long as uploads are open. The old link answers 404 from then on, so a card or a link that went around can be stopped. Once the window has closed, links cannot be renewed any more.
+
+For hosts, `/events/:id/photos` shows all photos as a grid with the name of the uploader, newest first. They open a photo large, hide or show it, delete it, and download all visible photos as a ZIP. The count of photos comes from that list; the event itself carries no photo count.
 
 ### Collaborators
 
@@ -287,7 +291,7 @@ The event page shows the counts, the guest page the list.
 
 ## 6. API draft
 
-Routes under `/api/v1` like `dartomat-api`, `/health` and `/docs` at the root. Answers wrapped in an object, errors in the usual format `{ error: { message, details? } }`. An event the user is not a member of answers with 404, a lacking role (editor wants to delete) with 403, a write to a past event with 409. Exceptions that only take something away stay open after the event: deleting the event, an editor leaving, turning the save-the-date link off.
+Routes under `/api/v1` like `dartomat-api`, `/health` and `/docs` at the root. Answers wrapped in an object, errors in the usual format `{ error: { message, details? } }`. An event the user is not a member of answers with 404, a lacking role (editor wants to delete) with 403, a write to a past event with 409. Exceptions that only take something away stay open after the event: deleting the event, an editor leaving, turning the save-the-date link or the photo stand off, deleting a photo. Renewing a photo link is allowed while uploads are open.
 
 ### Accounts (`server-auth`)
 
@@ -359,20 +363,20 @@ Creating the account reuses `hashPassword()`, `insertUser()` and `startSession()
 | `PUT /events/{id}/save-the-date`                 | `{ note }`, turns it on (creates a token if there is none) or changes the note, `{ event }`; 409 once the event is past |
 | `DELETE /events/{id}/save-the-date`              | turns it off and removes the note, `{ event }`; also after the event, so a leaked link can still be stopped             |
 | `POST /events/{id}/save-the-date/token`          | new token, `{ event }`; 404 while it is off, 409 once the event is past                                                 |
-| `PUT /events/{id}/photo-stand`                   | turns it on, `{ event }`                                                                                                |
-| `DELETE /events/{id}/photo-stand`                | turns it off, `{ event }`                                                                                               |
-| `POST /events/{id}/photo-stand/token`            | new token, `{ event }`                                                                                                  |
-| `POST /events/{id}/guests/{guestId}/photo-token` | new photo token, `{ guest }`; a printed card stops working                                                              |
+| `PUT /events/{id}/photo-stand`                   | turns it on and creates its link once, `{ event }`; 409 once the event is past                                          |
+| `DELETE /events/{id}/photo-stand`                | turns it off, `{ event }`; also after the event, the photos stay                                                        |
+| `POST /events/{id}/photo-stand/token`            | new link, `{ event }`; the old one answers 404; 404 while it is off, 409 once the upload window has closed              |
+| `POST /events/{id}/guests/{guestId}/photo-token` | new photo link, `{ guest }`; the old one answers 404, 409 once the upload window has closed                             |
 
 ### Photos for hosts (session required, owner or editor)
 
-| Method and path                        | Content                                                            |
-| -------------------------------------- | ------------------------------------------------------------------ |
-| `GET /events/{id}/photos`              | `{ photos }` with uploader and `hidden`, newest first              |
-| `GET /events/{id}/photos/{photoId}`    | the WebP file                                                      |
-| `PATCH /events/{id}/photos/{photoId}`  | `{ hidden }`, `{ photo }`                                          |
-| `DELETE /events/{id}/photos/{photoId}` | 204                                                                |
-| `GET /events/{id}/photos/archive`      | a ZIP of all visible photos, streamed, named `<uploader>-<n>.webp` |
+| Method and path                        | Content                                                                             |
+| -------------------------------------- | ----------------------------------------------------------------------------------- |
+| `GET /events/{id}/photos`              | `{ photos }` with uploader and `hidden`, newest first                               |
+| `GET /events/{id}/photos/{photoId}`    | the WebP file                                                                       |
+| `PATCH /events/{id}/photos/{photoId}`  | `{ hidden }`, `{ photo }`                                                           |
+| `DELETE /events/{id}/photos/{photoId}` | 204                                                                                 |
+| `GET /events/{id}/photos/archive`      | a ZIP of all visible photos, streamed, named `<uploader>-<n>.webp`; 409 above 4 GiB |
 
 ### Save the date and uploads (public, only writes rate limited per IP)
 
@@ -382,12 +386,13 @@ Creating the account reuses `hashPassword()`, `insertUser()` and `startSession()
 | `GET /save-the-date/{token}/calendar`                             | the `.ics` file, location without address; 404 once the event is past. Not rate limited                                                                            |
 | `GET /save-the-date/{token}/cover`                                | the cover image; 404 without one or once the event is past. Not rate limited                                                                                       |
 | `GET /photos/{token}`                                             | `{ upload }`: event title, guest name, own photos, limit, left, window open or not and its times                                                                   |
-| `POST /photos/{token}`                                            | `FormData` with one file, `{ upload }`. 409 outside the window or when the limit is reached                                                                        |
+| `POST /photos/{token}`                                            | `FormData` with one file in `photo`, `{ upload }`, 201. 409 outside the window, when the guest has the limit or the event is full                                  |
 | `GET /photos/{token}/{photoId}`                                   | an own photo                                                                                                                                                       |
-| `DELETE /photos/{token}/{photoId}`                                | deletes an own photo, `{ upload }`                                                                                                                                 |
+| `DELETE /photos/{token}/{photoId}`                                | deletes an own photo, `{ upload }`; also outside the window                                                                                                        |
 | `GET /stand/{token}`                                              | `{ upload }` like above, for the photos of this device                                                                                                             |
-| `POST /stand/{token}`                                             | `FormData` with one file and an optional `name`. Sets the device cookie on the first upload                                                                        |
-| `GET /stand/{token}/{photoId}`, `DELETE /stand/{token}/{photoId}` | own photo of this device                                                                                                                                           |
+| `POST /stand/{token}/device`                                      | 204; sets the device cookie `vyte_stand_device` if the device has none. Once before the first upload, rate limited                                                 |
+| `POST /stand/{token}`                                             | `FormData` with one file in `photo` and an optional `name` (at most 60 characters). 409 without the device cookie, `{ upload }`, 201                               |
+| `GET /stand/{token}/{photoId}`, `DELETE /stand/{token}/{photoId}` | own photo of this device; the delete also outside the window                                                                                                       |
 
 Schemas live in `vyte-contracts` (the account invites in `contracts`, next to `auth`), the OpenAPI document lists every route (`docs.test.ts`).
 
@@ -452,8 +457,8 @@ Direction **Konfetti**: bright, cheerful and clear, a little playful but not lou
 - Tokens (guests, photo links, save the date, photo stand, editor invites, account links): 32 random bytes from `crypto.randomBytes`, base64url, compared through a unique index. They are stored as they are, because hosts copy guest links again later
 - A guest token only reads its event (without guest list) and answers for its own guest; after the event it reveals only the title
 - Token pages (`/rsvp/…`, `/photos/…`, `/stand/…`, `/save-the-date/…`, `/invite/…`, `/welcome/…`) send `Referrer-Policy: no-referrer`, so the token does not leak to other sites. The API already sends it through `helmet`
-- Rate limits per IP with `createRateLimit()` from `server-core` on every public token route that writes (answers, uploads, accepting an invite or account link); account creation through a token also counts against the rate limit of sign-up. Reading a token (`GET`) has no per-IP limit: the web app renders those pages on the server, so every guest would arrive from the server's IP. A token of 32 random bytes cannot be guessed, and every unknown token answers the same 404
-- Answers that carry a live token send `Cache-Control: no-store`: event answers (with the save-the-date link), guest lists, invites, guest link answers and the calendar files. The event images are `private, immutable`, the guest and save-the-date images `private, no-cache`, so a renewed link or the end of the event takes effect at once
+- Rate limits per IP with `createRateLimit()` from `server-core` on every public token route that writes (answers, uploads, deleting an own photo, the device call of the stand, accepting an invite or account link). Uploads share their own limit, `rateLimit.uploadWindowMinutes` and `rateLimit.uploadMaxRequests`; account creation through a token also counts against the rate limit of sign-up. Reading a token (`GET`) has no per-IP limit: the web app renders those pages on the server, so every guest would arrive from the server's IP. A token of 32 random bytes cannot be guessed, and every unknown token answers the same 404
+- Answers that carry a live token send `Cache-Control: no-store`: event answers (with the save-the-date and photo stand link), guest lists, invites, guest link answers, the calendar files, the upload pages and the ZIP. The event images are `private, immutable`, the guest and save-the-date images and the photos `private, no-cache`, so a renewed link or the end of the event takes effect at once
 - Guest page shows names of the hosts only if they set one, never an email
 - Names, notes and messages of guests are personal data: a section in the privacy policy, deleted with the event. Hosts are responsible for the data of their guests. The message hint asks for food wishes, so guests may write about allergies: the privacy policy mentions it
 - The OpenStreetMap link is a plain link, nothing is loaded from OpenStreetMap until the guest clicks it
@@ -461,7 +466,7 @@ Direction **Konfetti**: bright, cheerful and clear, a little playful but not lou
 - CSV: cells starting with `=`, `+`, `-` or `@` get a leading `'`, so a spreadsheet does not run them as formulas
 - A photo link only uploads and shows the photos of its guest. The place card lies open on the table, so it must not reveal the answer, the message or other guests
 - The save-the-date link may travel through group chats: it shows `locationName` only, no address, no guest names
-- Photo stand: the device cookie is a random id, http-only, `SameSite=Lax`, path `/api/v1/stand`, 30 days. It is needed for the upload limit and to show own photos, so it is strictly necessary and needs no consent banner. Clearing it gets a new allowance, which `photos.maxPerEvent` and the rate limit cap
+- Photo stand: the device cookie is a random id, set once by `POST /stand/{token}/device`, http-only, `SameSite=Lax`, path `/api/v1/stand`, 30 days, `Secure` where the session cookie is. It is needed for the upload limit and to show own photos, so it is strictly necessary and needs no consent banner. Clearing it gets a new allowance, which `photos.maxPerEvent` and the rate limit cap
 - Photos show people: they are personal data, a section in the privacy policy, deleted with the event. `processImage()` drops EXIF and GPS. Hidden photos are not in the ZIP
 - Storage: 1000 photos of about 0.5 MB as WebP make about 500 MB per event at most, on `/mnt/data/vyte-api`
 
@@ -474,9 +479,9 @@ Direction **Konfetti**: bright, cheerful and clear, a little playful but not lou
 | Libs                  | web: `core`, `ui`, `styles`, `contracts`, `vyte-contracts`; API: `server-core`, `server-auth`, `contracts`, `vyte-contracts`                                                                                                                                                                                                 |
 | Shared change         | account links in `server-auth` and `contracts` (table, service, routes, OpenAPI, tests). `db:generate` of every API app and of `server-auth`. Released as a feature of the other API apps too, which only gain the table                                                                                                     |
 | Config                | `auth.signUpEnabled: false`, `photos.*` (section 3) and own rate limits for the token routes through `extendConfig()`                                                                                                                                                                                                        |
-| Shared change, images | `processImage()` of `server-core` gets an optional maximum width, the photos use `photos.maxImageWidth`                                                                                                                                                                                                                      |
+| Shared change, images | `processImage()` of `server-core` gets an optional maximum width and height, the photos use `photos.maxImageWidth` on both sides                                                                                                                                                                                             |
 | Shared change, QR     | `UiQrCode` in `ui` with a QR library (e.g. `qrcode`), entry on the showcase page                                                                                                                                                                                                                                             |
-| Dependencies          | a ZIP library for the archive (e.g. `archiver`), in `apps/vyte-api/package.json` and the root `package.json`                                                                                                                                                                                                                 |
+| Dependencies          | none for the photos: no ZIP library. The archive is written by `apps/vyte-api/src/shared/zip.ts` (store-only, CRC-32 from `node:zlib`, no ZIP64), so `package.json` gets no new package                                                                                                                                      |
 | Ports                 | API 3300, web 4300, so all products run side by side                                                                                                                                                                                                                                                                         |
 | Domain                | <https://vyte.manuel-braun.net> for web and API. Traefik sends `/api/` and `/health` to `vyte-api`, everything else to `vyte-web`, like `dartomat`. `apiBaseUrl` is `https://vyte.manuel-braun.net/api/v1`, `siteUrl` and `cors.origins` the site itself. Web and API share one origin, so the session cookie is first-party |
 | Stacks                | `stacks/vyte-web` and `stacks/vyte-api` in the server setup, data under `/mnt/data/vyte-api` with the uploads owned by uid 1000                                                                                                                                                                                              |

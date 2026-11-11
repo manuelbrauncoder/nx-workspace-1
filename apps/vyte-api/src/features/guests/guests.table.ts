@@ -26,6 +26,8 @@ export const guests = pgTable(
     maxCompanions: integer('max_companions').notNull().default(0),
     // the personal link: 32 random bytes, base64url; renewing replaces it
     token: text().notNull().unique(),
+    // the photo link of the place card: only uploads, never the answer; renewing replaces it
+    photoToken: text('photo_token').notNull().unique(),
     response: guestResponse().notNull().default('pending'),
     companions: integer().notNull().default(0),
     // set when lowering the allowance cut the companions, cleared by the next answer

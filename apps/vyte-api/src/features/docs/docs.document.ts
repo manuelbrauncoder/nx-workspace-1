@@ -7,6 +7,7 @@ import { apiPrefix } from '../../shared/api.js';
 import { registerEventsDocs } from '../events/events.openapi.js';
 import { registerGuestsDocs } from '../guests/guests.openapi.js';
 import { registerInvitesDocs } from '../invites/invites.openapi.js';
+import { registerPhotosDocs } from '../photos/photos.openapi.js';
 import { registerRsvpDocs } from '../rsvp/rsvp.openapi.js';
 import { registerSaveTheDateDocs } from '../save-the-date/save-the-date.openapi.js';
 import { registerTeamDocs } from '../team/team.openapi.js';
@@ -40,6 +41,7 @@ export function buildDocs(): OpenApiDocument {
       registerTeamDocs,
       registerInvitesDocs,
       registerSaveTheDateDocs,
+      registerPhotosDocs,
     ],
   });
 }

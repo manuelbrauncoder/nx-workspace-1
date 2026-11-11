@@ -16,6 +16,7 @@ import {
   listGuests,
   recordResponse,
   removeGuest,
+  renewPhotoToken,
   renewToken,
   updateGuest,
 } from './guests.service.js';
@@ -63,4 +64,9 @@ guestsRouter.delete('/:guestId', async (req, res) => {
 guestsRouter.post('/:guestId/token', async (req, res) => {
   const { id, guestId } = parse(guestParamsSchema, req.params);
   res.json({ guest: await renewToken(currentUserId(req), id, guestId) });
+});
+
+guestsRouter.post('/:guestId/photo-token', async (req, res) => {
+  const { id, guestId } = parse(guestParamsSchema, req.params);
+  res.json({ guest: await renewPhotoToken(currentUserId(req), id, guestId) });
 });

@@ -50,6 +50,13 @@
       "when": 1794419390367,
       "tag": "0006_silly_gamma_corps",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794420377719,
+      "tag": "0007_tricky_phil_sheldon",
+      "breakpoints": true
     }
   ]
 }

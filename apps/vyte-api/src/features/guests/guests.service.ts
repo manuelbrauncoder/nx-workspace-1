@@ -10,6 +10,7 @@ import { EVENT_GUESTS_MAX } from '@vyte/contracts/guests-limits';
 import { and, asc, count, eq, sql } from 'drizzle-orm';
 import { newToken } from '../../shared/token.js';
 import { type Executor, membership, requireUpcoming } from '../events/events.service.js';
+import { requireUploadsNotClosed } from '../photos/photos.service.js';
 import { guests } from './guests.table.js';
 
 const guestColumns = {
@@ -18,6 +19,7 @@ const guestColumns = {
   note: guests.note,
   maxCompanions: guests.maxCompanions,
   token: guests.token,
+  photoToken: guests.photoToken,
   response: guests.response,
   companions: guests.companions,
   companionsReduced: guests.companionsReduced,
@@ -67,7 +69,7 @@ export function addGuest(userId: string, eventId: string, input: CreateGuestInpu
     await requireRoom(tx, eventId, 1);
     const [guest] = await tx
       .insert(guests)
-      .values({ ...input, eventId, token: newToken() })
+      .values({ ...input, eventId, token: newToken(), photoToken: newToken() })
       .returning(guestColumns);
     return guest!;
   });
@@ -86,6 +88,7 @@ export function addGuests(userId: string, eventId: string, input: CreateGuestsBu
           name,
           maxCompanions: input.maxCompanions,
           token: newToken(),
+          photoToken: newToken(),
         })),
       )
       .returning(guestColumns);
@@ -180,6 +183,24 @@ export function renewToken(userId: string, eventId: string, guestId: string) {
     const [updated] = await tx
       .update(guests)
       .set({ token: newToken(), updatedAt: new Date() })
+      .where(ofEvent(eventId, guestId))
+      .returning(guestColumns);
+    if (!updated) throw notFound('Guest not found');
+    return updated;
+  });
+}
+
+/**
+ * A new photo link for the place card; a printed card with the old one stops working. Also after
+ * the event while photos can still come in, so a card that went around can be stopped.
+ */
+export function renewPhotoToken(userId: string, eventId: string, guestId: string) {
+  return db.transaction(async (tx) => {
+    const { event } = await membership(userId, eventId, tx, true);
+    requireUploadsNotClosed(event);
+    const [updated] = await tx
+      .update(guests)
+      .set({ photoToken: newToken(), updatedAt: new Date() })
       .where(ofEvent(eventId, guestId))
       .returning(guestColumns);
     if (!updated) throw notFound('Guest not found');

@@ -85,6 +85,7 @@ describe('guests', () => {
           note: null,
           maxCompanions: 0,
           token: expect.stringMatching(/^[A-Za-z0-9_-]{43}$/),
+          photoToken: expect.stringMatching(/^[A-Za-z0-9_-]{43}$/),
           response: 'pending',
           companions: 0,
           companionsReduced: false,
@@ -295,6 +296,7 @@ describe('guests', () => {
           eventId,
           name: `Guest ${i}`,
           token: `token-${eventId}-${i}`,
+          photoToken: `photo-token-${eventId}-${i}`,
         })),
       );
     }

@@ -114,4 +114,19 @@ export function registerGuestsDocs(registry: OpenAPIRegistry) {
       ...errorResponses(400, 401, 403, 404, 409),
     },
   });
+
+  registry.registerPath({
+    ...base,
+    method: 'post',
+    path: '/events/{id}/guests/{guestId}/photo-token',
+    summary: 'Renew the photo link of a guest',
+    description:
+      'Owner and editors. A printed place card with the old link stops working. 409 once the ' +
+      'event is over.',
+    request: { params: guestParamsSchema },
+    responses: {
+      200: jsonResponse('The guest with the new photo link', guestResponseSchema),
+      ...errorResponses(400, 401, 403, 404, 409),
+    },
+  });
 }

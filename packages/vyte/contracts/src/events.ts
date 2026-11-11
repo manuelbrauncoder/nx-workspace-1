@@ -126,6 +126,8 @@ export const eventSchema = z.object({
   counts: eventCountsSchema,
   /** The save-the-date link, `null` while it is off. */
   saveTheDate: z.object({ token: tokenSchema, note: z.string().nullable() }).nullable(),
+  /** The shared link of the photo stand, `null` while it is off. */
+  photoStand: z.object({ token: tokenSchema }).nullable(),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });

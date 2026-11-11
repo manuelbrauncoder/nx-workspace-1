@@ -14,7 +14,9 @@
     "authWindowMinutes": 15,
     "authMaxRequests": 1000,
     "rsvpWindowMinutes": 15,
-    "rsvpMaxRequests": 1000
+    "rsvpMaxRequests": 1000,
+    "uploadWindowMinutes": 15,
+    "uploadMaxRequests": 1000
   },
   "auth": {
     "signUpEnabled": true
@@ -29,6 +31,14 @@
   "uploads": {
     "dir": "./uploads/test",
     "maxFileSizeMb": 1,
+    "maxImageWidth": 200
+  },
+  "photos": {
+    "maxPerGuest": 3,
+    "maxPerDevice": 3,
+    "maxPerEvent": 10,
+    "maxPerStand": 5,
+    "uploadDaysAfterEnd": 7,
     "maxImageWidth": 200
   }
 }

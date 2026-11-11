@@ -30,6 +30,8 @@ export const events = pgTable('events', {
   // the save-the-date link; null while it is off, renewing replaces it
   saveTheDateToken: text('save_the_date_token').unique(),
   saveTheDateNote: text('save_the_date_note'),
+  // the shared QR code of the photo stand; null while it is off
+  photoStandToken: text('photo_stand_token').unique(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });

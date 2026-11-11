@@ -13,6 +13,12 @@ import { eventsRouter } from './features/events/events.routes.js';
 import { removeEventsOfUser } from './features/events/events.user-deletion.js';
 import { guestsRouter } from './features/guests/guests.routes.js';
 import { invitesRouter } from './features/invites/invites.routes.js';
+import {
+  photoLinkRouter,
+  photosRouter,
+  photoStandSettingsRouter,
+  standRouter,
+} from './features/photos/photos.routes.js';
 import { rsvpRouter } from './features/rsvp/rsvp.routes.js';
 import {
   saveTheDateRouter,
@@ -35,11 +41,15 @@ export function createApp() {
       '/admin': adminRouter,
       '/events/:id/guests': guestsRouter,
       '/events/:id/save-the-date': saveTheDateSettingsRouter,
+      '/events/:id/photos': photosRouter,
+      '/events/:id/photo-stand': photoStandSettingsRouter,
       '/events/:id': teamRouter,
       '/events': eventsRouter,
       '/rsvp': rsvpRouter,
       '/invites': invitesRouter,
       '/save-the-date': saveTheDateRouter,
+      '/photos': photoLinkRouter,
+      '/stand': standRouter,
     },
     docs: buildDocs,
     // Kept up to date by `nx release`, reported by /health.

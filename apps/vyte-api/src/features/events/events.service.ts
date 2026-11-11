@@ -17,6 +17,7 @@ import {
 import { EVENT_IMAGES_MAX } from '@vyte/contracts/events-limits';
 import { and, asc, count, eq, inArray, sql } from 'drizzle-orm';
 import { guests } from '../guests/guests.table.js';
+import { eventPhotos } from '../photos/photos.table.js';
 import { eventImages, eventMembers, events } from './events.table.js';
 import { isPast } from './events.time.js';
 
@@ -128,6 +129,7 @@ function toEvent(
     saveTheDate: event.saveTheDateToken
       ? { token: event.saveTheDateToken, note: event.saveTheDateNote }
       : null,
+    photoStand: event.photoStandToken ? { token: event.photoStandToken } : null,
     createdAt: event.createdAt,
     updatedAt: event.updatedAt,
   };
@@ -197,14 +199,26 @@ export async function deleteEvent(userId: string, eventId: string) {
     const { role } = await membership(userId, eventId, tx, true);
     requireOwner(role);
 
-    const rows = await tx
-      .select({ filename: eventImages.filename })
-      .from(eventImages)
-      .where(eq(eventImages.eventId, eventId));
+    const rows = await filesOfEvents(tx, [eventId]);
     await tx.delete(events).where(eq(events.id, eventId));
     return rows;
   });
-  await removeImages(files.map((file) => file.filename));
+  await removeImages(files);
+}
+
+/** The image and photo files of events, removed once the events are deleted. */
+async function filesOfEvents(tx: Executor, eventIds: string[]) {
+  const [images, photos] = await Promise.all([
+    tx
+      .select({ filename: eventImages.filename })
+      .from(eventImages)
+      .where(inArray(eventImages.eventId, eventIds)),
+    tx
+      .select({ filename: eventPhotos.filename })
+      .from(eventPhotos)
+      .where(inArray(eventPhotos.eventId, eventIds)),
+  ]);
+  return [...images, ...photos].map((file) => file.filename);
 }
 
 /**
@@ -369,10 +383,7 @@ export async function deleteOwnedEvents(userId: string, tx: Executor) {
   const ids = owned.map((row) => row.id);
   if (ids.length === 0) return [];
 
-  const files = await tx
-    .select({ filename: eventImages.filename })
-    .from(eventImages)
-    .where(inArray(eventImages.eventId, ids));
+  const files = await filesOfEvents(tx, ids);
   await tx.delete(events).where(inArray(events.id, ids));
-  return files.map((file) => file.filename);
+  return files;
 }
