@@ -51,7 +51,7 @@ Local development uses [`apps/express-api-base/config/development.json`](../../a
 | `rateLimit.authMaxRequests`   | number            | Allowed sign-up/sign-in requests per IP in that window                                            |
 | `auth.signUpEnabled`          | boolean           | Open `POST /auth/sign-up`. `false` lets only the admin and existing users sign in. Default `true` |
 | `admin.email`                 | string            | Email of the first admin, created at startup while no admin exists                                |
-| `admin.password`              | string            | Its password, 8 to 128 characters. See the note below                                             |
+| `admin.password`              | string            | Its password, 8 to 128 characters (16 in production). See the note below                          |
 | `docs.enabled`                | boolean           | Serve the API reference under `/docs`                                                             |
 | `uploads.dir`                 | string            | Folder for image files, relative to the working directory or absolute                             |
 | `uploads.maxFileSizeMb`       | number            | Maximum size of one uploaded file                                                                 |
@@ -66,7 +66,8 @@ Every setting is required; there are no hidden defaults.
 
 - The values in `development.json` and `test.json` are committed and only for local use. Never reuse them.
 - In production, set a strong password in the mounted config file before the first start, and keep that file readable only by the deploy user.
-- It is used once, to create the first admin (see [Authentication](authentication.md#roles-and-admin)). After that the value can be replaced by any placeholder of valid length.
+- While no admin exists, the API refuses to start in production if `admin.password` is one of the placeholders of the committed config files or has fewer than 16 characters. It logs the reason and exits with code 1. The list is in [`admin.password.ts`](../../packages/server/auth/src/admin.password.ts).
+- It is used once, to create the first admin (see [Authentication](authentication.md#the-first-admin)). After that it can be replaced by any value of valid length. One exception in production: an admin whose password is still a placeholder (created by a version without the check) gets `admin.password` as new password and is signed out, or the API exits if that value is not strong either.
 
 ### Settings that must match your deployment
 

@@ -16,3 +16,12 @@ tmp
 docs
 *.md
 .DS_Store
+
+# Local secrets, runtime data and real config files of the apps. Every Dockerfile runs
+# `COPY . .`, so without this they would end up in the build stage and its layer cache.
+**/.env
+**/.env.*
+!**/.env.example
+**/uploads
+apps/*/config/*.local.json
+apps/*/config/production.json

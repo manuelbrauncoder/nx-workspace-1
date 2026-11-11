@@ -16,7 +16,7 @@ All images go to the GitHub Container Registry under the owner of the repository
 | `dartomat-api`     | `nx1-dartomat-api-v1.2.0`     | `ghcr.io/<owner>/nx1-dartomat-api`     | 3000 | [apps/dartomat-api/Dockerfile](../apps/dartomat-api/Dockerfile)         |
 | `vyte-api`         | `nx1-vyte-api-v1.2.0`         | `ghcr.io/<owner>/nx1-vyte-api`         | 3000 | [apps/vyte-api/Dockerfile](../apps/vyte-api/Dockerfile)                 |
 
-Each release publishes three image tags: the version without the prefix (`:v1.2.0`), `:latest` and `:sha-<short commit>`. Use the version in a stack, so a redeploy never pulls a different version by accident.
+Each release publishes three image tags: the version without the prefix (`:v1.2.0`), `:latest` and `:sha-<short commit>`. Use the version in a stack, so a redeploy never pulls a different version by accident. The version must be `v<major>.<minor>.<patch>`. A pre-release such as `nx1-dartomat-web-v1.3.0-beta.1` fails its publish job before anything is built.
 
 Tags are created by `nx release`, which also raises the version in the app's `package.json` and writes its changelog. How it works and how commit messages decide the version: [Releasing](releasing.md). In short:
 
@@ -46,7 +46,7 @@ The job `checks` runs on a push to `main`, on every pull request and on a releas
 - The Node version comes from [.nvmrc](../.nvmrc), the pnpm version from `packageManager` in [package.json](../package.json). A new Node major is changed in `.nvmrc`, in `devEngines` in `package.json` and in the base images of the Dockerfiles
 - A newer commit on the same branch or pull request cancels the running check, a release is never cancelled
 
-After the checks, the job `publish-<app>` of the tagged app builds its Dockerfile from the workspace root and pushes the image. Each job has its own build cache.
+After the checks, the job `publish-<app>` of the tagged app builds its Dockerfile from the workspace root and pushes the image. Each job has its own build cache. The workflow passes expressions such as the repository owner to its scripts through `env:`, not inside the script text.
 
 ## Building an image locally
 
@@ -55,6 +55,8 @@ Every Dockerfile is built from the workspace root, since the image needs the sha
 ```bash
 docker build -f apps/portfolio-web/Dockerfile -t nx1-portfolio-web .
 ```
+
+The build context excludes [`.dockerignore`](../.dockerignore) entries: `.env` files (except `.env.example`), `uploads/`, `apps/*/config/*.local.json` and `apps/*/config/production.json`. Secrets and the real production config therefore never reach a build stage or an image.
 
 The paths inside the images are the same as before the monorepo, so a stack only changes the image name:
 
@@ -108,7 +110,7 @@ An API image contains the bundle in `dist/`, only the runtime dependencies of th
 
 `portfolio-api` also needs an SMTP account for forwarding contact messages: host, user and addresses go into `mail` of the config file, the password into `SMTP_PASSWORD`.
 
-Create the config file from `config/production.example.json` of the app ([express-api-base](../apps/express-api-base/config/production.example.json), [portfolio-api](../apps/portfolio-api/config/production.example.json), [dartomat-api](../apps/dartomat-api/config/production.example.json), [vyte-api](../apps/vyte-api/config/production.example.json)). The shared settings are explained in [Configuration](backend/configuration.md), those of the portfolio in [Portfolio API configuration](portfolio/api/configuration.md). Settings added to the shared libs later have defaults, so the file of an existing deployment stays valid.
+Create the config file from `config/production.example.json` of the app ([express-api-base](../apps/express-api-base/config/production.example.json), [portfolio-api](../apps/portfolio-api/config/production.example.json), [dartomat-api](../apps/dartomat-api/config/production.example.json), [vyte-api](../apps/vyte-api/config/production.example.json)). If you keep the real file in a checkout, name it `config/production.json`: git and the Docker build context ignore that name. The shared settings are explained in [Configuration](backend/configuration.md), those of the portfolio in [Portfolio API configuration](portfolio/api/configuration.md). Settings added to the shared libs later have defaults, so the file of an existing deployment stays valid.
 
 ### The stack
 
@@ -152,7 +154,7 @@ In the production config file:
 - [ ] `auth.signUpEnabled` is `false`, unless visitors should be able to create accounts
 - [ ] `docs.enabled` is set deliberately. `true` makes the API reference public at `/docs`, it shows the endpoints, not data
 - [ ] `logLevel` is `info`
-- [ ] `admin.email` and `admin.password` are set to real values before the first start, see [Configuration](backend/configuration.md#the-admin-password)
+- [ ] `admin.email` and `admin.password` are set to real values before the first start. The API refuses to start with a placeholder or a password under 16 characters, see [Configuration](backend/configuration.md#the-admin-password)
 - [ ] `portfolio-api`: `publicUrl` is the public origin of the API, image URLs are built from it
 
 In the stack:
@@ -181,5 +183,5 @@ The portfolio and the base apps ran from images of their former repositories (`g
 ## Rules in short
 
 - Run `pnpm format:check` and `pnpm nx affected -t lint typecheck test build` before you push
-- A release is a tag `nx1-<app>-v*`, nothing else publishes an image
+- A release is a tag `nx1-<app>-v<major>.<minor>.<patch>`, nothing else publishes an image
 - No environment-specific value in an image. Everything that differs per deployment is in the mounted config or an environment variable

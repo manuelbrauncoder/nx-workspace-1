@@ -56,7 +56,7 @@ Every answer is `{ game }`. The full throw history stays on the server; the clie
 
 ## Differences to express-api-base
 
-- **No auth**: no session middleware, no auth routers, no admin seed. The shared config still requires `SESSION_SECRET` and the keys `session` and `admin`, so they are set with values that are never used
+- **No auth**: no session middleware, no auth routers, no admin seed. The shared config still requires `SESSION_SECRET` and the keys `session` and `admin`, so they are set with values that are never used. The production check of the admin password does not run here, since no admin is created
 - **Route prefix**: `createServer({ prefix: '/api/v1' })`, the OpenAPI document adds the same prefix
 - **Config**: own keys `rateLimit.createGameWindowMinutes` and `createGameMaxRequests`, added with `extendConfig()`
 - **Schemas**: in `dartomat-contracts`, shared with `dartomat-web`
