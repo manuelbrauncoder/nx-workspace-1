@@ -44,7 +44,7 @@ With `auth.signUpEnabled: false` sign-up answers 403 before the limit counts, si
 
 ### What the request log keeps
 
-The logger ([`packages/server/core/src/logger.ts`](../../packages/server/core/src/logger.ts)) redacts the headers that carry secrets or links: `Cookie` and `Set-Cookie`, so the session cookie never reaches the log, and `Referer` and `Location`, because the referer of a page whose path holds a token would carry that token. Token segments of the URL are replaced by `[token]` in the request log (the URL and the route params). A segment counts as a token when it has 43 base64url characters, the length of the account link token. Ids (uuids) stay readable.
+The logger ([`packages/server/core/src/logger.ts`](../../packages/server/core/src/logger.ts)) redacts the headers that carry secrets or links: `Cookie` and `Set-Cookie`, so the session cookie never reaches the log, and `Referer` and `Location`, because the referer of a page whose path holds a token would carry that token. Token segments of the URL are replaced by `[token]` in the request log (the URL and the route params). The URL is percent-decoded first, so an encoded token is masked too. A token is any run of 43 or more base64url characters right after a slash, so a token with something stuck to it (a `.` from a link in a chat) is masked as well. The 43 characters are the length of a token. Ids (uuids) stay readable.
 
 When a query fails, the error handler logs the database error and the SQL text, but not the parameters: those hold emails, password hashes and tokens.
 

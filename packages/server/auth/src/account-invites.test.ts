@@ -304,15 +304,36 @@ describe('redactTokens', () => {
     );
   });
 
-  it('leaves uuids, short segments and longer segments unchanged', () => {
+  it('leaves uuids and short segments unchanged', () => {
     for (const url of [
       `/admin/account-invites/${UNKNOWN_ID}`,
+      `/api/v1/events/${UNKNOWN_ID}/guests/${UNKNOWN_ID}/response`,
       '/auth/account-invites/abc',
       '/auth/me',
-      `/auth/account-invites/${token}x`,
+      `/auth/account-invites/${token.slice(0, 42)}`,
     ]) {
       expect(redactTokens(url)).toBe(url);
     }
+  });
+
+  it('masks a segment longer than a token', () => {
+    expect(redactTokens(`/auth/account-invites/${token}x`)).toBe('/auth/account-invites/[token]');
+  });
+
+  it('masks a token with something stuck to it', () => {
+    expect(redactTokens(`/rsvp/${token}.`)).toBe('/rsvp/[token].');
+    expect(redactTokens(`/rsvp/${token})`)).toBe('/rsvp/[token])');
+  });
+
+  it('masks a percent-encoded token', () => {
+    const encoded = `%41${token.slice(1)}`;
+    expect(redactTokens(`/rsvp/${encoded}`)).toBe('/rsvp/[token]');
+    expect(redactTokens(`/rsvp/${encoded}?a=1`)).toBe('/rsvp/[token]?a=1');
+  });
+
+  it('leaves a malformed percent sequence as it is, without throwing', () => {
+    expect(redactTokens('/rsvp/%E0%A4%A')).toBe('/rsvp/%E0%A4%A');
+    expect(redactTokens('/rsvp/100%')).toBe('/rsvp/100%');
   });
 });
 

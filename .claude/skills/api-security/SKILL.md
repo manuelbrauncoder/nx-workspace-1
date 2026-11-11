@@ -25,7 +25,7 @@ Rules for the API apps (`apps/*-api`, `packages/server/*`). They add to the conv
   - save-the-date token: no address, no guest names
   - stand token: only the photos of the device cookie
 - One-time tokens (editor invites, account links) are marked used in the same transaction that uses them, with the row locked (`.for('update')`, as in `apps/dartomat-api/src/features/games/games.service.ts`)
-- **Logs**: the request log masks every path segment of 43 base64url characters as `[token]` (`redactTokens()` in `packages/server/core/src/logger.ts`) and redacts `Cookie`, `Set-Cookie`, `Referer` and `Location`. So every token is exactly 32 bytes in base64url and a path segment of its own, never in a query string. The error handler logs a failed query without its parameters (`DrizzleQueryError`). Never log a token yourself. The Traefik access log is off; if it is turned on, token paths need filtering there too
+- **Logs**: the request log decodes the path and masks every run of 43 or more base64url characters right after a slash as `[token]` (`redactTokens()` in `packages/server/core/src/logger.ts`) and redacts `Cookie`, `Set-Cookie`, `Referer` and `Location`. So every token is exactly 32 bytes in base64url and a path segment of its own, never in a query string. The error handler logs a failed query without its parameters (`DrizzleQueryError`). Never log a token yourself. The Traefik access log is off; if it is turned on, token paths need filtering there too
 - Answers that carry live tokens (admin lists, a guest list for hosts) send `Cache-Control: no-store`
 - `Referrer-Policy: no-referrer` on token pages: the API gets it from `helmet`, the web app must send it for `/rsvp/…`, `/photos/…`, `/stand/…`, `/save-the-date/…`, `/invite/…`, `/welcome/…`
 

@@ -16,13 +16,25 @@ export const logger = pino({
   ...(config.nodeEnv === 'development' && { transport: { target: 'pino-pretty' } }),
 });
 
-// A token link: 32 random bytes in base64url, a path segment of its own. A uuid has 36
-// characters, so ids stay readable.
-const TOKEN_SEGMENT = /(?<=\/)[A-Za-z0-9_-]{43}(?=[/?#]|$)/g;
+// A token link: 32 random bytes in base64url, a path segment of its own. Any run of 43 or more
+// of these characters after a slash counts, also with something stuck to it (`<token>.` from a
+// link in a chat). A uuid has 36 characters, so ids stay readable.
+const TOKEN_SEGMENT = /(?<=\/)[A-Za-z0-9_-]{43,}/g;
 
-/** Replaces the token segments of a path, e.g. `/auth/account-invites/[token]`. */
+function decoded(url: string): string {
+  try {
+    return decodeURIComponent(url);
+  } catch {
+    return url;
+  }
+}
+
+/**
+ * Replaces the token segments of a path, e.g. `/auth/account-invites/[token]`. The path is
+ * decoded first, so a percent-encoded token is masked as well.
+ */
 export function redactTokens(url: string): string {
-  return url.replace(TOKEN_SEGMENT, '[token]');
+  return decoded(url).replace(TOKEN_SEGMENT, '[token]');
 }
 
 interface SerializedRequest {
