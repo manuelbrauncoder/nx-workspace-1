@@ -1,11 +1,10 @@
-import { notFound } from '@server/core/errors';
 import { createRateLimit } from '@server/core/middleware/rate-limit';
 import { parse } from '@server/core/validate';
 import { rsvpImageParamsSchema, rsvpParamsSchema, rsvpSchema } from '@vyte/contracts/guests';
-import { type Request, Router } from 'express';
-import type { z } from 'zod';
+import { Router } from 'express';
 import { config } from '../../config/index.js';
 import { noStore } from '../../shared/no-store.js';
+import { tokenParams } from '../../shared/token-params.js';
 import { answer, getImageFile, getInvitation } from './rsvp.service.js';
 
 /**
@@ -15,32 +14,27 @@ import { answer, getImageFile, getInvitation } from './rsvp.service.js';
  */
 export const rsvpRouter = Router();
 
+const NOT_INVITED = 'Invitation not found';
+
 const answerRateLimit = createRateLimit({
   windowMinutes: config.rateLimit.rsvpWindowMinutes,
   maxRequests: config.rateLimit.rsvpMaxRequests,
   message: 'Too many answers, please try again later',
 });
 
-/** A malformed link is a 404 like an unknown one, not a 400 that tells it apart. */
-function paramsOf<T extends z.ZodType>(schema: T, req: Request): z.output<T> {
-  const params = schema.safeParse(req.params);
-  if (!params.success) throw notFound('Invitation not found');
-  return params.data;
-}
-
 rsvpRouter.get('/:token', noStore, async (req, res) => {
-  const { token } = paramsOf(rsvpParamsSchema, req);
+  const { token } = tokenParams(rsvpParamsSchema, req, NOT_INVITED);
   res.json({ invitation: await getInvitation(token) });
 });
 
 rsvpRouter.put('/:token', noStore, answerRateLimit, async (req, res) => {
-  const { token } = paramsOf(rsvpParamsSchema, req);
+  const { token } = tokenParams(rsvpParamsSchema, req, NOT_INVITED);
   const input = parse(rsvpSchema, req.body);
   res.json({ invitation: await answer(token, input) });
 });
 
 rsvpRouter.get('/:token/images/:imageId', async (req, res) => {
-  const { token, imageId } = paramsOf(rsvpImageParamsSchema, req);
+  const { token, imageId } = tokenParams(rsvpImageParamsSchema, req, NOT_INVITED);
   const file = await getImageFile(token, imageId);
   // revalidated on every use, so a renewed link, a removed guest or the end of the event
   // take effect at once; the ETag keeps that cheap

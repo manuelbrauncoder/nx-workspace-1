@@ -1,6 +1,6 @@
 # vyte: specification
 
-Status: **draft**, still being refined. The API has started: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list and the guest links, see [vyte-api](../apps/vyte-api.md). Save the date, photos, team invites and the web app are not built yet, [apps/vyte-web](../../apps/vyte-web) only holds a README.
+Status: **draft**, still being refined. The API has started: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list, the guest links and the team (members, hand-over, editor invites), see [vyte-api](../apps/vyte-api.md). Save the date, photos and the web app are not built yet, [apps/vyte-web](../../apps/vyte-web) only holds a README.
 
 ## 1. Overview
 
@@ -58,20 +58,20 @@ Accounts are the shared accounts of `server-auth`. Sign-up is off (`auth.signUpE
 | Leave the event                                            |   –   |   ✓    |           –            |
 | Delete the event                                           |   ✓   |   –    |           –            |
 
-A past event is read-only for everyone: hosts can still read it, export the list, manage the photos and delete it (owner). Photos can be uploaded until the upload window closes.
+A past event is read-only for everyone: hosts can still read it, export the list, manage the photos and delete it (owner). An editor can still leave it. Photos can be uploaded until the upload window closes.
 
 ## 3. Domain model
 
 Limits become constants in `vyte-contracts` (like `notes-limits`).
 
-| Limit                 | Value      |
-| --------------------- | ---------- |
-| Guests per event      | 500        |
-| Names per pasted list | 100        |
-| Editors per event     | 10         |
-| Images per event      | 6          |
-| Companions per guest  | 10         |
-| Events per user       | none in v1 |
+| Limit                 | Value                                       |
+| --------------------- | ------------------------------------------- |
+| Guests per event      | 500                                         |
+| Names per pasted list | 100                                         |
+| Editors per event     | 10 (also the open editor invites at a time) |
+| Images per event      | 6                                           |
+| Companions per guest  | 10                                          |
+| Events per user       | none in v1                                  |
 
 The photo limits are config of `vyte-api`, not constants, so they change without a release. The API sends the limit and what is left with every answer of a photo route, the web app never hardcodes them.
 
@@ -127,18 +127,18 @@ The photo limits are config of `vyte-api`, not constants, so they change without
 
 The owner is a member with the role `owner`, so every check runs over one table.
 
-### CollaboratorInvite
+### EditorInvite
 
-| Field              | Type            | Rules                                                 |
-| ------------------ | --------------- | ----------------------------------------------------- |
-| `id`               | uuid            |                                                       |
-| `eventId`          | uuid            | deleted with the event                                |
-| `token`            | text            | 32 random bytes, base64url, unique                    |
-| `createdBy`        | uuid            | the owner                                             |
-| `expiresAt`        | timestamp       | 7 days after creation                                 |
-| `usedAt`, `usedBy` | timestamp, uuid | set when accepted; a used invite cannot be used again |
+| Field              | Type            | Rules                                                                                           |
+| ------------------ | --------------- | ----------------------------------------------------------------------------------------------- |
+| `id`               | uuid            |                                                                                                 |
+| `eventId`          | uuid            | deleted with the event                                                                          |
+| `token`            | text            | 32 random bytes, base64url, unique                                                              |
+| `createdBy`        | uuid            | the owner                                                                                       |
+| `expiresAt`        | timestamp       | 7 days after creation                                                                           |
+| `usedAt`, `usedBy` | timestamp, uuid | set when accepted or when the account is created through it; a used invite cannot be used again |
 
-The owner can revoke an open invite (delete it). An expired or used invite answers with 404 on the public endpoints, so a guessed token reveals nothing.
+The owner can revoke an open invite (delete it); a used one stays as the record of who joined through it. At most 10 invites are open at a time. Every unknown, used, expired or revoked link, and one to a past event, answers 404 with the same body on the public endpoints, so a guessed token reveals nothing.
 
 ### Guest
 
@@ -252,21 +252,21 @@ For hosts, `/events/:id/photos` shows all photos as a grid with the name of the 
 
 1. On the team page the owner creates an invite link and copies or shares it
 2. The invited person opens `/invite/:token`. The page says who invites them to which event
-3. Signed in: "Einladung annehmen" makes them an editor and opens the event. A member opening the link again just lands on the event
-4. Signed out: two ways. "Anmelden" leads to sign-in with `returnUrl` back to the invite. "Konto erstellen" asks for name, email and password right on the page, creates the account, signs in and makes them an editor. The editor invite is the only way besides the admin link to get an account
+3. Signed in: "Einladung annehmen" makes them an editor and opens the event. A member opening the link just gets the event, and the link stays open for the person it was meant for. The editor who used the link lands on the event again, as long as they are a member
+4. Signed out: two ways. "Anmelden" leads to sign-in with `returnUrl` back to the invite. "Konto erstellen" asks for email and password, and optionally a name, right on the page, creates the account, signs in and makes them an editor. The editor invite is the only way besides the admin link to get an account
 5. The owner sees editors and open invites, removes editors and revokes open invites
-6. The owner hands the event to an editor after a confirmation: that editor becomes owner, the old owner becomes editor
-7. An editor can leave an event; it then disappears from their list
+6. The owner hands the event to an editor after a confirmation, while the event is upcoming: that editor becomes owner, the old owner becomes editor
+7. An editor can leave an event, also after it is over; it then disappears from their list
 
 ### Past events
 
 - `/events` shows "Kommend" and "Vergangen"
-- A past event opens read-only: no editing, no guest changes, no invites. Hosts can export the list and the owner can delete the event. Photos stay manageable, uploads run until the window closes
+- A past event opens read-only: no editing, no guest changes, no invites. Hosts can export the list and the owner can delete the event. An editor can still leave. Photos stay manageable, uploads run until the window closes
 - Nothing is deleted automatically
 
 ### Deleting an account
 
-`vyte-api` registers an `onUserDeleted()` hook: events the user owns are deleted with their images, memberships as editor go with the cascade. The account page tells an owner to hand over events first.
+`vyte-api` registers an `onUserDeleted()` hook. It runs in the transaction that deletes the account: it locks every event the user is a member of and deletes the events the user owns, with their guests, members and invites. Their images are removed after the commit. Memberships as editor go with the cascade. If the hook fails, the deletion is rolled back and the account stays. The account page tells an owner to hand over events first.
 
 ## 5. Guest list overview
 
@@ -330,17 +330,17 @@ Creating the account reuses `hashPassword()`, `insertUser()` and `startSession()
 
 ### Members and invites
 
-| Method and path                          | Who                        | Content                                                                                 |
-| ---------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------- |
-| `GET /events/{id}/members`               | member                     | `{ members }`: name, email, role                                                        |
-| `DELETE /events/{id}/members/{userId}`   | owner; editor for themself | removes an editor or leaves; the owner cannot be removed (409)                          |
-| `PUT /events/{id}/owner`                 | owner                      | `{ userId }` of an editor, swaps the roles, `{ members }`                               |
-| `GET /events/{id}/invites`               | owner                      | `{ invites }`: open invites                                                             |
-| `POST /events/{id}/invites`              | owner                      | `{ invite }` with token and expiry                                                      |
-| `DELETE /events/{id}/invites/{inviteId}` | owner                      | 204                                                                                     |
-| `GET /invites/{token}`                   | public                     | `{ invite }`: event title, date, name of the owner                                      |
-| `POST /invites/{token}/accept`           | signed in                  | becomes editor, `{ event }`. Already a member: same answer                              |
-| `POST /invites/{token}/sign-up`          | public                     | `{ name, email, password }`, creates the account, signs in, becomes editor, `{ event }` |
+| Method and path                          | Who                        | Content                                                                                                                                                |
+| ---------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GET /events/{id}/members`               | member                     | `{ members }`: `userId`, name, email, role, `joinedAt`; owner first, then by join time                                                                 |
+| `DELETE /events/{id}/members/{userId}`   | owner; editor for themself | removes an editor or leaves; the owner cannot be removed (409). Leaving works after the event, removing an editor does not (409)                       |
+| `PUT /events/{id}/owner`                 | owner                      | `{ userId }` of an editor, swaps the roles, `{ members }`; upcoming events only (409 on a past one)                                                    |
+| `GET /events/{id}/invites`               | owner                      | `{ invites }`: open invites                                                                                                                            |
+| `POST /events/{id}/invites`              | owner                      | `{ invite }` with token and expiry; at most 10 open invites (409 beyond)                                                                               |
+| `DELETE /events/{id}/invites/{inviteId}` | owner                      | 204                                                                                                                                                    |
+| `GET /invites/{token}`                   | public                     | `{ invite }`: event title, start, `allDay`, `timeZone`, name of the owner if set                                                                       |
+| `POST /invites/{token}/accept`           | signed in                  | becomes editor and uses the link, `{ event }`. A member gets the event and the link stays open. 409 at 10 editors                                      |
+| `POST /invites/{token}/sign-up`          | public                     | `{ email, password, name? }`, 201 with `{ event }`: creates the account, signs in, makes an editor. A taken email answers 409 and leaves the link open |
 
 ### RSVP (public, `PUT` rate limited per IP)
 

@@ -6,7 +6,9 @@ import packageJson from '../../../package.json';
 import { apiPrefix } from '../../shared/api.js';
 import { registerEventsDocs } from '../events/events.openapi.js';
 import { registerGuestsDocs } from '../guests/guests.openapi.js';
+import { registerInvitesDocs } from '../invites/invites.openapi.js';
 import { registerRsvpDocs } from '../rsvp/rsvp.openapi.js';
+import { registerTeamDocs } from '../team/team.openapi.js';
 
 const description = `
 The backend of vyte: events, their guest lists and the answers of the guests. All paths are
@@ -34,6 +36,8 @@ export function buildDocs(): OpenApiDocument {
       registerEventsDocs,
       registerGuestsDocs,
       registerRsvpDocs,
+      registerTeamDocs,
+      registerInvitesDocs,
     ],
   });
 }

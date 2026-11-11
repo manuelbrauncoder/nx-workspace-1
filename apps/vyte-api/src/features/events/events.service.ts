@@ -40,12 +40,19 @@ export async function membership(
   executor: Executor = db,
   lock = false,
 ) {
-  const query = executor
+  // the lock first, in a statement of its own: the membership read after it then sees what
+  // a transaction that held the lock before committed (a hand-over, a removal)
+  if (lock)
+    await executor
+      .select({ id: events.id })
+      .from(events)
+      .where(eq(events.id, eventId))
+      .for('update');
+  const [row] = await executor
     .select({ event: events, role: eventMembers.role })
     .from(events)
     .innerJoin(eventMembers, eq(eventMembers.eventId, events.id))
     .where(and(eq(events.id, eventId), eq(eventMembers.userId, userId)));
-  const [row] = lock ? await query.for('update', { of: events }) : await query;
   if (!row) throw notFound('Event not found');
   return row;
 }
@@ -341,22 +348,28 @@ export async function getImageFile(userId: string, eventId: string, imageId: str
  * returns their image files, which go once the user is deleted. Memberships as editor go with
  * the cascade of the user.
  */
-export function deleteOwnedEvents(userId: string) {
-  return db.transaction(async (tx) => {
-    const owned = await tx
-      .select({ id: events.id })
-      .from(events)
-      .innerJoin(eventMembers, eq(eventMembers.eventId, events.id))
-      .where(and(eq(eventMembers.userId, userId), eq(eventMembers.role, 'owner')))
-      .for('update', { of: events });
-    const ids = owned.map((row) => row.id);
-    if (ids.length === 0) return [];
+export async function deleteOwnedEvents(userId: string, tx: Executor) {
+  // every event the user is a member of, locked: a hand-over to them waits for the deletion
+  // and then finds them gone, so no event is left without an owner
+  const memberOf = await tx
+    .select({ id: events.id })
+    .from(events)
+    .innerJoin(eventMembers, eq(eventMembers.eventId, events.id))
+    .where(eq(eventMembers.userId, userId))
+    .for('update', { of: events });
+  if (memberOf.length === 0) return [];
 
-    const files = await tx
-      .select({ filename: eventImages.filename })
-      .from(eventImages)
-      .where(inArray(eventImages.eventId, ids));
-    await tx.delete(events).where(inArray(events.id, ids));
-    return files.map((file) => file.filename);
-  });
+  const owned = await tx
+    .select({ id: eventMembers.eventId })
+    .from(eventMembers)
+    .where(and(eq(eventMembers.userId, userId), eq(eventMembers.role, 'owner')));
+  const ids = owned.map((row) => row.id);
+  if (ids.length === 0) return [];
+
+  const files = await tx
+    .select({ filename: eventImages.filename })
+    .from(eventImages)
+    .where(inArray(eventImages.eventId, ids));
+  await tx.delete(events).where(inArray(events.id, ids));
+  return files.map((file) => file.filename);
 }

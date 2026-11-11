@@ -9,6 +9,7 @@ import { authRouter } from '@server/auth/auth.routes';
 import { db } from '@server/core/db/db';
 import { eventImageSchema, eventSchema } from '@vyte/contracts/events';
 import { guestSchema, invitationSchema } from '@vyte/contracts/guests';
+import { editorInviteSchema, memberSchema, publicEditorInviteSchema } from '@vyte/contracts/team';
 import { eq } from 'drizzle-orm';
 import type { Router } from 'express';
 import sharp from 'sharp';
@@ -20,7 +21,9 @@ import { adminAgent, app, signedUpAgent } from '../../test/helpers.js';
 import { eventsRouter } from '../events/events.routes.js';
 import { events } from '../events/events.table.js';
 import { guestsRouter } from '../guests/guests.routes.js';
+import { invitesRouter } from '../invites/invites.routes.js';
 import { rsvpRouter } from '../rsvp/rsvp.routes.js';
+import { teamRouter } from '../team/team.routes.js';
 import { buildDocs } from './docs.document.js';
 
 /** "POST /api/v1/auth/sign-in" for every route registered on the router. */
@@ -72,6 +75,8 @@ describe('docs', () => {
       ...routesOf(`${apiPrefix}/events/{id}/guests`, guestsRouter),
       ...routesOf(`${apiPrefix}/events`, eventsRouter),
       ...routesOf(`${apiPrefix}/rsvp`, rsvpRouter),
+      ...routesOf(`${apiPrefix}/events/{id}`, teamRouter),
+      ...routesOf(`${apiPrefix}/invites`, invitesRouter),
     ];
 
     expect(documented.sort()).toEqual(implemented.sort());
@@ -203,5 +208,43 @@ describe('docs', () => {
     expect(
       publicAccountInviteSchema.strict().safeParse(publicInvite.body.invite).error,
     ).toBeUndefined();
+  });
+
+  it('documents the member and editor invite shapes the API really returns', async () => {
+    const agent = await signedUpAgent('ada@example.com');
+    const grace = await signedUpAgent('grace@example.com');
+    const created = await agent
+      .post(`${apiPrefix}/events`)
+      .send({ title: 'Party', startsAt: '2999-06-10T16:00:00.000Z', timeZone: 'Europe/Berlin' })
+      .expect(201);
+    const { id } = created.body.event;
+
+    const invite = await agent.post(`${apiPrefix}/events/${id}/invites`).expect(201);
+    expect(editorInviteSchema.strict().safeParse(invite.body.invite).error).toBeUndefined();
+    const list = await agent.get(`${apiPrefix}/events/${id}/invites`).expect(200);
+    expect(list.body.invites).toHaveLength(1);
+    expect(editorInviteSchema.strict().safeParse(list.body.invites[0]).error).toBeUndefined();
+
+    const token = invite.body.invite.token;
+    const publicInvite = await request(app).get(`${apiPrefix}/invites/${token}`).expect(200);
+    expect(
+      publicEditorInviteSchema.strict().safeParse(publicInvite.body.invite).error,
+    ).toBeUndefined();
+
+    await grace.post(`${apiPrefix}/invites/${token}/accept`).expect(200);
+    const members = await agent.get(`${apiPrefix}/events/${id}/members`).expect(200);
+    expect(members.body.members).toHaveLength(2);
+    for (const member of members.body.members) {
+      expect(memberSchema.strict().safeParse(member).error).toBeUndefined();
+    }
+
+    const graceId = members.body.members[1].userId;
+    const handOver = await agent
+      .put(`${apiPrefix}/events/${id}/owner`)
+      .send({ userId: graceId })
+      .expect(200);
+    for (const member of handOver.body.members) {
+      expect(memberSchema.strict().safeParse(member).error).toBeUndefined();
+    }
   });
 });
