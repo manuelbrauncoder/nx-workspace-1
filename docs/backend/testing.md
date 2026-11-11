@@ -10,7 +10,7 @@ Postgres must be running (`docker compose up -d`). Then:
 pnpm nx run-many -t test -p express-api-base server-auth
 ```
 
-The tests of auth, admin and account links live in `server-auth`, those of notes and the docs in the app. To run one file or watch for changes, from the folder of the project:
+The tests of auth, admin and account links live in `server-auth`, those of notes and the docs in the app. The unit tests of the helpers in `server-core`, such as `sanitizeRichText()`, need no database: `pnpm nx run server-core:test`. To run one file or watch for changes, from the folder of the project:
 
 ```bash
 cd apps/express-api-base

@@ -49,13 +49,15 @@ describe('notes', () => {
         description:
           '<p onclick="steal()">Hi</p><script>alert(1)</script>' +
           '<a href="javascript:alert(1)">bad</a><a href="https://example.com">good</a>' +
+          '<a href="//evil.example">host</a><a href="/notes">path</a>' +
           '<img src="x" onerror="alert(1)">',
       })
       .expect(201);
 
     expect(res.body.note.description).toBe(
-      '<p>Hi</p><a target="_blank" rel="noopener noreferrer nofollow">bad</a>' +
-        '<a href="https://example.com" target="_blank" rel="noopener noreferrer nofollow">good</a>',
+      '<p>Hi</p><a>bad</a>' +
+        '<a href="https://example.com" target="_blank" rel="noopener noreferrer nofollow">good</a>' +
+        '<a>host</a><a>path</a>',
     );
   });
 

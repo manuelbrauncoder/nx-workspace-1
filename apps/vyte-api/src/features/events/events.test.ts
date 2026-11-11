@@ -807,7 +807,8 @@ describe('events', () => {
     const cases: [string, string][] = [
       ['https://example.com/a?b=1', `<a href="https://example.com/a?b=1" ${rel}>x</a>`],
       ['http://example.com', `<a href="http://example.com" ${rel}>x</a>`],
-      ['mailto:ada@example.com', `<a href="mailto:ada@example.com" ${rel}>x</a>`],
+      // only external links open in a new tab
+      ['mailto:ada@example.com', '<a href="mailto:ada@example.com">x</a>'],
       ['//evil.example', '<a>x</a>'],
       ['/api/v1/x', '<a>x</a>'],
       ['javascript:alert(1)', '<a>x</a>'],

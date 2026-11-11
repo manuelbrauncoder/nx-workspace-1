@@ -17,7 +17,7 @@ import {
 export const events = pgTable('events', {
   id: uuid().primaryKey().defaultRandom(),
   title: text().notNull(),
-  // sanitized HTML, see events.sanitize.ts
+  // sanitized HTML, see sanitizeRichText in @server/core/rich-text
   description: text().notNull(),
   locationName: text('location_name'),
   address: text(),

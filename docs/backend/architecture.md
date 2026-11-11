@@ -17,6 +17,7 @@ packages/server/core/src/           @server/core/*: what every API app is built 
   logger.ts                         pino logger, masks token segments in the request log
   validate.ts                       parse(): zod validation for request input
   openapi.ts                        helpers for the feature openapi files, buildOpenApiDocument()
+  rich-text.ts                      sanitizeRichText(): reduces HTML to the rich text formats, link rules per profile
   middleware/                       error handler, origin check
   testing/global-setup.ts           creates and migrates the test database
 packages/server/auth/src/           @server/auth/*: accounts for every API app
@@ -45,14 +46,14 @@ apps/express-api-base/
 
 Using notes as the example:
 
-| File                                   | Responsibility                                                      |
-| -------------------------------------- | ------------------------------------------------------------------- |
-| `notes.table.ts`                       | Drizzle table definitions                                           |
-| `notes.routes.ts`                      | Express router: validate input, call the service, send the response |
-| `notes.service.ts`                     | Business logic and database queries                                 |
-| `notes.openapi.ts`                     | Documentation entries for the endpoints                             |
-| `notes.test.ts`                        | Tests                                                               |
-| `notes.sanitize.ts`, `notes.images.ts` | Feature-specific helpers                                            |
+| File               | Responsibility                                                      |
+| ------------------ | ------------------------------------------------------------------- |
+| `notes.table.ts`   | Drizzle table definitions                                           |
+| `notes.routes.ts`  | Express router: validate input, call the service, send the response |
+| `notes.service.ts` | Business logic and database queries                                 |
+| `notes.openapi.ts` | Documentation entries for the endpoints                             |
+| `notes.test.ts`    | Tests                                                               |
+| `notes.images.ts`  | Feature-specific helpers                                            |
 
 The zod schemas of requests and responses are not in the feature but in `@contracts/notes`, so the Angular app uses the same definitions.
 

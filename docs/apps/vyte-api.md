@@ -51,7 +51,7 @@ The guest, answer and photo routes are not there yet. The spec lists them in [se
 
 ## Events
 
-Code in [src/features/events](../../apps/vyte-api/src/features/events): `events.table.ts` (tables `events`, `event_members`, `event_images`), `events.routes.ts`, `events.service.ts`, `events.images.ts` (multer), `events.time.ts` (past), `events.sanitize.ts`, `events.user-deletion.ts`. The schemas are in [vyte-contracts](../libs/vyte-contracts.md).
+Code in [src/features/events](../../apps/vyte-api/src/features/events): `events.table.ts` (tables `events`, `event_members`, `event_images`), `events.routes.ts`, `events.service.ts`, `events.images.ts` (multer), `events.time.ts` (past), `events.user-deletion.ts`. The schemas are in [vyte-contracts](../libs/vyte-contracts.md).
 
 | Method and path                        | Who           | Content                                                                |
 | -------------------------------------- | ------------- | ---------------------------------------------------------------------- |
@@ -72,7 +72,7 @@ Rules in short:
 - **Past events** are computed, nothing is stored. An event is over at `endsAt`; an all-day event at the end of its last day; without an end at the end of the day it starts. All in the event's `timeZone`. Writes answer 409, the files stay readable, the owner can still delete.
 - **Uploads**: membership and past are checked before multer reads the body, so a non-member or a past event never gets files parsed. Multer takes no text fields. Files above `uploads.maxFileSizeMb` answer 413.
 - **Images**: up to 6 per event, `position` 0 is the cover. All-or-nothing: one invalid file or a passed limit stores nothing. More than 6 in total answers 409, and so does a request with 7 files. A request with 8 or more files is cut off by multer before the service runs and answers 400. Each file goes through `processImage()` and `saveImage()` of `server-core`, stored as WebP. Deleting an image renumbers the rest.
-- **Description**: sanitized to `RICH_TEXT_TAGS`; links are kept only if `isAllowedRichTextHref(…, 'text')` of `@contracts/rich-text` allows them.
+- **Description**: sanitized with `sanitizeRichText()` of `@server/core/rich-text` to `RICH_TEXT_TAGS`; a link keeps its `href` only if `isAllowedRichTextHref(…, 'text')` of `@contracts/rich-text` allows it (absolute `http`, `https` or `mailto`).
 - **Deleting a user**: `events.user-deletion.ts` registers an `onUserDeleted()` hook. It deletes the events the user owns in one transaction with the events locked, and removes their files after the user is gone. Memberships as editor go with the user. See [Authentication](../backend/authentication.md#admin-endpoints).
 
 ## Differences to express-api-base

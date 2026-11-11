@@ -67,7 +67,8 @@ describe('legal', () => {
     const html =
       '<section><h1>Titel</h1><h2 onclick="steal()">Kontakt</h2><script>alert(1)</script>' +
       '<p><a href="mailto:ada@example.com">Mail</a> <a href="tel:+491234">Tel</a> ' +
-      '<a href="/privacy">Datenschutz</a> <a href="javascript:alert(1)">x</a></p>' +
+      '<a href="/privacy">Datenschutz</a> <a href="javascript:alert(1)">x</a> ' +
+      '<a href="https://example.com" target="_self">Extern</a> <a href="//evil.example">y</a></p>' +
       '<img src="x" onerror="alert(1)"><address><p>Ada<br>London</p></address></section>';
     await admin.patch('/api/v1/legal/accessibility').send({ de: html, en: html }).expect(200);
 
@@ -75,7 +76,9 @@ describe('legal', () => {
     expect(res.text).toBe(
       'Titel<h2>Kontakt</h2>' +
         '<p><a href="mailto:ada@example.com">Mail</a> <a href="tel:+491234">Tel</a> ' +
-        '<a href="/privacy">Datenschutz</a> <a>x</a></p>' +
+        '<a href="/privacy">Datenschutz</a> <a>x</a> ' +
+        '<a href="https://example.com" target="_blank" rel="noopener noreferrer nofollow">Extern</a> ' +
+        '<a>y</a></p>' +
         '<p>Ada<br />London</p>',
     );
   });

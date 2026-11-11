@@ -270,7 +270,7 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 ### Aufbau
 
 - `packages/contracts/src/` (Lib `contracts`, Alias `@contracts/*`): Zod-Schemas des Wire-Formats für Requests und Responses (`notes`, `auth`, `account-invites`, `errors`), daraus abgeleitete Typen (`*Dto`, `*Input`), Limits als Konstanten ohne Zod (`notes-limits`) und die Rich-Text-Regeln (`rich-text`). Läuft in Node und im Browser, importiert nur `zod`
-- `packages/server/core/src/` (Lib `server-core`, Alias `@server/core/*`): `config` und `extendConfig(fileShape, envShape?)`, `logger` (redacted Cookie, Set-Cookie, Referer, Location und Token-Segmente der URL, fehlgeschlagene Queries ohne Parameter), `errors`, `validate`, Middleware (Error-Handler, Origin-Check), `db/db` und `db/migrate`, OpenAPI-Helfer mit `buildOpenApiDocument()`, `createServer({ prefix })` und `startServer()`, `images` (Bildverarbeitung mit Pixel-Limit), `createRateLimit()`, `testing/global-setup`. Kennt keine Features
+- `packages/server/core/src/` (Lib `server-core`, Alias `@server/core/*`): `config` und `extendConfig(fileShape, envShape?)`, `logger` (redacted Cookie, Set-Cookie, Referer, Location und Token-Segmente der URL, fehlgeschlagene Queries ohne Parameter), `errors`, `validate`, Middleware (Error-Handler, Origin-Check), `db/db` und `db/migrate`, OpenAPI-Helfer mit `buildOpenApiDocument()`, `createServer({ prefix })` und `startServer()`, `images` (Bildverarbeitung mit Pixel-Limit), `createRateLimit()`, `rich-text` (`sanitizeRichText()`, Regeln aus `@contracts/rich-text`), `testing/global-setup`. Kennt keine Features
 - `packages/server/auth/src/` (Lib `server-auth`, Alias `@server/auth/*`): Tabellen `users` und `session`, Registrieren, Anmelden, Abmelden, `/auth/me`, Session-Middleware, Guards `requireAuth`/`requireAdmin`, `currentUserId(req)`, Rate-Limit, Admin-Endpunkte, `seedAdmin()`, `onUserDeleted()`, Account-Links für geschlossene Registrierung (Tabelle `account_invites`, opt-in über `accountInvitesRouter` und `accountInvitesAdminRouter`), Test-Helfer. Kennt keine Features
 - `apps/express-api-base/`: die Features (`notes`, `docs`), die App-Config-Erweiterung (`uploads`), `config/`, `drizzle/`, `Dockerfile`, `docker-compose.prod.example.yml`
 - Der Workspace ist ESM (`"type": "module"` in der Root-`package.json`). Sonst lädt `tsx` im Dev-Modus die Server-Libs als CommonJS, und Top-Level-Await bricht
@@ -298,7 +298,7 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 - **CSRF**: keine Tokens. Der Origin-Check lehnt zustandsändernde Requests ab, deren `Origin` nicht in `config.cors.origins` (oder der eigene) ist
 - **Besitz**: Services filtern jede Query nach `userId`, eine fremde Ressource ist ein 404, kein 403
 - **Docs per Test synchron**: `docs.test.ts` schlägt fehl, wenn eine Route ohne OpenAPI-Eintrag existiert oder umgekehrt, und prüft echte Antworten gegen die Schemas mit `.strict()`
-- **Rich Text**: `notes.sanitize.ts` erlaubt genau `RICH_TEXT_TAGS` aus `@contracts/rich-text`, dieselbe Liste wie der Editor im Frontend
+- **Rich Text**: `sanitizeRichText()` aus `@server/core/rich-text` erlaubt genau `RICH_TEXT_TAGS` aus `@contracts/rich-text`, dieselbe Liste wie der Editor im Frontend. Ein Link behält sein `href` nur, wenn `isAllowedRichTextHref()` es erlaubt (Profil `text` für Notizen und Events, `page` für Rechtsseiten). Jede API-App ruft diese Funktion vor dem Speichern auf, eigene Sanitizer gibt es nicht
 
 ### Tests
 
