@@ -127,11 +127,11 @@ At every start the API checks whether an admin exists. If none does, it creates 
 `deleteUser()` in [`admin.service.ts`](../../packages/server/auth/src/admin.service.ts) runs in this order:
 
 1. Revokes the user's sessions, so the user cannot write anything while the hooks run.
-2. Runs the hooks registered with `onUserDeleted()` ([`user-deletion.ts`](../../packages/server/auth/src/user-deletion.ts)). A hook removes what the database cascade does not cover, e.g. the files of a feature, or the events the user owns in `vyte-api`, which the hook deletes before the user.
-3. Deletes the user in a transaction, which also revokes the sessions again. The rows that cascade (memberships, notes, image rows) go with it.
-4. Runs the cleanups the hooks returned, e.g. removing the image files, once the deletion is committed.
+2. Opens one transaction. The hooks registered with `onUserDeleted()` ([`user-deletion.ts`](../../packages/server/auth/src/user-deletion.ts)) run inside it, one after another, each with the transaction as its second argument (`(userId, tx)`). A hook removes what the database cascade does not cover, e.g. the events the user owns in `vyte-api`, which the hook deletes in that transaction. Hooks may read and write through `tx`, so what they decide still holds when the user is gone.
+3. In the same transaction the user is deleted and the sessions are revoked again. The rows that cascade (memberships, notes, image rows) go with it.
+4. The transaction commits. Then the cleanups the hooks returned run, e.g. removing the image files.
 
-If step 3 fails, the work of the hooks stays done, so the deletion is not all-or-nothing.
+The deletion is all-or-nothing: if a hook or the delete throws, the transaction rolls back and the user keeps their data. A cleanup that fails after the commit cannot undo the deletion; its files stay on disk.
 
 To protect other routes the same way:
 

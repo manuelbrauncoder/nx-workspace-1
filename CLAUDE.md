@@ -287,7 +287,7 @@ Ersteinrichtung: `apps/express-api-base/.env.example` nach `.env` kopieren, `SES
 - Ein Ordner pro Feature in `src/features/<name>/` der App, eine Datei pro Rolle `<name>.<rolle>.ts`: `*.table.ts` (Drizzle, über den Glob in `drizzle.config.ts` gefunden), `*.routes.ts` (dünner Router: `parse()`, Service aufrufen, antworten), `*.service.ts` (Logik und alle DB-Zugriffe, wirft `HttpError`), `*.openapi.ts` (`register<Name>Docs(registry)`), `*.test.ts` (supertest gegen die ganze App)
 - Schemas für Request und Response in `packages/contracts`, wenn ein Frontend die Endpunkte nutzt, sonst neben dem Feature
 - Ein Feature registrieren: Router in `routes` von `createServer()` in `src/app.ts`, Register-Funktion in `register` von `src/features/docs/docs.document.ts`, Router in die Liste in `docs.test.ts`
-- Räumt ein Feature beim Löschen eines Users mehr auf als die DB-Kaskade (z. B. Dateien), registriert es in `src/app.ts` einen Hook mit `onUserDeleted()`. Admin kennt keine Features
+- Räumt ein Feature beim Löschen eines Users mehr auf als die DB-Kaskade (z. B. Dateien), registriert es in `src/app.ts` einen Hook mit `onUserDeleted()`. Der Hook läuft in der Transaktion, die den User löscht, und bekommt sie als zweites Argument (`(userId, tx)`). Admin kennt keine Features
 
 ### Konventionen über Dateien hinweg
 
