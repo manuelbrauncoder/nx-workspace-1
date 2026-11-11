@@ -24,10 +24,17 @@ export interface ProcessedImage {
 }
 
 /**
- * Re-encodes an upload to WebP, capped at the configured width. The type is detected from
- * the bytes, so a renamed non-image is rejected, and metadata such as GPS data is dropped.
+ * Re-encodes an upload to WebP, capped at the configured width or at `maxWidth`, and at
+ * `maxHeight` when given (aspect ratio kept). The type is detected from the bytes, so a renamed
+ * non-image is rejected, and metadata such as GPS data is dropped.
  */
-export async function processImage(input: Buffer): Promise<ProcessedImage> {
+export async function processImage(
+  input: Buffer,
+  {
+    maxWidth = config.uploads.maxImageWidth,
+    maxHeight,
+  }: { maxWidth?: number; maxHeight?: number } = {},
+): Promise<ProcessedImage> {
   try {
     const image = sharp(input, { limitInputPixels: MAX_INPUT_PIXELS });
     const { format } = await image.metadata();
@@ -35,7 +42,7 @@ export async function processImage(input: Buffer): Promise<ProcessedImage> {
 
     const { data, info } = await image
       .rotate()
-      .resize({ width: config.uploads.maxImageWidth, withoutEnlargement: true })
+      .resize({ width: maxWidth, height: maxHeight, fit: 'inside', withoutEnlargement: true })
       .webp({ quality: 82 })
       .toBuffer({ resolveWithObject: true });
 
