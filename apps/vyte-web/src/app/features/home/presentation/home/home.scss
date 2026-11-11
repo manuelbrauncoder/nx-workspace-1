@@ -1,0 +1,36 @@
+@use 'styles/abstracts' as *;
+
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  max-width: 44rem;
+  padding-block: 2rem;
+
+  @include up(md) {
+    padding-block: 4rem;
+  }
+}
+
+.home__eyebrow {
+  padding: 0.25rem 0.875rem;
+  border: 2px solid var(--foreground);
+  border-radius: 999px;
+  background: var(--brand);
+  color: var(--brand-foreground);
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.home__lead {
+  color: var(--muted-foreground);
+}
+
+// The heading font runs wide: a long word must be able to break on a narrow phone.
+.home__heading {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}

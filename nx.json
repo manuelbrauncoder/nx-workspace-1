@@ -105,6 +105,7 @@
       "portfolio-api",
       "dartomat-web",
       "dartomat-api",
+      "vyte-web",
       "vyte-api"
     ],
     "projectsRelationship": "independent",

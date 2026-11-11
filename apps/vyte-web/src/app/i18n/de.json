@@ -1,0 +1,35 @@
+{
+  "auth": {
+    "account": "Konto",
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "signedOut": "Du bist abgemeldet",
+    "signOutFailed": "Abmelden fehlgeschlagen"
+  },
+  "layout": {
+    "legalNavigation": "Rechtliches",
+    "mainNavigation": "Hauptnavigation",
+    "navigation": "Navigation",
+    "openMenu": "Menü öffnen",
+    "skipToContent": "Zum Inhalt springen",
+    "footer": {
+      "imprint": "Impressum",
+      "privacy": "Datenschutz",
+      "accessibility": "Barrierefreiheit"
+    }
+  },
+  "legal": {
+    "email": "E-Mail",
+    "phone": "Telefon"
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "heading": "Seite nicht gefunden",
+    "description": "Die Seite gibt es nicht oder sie wurde verschoben.",
+    "backHome": "Zur Startseite"
+  },
+  "seo": {
+    "defaultDescription": "Vyte: Einladungen mit persönlichem Link, Zusagen ohne Konto und Fotos vom Fest an einem Ort.",
+    "imageAlt": "Logo von Vyte"
+  }
+}

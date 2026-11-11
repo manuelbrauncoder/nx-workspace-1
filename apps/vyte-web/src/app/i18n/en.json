@@ -1,0 +1,35 @@
+{
+  "auth": {
+    "account": "Account",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "signedOut": "You are signed out",
+    "signOutFailed": "Signing out failed"
+  },
+  "layout": {
+    "legalNavigation": "Legal",
+    "mainNavigation": "Main navigation",
+    "navigation": "Navigation",
+    "openMenu": "Open menu",
+    "skipToContent": "Skip to content",
+    "footer": {
+      "imprint": "Imprint",
+      "privacy": "Privacy",
+      "accessibility": "Accessibility"
+    }
+  },
+  "legal": {
+    "email": "Email",
+    "phone": "Phone"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "heading": "Page not found",
+    "description": "This page does not exist or has been moved.",
+    "backHome": "Go to the start page"
+  },
+  "seo": {
+    "defaultDescription": "Vyte: invitations with a personal link, answers without an account and the photos of the party in one place.",
+    "imageAlt": "Logo of Vyte"
+  }
+}

@@ -14,6 +14,7 @@ All images go to the GitHub Container Registry under the owner of the repository
 | `portfolio-api`    | `nx1-portfolio-api-v1.2.0`    | `ghcr.io/<owner>/nx1-portfolio-api`    | 3000 | [apps/portfolio-api/Dockerfile](../apps/portfolio-api/Dockerfile)       |
 | `dartomat-web`     | `nx1-dartomat-web-v1.2.0`     | `ghcr.io/<owner>/nx1-dartomat-web`     | 4000 | [apps/dartomat-web/Dockerfile](../apps/dartomat-web/Dockerfile)         |
 | `dartomat-api`     | `nx1-dartomat-api-v1.2.0`     | `ghcr.io/<owner>/nx1-dartomat-api`     | 3000 | [apps/dartomat-api/Dockerfile](../apps/dartomat-api/Dockerfile)         |
+| `vyte-web`         | `nx1-vyte-web-v1.2.0`         | `ghcr.io/<owner>/nx1-vyte-web`         | 4000 | [apps/vyte-web/Dockerfile](../apps/vyte-web/Dockerfile)                 |
 | `vyte-api`         | `nx1-vyte-api-v1.2.0`         | `ghcr.io/<owner>/nx1-vyte-api`         | 3000 | [apps/vyte-api/Dockerfile](../apps/vyte-api/Dockerfile)                 |
 
 Each release publishes three image tags: the version without the prefix (`:v1.2.0`), `:latest` and `:sha-<short commit>`. Use the version in a stack, so a redeploy never pulls a different version by accident. The version must be `v<major>.<minor>.<patch>`. A pre-release such as `nx1-dartomat-web-v1.3.0-beta.1` fails its publish job before anything is built.
@@ -68,6 +69,7 @@ The paths inside the images are the same as before the monorepo, so a stack only
 | `portfolio-api`    | the same, plus `node dist/scripts/seed.js` for the initial content   | path in `CONFIG_PATH`                                               |
 | `dartomat-web`     | `node dist/dartomat-web/server/server.mjs`                           | mounted at `/app/dist/dartomat-web/browser/config/app-config.json`  |
 | `dartomat-api`     | `node dist/index.js`, migrations with `node dist/scripts/migrate.js` | path in `CONFIG_PATH`                                               |
+| `vyte-web`         | `node dist/vyte-web/server/server.mjs`                               | mounted at `/app/dist/vyte-web/browser/config/app-config.json`      |
 | `vyte-api`         | `node dist/index.js`, migrations with `node dist/scripts/migrate.js` | path in `CONFIG_PATH`                                               |
 
 ## Angular apps

@@ -1,0 +1,3 @@
+// Light only so far, see `FORCED_THEME_MODE` in `app.config.ts`. A dark theme gets its own
+// `_dark.scss` with every token of `_light.scss`.
+@forward 'light';

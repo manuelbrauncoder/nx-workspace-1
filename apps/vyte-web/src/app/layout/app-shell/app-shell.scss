@@ -1,0 +1,38 @@
+// Fills the viewport, so the footer stays at the bottom on short pages.
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.app-main {
+  flex: 1;
+  outline: none;
+}
+
+// A full-bleed page brings its own sections and spacing, see `shellLayout()`.
+.app-main--contained {
+  padding-block: 2rem;
+}
+
+// Only visible while focused, as the first stop of the keyboard.
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 50;
+  padding: 0.5rem 0.75rem;
+  transform: translateY(-200%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &:focus-visible {
+    transform: none;
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}

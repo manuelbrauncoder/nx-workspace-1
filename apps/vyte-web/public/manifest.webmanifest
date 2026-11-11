@@ -1,0 +1,20 @@
+{
+  "name": "Vyte",
+  "short_name": "Vyte",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffe45c",
+  "theme_color": "#ffe45c",
+  "icons": [
+    {
+      "src": "logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "logo-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

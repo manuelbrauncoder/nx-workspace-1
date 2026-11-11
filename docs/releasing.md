@@ -10,6 +10,7 @@ Every app has its own version, kept in its `package.json` and in Git tags `nx1-<
 | `portfolio-api`    | [apps/portfolio-api/package.json](../apps/portfolio-api/package.json)       | `apps/portfolio-api/CHANGELOG.md`    |
 | `dartomat-web`     | [apps/dartomat-web/package.json](../apps/dartomat-web/package.json)         | `apps/dartomat-web/CHANGELOG.md`     |
 | `dartomat-api`     | [apps/dartomat-api/package.json](../apps/dartomat-api/package.json)         | `apps/dartomat-api/CHANGELOG.md`     |
+| `vyte-web`         | [apps/vyte-web/package.json](../apps/vyte-web/package.json)                 | `apps/vyte-web/CHANGELOG.md`         |
 | `vyte-api`         | [apps/vyte-api/package.json](../apps/vyte-api/package.json)                 | `apps/vyte-api/CHANGELOG.md`         |
 
 Libs have no version of their own, they are released as part of the apps that use them.
