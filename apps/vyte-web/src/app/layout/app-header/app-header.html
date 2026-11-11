@@ -1,0 +1,32 @@
+<header class="app-header">
+  <div class="page-container app-header__bar">
+    <app-logo />
+    <div class="app-header__actions">
+      @if (_items.length > 0) {
+        <app-ui-nav-menu
+          class="app-header__nav"
+          [items]="_items"
+          [label]="'layout.mainNavigation' | t"
+        />
+      }
+      <app-language-toggle />
+      <app-account-menu />
+      <!-- Without navigation entries the drawer would be empty. -->
+      @if (_items.length > 0) {
+        <button
+          class="app-header__menu-button"
+          [attr.aria-expanded]="drawerOpen()"
+          [attr.aria-label]="'layout.openMenu' | t"
+          (click)="drawerOpen.set(true)"
+          appUiButton
+          variant="ghost"
+          size="icon"
+          type="button"
+          aria-haspopup="dialog"
+        >
+          <app-ui-icon name="menu" />
+        </button>
+      }
+    </div>
+  </div>
+</header>

@@ -1,0 +1,111 @@
+{
+  "name": "vyte-web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/vyte-web/src",
+  "tags": ["type:app", "scope:vyte"],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/vyte-web",
+        "browser": "apps/vyte-web/src/main.ts",
+        "index": "apps/vyte-web/src/index.html",
+        "tsConfig": "apps/vyte-web/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/vyte-web/public"
+          },
+          {
+            "glob": "**/*",
+            "input": "apps/vyte-web/config",
+            "output": "config"
+          }
+        ],
+        "styles": ["apps/vyte-web/src/styles/tailwind.css", "apps/vyte-web/src/styles/styles.scss"],
+        "server": "apps/vyte-web/src/main.server.ts",
+        "outputMode": "server",
+        "security": {
+          "allowedHosts": ["localhost"]
+        },
+        "ssr": {
+          "entry": "apps/vyte-web/src/server.ts"
+        },
+        "stylePreprocessorOptions": {
+          "includePaths": ["packages/shared"]
+        }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "800kB",
+              "maximumError": "1MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kB",
+              "maximumError": "8kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        },
+        "watch": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "watch": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4300
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "vyte-web:build:production"
+        },
+        "development": {
+          "buildTarget": "vyte-web:build:development"
+        }
+      }
+    },
+    "serve-ssr": {
+      "continuous": true,
+      "dependsOn": ["build"],
+      "command": "node dist/apps/vyte-web/server/server.mjs"
+    },
+    "server": {
+      "continuous": true,
+      "command": "node --watch dist/apps/vyte-web/server/server.mjs"
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^default"],
+      "options": {
+        "cwd": "{projectRoot}",
+        "command": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit"
+      }
+    },
+    "nx-release-publish": {
+      "executor": "nx:noop"
+    }
+  },
+  "implicitDependencies": ["styles"]
+}

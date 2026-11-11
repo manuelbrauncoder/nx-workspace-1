@@ -7,7 +7,7 @@ The wire format between `vyte-api` and the vyte web app: the limits of events, g
 | Folder  | [packages/vyte/contracts](../../packages/vyte/contracts/src)                                                          |
 | Alias   | `@vyte/contracts/*`, e.g. `@vyte/contracts/events-limits`                                                             |
 | Tags    | `type:contract`, `scope:vyte`                                                                                         |
-| Used by | `vyte-api` (events, guests, guest links, team and editor invites, save the date, photos), `vyte-web` once it is built |
+| Used by | `vyte-api` (events, guests, guest links, team and editor invites, save the date, photos), the API layer of `vyte-web` |
 
 ## Contents
 
@@ -22,6 +22,6 @@ The wire format between `vyte-api` and the vyte web app: the limits of events, g
 | `photos-limits.ts` | `PHOTO_UPLOADER_NAME_MAX_LENGTH` (60), the name a stand visitor may type, without Zod. The counts of photos are config of `vyte-api`, not constants, and come with every upload answer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `photos.ts`        | Zod schemas of the photo routes: the params of the photo link, the stand and the host routes, `standUploadSchema` (the optional `name`: trimmed, at most 60 characters, no invisible characters, empty means none), `hidePhotoSchema`, `photoSchema` for the hosts (with `source`, `uploaderName`, `hidden`), `ownPhotoSchema`, `uploadSchema` (the upload page: event title, guest name or `null`, own photos, `limit`, `left`, `open`, `opensAt`, `closesAt`), the responses and the types `*Dto` and `*Input`                                                                                                                                                                       |
 
-The numbers come from section 3 of the [specification](../vyte/spec.md#3-domain-model). `events.ts` imports the limits from `events-limits.ts`, `guests.ts` from `guests-limits.ts`. As in [dartomat-contracts](dartomat-contracts.md), the web app will import only the types from the schema files and the constants from the limits, so Zod stays out of its bundle.
+The numbers come from section 3 of the [specification](../vyte/spec.md#3-domain-model). `events.ts` imports the limits from `events-limits.ts`, `guests.ts` from `guests-limits.ts`. As in [dartomat-contracts](dartomat-contracts.md), the web app imports only the types from the schema files and the constants from the limits, so Zod stays out of its bundle.
 
 Only projects with `scope:vyte` may import this lib.

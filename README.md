@@ -4,16 +4,18 @@ Nx monorepo with Angular apps, Express APIs and the libs they share. Everything 
 
 ## What is in here
 
-| App                                               | Kind                                  | Locally                 | Talks to                    |
-| ------------------------------------------------- | ------------------------------------- | ----------------------- | --------------------------- |
-| [angular-base](docs/apps/angular-base.md)         | Angular 22 with SSR, reference app    | <http://localhost:4000> | `express-api-base`          |
-| [express-api-base](docs/apps/express-api-base.md) | Express 5 + Drizzle, reference API    | <http://localhost:3000> | Postgres `express_api_base` |
-| [portfolio-web](docs/apps/portfolio-web.md)       | Angular 22 with SSR, portfolio site   | <http://localhost:4100> | `portfolio-api`             |
-| [portfolio-api](docs/apps/portfolio-api.md)       | Express 5 + Drizzle, portfolio CMS    | <http://localhost:3100> | Postgres `portfolio_api`    |
-| [dartomat-web](docs/apps/dartomat-web.md)         | Angular 22 with SSR, darts scoreboard | <http://localhost:4200> | `dartomat-api`              |
-| [dartomat-api](docs/apps/dartomat-api.md)         | Express 5 + Drizzle, darts games      | <http://localhost:3200> | Postgres `dartomat_api`     |
+| App                                               | Kind                                   | Locally                 | Talks to                    |
+| ------------------------------------------------- | -------------------------------------- | ----------------------- | --------------------------- |
+| [angular-base](docs/apps/angular-base.md)         | Angular 22 with SSR, reference app     | <http://localhost:4000> | `express-api-base`          |
+| [express-api-base](docs/apps/express-api-base.md) | Express 5 + Drizzle, reference API     | <http://localhost:3000> | Postgres `express_api_base` |
+| [portfolio-web](docs/apps/portfolio-web.md)       | Angular 22 with SSR, portfolio site    | <http://localhost:4100> | `portfolio-api`             |
+| [portfolio-api](docs/apps/portfolio-api.md)       | Express 5 + Drizzle, portfolio CMS     | <http://localhost:3100> | Postgres `portfolio_api`    |
+| [dartomat-web](docs/apps/dartomat-web.md)         | Angular 22 with SSR, darts scoreboard  | <http://localhost:4200> | `dartomat-api`              |
+| [dartomat-api](docs/apps/dartomat-api.md)         | Express 5 + Drizzle, darts games       | <http://localhost:3200> | Postgres `dartomat_api`     |
+| [vyte-web](docs/apps/vyte-web.md)                 | Angular 22 with SSR, event invitations | <http://localhost:4300> | `vyte-api`                  |
+| [vyte-api](docs/apps/vyte-api.md)                 | Express 5 + Drizzle, events and guests | <http://localhost:3300> | Postgres `vyte_api`         |
 
-The libs live in `packages/`: `core`, `ui`, `styles` and `helm-vega` for Angular, `server-core` and `server-auth` for the APIs, `contracts`, `portfolio-contracts` and `dartomat-contracts` as the wire format between both. See [Workspace](docs/workspace.md) for the full list with tags and aliases.
+The libs live in `packages/`: `core`, `ui`, `styles` and `helm-vega` for Angular, `server-core` and `server-auth` for the APIs, `contracts`, `portfolio-contracts`, `dartomat-contracts` and `vyte-contracts` as the wire format between both. See [Workspace](docs/workspace.md) for the full list with tags and aliases.
 
 ## Prerequisites
 
@@ -34,7 +36,7 @@ The libs live in `packages/`: `core`, `ui`, `styles` and `helm-vega` for Angular
    pnpm install
    ```
 
-2. Start Postgres. The first start creates the databases `express_api_base`, `portfolio_api` and `dartomat_api` from [tools/postgres/init-databases.sql](tools/postgres/init-databases.sql):
+2. Start Postgres. The first start creates the databases `express_api_base`, `portfolio_api`, `dartomat_api` and `vyte_api` from [tools/postgres/init-databases.sql](tools/postgres/init-databases.sql):
 
    ```bash
    docker compose up -d
@@ -60,6 +62,10 @@ The libs live in `packages/`: `core`, `ui`, `styles` and `helm-vega` for Angular
    cp apps/dartomat-api/.env.example apps/dartomat-api/.env
    ```
 
+   ```bash
+   cp apps/vyte-api/.env.example apps/vyte-api/.env
+   ```
+
 4. Create the tables:
 
    ```bash
@@ -72,6 +78,10 @@ The libs live in `packages/`: `core`, `ui`, `styles` and `helm-vega` for Angular
 
    ```bash
    pnpm nx run dartomat-api:db:migrate
+   ```
+
+   ```bash
+   pnpm nx run vyte-api:db:migrate
    ```
 
 5. Load the initial content of the portfolio (sections and legal pages). Running it again is safe:
@@ -94,6 +104,10 @@ pnpm nx run-many -t serve -p portfolio-api portfolio-web
 
 ```bash
 pnpm nx run-many -t serve -p dartomat-api dartomat-web
+```
+
+```bash
+pnpm nx run-many -t serve -p vyte-api vyte-web
 ```
 
 The ports differ, so all products can run at the same time. The APIs restart on change (`tsx watch`), the Angular dev servers reload and render on the server as well.

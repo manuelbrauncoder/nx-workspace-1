@@ -1,0 +1,24 @@
+// Self-hosted variable fonts from public/fonts. Assigned via --font-* in tailwind.css.
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url('/fonts/DMSans-VariableFont_opsz_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'DM Sans';
+  font-style: italic;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url('/fonts/DMSans-Italic-VariableFont_opsz_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Unbounded';
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+  src: url('/fonts/Unbounded-VariableFont_wght.ttf') format('truetype');
+}

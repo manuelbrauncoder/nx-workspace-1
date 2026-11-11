@@ -24,6 +24,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["nx", "run", "vyte-api:serve"],
       "port": 3300
+    },
+    {
+      "name": "vyte-web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["nx", "serve", "vyte-web"],
+      "port": 4300
     }
   ]
 }

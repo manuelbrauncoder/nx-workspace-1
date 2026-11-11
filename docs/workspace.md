@@ -21,6 +21,7 @@ The repository is an [Nx](https://nx.dev) workspace with pnpm. Apps live in `app
 | `server-auth`         | `packages/server/auth`         | Node lib    | `type:server`, `scope:shared`      | [server-auth](libs/server-auth.md)                 |
 | `portfolio-contracts` | `packages/portfolio/contracts` | Zod schemas | `type:contract`, `scope:portfolio` | [portfolio-contracts](libs/portfolio-contracts.md) |
 | `dartomat-contracts`  | `packages/dartomat/contracts`  | Zod schemas | `type:contract`, `scope:dartomat`  | [dartomat-contracts](libs/dartomat-contracts.md)   |
+| `vyte-web`            | `apps/vyte-web`                | Angular app | `type:app`, `scope:vyte`           | [vyte-web](apps/vyte-web.md)                       |
 | `vyte-api`            | `apps/vyte-api`                | Express API | `type:api-app`, `scope:vyte`       | [vyte-api](apps/vyte-api.md)                       |
 | `vyte-contracts`      | `packages/vyte/contracts`      | Zod schemas | `type:contract`, `scope:vyte`      | [vyte-contracts](libs/vyte-contracts.md)           |
 

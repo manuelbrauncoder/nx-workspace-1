@@ -1,0 +1,33 @@
+@use 'styles/abstracts' as *;
+
+.app-header {
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 3.5rem;
+}
+
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// Below `md` the links move into the drawer, opened by the menu button.
+.app-header__nav {
+  display: none;
+
+  @include up(md) {
+    display: block;
+  }
+}
+
+.app-header__menu-button {
+  @include up(md) {
+    display: none;
+  }
+}

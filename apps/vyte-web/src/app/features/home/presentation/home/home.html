@@ -1,0 +1,10 @@
+<section class="home">
+  <p class="home__eyebrow">{{ 'home.eyebrow' | t }}</p>
+  <h1 class="home__heading" appUiText="section">{{ 'home.heading' | t }}</h1>
+  <p class="home__lead" appUiText="lead">{{ 'home.lead' | t }}</p>
+  @if (_auth.isSignedIn()) {
+    <p appUiText="muted">{{ 'home.signedIn' | t }}</p>
+  } @else {
+    <a appUiButton variant="brand" size="lg" routerLink="/sign-in">{{ 'home.signIn' | t }}</a>
+  }
+</section>
