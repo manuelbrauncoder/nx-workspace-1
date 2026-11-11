@@ -16,11 +16,12 @@ import {
 } from '@vyte/contracts/events';
 import { EVENT_IMAGES_MAX } from '@vyte/contracts/events-limits';
 import { and, asc, count, eq, inArray, sql } from 'drizzle-orm';
+import { guests } from '../guests/guests.table.js';
 import { eventImages, eventMembers, events } from './events.table.js';
 import { isPast } from './events.time.js';
 
-type Executor = Pick<typeof db, 'select' | 'insert' | 'update' | 'delete'>;
-type EventRow = typeof events.$inferSelect;
+export type Executor = Pick<typeof db, 'select' | 'insert' | 'update' | 'delete'>;
+export type EventRow = typeof events.$inferSelect;
 
 const imageColumns = {
   id: eventImages.id,
@@ -33,7 +34,12 @@ const imageColumns = {
  * The role of the user in the event. Every member route starts here, so an event of others
  * behaves like a missing one (404). `lock` takes the event row for the rest of a transaction.
  */
-async function membership(userId: string, eventId: string, executor: Executor = db, lock = false) {
+export async function membership(
+  userId: string,
+  eventId: string,
+  executor: Executor = db,
+  lock = false,
+) {
   const query = executor
     .select({ event: events, role: eventMembers.role })
     .from(events)
@@ -44,12 +50,12 @@ async function membership(userId: string, eventId: string, executor: Executor = 
   return row;
 }
 
-function requireOwner(role: MemberRole) {
+export function requireOwner(role: MemberRole) {
   if (role !== 'owner') throw forbidden('Only the owner can do this');
 }
 
 /** Past events are read-only (docs/vyte/spec.md section 4, "Past events"). */
-function requireUpcoming(event: EventRow) {
+export function requireUpcoming(event: EventRow) {
   if (isPast(event)) throw conflict('The event is over');
 }
 
@@ -68,10 +74,34 @@ async function imagesByEvent(eventIds: string[], executor: Executor = db) {
   return byEvent;
 }
 
+const noGuests = { invited: 0, coming: 0, declined: 0, pending: 0, atMost: 0 };
+
+/** The guest list in numbers per event (docs/vyte/spec.md section 5). */
+async function countsByEvent(eventIds: string[]) {
+  const byEvent = new Map<string, typeof noGuests>();
+  if (eventIds.length === 0) return byEvent;
+
+  const rows = await db
+    .select({
+      eventId: guests.eventId,
+      invited: sql<number>`count(*)::int`,
+      coming: sql<number>`coalesce(sum(1 + ${guests.companions}) filter (where ${guests.response} = 'accepted'), 0)::int`,
+      declined: sql<number>`count(*) filter (where ${guests.response} = 'declined')::int`,
+      pending: sql<number>`count(*) filter (where ${guests.response} = 'pending')::int`,
+      atMost: sql<number>`coalesce(sum(1 + ${guests.maxCompanions}), 0)::int`,
+    })
+    .from(guests)
+    .where(inArray(guests.eventId, eventIds))
+    .groupBy(guests.eventId);
+  for (const { eventId, ...counts } of rows) byEvent.set(eventId, counts);
+  return byEvent;
+}
+
 function toEvent(
   event: EventRow,
   role: MemberRole,
   images: Awaited<ReturnType<typeof imagesByEvent>>,
+  counts = new Map<string, typeof noGuests>(),
 ) {
   return {
     id: event.id,
@@ -87,6 +117,7 @@ function toEvent(
     role,
     past: isPast(event),
     images: images.get(event.id) ?? [],
+    counts: counts.get(event.id) ?? noGuests,
     createdAt: event.createdAt,
     updatedAt: event.updatedAt,
   };
@@ -101,14 +132,19 @@ export async function listEvents(userId: string) {
     .where(eq(eventMembers.userId, userId))
     .orderBy(asc(events.startsAt));
 
-  const images = await imagesByEvent(rows.map((row) => row.event.id));
-  const list = rows.map((row) => toEvent(row.event, row.role, images));
+  const ids = rows.map((row) => row.event.id);
+  const [images, counts] = await Promise.all([imagesByEvent(ids), countsByEvent(ids)]);
+  const list = rows.map((row) => toEvent(row.event, row.role, images, counts));
   return [...list.filter((event) => !event.past), ...list.filter((event) => event.past).reverse()];
 }
 
 export async function getEvent(userId: string, eventId: string) {
   const { event, role } = await membership(userId, eventId);
-  return toEvent(event, role, await imagesByEvent([event.id]));
+  const [images, counts] = await Promise.all([
+    imagesByEvent([event.id]),
+    countsByEvent([event.id]),
+  ]);
+  return toEvent(event, role, images, counts);
 }
 
 export async function createEvent(userId: string, input: CreateEventInput) {
@@ -123,15 +159,15 @@ export async function createEvent(userId: string, input: CreateEventInput) {
 }
 
 export async function updateEvent(userId: string, eventId: string, input: UpdateEventInput) {
-  return db.transaction(async (tx) => {
-    const { event, role } = await membership(userId, eventId, tx, true);
+  await db.transaction(async (tx) => {
+    const { event } = await membership(userId, eventId, tx, true);
     requireUpcoming(event);
 
     const merged = { ...event, ...input };
     const error = eventTimesError(merged);
     if (error) throw badRequest('Validation failed', [error]);
 
-    const [updated] = await tx
+    await tx
       .update(events)
       .set({
         ...input,
@@ -139,10 +175,9 @@ export async function updateEvent(userId: string, eventId: string, input: Update
           input.description === undefined ? undefined : sanitizeRichText(input.description),
         updatedAt: new Date(),
       })
-      .where(eq(events.id, eventId))
-      .returning();
-    return toEvent(updated!, role, await imagesByEvent([eventId], tx));
+      .where(eq(events.id, eventId));
   });
+  return getEvent(userId, eventId);
 }
 
 /** Owner only, also for a past event. Guests, members and image rows go by cascade. */

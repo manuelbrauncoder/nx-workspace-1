@@ -1,6 +1,6 @@
 # vyte: specification
 
-Status: **draft**, still being refined. The API has started: [apps/vyte-api](../../apps/vyte-api) holds the accounts and the admin, see [vyte-api](../apps/vyte-api.md). Events, guests and the web app are not built yet, [apps/vyte-web](../../apps/vyte-web) only holds a README.
+Status: **draft**, still being refined. The API has started: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list and the guest links, see [vyte-api](../apps/vyte-api.md). Save the date, photos, team invites and the web app are not built yet, [apps/vyte-web](../../apps/vyte-web) only holds a README.
 
 ## 1. Overview
 
@@ -153,6 +153,7 @@ The owner can revoke an open invite (delete it). An expired or used invite answe
 | `photoToken`             | text                                    | 32 random bytes, base64url, unique. Separate from `token`, so a place card on the table only allows uploading photos, never changing the answer |
 | `response`               | `'pending' \| 'accepted' \| 'declined'` | starts as `pending`                                                                                                                             |
 | `companions`             | integer                                 | 0–`maxCompanions`, only meaningful when accepted, 0 otherwise                                                                                   |
+| `companionsReduced`      | boolean                                 | `true` when lowering `maxCompanions` cut `companions`; cleared by the next answer, of the host or of the guest. Default `false`                 |
 | `message`                | text                                    | optional, at most 500 characters, written by the guest                                                                                          |
 | `answeredBy`             | `'guest' \| 'host'` or null             | who gave the last answer; `host` shows "vom Host eingetragen" in the list                                                                       |
 | `respondedAt`            | timestamp                               | time of the last answer                                                                                                                         |
@@ -341,12 +342,12 @@ Creating the account reuses `hashPassword()`, `insertUser()` and `startSession()
 | `POST /invites/{token}/accept`           | signed in                  | becomes editor, `{ event }`. Already a member: same answer                              |
 | `POST /invites/{token}/sign-up`          | public                     | `{ name, email, password }`, creates the account, signs in, becomes editor, `{ event }` |
 
-### RSVP (public, rate limited per IP)
+### RSVP (public, `PUT` rate limited per IP)
 
 | Method and path                      | Content                                                                                                                       |
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | `GET /rsvp/{token}`                  | `{ invitation }`: the event without guest list, the own guest, whether answers are open, `past`. A past event without details |
-| `PUT /rsvp/{token}`                  | `{ response, companions, message }`, `{ invitation }`. 409 after the deadline                                                 |
+| `PUT /rsvp/{token}`                  | `{ response, companions, message }`, `{ invitation }`. 409 after the deadline, or after the start without one (section 3)     |
 | `GET /rsvp/{token}/images/{imageId}` | an image of the event, so the guest page needs no session. 404 once the event is past                                         |
 
 `GET /rsvp/{token}/calendar` answers with the `.ics` file of the event, with the full address.

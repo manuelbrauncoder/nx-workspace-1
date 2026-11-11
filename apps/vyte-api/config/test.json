@@ -12,7 +12,9 @@
   },
   "rateLimit": {
     "authWindowMinutes": 15,
-    "authMaxRequests": 1000
+    "authMaxRequests": 1000,
+    "rsvpWindowMinutes": 15,
+    "rsvpMaxRequests": 1000
   },
   "auth": {
     "signUpEnabled": true

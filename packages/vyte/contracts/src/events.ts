@@ -92,6 +92,18 @@ export const eventImageSchema = z.object({
   position: z.number().int(),
 });
 
+/** The guest list in numbers, see docs/vyte/spec.md section 5. */
+export const eventCountsSchema = z.object({
+  /** Guests on the list. */
+  invited: z.number().int(),
+  /** People expected: accepted guests plus their companions. */
+  coming: z.number().int(),
+  declined: z.number().int(),
+  pending: z.number().int(),
+  /** Everyone who could come: all guests plus all allowances. */
+  atMost: z.number().int(),
+});
+
 /** An event as a member sees it. */
 export const eventSchema = z.object({
   id: z.uuid(),
@@ -109,6 +121,7 @@ export const eventSchema = z.object({
   /** Past events are read-only, see docs/vyte/spec.md section 3. */
   past: z.boolean(),
   images: z.array(eventImageSchema),
+  counts: eventCountsSchema,
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });

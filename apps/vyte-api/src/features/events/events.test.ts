@@ -111,6 +111,7 @@ describe('events', () => {
           role: 'owner',
           past: false,
           images: [],
+          counts: { invited: 0, coming: 0, declined: 0, pending: 0, atMost: 0 },
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
         },

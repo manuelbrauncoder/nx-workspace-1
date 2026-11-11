@@ -22,22 +22,22 @@ New here: read the [README](../README.md) and [Workspace](workspace.md), then th
 | [portfolio-api](apps/portfolio-api.md)       | The backend of the portfolio: CMS content, media, contact, legal pages |
 | [dartomat-web](apps/dartomat-web.md)         | Dartomat, a scoreboard for 301, mobile first                           |
 | [dartomat-api](apps/dartomat-api.md)         | The backend of Dartomat: games, darts, checkout                        |
-| [vyte-api](apps/vyte-api.md)                 | The backend of vyte: accounts and events so far, guests to come        |
+| [vyte-api](apps/vyte-api.md)                 | The backend of vyte: accounts, events, guest lists and guest links     |
 
 ## Libs
 
-| Lib                                                | What it is                                                        |
-| -------------------------------------------------- | ----------------------------------------------------------------- |
-| [core](libs/core.md)                               | Angular infrastructure: config, errors, i18n, SEO, logging, state |
-| [ui](libs/ui.md)                                   | UI wrappers, form controls, toggles                               |
-| [styles](libs/styles.md)                           | Global SCSS                                                       |
-| [helm](libs/helm.md)                               | Generated Spartan components, one lib per style                   |
-| [contracts](libs/contracts.md)                     | Wire format shared by APIs and Angular apps                       |
-| [server-core](libs/server-core.md)                 | Base of every API: config, server, database, errors, images       |
-| [server-auth](libs/server-auth.md)                 | Accounts, sessions, guards, admin                                 |
-| [portfolio-contracts](libs/portfolio-contracts.md) | Wire format of the portfolio                                      |
-| [dartomat-contracts](libs/dartomat-contracts.md)   | Wire format of Dartomat                                           |
-| [vyte-contracts](libs/vyte-contracts.md)           | Wire format of vyte: event and guest limits, event schemas        |
+| Lib                                                | What it is                                                           |
+| -------------------------------------------------- | -------------------------------------------------------------------- |
+| [core](libs/core.md)                               | Angular infrastructure: config, errors, i18n, SEO, logging, state    |
+| [ui](libs/ui.md)                                   | UI wrappers, form controls, toggles                                  |
+| [styles](libs/styles.md)                           | Global SCSS                                                          |
+| [helm](libs/helm.md)                               | Generated Spartan components, one lib per style                      |
+| [contracts](libs/contracts.md)                     | Wire format shared by APIs and Angular apps                          |
+| [server-core](libs/server-core.md)                 | Base of every API: config, server, database, errors, images          |
+| [server-auth](libs/server-auth.md)                 | Accounts, sessions, guards, admin                                    |
+| [portfolio-contracts](libs/portfolio-contracts.md) | Wire format of the portfolio                                         |
+| [dartomat-contracts](libs/dartomat-contracts.md)   | Wire format of Dartomat                                              |
+| [vyte-contracts](libs/vyte-contracts.md)           | Wire format of vyte: event and guest limits, event and guest schemas |
 
 ## Frontend
 
@@ -85,7 +85,7 @@ What only the portfolio apps have. The overview is on the app pages [portfolio-w
 
 ## Vyte (in progress)
 
-Event planning with a guest list and a personal link per guest. The API is in progress: accounts, admin and events exist, the guests follow the spec. The web app is not built yet, the folder `apps/vyte-web` only holds a README.
+Event planning with a guest list and a personal link per guest. The API is in progress: accounts, admin, events, the guest list and the guest links exist, the photos follow the spec. The web app is not built yet, the folder `apps/vyte-web` only holds a README.
 
 | Page                            | What it covers                                                                |
 | ------------------------------- | ----------------------------------------------------------------------------- |

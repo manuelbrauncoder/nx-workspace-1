@@ -11,6 +11,8 @@ import packageJson from '../package.json';
 import { buildDocs } from './features/docs/docs.document.js';
 import { eventsRouter } from './features/events/events.routes.js';
 import { removeEventsOfUser } from './features/events/events.user-deletion.js';
+import { guestsRouter } from './features/guests/guests.routes.js';
+import { rsvpRouter } from './features/rsvp/rsvp.routes.js';
 import { apiPrefix } from './shared/api.js';
 
 export function createApp() {
@@ -25,7 +27,9 @@ export function createApp() {
       '/admin/account-invites': accountInvitesAdminRouter,
       '/auth': authRouter,
       '/admin': adminRouter,
+      '/events/:id/guests': guestsRouter,
       '/events': eventsRouter,
+      '/rsvp': rsvpRouter,
     },
     docs: buildDocs,
     // Kept up to date by `nx release`, reported by /health.

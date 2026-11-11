@@ -6,7 +6,10 @@ import {
 } from '@server/auth/account-invites.routes';
 import { adminRouter } from '@server/auth/admin.routes';
 import { authRouter } from '@server/auth/auth.routes';
+import { db } from '@server/core/db/db';
 import { eventImageSchema, eventSchema } from '@vyte/contracts/events';
+import { guestSchema, invitationSchema } from '@vyte/contracts/guests';
+import { eq } from 'drizzle-orm';
 import type { Router } from 'express';
 import sharp from 'sharp';
 import request from 'supertest';
@@ -15,6 +18,9 @@ import packageJson from '../../../package.json';
 import { apiPrefix } from '../../shared/api.js';
 import { adminAgent, app, signedUpAgent } from '../../test/helpers.js';
 import { eventsRouter } from '../events/events.routes.js';
+import { events } from '../events/events.table.js';
+import { guestsRouter } from '../guests/guests.routes.js';
+import { rsvpRouter } from '../rsvp/rsvp.routes.js';
 import { buildDocs } from './docs.document.js';
 
 /** "POST /api/v1/auth/sign-in" for every route registered on the router. */
@@ -25,6 +31,16 @@ function routesOf(prefix: string, router: Router): string[] {
     const path = (prefix + route.path).replace(/\/$/, '').replace(/:(\w+)/g, '{$1}');
     return Object.keys(route.methods).map((method) => `${method.toUpperCase()} ${path}`);
   });
+}
+
+/** `invitationSchema` is a union, so each variant and its nested objects are made strict here. */
+function strictInvitation(value: unknown) {
+  const [open, past] = invitationSchema.options;
+  return (
+    (value as { past?: boolean })?.past
+      ? past.strict()
+      : open.extend({ event: open.shape.event.strict(), guest: open.shape.guest.strict() }).strict()
+  ).safeParse(value);
 }
 
 describe('docs', () => {
@@ -53,7 +69,9 @@ describe('docs', () => {
       ...routesOf(`${apiPrefix}/admin/account-invites`, accountInvitesAdminRouter),
       ...routesOf(`${apiPrefix}/auth`, authRouter),
       ...routesOf(`${apiPrefix}/admin`, adminRouter),
+      ...routesOf(`${apiPrefix}/events/{id}/guests`, guestsRouter),
       ...routesOf(`${apiPrefix}/events`, eventsRouter),
+      ...routesOf(`${apiPrefix}/rsvp`, rsvpRouter),
     ];
 
     expect(documented.sort()).toEqual(implemented.sort());
@@ -106,6 +124,64 @@ describe('docs', () => {
     const list = await agent.get(`${apiPrefix}/events`).expect(200);
     expect(list.body.events).toHaveLength(1);
     expect(eventSchema.strict().safeParse(list.body.events[0]).error).toBeUndefined();
+  });
+
+  it('documents the guest and invitation shapes the API really returns', async () => {
+    const agent = await signedUpAgent('ada@example.com');
+    const created = await agent
+      .post(`${apiPrefix}/events`)
+      .send({ title: 'Party', startsAt: '2999-06-10T16:00:00.000Z', timeZone: 'Europe/Berlin' })
+      .expect(201);
+    const { id } = created.body.event;
+    const png = await sharp({ create: { width: 40, height: 20, channels: 3, background: 'red' } })
+      .png()
+      .toBuffer();
+    await agent.post(`${apiPrefix}/events/${id}/images`).attach('images', png, 'a.png').expect(201);
+
+    const added = await agent
+      .post(`${apiPrefix}/events/${id}/guests`)
+      .send({ name: 'Grace', note: 'Friend', maxCompanions: 2 })
+      .expect(201);
+    expect(guestSchema.strict().safeParse(added.body.guest).error).toBeUndefined();
+
+    const bulk = await agent
+      .post(`${apiPrefix}/events/${id}/guests/bulk`)
+      .send({ names: ['Alan', 'Linus'] })
+      .expect(201);
+    for (const guest of bulk.body.guests) {
+      expect(guestSchema.strict().safeParse(guest).error).toBeUndefined();
+    }
+
+    const { token } = added.body.guest;
+    const before = await request(app).get(`${apiPrefix}/rsvp/${token}`).expect(200);
+    expect(before.body.invitation.past).toBe(false);
+    expect(strictInvitation(before.body.invitation).error).toBeUndefined();
+
+    const answered = await request(app)
+      .put(`${apiPrefix}/rsvp/${token}`)
+      .send({ response: 'accepted', companions: 1, message: 'Hi' })
+      .expect(200);
+    expect(strictInvitation(answered.body.invitation).error).toBeUndefined();
+
+    const answeredByHost = await agent
+      .put(`${apiPrefix}/events/${id}/guests/${added.body.guest.id}/response`)
+      .send({ response: 'declined' })
+      .expect(200);
+    expect(guestSchema.strict().safeParse(answeredByHost.body.guest).error).toBeUndefined();
+
+    const list = await agent.get(`${apiPrefix}/events/${id}/guests`).expect(200);
+    for (const guest of list.body.guests) {
+      expect(guestSchema.strict().safeParse(guest).error).toBeUndefined();
+    }
+
+    // the strict schema holds for the invitation of an event that is over
+    await db
+      .update(events)
+      .set({ startsAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), endsAt: null })
+      .where(eq(events.id, id));
+    const after = await request(app).get(`${apiPrefix}/rsvp/${token}`).expect(200);
+    expect(after.body.invitation).toEqual({ past: true, event: { title: 'Party' } });
+    expect(strictInvitation(after.body.invitation).error).toBeUndefined();
   });
 
   it('documents the account link shapes the API really returns', async () => {

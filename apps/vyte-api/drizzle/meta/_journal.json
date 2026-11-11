@@ -29,6 +29,13 @@
       "when": 1794343241829,
       "tag": "0003_sticky_katie_power",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794415293577,
+      "tag": "0004_charming_shinko_yamashiro",
+      "breakpoints": true
     }
   ]
 }
