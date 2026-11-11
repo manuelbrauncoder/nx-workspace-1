@@ -56,8 +56,6 @@ All under `/api/v1`, only `/health` and `/docs` are at the root.
 | `/health`                                    | `server-core` | `{ "status": "ok", "version": "…" }` with the version of `package.json`                                 |
 | `/docs`                                      | `server-core` | OpenAPI document and Swagger UI, when `docs.enabled` is set                                             |
 
-Not there yet: the CSV export. The spec describes it in [section 5](../vyte/spec.md#5-guest-list-overview).
-
 ## Events
 
 Code in [src/features/events](../../apps/vyte-api/src/features/events): `events.table.ts` (tables `events`, `event_members`, `event_images`), `events.routes.ts`, `events.service.ts`, `events.images.ts` (multer), `events.time.ts` (past, local dates), `events.calendar.ts` (the `.ics` files, see [Calendar files](#calendar-files)), `events.user-deletion.ts`. The schemas are in [vyte-contracts](../libs/vyte-contracts.md).
@@ -93,6 +91,7 @@ Code in [src/features/guests](../../apps/vyte-api/src/features/guests): `guests.
 | Method and path                                  | Who           | Content                                                                                                            |
 | ------------------------------------------------ | ------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `GET /events/{id}/guests`                        | member        | `{ guests }` with tokens, by name; also for a past event                                                           |
+| `GET /events/{id}/guests/export`                 | member        | the guest list as a CSV file, `?lang=de` (default) or `en`; also for a past event, see the rules below             |
 | `POST /events/{id}/guests`                       | owner, editor | 201, `{ guest }`                                                                                                   |
 | `POST /events/{id}/guests/bulk`                  | owner, editor | `{ names, maxCompanions }`, 201, `{ guests }`                                                                      |
 | `PATCH /events/{id}/guests/{guestId}`            | owner, editor | name, note or `maxCompanions`, `{ guest }`                                                                         |
@@ -110,8 +109,9 @@ Rules in short:
 - **Edits never change the answer**: name, note and allowance are the only fields `PATCH` takes.
 - **Locks**: a write locks the event row, so limits are counted against a stable list. Answers and allowance changes lock the guest row, so two answers at once end as one of them.
 - **Tokens**: 32 random bytes, base64url, unique. A guest has two: `token` for the answer link and `photoToken` for the photo link, which only uploads photos and never shows or changes the answer. The link is never in a query string, see [Authentication](../backend/authentication.md#what-the-request-log-keeps).
-- **Caching**: the whole router sends `Cache-Control: no-store`, the lists carry live tokens.
-- **Not there yet**: `GET /events/{id}/guests/export` (CSV).
+- **Caching**: the whole router sends `Cache-Control: no-store`, the lists carry live tokens. The export carries no token, but names and notes, so it gets the same header.
+- **CSV export**: `GET /events/{id}/guests/export` answers the guest list as a file, one row per guest sorted by name: name, allowance, answer, companions, people, message, note, answered by and the time of the answer (`YYYY-MM-DD HH:mm` in the event's `timeZone`). Other values of `lang` answer 400. UTF-8 with BOM, `;` between cells, CRLF between rows, every cell quoted. Headings and answers are German, English with `lang=en`. The file name is `<title>-gaeste.csv` or `<title>-guests.csv`: the title reduced to letters and digits, at most 60 characters. Code in [guests.export.ts](../../apps/vyte-api/src/features/guests/guests.export.ts), `exportGuests()` in [guests.service.ts](../../apps/vyte-api/src/features/guests/guests.service.ts). The query schema is in [vyte-contracts](../libs/vyte-contracts.md#contents).
+- **Formula guard**: a cell that starts with `=`, `+`, `-` or `@` (also after leading blanks, or with a tab or CR first) gets a `'` in front. So does such a character after a `,` or `;` inside a cell, for a spreadsheet that splits on `,`. Line breaks inside a cell become spaces, so every guest stays on one line.
 
 ## Guest links
 
@@ -244,4 +244,4 @@ Code in [src/features/events/events.calendar.ts](../../apps/vyte-api/src/feature
 - **Port**: 3300 locally, 3000 in the container, so all products run side by side
 - **Uploads**: the events and the guest photos store their files in the `uploads` folder of the base config, the Dockerfile and the stack provide it
 - **Cookie**: the photo stand sets its own cookie `vyte_stand_device`, see [Photos](#photos). It is not the session
-- **Config**: own keys in [src/config/index.ts](../../apps/vyte-api/src/config/index.ts), merged into the shared `rateLimit`: `rateLimit.rsvpWindowMinutes` (15 in development) and `rateLimit.rsvpMaxRequests` (60). Both are required, there is no default. `rateLimit.uploadWindowMinutes` (default 15) and `rateLimit.uploadMaxRequests` (default 200) have defaults, so an older config stays valid. The `photos.*` keys (limits of the guest photos) have defaults too, the values are in [section 3](../vyte/spec.md#3-domain-model) of the spec and in [Photos](#photos)
+- **Config**: own keys in [src/config/index.ts](../../apps/vyte-api/src/config/index.ts), merged into the shared `rateLimit`: `rateLimit.rsvpWindowMinutes` (default 15) and `rateLimit.rsvpMaxRequests` (default 60); the development and production files set these values, `test.json` uses 1000 for the tests. `rateLimit.uploadWindowMinutes` (default 15) and `rateLimit.uploadMaxRequests` (default 200) have defaults too. Every key of this app's own config has a default, so an older config stays valid. The `photos.*` keys (limits of the guest photos) have defaults too, the values are in [section 3](../vyte/spec.md#3-domain-model) of the spec and in [Photos](#photos)

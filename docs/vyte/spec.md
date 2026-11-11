@@ -1,6 +1,6 @@
 # vyte: specification
 
-Status: **draft**, still being refined. The API has started: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list, the guest links, the team (members, hand-over, editor invites), the save the date and the guest photos, see [vyte-api](../apps/vyte-api.md). The web app is not built yet, [apps/vyte-web](../../apps/vyte-web) only holds a README.
+Status: **draft**, still being refined. The API is complete for v1: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list with its CSV export, the guest links, the team (members, hand-over, editor invites), the save the date and the guest photos, see [vyte-api](../apps/vyte-api.md). The web app follows; it is not built yet, [apps/vyte-web](../../apps/vyte-web) only holds a README.
 
 ## 1. Overview
 
@@ -287,7 +287,7 @@ The event page shows the counts, the guest page the list.
 - Filter by answer (all, coming, declined, no answer), search by name
 - Each card: name, allowance ("+1", "+3"), answer with companions, "vom Host eingetragen" when a host answered, message of the guest, note of the hosts, time of the answer
 - Sorted by name; "newest answers first" as a second order
-- CSV export: one row per guest with name, allowance, answer, companions, people in total, message, note, answered by, time of the answer. UTF-8 with BOM and `;` as separator, so Excel opens it directly. File name `<title>-gaeste.csv`
+- CSV export: one row per guest, sorted by name, with name, allowance, answer, companions, people in total, message, note, answered by, time of the answer (`YYYY-MM-DD HH:mm` in the event's time zone). UTF-8 with BOM, `;` as separator and CRLF between rows, so Excel opens it directly. Headings and answers in German, in English with `lang=en` (`?lang=de|en`, German by default). File name `<title>-gaeste.csv` or `<title>-guests.csv`: the title reduced to letters and digits, at most 60 characters
 
 ## 6. API draft
 
@@ -324,7 +324,7 @@ Creating the account reuses `hashPassword()`, `insertUser()` and `startSession()
 | Method and path                              | Content                                                         |
 | -------------------------------------------- | --------------------------------------------------------------- |
 | `GET /events/{id}/guests`                    | `{ guests }` with tokens, so links can be copied                |
-| `GET /events/{id}/guests/export`             | the CSV file (`text/csv`), also for a past event                |
+| `GET /events/{id}/guests/export?lang=de\|en` | the CSV file (`text/csv`), also for a past event, see section 5 |
 | `POST /events/{id}/guests`                   | adds one guest, `{ guest }`                                     |
 | `POST /events/{id}/guests/bulk`              | `{ names, maxCompanions }`, adds up to 100 guests, `{ guests }` |
 | `PATCH /events/{id}/guests/{guestId}`        | name, note, `maxCompanions`, `{ guest }`                        |
@@ -463,7 +463,7 @@ Direction **Konfetti**: bright, cheerful and clear, a little playful but not lou
 - Names, notes and messages of guests are personal data: a section in the privacy policy, deleted with the event. Hosts are responsible for the data of their guests. The message hint asks for food wishes, so guests may write about allergies: the privacy policy mentions it
 - The OpenStreetMap link is a plain link, nothing is loaded from OpenStreetMap until the guest clicks it
 - Ownership: every query of a member route filters through `event_members` and the user id
-- CSV: cells starting with `=`, `+`, `-` or `@` get a leading `'`, so a spreadsheet does not run them as formulas
+- CSV: cells starting with `=`, `+`, `-` or `@` (also after leading blanks, or with a tab or CR first) get a leading `'`, and so do these characters after a `,` or `;` inside a cell, so a spreadsheet does not run them as formulas. Line breaks inside a cell become spaces. Every cell is quoted, `"` is doubled
 - A photo link only uploads and shows the photos of its guest. The place card lies open on the table, so it must not reveal the answer, the message or other guests
 - The save-the-date link may travel through group chats: it shows `locationName` only, no address, no guest names
 - Photo stand: the device cookie is a random id, set once by `POST /stand/{token}/device`, http-only, `SameSite=Lax`, path `/api/v1/stand`, 30 days, `Secure` where the session cookie is. It is needed for the upload limit and to show own photos, so it is strictly necessary and needs no consent banner. Clearing it gets a new allowance, which `photos.maxPerEvent` and the rate limit cap

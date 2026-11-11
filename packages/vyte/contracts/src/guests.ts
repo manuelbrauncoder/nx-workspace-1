@@ -48,6 +48,9 @@ export const hostResponseSchema = z.object({
 
 export const guestParamsSchema = z.object({ id: z.uuid(), guestId: z.uuid() });
 
+/** The language of the CSV export's headings and answers; German is the default. */
+export const guestsExportQuerySchema = z.object({ lang: z.enum(['de', 'en']).default('de') });
+
 /** A guest as the hosts see it, with the token of the personal link. */
 export const guestSchema = z.object({
   id: z.uuid(),

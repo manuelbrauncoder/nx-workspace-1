@@ -6,6 +6,7 @@ import {
   createGuestsBulkSchema,
   guestParamsSchema,
   guestResponseSchema,
+  guestsExportQuerySchema,
   guestsResponseSchema,
   hostResponseSchema,
   updateGuestSchema,
@@ -27,6 +28,27 @@ export function registerGuestsDocs(registry: OpenAPIRegistry) {
     request: { params: eventParamsSchema },
     responses: {
       200: jsonResponse('The guests of the event', guestsResponseSchema),
+      ...errorResponses(400, 401, 404),
+    },
+  });
+
+  registry.registerPath({
+    ...base,
+    method: 'get',
+    path: '/events/{id}/guests/export',
+    summary: 'Export the guest list as CSV',
+    description:
+      'Members only, also for a past event. One row per guest by name: name, allowance, ' +
+      'answer, companions, people, message, note, answered by, time of the answer (in the ' +
+      "event's time zone). UTF-8 with BOM, `;` between cells, for Excel. Text that would run " +
+      "as a formula gets a leading `'`. Headings and answers in German or, with `lang=en`, " +
+      'English. Sent with `Cache-Control: no-store`.',
+    request: { params: eventParamsSchema, query: guestsExportQuerySchema },
+    responses: {
+      200: {
+        description: 'The CSV file',
+        content: { 'text/csv': { schema: { type: 'string', format: 'binary' } } },
+      },
       ...errorResponses(400, 401, 404),
     },
   });

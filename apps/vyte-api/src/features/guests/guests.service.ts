@@ -11,6 +11,7 @@ import { and, asc, count, eq, sql } from 'drizzle-orm';
 import { newToken } from '../../shared/token.js';
 import { type Executor, membership, requireUpcoming } from '../events/events.service.js';
 import { requireUploadsNotClosed } from '../photos/photos.service.js';
+import { exportFileName, type ExportLanguage, guestsCsv } from './guests.export.js';
 import { guests } from './guests.table.js';
 
 const guestColumns = {
@@ -206,4 +207,27 @@ export function renewPhotoToken(userId: string, eventId: string, guestId: string
     if (!updated) throw notFound('Guest not found');
     return updated;
   });
+}
+
+/** The guest list as a CSV file, by name. Members only, also once the event is over. */
+export async function exportGuests(userId: string, eventId: string, language: ExportLanguage) {
+  const { event } = await membership(userId, eventId);
+  const rows = await db
+    .select({
+      name: guests.name,
+      maxCompanions: guests.maxCompanions,
+      response: guests.response,
+      companions: guests.companions,
+      message: guests.message,
+      note: guests.note,
+      answeredBy: guests.answeredBy,
+      respondedAt: guests.respondedAt,
+    })
+    .from(guests)
+    .where(eq(guests.eventId, eventId))
+    .orderBy(asc(sql`lower(${guests.name})`), asc(guests.createdAt));
+  return {
+    csv: guestsCsv(rows, { timeZone: event.timeZone, language }),
+    fileName: exportFileName(event.title, language),
+  };
 }

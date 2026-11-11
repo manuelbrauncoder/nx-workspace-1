@@ -57,7 +57,7 @@ Rules for the API apps (`apps/*-api`, `packages/server/*`). They add to the conv
 
 ## Output
 
-- CSV export: every cell starting with `=`, `+`, `-` or `@` (also after leading whitespace) gets a leading `'`. Quote cells, escape `"`
+- CSV export: every cell starting with `=`, `+`, `-` or `@` (also after leading whitespace, or with a tab or CR first) gets a leading `'`. So does such a character after a `,` or `;` inside a cell. Line breaks inside a cell become spaces. Quote cells, escape `"`
 - Rich text is sanitized on write with the tags of `RICH_TEXT_TAGS` (`@contracts/rich-text`), as `apps/express-api-base/src/features/notes/notes.sanitize.ts` does
 - Error answers come from the error handler of `server-core`: message and details only, no stack, no SQL, no internal ids of other users
 - Public answers never contain emails of hosts; names only when set

@@ -893,6 +893,239 @@ describe('guests', () => {
     });
   });
 
+  describe('GET /events/:id/guests/export', () => {
+    const BOM = '﻿';
+    const exportUrl = (eventId: string) => `${base}/${eventId}/guests/export`;
+    const lines = (text: string) => text.split('\r\n');
+
+    it('answers 200 with CSV, the file name and no-store', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const event = await createEvent(agent);
+      await addGuest(agent, event.id);
+
+      const res = await agent.get(exportUrl(event.id)).expect(200);
+      expect(res.headers['content-type']).toBe('text/csv; charset=utf-8');
+      expect(res.headers['content-disposition']).toMatch(/^attachment;/);
+      expect(res.headers['content-disposition']).toContain('filename=Summer-party-gaeste.csv');
+      expect(res.headers['cache-control']).toContain('no-store');
+      expect(res.text.startsWith(BOM + '"Name";')).toBe(true);
+    });
+
+    it('encodes umlauts in the file name as RFC 5987 filename*', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const event = await createEvent(agent, { title: 'Größe Fülle!' });
+      const res = await agent.get(exportUrl(event.id)).expect(200);
+      const disposition = res.headers['content-disposition']!;
+      expect(disposition).toMatch(/^attachment;/);
+      expect(disposition).toContain("filename*=UTF-8''Gr%C3%B6%C3%9Fe-F%C3%BClle-gaeste.csv");
+      // the plain filename= part has to stay ASCII-safe for the header
+      expect(disposition).toMatch(/^[\x20-\x7e]+$/);
+    });
+
+    it('answers 200 for a title with a letter outside the BMP at the cut', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const event = await createEvent(agent, { title: `${'a'.repeat(59)}𝐀𝐀` });
+      const res = await agent.get(exportUrl(event.id)).expect(200);
+      expect(res.headers['content-disposition']).toContain(
+        `filename*=UTF-8''${'a'.repeat(59)}%F0%9D%90%80-gaeste.csv`,
+      );
+    });
+
+    it('keeps one line per guest and guards a trigger after a separator', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const event = await createEvent(agent);
+      await addGuest(agent, event.id, { name: 'x, =1+1', note: 'a\nb' });
+      const res = await agent.get(exportUrl(event.id)).expect(200);
+      expect(lines(res.text)[1]).toBe('"x, \'=1+1";"0";"Offen";"0";"0";"";"a b";"";""');
+    });
+
+    it('sorts by name case-insensitively and writes the guests with their answers', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const event = await createEvent(agent);
+      const charlie = await addGuest(agent, event.id, { name: 'charlie', note: 'Cousin' });
+      const alice = await addGuest(agent, event.id, { name: 'Alice', maxCompanions: 3 });
+      const bob = await addGuest(agent, event.id, { name: 'Bob', maxCompanions: 2 });
+      await addGuest(agent, event.id, { name: 'Dora' });
+
+      // a guest answer
+      await request(app)
+        .put(`${apiPrefix}/rsvp/${alice.token}`)
+        .send({ response: 'accepted', companions: 2, message: 'Can not wait' })
+        .expect(200);
+      // a host-recorded answer
+      await agent
+        .put(`${base}/${event.id}/guests/${charlie.id}/response`)
+        .send({ response: 'declined' })
+        .expect(200);
+      // a reduced allowance: the answer is cut to the new maximum
+      await request(app)
+        .put(`${apiPrefix}/rsvp/${bob.token}`)
+        .send({ response: 'accepted', companions: 2 })
+        .expect(200);
+      await agent
+        .patch(`${base}/${event.id}/guests/${bob.id}`)
+        .send({ maxCompanions: 1 })
+        .expect(200);
+
+      const res = await agent.get(`${exportUrl(event.id)}?lang=de`).expect(200);
+      const rows = lines(res.text);
+      expect(rows).toHaveLength(6);
+      expect(rows.at(-1)).toBe('');
+      expect(rows[0]!.startsWith(BOM + '"Name";"Begleitung erlaubt";"Antwort"')).toBe(true);
+
+      const answered = (name: string) => {
+        const row = rows.find((r) => r.startsWith(`"${name}";`))!;
+        return row.split(';');
+      };
+      expect(rows.slice(1, 5).map((r) => r.split(';')[0])).toEqual([
+        '"Alice"',
+        '"Bob"',
+        '"charlie"',
+        '"Dora"',
+      ]);
+
+      const a = answered('Alice');
+      expect(a.slice(0, 8)).toEqual([
+        '"Alice"',
+        '"3"',
+        '"Zugesagt"',
+        '"2"',
+        '"3"',
+        '"Can not wait"',
+        '""',
+        '"Gast"',
+      ]);
+      expect(a[8]).toMatch(/^"\d{4}-\d{2}-\d{2} \d{2}:\d{2}"$/);
+
+      const b = answered('Bob');
+      expect(b.slice(0, 5)).toEqual(['"Bob"', '"1"', '"Zugesagt"', '"1"', '"2"']);
+
+      const c = answered('charlie');
+      expect(c.slice(0, 8)).toEqual([
+        '"charlie"',
+        '"0"',
+        '"Abgesagt"',
+        '"0"',
+        '"0"',
+        '""',
+        '"Cousin"',
+        '"Host"',
+      ]);
+      expect(c[8]).toMatch(/^"\d{4}-\d{2}-\d{2} \d{2}:\d{2}"$/);
+
+      expect(rows[4]).toBe('"Dora";"0";"Offen";"0";"0";"";"";"";""');
+    });
+
+    it('writes the respondedAt in the event time zone', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const event = await createEvent(agent);
+      const guest = await addGuest(agent, event.id);
+      await db
+        .update(guests)
+        .set({
+          response: 'accepted',
+          answeredBy: 'guest',
+          respondedAt: new Date('2027-07-14T17:05:00Z'),
+        })
+        .where(eq(guests.id, guest.id));
+      let res = await agent.get(exportUrl(event.id)).expect(200);
+      expect(lines(res.text)[1]!.endsWith(';"2027-07-14 19:05"')).toBe(true);
+
+      await db.update(events).set({ timeZone: 'America/New_York' }).where(eq(events.id, event.id));
+      res = await agent.get(exportUrl(event.id)).expect(200);
+      expect(lines(res.text)[1]!.endsWith(';"2027-07-14 13:05"')).toBe(true);
+    });
+
+    it('guards a name that would run as a formula', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const event = await createEvent(agent);
+      await addGuest(agent, event.id, { name: '=HYPERLINK("x")' });
+      const res = await agent.get(exportUrl(event.id)).expect(200);
+      expect(lines(res.text)[1]!.startsWith(`"'=HYPERLINK(""x"")";`)).toBe(true);
+    });
+
+    it('writes English headings and file name for lang=en', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const event = await createEvent(agent);
+      await addGuest(agent, event.id);
+      const res = await agent.get(`${exportUrl(event.id)}?lang=en`).expect(200);
+      expect(res.headers['content-disposition']).toContain('filename=Summer-party-guests.csv');
+      expect(lines(res.text)[0]).toBe(
+        BOM +
+          '"Name";"Companions allowed";"Answer";"Companions";"People";"Message";"Note";"Answered by";"Answered at"',
+      );
+      expect(lines(res.text)[1]).toContain('"Pending"');
+    });
+
+    it('answers 400 for an unknown language', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const event = await createEvent(agent);
+      const res = await agent.get(`${exportUrl(event.id)}?lang=fr`).expect(400);
+      expect(detailPaths(res)).toContain('lang');
+    });
+
+    it('lets an editor export', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const bob = await signedUpAgent('bob@example.com');
+      const event = await createEvent(ada);
+      await addEditor(event.id, bob);
+      await addGuest(ada, event.id);
+      const res = await bob.get(exportUrl(event.id)).expect(200);
+      expect(lines(res.text)).toHaveLength(3);
+    });
+
+    it('works for a past event', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const event = await createEvent(agent);
+      await addGuest(agent, event.id);
+      await makePast(event.id);
+      const res = await agent.get(exportUrl(event.id)).expect(200);
+      expect(lines(res.text)).toHaveLength(3);
+    });
+
+    it('answers 401 without a session', async () => {
+      await request(app).get(exportUrl(unknownId)).expect(401);
+    });
+
+    it('answers 404 for a non-member, an admin who is not a member and an unknown event', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const eve = await signedUpAgent('eve@example.com');
+      const admin = await adminAgent();
+      const event = await createEvent(ada);
+      await addGuest(ada, event.id);
+
+      await eve.get(exportUrl(event.id)).expect(404);
+      await admin.get(exportUrl(event.id)).expect(404);
+      await ada.get(exportUrl(unknownId)).expect(404);
+    });
+
+    it('answers 400 for a malformed event id', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      await agent.get(exportUrl('nope')).expect(400);
+    });
+
+    it('contains only the guests of that event', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const one = await createEvent(agent);
+      const two = await createEvent(agent);
+      await addGuest(agent, one.id, { name: 'InOne' });
+      await addGuest(agent, two.id, { name: 'InTwo' });
+      const res = await agent.get(exportUrl(one.id)).expect(200);
+      expect(res.text).toContain('"InOne"');
+      expect(res.text).not.toContain('InTwo');
+    });
+
+    it('gives only the heading row for an event without guests', async () => {
+      const agent = await signedUpAgent('ada@example.com');
+      const event = await createEvent(agent);
+      const res = await agent.get(exportUrl(event.id)).expect(200);
+      const rows = lines(res.text);
+      expect(rows).toHaveLength(2);
+      expect(rows[0]!.startsWith(BOM + '"Name"')).toBe(true);
+      expect(rows[1]).toBe('');
+    });
+  });
+
   describe('Cache-Control', () => {
     it('is no-store on PATCH, PUT response, token renewal and DELETE', async () => {
       const agent = await signedUpAgent('ada@example.com');

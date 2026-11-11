@@ -6,8 +6,8 @@ export const config = extendConfig({
   // merged into the shared `rateLimit` settings
   rateLimit: z.object({
     // answers through a guest link, per client IP; reading a link has no limit (server rendering)
-    rsvpWindowMinutes: z.number().positive(),
-    rsvpMaxRequests: z.number().int().positive(),
+    rsvpWindowMinutes: z.number().positive().default(15),
+    rsvpMaxRequests: z.number().int().positive().default(60),
     // photo uploads through a guest's photo link or the photo stand, per client IP
     uploadWindowMinutes: z.number().positive().default(15),
     // a venue shares one IP over its Wi-Fi; parallel uploads are capped separately

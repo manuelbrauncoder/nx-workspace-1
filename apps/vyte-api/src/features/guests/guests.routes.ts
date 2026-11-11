@@ -5,6 +5,7 @@ import {
   createGuestSchema,
   createGuestsBulkSchema,
   guestParamsSchema,
+  guestsExportQuerySchema,
   hostResponseSchema,
   updateGuestSchema,
 } from '@vyte/contracts/guests';
@@ -13,6 +14,7 @@ import { noStore } from '../../shared/no-store.js';
 import {
   addGuest,
   addGuests,
+  exportGuests,
   listGuests,
   recordResponse,
   removeGuest,
@@ -29,6 +31,13 @@ guestsRouter.use(requireAuth, noStore);
 guestsRouter.get('/', async (req, res) => {
   const { id } = parse(eventParamsSchema, req.params);
   res.json({ guests: await listGuests(currentUserId(req), id) });
+});
+
+guestsRouter.get('/export', async (req, res) => {
+  const { id } = parse(eventParamsSchema, req.params);
+  const { lang } = parse(guestsExportQuerySchema, req.query);
+  const { csv, fileName } = await exportGuests(currentUserId(req), id, lang);
+  res.attachment(fileName).type('text/csv; charset=utf-8').send(csv);
 });
 
 guestsRouter.post('/', async (req, res) => {
