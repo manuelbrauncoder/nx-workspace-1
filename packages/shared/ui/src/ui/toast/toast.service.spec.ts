@@ -32,4 +32,16 @@ describe('UiToastService', () => {
 
     expect(show).toHaveBeenCalledWith('Entwurf wiederhergestellt', { position: 'bottom-center' });
   });
+
+  it('announces the same message again as a new one', () => {
+    vi.spyOn(toast, 'success').mockReturnValue(1);
+    const service = TestBed.inject(UiToastService);
+
+    service.success('Link kopiert');
+    const first = service.status();
+    service.success('Link kopiert');
+
+    expect(service.status()?.text).toBe('Link kopiert');
+    expect(service.status()?.id).not.toBe(first?.id);
+  });
 });

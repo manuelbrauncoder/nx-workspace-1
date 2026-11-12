@@ -27,6 +27,10 @@ export class AccountMenu {
 
   private readonly _signInPath = SIGN_IN_PATH;
 
+  private async _openAdmin(): Promise<void> {
+    await this._router.navigateByUrl('/admin/users');
+  }
+
   private async _signOut(): Promise<void> {
     if (await this._store.signOut()) {
       this._toast.success(this._i18n.translate('auth.signedOut'));

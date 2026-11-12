@@ -1,6 +1,6 @@
 # vyte: specification
 
-Status: **draft**, still being refined. The API is complete for v1: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list with its CSV export, the guest links, the team (members, hand-over, editor invites), the save the date and the guest photos, see [vyte-api](../apps/vyte-api.md). The web app has its frame: [apps/vyte-web](../../apps/vyte-web) runs with the app shell, the sign-in, the legal pages, the start page, the complete API layer and the event pages (list, form, detail), see [vyte-web](../apps/vyte-web.md). Its pages for guests, the team, photos and the guest links are not built yet.
+Status: **draft**, still being refined. The API is complete for v1: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list with its CSV export, the guest links, the team (members, hand-over, editor invites), the save the date and the guest photos, see [vyte-api](../apps/vyte-api.md). The web app has its frame: [apps/vyte-web](../../apps/vyte-web) runs with the app shell, the sign-in, the legal pages, the start page, the complete API layer, the event pages (list, form, detail), the accounts of the admin and the page of an account link, see [vyte-web](../apps/vyte-web.md). Its pages for guests, the team with editor invites, photos and the guest links are not built yet.
 
 ## 1. Overview
 

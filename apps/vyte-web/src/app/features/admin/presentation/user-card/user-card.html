@@ -1,0 +1,55 @@
+@let item = user();
+<article class="user-card" appUiCard>
+  <div class="user-card__header" appUiCardHeader>
+    <div class="user-card__identity">
+      <h3 class="user-card__name" appUiCardTitle>{{ _displayName() }}</h3>
+      @if (item.name) {
+        <p class="user-card__email" appUiCardDescription>{{ item.email }}</p>
+      }
+    </div>
+    @if (!isMe()) {
+      <button
+        [appUiMenuTrigger]="actions"
+        [attr.aria-label]="'userList.users.actions' | t: { name: _displayName() }"
+        appUiButton
+        variant="ghost"
+        size="icon-sm"
+        type="button"
+        align="end"
+      >
+        <app-ui-icon name="ellipsis" />
+      </button>
+    }
+  </div>
+  <div class="user-card__details" appUiCardContent>
+    <span class="user-card__chip" [class.user-card__chip--admin]="_isAdmin()" appUiText="small">
+      <app-ui-icon [name]="_isAdmin() ? 'shieldCheck' : 'user'" />
+      {{ (_isAdmin() ? 'userList.users.roles.admin' : 'userList.users.roles.user') | t }}
+    </span>
+    @if (isMe()) {
+      <span class="user-card__chip" appUiText="small">{{ 'userList.users.me' | t }}</span>
+    }
+    <p class="user-card__since" appUiText="muted">
+      {{ 'userList.users.since' | t: { date: item.createdAt | localDate: 'date' : _timeZone } }}
+    </p>
+  </div>
+</article>
+
+<ng-template #actions>
+  <app-ui-menu class="w-60">
+    <app-ui-menu-group>
+      <button (triggered)="toggleRole.emit()" appUiMenuItem type="button">
+        <app-ui-icon [name]="_isAdmin() ? 'shieldOff' : 'shield'" />
+        {{ (_isAdmin() ? 'userList.users.removeAdmin' : 'userList.users.makeAdmin') | t }}
+      </button>
+      <button (triggered)="revokeSessions.emit()" appUiMenuItem type="button">
+        <app-ui-icon name="logOut" />
+        {{ 'userList.users.revokeSessions' | t }}
+      </button>
+      <button (triggered)="remove.emit()" appUiMenuItem variant="destructive" type="button">
+        <app-ui-icon name="trash" />
+        {{ 'userList.users.delete' | t }}
+      </button>
+    </app-ui-menu-group>
+  </app-ui-menu>
+</ng-template>

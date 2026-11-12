@@ -1,5 +1,5 @@
 <div [variant]="variant()" hlmAlert>
-  <h2 hlmAlertTitle>{{ heading() }}</h2>
+  <div [attr.aria-level]="headingLevel()" hlmAlertTitle role="heading">{{ heading() }}</div>
   <div hlmAlertDescription><ng-content /></div>
   <ng-content select="[appUiAlertAction]" />
 </div>

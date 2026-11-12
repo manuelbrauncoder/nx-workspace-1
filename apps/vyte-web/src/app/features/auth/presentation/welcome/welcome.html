@@ -1,0 +1,74 @@
+<div class="welcome">
+  <!-- Outside of the loaded content, so the page has its heading in every state. -->
+  <h1 appUiText="h1">
+    @if (_welcome.invite(); as invite) {
+      {{ 'welcome.heading' | t: { name: invite.name } }}
+    } @else {
+      {{ 'welcome.title' | t }}
+    }
+  </h1>
+  @if (_welcome.inviteState().failure?.kind === 'not-found') {
+    <p class="welcome__lead" appUiText="lead">{{ 'welcome.linkGone' | t }}</p>
+  }
+
+  <app-async-content
+    class="welcome__body"
+    [state]="_welcome.inviteState()"
+    [failureHeading]="'welcome.invalid' | t"
+    [loadingLabel]="'welcome.loading' | t"
+    [retryable]="_welcome.inviteState().failure?.kind !== 'not-found'"
+    (retry)="_welcome.reload()"
+  >
+    <ng-template>
+      @if (_welcome.invite()) {
+        <p class="welcome__lead" appUiText="lead">{{ 'welcome.lead' | t }}</p>
+
+        <form class="welcome__form" [formRoot]="_welcomeForm">
+          <app-form-text
+            [formField]="_welcomeForm.name"
+            [label]="'welcome.fields.name' | t"
+            [description]="'welcome.fields.nameDescription' | t"
+            autocomplete="name"
+          />
+          <app-form-text
+            [formField]="_welcomeForm.email"
+            [label]="'welcome.fields.email' | t"
+            type="email"
+            autocomplete="username"
+          />
+          <app-form-text
+            [formField]="_welcomeForm.password"
+            [label]="'welcome.fields.password' | t"
+            [description]="'welcome.fields.passwordDescription' | t: { min: _passwordMin }"
+            type="password"
+            autocomplete="new-password"
+          />
+
+          @if (_auth.mutationState().failure; as failure) {
+            <!-- 409: the email has an account already. 404: the link was used or expired meanwhile. -->
+            <app-failure-alert
+              [failure]="failure"
+              [heading]="'welcome.failed' | t"
+              [message]="
+                failure.kind === 'conflict'
+                  ? ('welcome.emailTaken' | t)
+                  : failure.kind === 'not-found'
+                    ? ('welcome.linkGone' | t)
+                    : undefined
+              "
+            />
+          }
+
+          <button
+            [loading]="_submitting()"
+            [loadingLabel]="'welcome.submitting' | t"
+            appUiButton
+            type="submit"
+          >
+            {{ 'welcome.submit' | t }}
+          </button>
+        </form>
+      }
+    </ng-template>
+  </app-async-content>
+</div>

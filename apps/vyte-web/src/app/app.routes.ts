@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { routeSeo } from '@core/seo/route-seo';
-import { authGuard } from '@features/auth/public-api';
+import { adminGuard, authGuard } from '@features/auth/public-api';
 import { AppShell } from './layout/app-shell/app-shell';
 
 export const routes: Routes = [
@@ -20,7 +20,13 @@ export const routes: Routes = [
         loadChildren: () => import('./features/events/events.routes').then((m) => m.eventsRoutes),
       },
       {
-        // `/sign-in`.
+        // Accounts and account links, `/admin/users`.
+        path: 'admin',
+        canActivate: [adminGuard],
+        loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes),
+      },
+      {
+        // `/sign-in` and `/welcome/:token`.
         path: '',
         loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
       },

@@ -8,7 +8,11 @@ import { AsyncContent } from './async-content';
   selector: 'app-host',
   imports: [AsyncContent],
   template: `
-    <app-async-content [state]="state()" failureHeading="Laden fehlgeschlagen">
+    <app-async-content
+      [state]="state()"
+      [failureHeadingLevel]="3"
+      failureHeading="Laden fehlgeschlagen"
+    >
       <ng-template><p>Inhalt</p></ng-template>
     </app-async-content>
   `,
@@ -49,5 +53,11 @@ describe('AsyncContent', () => {
     const { response } = render(failed(new Failure('network', 'Unreachable', { status: 0 })));
 
     expect(response.status).toBe(503);
+  });
+
+  it('passes the level of the failure heading on', () => {
+    const { element } = render(failed(new Failure('server', 'Down')));
+
+    expect(element.querySelector('[role="heading"]')?.getAttribute('aria-level')).toBe('3');
   });
 });

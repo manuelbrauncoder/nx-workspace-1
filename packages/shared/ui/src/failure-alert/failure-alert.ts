@@ -2,7 +2,7 @@ import { booleanAttribute, Component, computed, inject, input, output } from '@a
 import { Failure } from '@core/failure/failure';
 import { I18nService } from '@core/i18n/i18n.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { UiAlert, UiAlertAction } from '../ui/alert/alert';
+import { UiAlert, UiAlertAction, UiHeadingLevel } from '../ui/alert/alert';
 import { UiButton } from '../ui/button/button';
 
 /**
@@ -21,6 +21,8 @@ export class FailureAlert {
   /** Replaces the generic text, e.g. "wrong email or password" for a 401 at sign-in. */
   readonly message = input<string>();
   readonly retryable = input(false, { transform: booleanAttribute });
+  /** Level of the heading in the page outline, see `UiAlert`. */
+  readonly headingLevel = input<UiHeadingLevel>(2);
 
   readonly retry = output<void>();
 

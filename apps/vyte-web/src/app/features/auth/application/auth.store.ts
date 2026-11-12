@@ -3,7 +3,7 @@ import { AppLog } from '@core/log/app-log';
 import { mutation } from '@core/state/mutation';
 import { map } from 'rxjs';
 import { AuthUseCase } from '../domain/auth.usecase';
-import { Credentials, Me } from '../domain/me';
+import { Credentials, Me, Registration } from '../domain/me';
 
 /**
  * Who is signed in. Unlike the store of other features it is provided app-wide and not in the
@@ -26,7 +26,7 @@ export class AuthStore {
   readonly isSignedIn = computed(() => this._me() !== undefined);
   readonly isAdmin = computed(() => this._me()?.role === 'admin');
 
-  /** State of the most recent sign-in. */
+  /** State of the most recent sign-in or account creation. */
   readonly mutationState = this._mutation.state;
   readonly signOutState = this._signOutMutation.state;
 
@@ -51,6 +51,15 @@ export class AuthStore {
     return me;
   }
 
+  /** Creates the account of an account link and signs it in. Shares the state of sign-in. */
+  async acceptAccountInvite(token: string, registration: Registration): Promise<Me | undefined> {
+    const me = await this._mutation.run(this._useCase.acceptAccountInvite(token, registration));
+    if (me) {
+      this._setMe(me);
+    }
+    return me;
+  }
+
   async signOut(): Promise<boolean> {
     const done = await this._signOutMutation.run(this._useCase.signOut().pipe(map(() => true)));
     if (done) {
@@ -64,7 +73,7 @@ export class AuthStore {
     this._setMe(undefined);
   }
 
-  /** Drops the failure of an earlier sign-in. */
+  /** Drops the failure of an earlier sign-in or account creation. */
   resetMutation(): void {
     this._mutation.reset();
   }

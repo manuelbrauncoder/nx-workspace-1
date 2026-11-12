@@ -1,0 +1,28 @@
+{
+  "title": "Willkommen",
+  "heading": "Willkommen, {{ name }}",
+  "lead": "Lege dein Konto an, um Events zu planen und Gäste einzuladen.",
+  "loading": "Link wird geprüft",
+  "invalid": "Link ungültig",
+  "fields": {
+    "name": "Name",
+    "nameDescription": "So sehen dich Gäste und andere Gastgeber.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "passwordDescription": "Mindestens {{ min }} Zeichen."
+  },
+  "validation": {
+    "nameTooLong": "Der Name darf höchstens {{ max }} Zeichen lang sein.",
+    "emailRequired": "Bitte gib deine E-Mail-Adresse ein.",
+    "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "passwordRequired": "Bitte gib ein Passwort ein.",
+    "passwordTooShort": "Das Passwort muss mindestens {{ min }} Zeichen lang sein.",
+    "passwordTooLong": "Das Passwort darf höchstens {{ max }} Zeichen lang sein."
+  },
+  "submit": "Konto anlegen",
+  "submitting": "Konto wird angelegt",
+  "created": "Dein Konto ist angelegt",
+  "failed": "Das Konto konnte nicht angelegt werden",
+  "emailTaken": "Zu dieser E-Mail-Adresse gibt es schon ein Konto. Melde dich damit an.",
+  "linkGone": "Der Link ist nicht mehr gültig. Bitte frag nach einem neuen."
+}

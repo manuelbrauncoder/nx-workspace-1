@@ -4,7 +4,8 @@
     "signIn": "Anmelden",
     "signOut": "Abmelden",
     "signedOut": "Du bist abgemeldet",
-    "signOutFailed": "Abmelden fehlgeschlagen"
+    "signOutFailed": "Abmelden fehlgeschlagen",
+    "admin": "Konten verwalten"
   },
   "layout": {
     "legalNavigation": "Rechtliches",

@@ -1,5 +1,16 @@
 <hlm-toaster [theme]="theme()" [position]="position()" richColors />
 
-<!-- Live regions that are always there, so every message is read out, not only the ones that appear. -->
-<p class="sr-only" role="status">{{ _toasts.status() }}</p>
-<p class="sr-only" role="alert">{{ _toasts.alert() }}</p>
+<!--
+  Live regions that are always there, so every message is read out, not only the ones that appear.
+  The message is keyed by its id: the same text again replaces the node and is read out again.
+-->
+<p class="sr-only" role="status">
+  @for (message of _toasts.status() ? [_toasts.status()!] : []; track message.id) {
+    <span>{{ message.text }}</span>
+  }
+</p>
+<p class="sr-only" role="alert">
+  @for (message of _toasts.alert() ? [_toasts.alert()!] : []; track message.id) {
+    <span>{{ message.text }}</span>
+  }
+</p>

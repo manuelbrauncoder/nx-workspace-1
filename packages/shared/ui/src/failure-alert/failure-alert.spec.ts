@@ -48,4 +48,16 @@ describe('FailureAlert', () => {
 
     expect(retried).toHaveBeenCalledOnce();
   });
+
+  it('puts its heading on level 2 of the outline, or on the level it is given', async () => {
+    const fixture = await render(false);
+    const heading = () => fixture.nativeElement.querySelector('[role="heading"]') as HTMLElement;
+    expect(heading().getAttribute('aria-level')).toBe('2');
+    expect(heading().textContent?.trim()).toBe('Laden fehlgeschlagen');
+
+    fixture.componentRef.setInput('headingLevel', 3);
+    await fixture.whenStable();
+
+    expect(heading().getAttribute('aria-level')).toBe('3');
+  });
 });

@@ -1,0 +1,115 @@
+<h1 appUiText="h1">{{ 'userList.heading' | t }}</h1>
+<p class="user-list__lead" appUiText="lead">{{ 'userList.lead' | t }}</p>
+
+<section class="user-list__section" aria-labelledby="user-list-create">
+  <h2 id="user-list-create" appUiText="h3">{{ 'userList.create.heading' | t }}</h2>
+  <p class="user-list__section-lead" appUiText="muted">{{ 'userList.create.description' | t }}</p>
+  <form class="user-list__create" [formRoot]="_createForm">
+    <app-form-text
+      [formField]="_createForm.name"
+      [label]="'userList.create.name' | t"
+      [description]="'userList.create.nameDescription' | t"
+      autocomplete="off"
+    />
+    @if (_store.createState().failure; as failure) {
+      <app-failure-alert
+        [failure]="failure"
+        [heading]="'userList.create.failed' | t"
+        [headingLevel]="3"
+      />
+    }
+    <button
+      class="user-list__submit"
+      [loading]="_creating()"
+      [loadingLabel]="'userList.create.submitting' | t"
+      appUiButton
+      type="submit"
+    >
+      {{ 'userList.create.submit' | t }}
+    </button>
+  </form>
+</section>
+
+<section class="user-list__section" aria-labelledby="user-list-invites">
+  <h2 id="user-list-invites" #invitesHeading appUiText="h3" tabindex="-1">
+    {{ 'userList.invites.heading' | t }}
+  </h2>
+  @if (_store.inviteMutationState().failure; as failure) {
+    <app-failure-alert
+      class="user-list__failure"
+      [failure]="failure"
+      [heading]="'userList.invites.revokeFailed' | t"
+      [headingLevel]="3"
+    />
+  }
+  <app-async-content
+    class="user-list__body"
+    [state]="_store.invitesState()"
+    [failureHeading]="'userList.invites.loadFailed' | t"
+    [failureHeadingLevel]="3"
+    [loadingLabel]="'userList.invites.loading' | t"
+    (retry)="_store.reloadInvites()"
+    retryable
+  >
+    <ng-template>
+      @if (_store.invites().length === 0) {
+        <p appUiText="muted">{{ 'userList.invites.empty' | t }}</p>
+      } @else {
+        <ul class="user-list__grid">
+          @for (invite of _store.invites(); track invite.id) {
+            <li>
+              <app-account-invite-item
+                [invite]="invite"
+                [url]="_url(invite)"
+                (copyLink)="_copy(invite)"
+                (revoke)="_revoke(invite)"
+              />
+            </li>
+          }
+        </ul>
+      }
+    </ng-template>
+  </app-async-content>
+</section>
+
+<section class="user-list__section" aria-labelledby="user-list-users">
+  <h2 id="user-list-users" #usersHeading appUiText="h3" tabindex="-1">
+    {{ 'userList.users.heading' | t }}
+  </h2>
+  @if (_store.userMutationState().failure; as failure) {
+    <!-- 409: the backend protects the own account. -->
+    <app-failure-alert
+      class="user-list__failure"
+      [failure]="failure"
+      [heading]="'userList.users.actionFailed' | t"
+      [headingLevel]="3"
+      [message]="failure.kind === 'conflict' ? ('userList.users.conflict' | t) : undefined"
+    />
+  }
+  <app-async-content
+    class="user-list__body"
+    [state]="_store.usersState()"
+    [failureHeading]="'userList.users.loadFailed' | t"
+    [failureHeadingLevel]="3"
+    [loadingLabel]="'userList.users.loading' | t"
+    (retry)="_store.reloadUsers()"
+    loadingIndicator="skeleton"
+    retryable
+  >
+    <ng-template>
+      <ul class="user-list__grid">
+        @for (user of _store.users(); track user.id) {
+          <li>
+            <app-user-card
+              [user]="user"
+              [isMe]="user.id === _auth.me()?.id"
+              (toggleRole)="_toggleRole(user)"
+              (revokeSessions)="_revokeSessions(user)"
+              (remove)="_remove(user)"
+            />
+          </li>
+        }
+      </ul>
+    </ng-template>
+  </app-async-content>
+</section>
