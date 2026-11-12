@@ -1,7 +1,8 @@
-import { inject, Service, Type } from '@angular/core';
+import { DOCUMENT, inject, Service, Type } from '@angular/core';
 import { I18nService } from '@core/i18n/i18n.service';
 import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { toUiDialogRef, UiDialogRef } from './dialog-ref';
+import { focusReturnTarget } from './focus-return';
 
 export interface UiDialogOptions<TData = unknown> {
   /** Handed to the dialog component, read there with `injectUiDialogData()`. */
@@ -30,6 +31,7 @@ export interface UiDialogOptions<TData = unknown> {
 export class UiDialogService {
   private readonly _dialog = inject(HlmDialogService);
   private readonly _i18n = inject(I18nService);
+  private readonly _document = inject(DOCUMENT);
 
   open<TResult = void, TData = unknown>(
     component: Type<unknown>,
@@ -42,6 +44,7 @@ export class UiDialogService {
         ariaDescribedBy: null,
         showCloseButton: options.closeButton ?? true,
         closeLabel: this._i18n.translate('common.close'),
+        restoreFocus: focusReturnTarget(this._document),
       }),
     );
   }

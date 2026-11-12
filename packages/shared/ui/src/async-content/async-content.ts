@@ -12,6 +12,7 @@ import { injectResponseStatus } from '@core/http/response-status';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { AsyncState } from '@core/state/async-state';
 import { FailureAlert } from '../failure-alert/failure-alert';
+import type { UiHeadingLevel } from '../ui/alert/alert';
 import { UiSkeleton } from '../ui/skeleton/skeleton';
 import { UiSpinner } from '../ui/spinner/spinner';
 
@@ -39,6 +40,8 @@ export class AsyncContent {
   /** Announced to screen readers while loading. Defaults to a generic "loading" text. */
   readonly loadingLabel = input<string>();
   readonly retryable = input(false, { transform: booleanAttribute });
+  /** Level of the heading of the failure in the page outline, see `UiAlert`. */
+  readonly failureHeadingLevel = input<UiHeadingLevel>(2);
 
   readonly retry = output<void>();
 

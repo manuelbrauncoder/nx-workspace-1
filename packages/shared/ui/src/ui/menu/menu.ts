@@ -6,6 +6,7 @@ import {
   HlmDropdownMenuItem,
   HlmDropdownMenuTrigger,
 } from '@spartan-ng/helm/dropdown-menu';
+import { classes } from '@spartan-ng/helm/utils';
 import { UiMenuRadio } from './menu-radio/menu-radio';
 
 export { UiMenuRadio };
@@ -71,6 +72,15 @@ export class UiMenuGroup {}
   selector: 'button[appUiMenuItem]',
   hostDirectives: [{ directive: HlmDropdownMenuItem, inputs: ['disabled', 'variant'] }],
 })
-export class UiMenuItem {}
+export class UiMenuItem {
+  constructor() {
+    // The item marks the focus only by a pale background, too faint to see. A solid ring inside
+    // the item shows where the keyboard is.
+    classes(
+      () =>
+        'focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-ring focus-visible:-outline-offset-2',
+    );
+  }
+}
 
 export const UiMenuImports = [UiMenuTrigger, UiMenu, UiMenuGroup, UiMenuItem, UiMenuRadio] as const;

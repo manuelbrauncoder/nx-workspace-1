@@ -1,4 +1,4 @@
-<app-ui-alert [heading]="heading()" variant="destructive">
+<app-ui-alert [heading]="heading()" [headingLevel]="headingLevel()" variant="destructive">
   {{ _text() }}
   @if (retryable()) {
     <button

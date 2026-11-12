@@ -1,0 +1,20 @@
+.welcome {
+  margin-inline: auto;
+  max-width: 24rem;
+}
+
+.welcome__lead {
+  margin-top: 0.5rem;
+}
+
+.welcome__body {
+  display: block;
+  margin-top: 1rem;
+}
+
+.welcome__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}

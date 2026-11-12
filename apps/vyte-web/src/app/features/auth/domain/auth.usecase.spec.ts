@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { AccountInvitesRepository } from '@api/account-invites/account-invites.repository';
 import { AuthRepository } from '@api/auth/auth.repository';
 import { firstValueFrom, of } from 'rxjs';
 import { AuthUseCase } from './auth.usecase';
@@ -19,12 +20,19 @@ describe('AuthUseCase', () => {
     signIn: vi.fn(() => of(ME)),
     signOut: vi.fn(() => of(undefined)),
   };
+  const accountInvites = {
+    getByToken: vi.fn(() => of({ name: 'Ada' })),
+    accept: vi.fn(() => of(ME)),
+  };
   let useCase: AuthUseCase;
 
   beforeEach(() => {
     vi.clearAllMocks();
     TestBed.configureTestingModule({
-      providers: [{ provide: AuthRepository, useValue: repository }],
+      providers: [
+        { provide: AuthRepository, useValue: repository },
+        { provide: AccountInvitesRepository, useValue: accountInvites },
+      ],
     });
     useCase = TestBed.inject(AuthUseCase);
   });
@@ -39,5 +47,14 @@ describe('AuthUseCase', () => {
 
     expect(repository.signIn).toHaveBeenCalledWith(CREDENTIALS);
     expect(repository.signOut).toHaveBeenCalledOnce();
+  });
+
+  it('passes an account link on to its repository', async () => {
+    const registration = { ...CREDENTIALS, name: 'Ada' };
+
+    expect(await firstValueFrom(useCase.getAccountInvite('tok'))).toEqual({ name: 'Ada' });
+    expect(await firstValueFrom(useCase.acceptAccountInvite('tok', registration))).toBe(ME);
+    expect(accountInvites.getByToken).toHaveBeenCalledWith('tok');
+    expect(accountInvites.accept).toHaveBeenCalledWith('tok', registration);
   });
 });

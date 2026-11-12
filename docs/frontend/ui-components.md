@@ -195,6 +195,8 @@ Import all parts through `UiCardImports`. The card works on any element. Put `ap
 
 `variant` is `default` or `destructive`. The projected content is the description, an optional `appUiAlertAction` button sits in the corner (import `UiAlertAction` for it).
 
+The heading of an alert is a heading of level 2 in the page outline (`role="heading"`, `aria-level`). Inside a section with an `h2`, set `[headingLevel]="3"`, so the alert does not read as a section of its own. `app-failure-alert` passes `headingLevel` on, `app-async-content` has `failureHeadingLevel` for its failure.
+
 To show a `Failure`, use `app-failure-alert` instead. It builds on this wrapper.
 
 ### Empty
@@ -292,6 +294,8 @@ This is one of three layers. The backend sanitizes the HTML too when a note is s
 
 - The trigger takes `align` and `side` for the placement of the panel
 - Listen to `(triggered)` on items instead of `(click)`, so keyboard activation is covered
+- A focused item gets a solid ring in `--ring`, the pale background of the helm item alone is too faint to see
+- An item may open a dialog: when it closes, the focus goes back to the trigger of the menu, since the item is gone by then (`focusReturnTarget()` in `ui/dialog/focus-return.ts`, used by `UiDialogService` and `UiConfirmDialogService`)
 - `appUiMenuRadio` is a single-choice item with a check mark: `[checked]` marks the current choice. Radio items need an `app-ui-menu-group` around them. The theme toggle uses it, see [theme-toggle.html](../../packages/shared/ui/src/theme-toggle/theme-toggle.html)
 
 ### Nav menu
@@ -459,6 +463,8 @@ this._toast.info('Entwurf wiederhergestellt', { position: 'bottom-center' });
 ```
 
 Methods: `success`, `info`, `warning`, `error`. Options: `description` for a second line, `position` to override the default corner (top right).
+
+An error stays until it is closed. Every message is also written into two live regions of the toaster, `role="status"` for confirmations and `role="alert"` for errors, so screen readers hear it even when the toast vanishes. The same text twice in a row is announced twice.
 
 `app-ui-toaster` is the outlet. It is placed exactly once, in [app.html](../../apps/angular-base/src/app/app.html) next to the outermost router outlet, bound to the resolved theme.
 

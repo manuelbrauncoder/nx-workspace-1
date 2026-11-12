@@ -24,7 +24,10 @@ describe('AccountMenu', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        { provide: AuthStore, useValue: { me: signal(me), signOut } },
+        {
+          provide: AuthStore,
+          useValue: { me: signal(me), isAdmin: signal(me?.role === 'admin'), signOut },
+        },
         { provide: UiToastService, useValue: toast },
       ],
     });
@@ -97,5 +100,30 @@ describe('AccountMenu', () => {
     const { element } = await render(ME);
 
     await expect(element).toBeAccessible();
+  });
+
+  it('leads an admin to the accounts', async () => {
+    const { menu, fixture } = await openMenu({ ...ME, role: 'admin' });
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+
+    const entry = Array.from(menu.querySelectorAll('button')).find((button) =>
+      button.textContent?.includes('Konten verwalten'),
+    );
+    entry!.click();
+    await fixture.whenStable();
+
+    expect(navigate).toHaveBeenCalledWith('/admin/users');
+  });
+
+  it('keeps the accounts from a user without admin rights', async () => {
+    const { menu } = await openMenu(ME);
+
+    expect(menu.textContent).not.toContain('Konten verwalten');
+  });
+
+  it('has no accessibility violations with the menu of an admin open', async () => {
+    const { menu } = await openMenu({ ...ME, role: 'admin' });
+
+    await expect(menu).toBeAccessible();
   });
 });

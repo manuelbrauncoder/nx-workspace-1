@@ -1,6 +1,7 @@
-import { inject, Service } from '@angular/core';
+import { DOCUMENT, inject, Service } from '@angular/core';
 import { HlmDialogService } from '@spartan-ng/helm/dialog';
 import { firstValueFrom } from 'rxjs';
+import { focusReturnTarget } from '../dialog/focus-return';
 import { UiConfirmDialog } from './confirm-dialog';
 
 export interface UiConfirmDialogOptions {
@@ -36,6 +37,7 @@ export interface UiConfirmDialogOptions {
 @Service()
 export class UiConfirmDialogService {
   private readonly _dialog = inject(HlmDialogService);
+  private readonly _document = inject(DOCUMENT);
 
   async confirm(options: UiConfirmDialogOptions): Promise<boolean> {
     const ref = this._dialog.open<boolean>(UiConfirmDialog, {
@@ -45,6 +47,7 @@ export class UiConfirmDialogService {
       role: 'alertdialog',
       closeOnOutsidePointerEvents: false,
       showCloseButton: false,
+      restoreFocus: focusReturnTarget(this._document),
     });
     return (await firstValueFrom(ref.closed$, { defaultValue: undefined })) === true;
   }

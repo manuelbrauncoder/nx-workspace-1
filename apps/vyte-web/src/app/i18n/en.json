@@ -4,7 +4,8 @@
     "signIn": "Sign in",
     "signOut": "Sign out",
     "signedOut": "You are signed out",
-    "signOutFailed": "Signing out failed"
+    "signOutFailed": "Signing out failed",
+    "admin": "Manage accounts"
   },
   "layout": {
     "legalNavigation": "Legal",

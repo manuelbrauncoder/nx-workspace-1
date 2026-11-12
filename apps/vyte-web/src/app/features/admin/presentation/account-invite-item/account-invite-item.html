@@ -1,0 +1,35 @@
+@let item = invite();
+<article class="account-invite" [attr.data-invite]="item.id" appUiCard>
+  <div appUiCardHeader>
+    <h3 appUiCardTitle>{{ item.name }}</h3>
+    <p appUiCardDescription>
+      {{
+        'userList.invites.expires' | t: { date: item.expiresAt | localDate: 'dateTime' : _timeZone }
+      }}
+    </p>
+  </div>
+  <p class="account-invite__url" appUiCardContent>
+    <span class="sr-only">{{ 'userList.invites.address' | t: { name: item.name } }}: </span>
+    <code appUiText="code">{{ url() }}</code>
+  </p>
+  <div class="account-invite__actions" appUiCardFooter>
+    <button
+      [attr.aria-label]="'userList.invites.copyNamed' | t: { name: item.name }"
+      (click)="copyLink.emit()"
+      appUiButton
+      type="button"
+    >
+      <app-ui-icon name="link" />
+      {{ 'userList.invites.copy' | t }}
+    </button>
+    <button
+      [attr.aria-label]="'userList.invites.revokeNamed' | t: { name: item.name }"
+      (click)="revoke.emit()"
+      appUiButton
+      variant="outline"
+      type="button"
+    >
+      {{ 'userList.invites.revoke' | t }}
+    </button>
+  </div>
+</article>

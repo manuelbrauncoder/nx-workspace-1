@@ -1,0 +1,28 @@
+{
+  "title": "Welcome",
+  "heading": "Welcome, {{ name }}",
+  "lead": "Create your account to plan events and invite guests.",
+  "loading": "Checking the link",
+  "invalid": "Invalid link",
+  "fields": {
+    "name": "Name",
+    "nameDescription": "This is how guests and other hosts see you.",
+    "email": "Email",
+    "password": "Password",
+    "passwordDescription": "At least {{ min }} characters."
+  },
+  "validation": {
+    "nameTooLong": "The name can have at most {{ max }} characters.",
+    "emailRequired": "Please enter your email address.",
+    "emailInvalid": "Please enter a valid email address.",
+    "passwordRequired": "Please enter a password.",
+    "passwordTooShort": "The password must have at least {{ min }} characters.",
+    "passwordTooLong": "The password can have at most {{ max }} characters."
+  },
+  "submit": "Create account",
+  "submitting": "Creating the account",
+  "created": "Your account is ready",
+  "failed": "The account could not be created",
+  "emailTaken": "There is already an account with this email address. Sign in with it.",
+  "linkGone": "The link is no longer valid. Please ask for a new one."
+}

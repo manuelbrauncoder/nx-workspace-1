@@ -17,6 +17,7 @@
     @if (state().failure; as failure) {
       <app-failure-alert
         [heading]="failureHeading()"
+        [headingLevel]="failureHeadingLevel()"
         [failure]="failure"
         [retryable]="retryable()"
         (retry)="retry.emit()"

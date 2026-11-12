@@ -10,6 +10,7 @@ import { join } from 'node:path';
 import { seoRoutes } from './server/seo-routes';
 import { readServerConfig } from './server/server-config';
 import { ServerLog } from './server/server-log';
+import { noReferrerOnTokenPages } from './server/token-pages';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
@@ -59,6 +60,9 @@ app.use(
     },
   }),
 );
+
+/** A token in the address must not leak through the `Referer` of a link on that page. */
+app.use(noReferrerOnTokenPages);
 
 /**
  * Handle all other requests by rendering the Angular application.

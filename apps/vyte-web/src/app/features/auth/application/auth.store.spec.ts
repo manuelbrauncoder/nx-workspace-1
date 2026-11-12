@@ -34,6 +34,10 @@ class FakeAuthUseCase {
   signOut(): Observable<void> {
     return this._respond(undefined);
   }
+
+  acceptAccountInvite(): Observable<Me> {
+    return this._respond(ME);
+  }
 }
 
 describe('AuthStore', () => {
@@ -144,5 +148,21 @@ describe('AuthStore', () => {
     store.clearMe();
 
     expect(store.isSignedIn()).toBe(false);
+  });
+
+  it('is signed in after creating the account of a link', async () => {
+    const me = await store.acceptAccountInvite('tok', { ...CREDENTIALS, name: 'Ada' });
+
+    expect(me).toBe(ME);
+    expect(store.me()).toBe(ME);
+    expect(store.mutationState().loadingState).toBe('success');
+  });
+
+  it('stays signed out when the account of a link cannot be created', async () => {
+    useCase.failWith = new Failure('conflict', 'Email taken');
+
+    expect(await store.acceptAccountInvite('tok', { ...CREDENTIALS, name: '' })).toBeUndefined();
+    expect(store.isSignedIn()).toBe(false);
+    expect(store.mutationState().failure?.kind).toBe('conflict');
   });
 });

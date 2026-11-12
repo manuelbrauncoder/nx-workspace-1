@@ -1,0 +1,55 @@
+@use 'styles/abstracts' as *;
+
+// Spacing as on the event pages: 2rem from the heading to the content, 2.5rem between the
+// sections, 1rem from a section heading to its content.
+
+:host {
+  display: block;
+}
+
+.user-list__lead {
+  margin-top: 0.5rem;
+}
+
+.user-list__lead + .user-list__section {
+  margin-top: 2rem;
+}
+
+.user-list__section + .user-list__section {
+  margin-top: 2.5rem;
+}
+
+.user-list__section-lead {
+  margin-top: 0.25rem;
+}
+
+.user-list__create {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 28rem;
+  margin-top: 1rem;
+}
+
+.user-list__submit {
+  align-self: flex-start;
+}
+
+.user-list__failure,
+.user-list__body {
+  display: block;
+  margin-top: 1rem;
+}
+
+.user-list__grid {
+  display: grid;
+  gap: 1rem;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up(lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

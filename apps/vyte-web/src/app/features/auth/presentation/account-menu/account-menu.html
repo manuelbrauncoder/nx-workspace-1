@@ -20,6 +20,12 @@
         }
       </div>
       <app-ui-menu-group [attr.aria-label]="me.name ?? me.email">
+        @if (_store.isAdmin()) {
+          <button (triggered)="_openAdmin()" appUiMenuItem type="button">
+            <app-ui-icon name="users" />
+            {{ 'auth.admin' | t }}
+          </button>
+        }
         <button (triggered)="_signOut()" appUiMenuItem type="button">
           <app-ui-icon name="logOut" />
           {{ 'auth.signOut' | t }}
