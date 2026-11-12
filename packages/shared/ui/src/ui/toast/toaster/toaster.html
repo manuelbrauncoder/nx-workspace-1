@@ -1,1 +1,5 @@
 <hlm-toaster [theme]="theme()" [position]="position()" richColors />
+
+<!-- Live regions that are always there, so every message is read out, not only the ones that appear. -->
+<p class="sr-only" role="status">{{ _toasts.status() }}</p>
+<p class="sr-only" role="alert">{{ _toasts.alert() }}</p>

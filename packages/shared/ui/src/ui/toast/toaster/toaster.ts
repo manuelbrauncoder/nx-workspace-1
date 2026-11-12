@@ -1,6 +1,6 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { HlmToasterImports } from '@spartan-ng/helm/sonner';
-import { UiToastPosition } from '../toast.service';
+import { UiToastPosition, UiToastService } from '../toast.service';
 
 /**
  * Outlet for the toasts of `UiToastService`. Rendered exactly once, in the root component.
@@ -19,4 +19,6 @@ export class UiToaster {
   readonly theme = input<'light' | 'dark'>('light');
   /** Default corner for all toasts. A single toast can override it through its options. */
   readonly position = input<UiToastPosition>('top-right');
+
+  private readonly _toasts = inject(UiToastService);
 }

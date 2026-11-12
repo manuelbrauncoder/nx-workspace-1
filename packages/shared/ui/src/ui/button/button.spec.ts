@@ -77,23 +77,38 @@ describe('UiButton', () => {
     expect(button.hasAttribute('data-disabled')).toBe(true);
   });
 
-  it('shows a labelled spinner and blocks the button while loading', async () => {
+  it('shows a spinner while loading and keeps the button focusable', async () => {
     const { fixture, host, button } = await render();
 
     host.loading.set(true);
     await fixture.whenStable();
 
-    expect(button.disabled).toBe(true);
+    expect(button.disabled).toBe(false);
+    expect(button.getAttribute('aria-disabled')).toBe('true');
     expect(button.getAttribute('aria-busy')).toBe('true');
-    expect(button.querySelector('[role="status"]')?.getAttribute('aria-label')).toBe(
-      'Wird gespeichert',
-    );
+    expect(button.querySelector('app-ui-spinner [aria-hidden="true"]')).not.toBeNull();
+    expect(button.querySelector('[aria-live="polite"]')?.textContent).toContain('Wird gespeichert');
 
     host.loading.set(false);
     await fixture.whenStable();
 
-    expect(button.disabled).toBe(false);
+    expect(button.getAttribute('aria-disabled')).toBeNull();
     expect(button.querySelector('app-ui-spinner')).toBeNull();
+    expect(button.querySelector('[aria-live="polite"]')?.textContent?.trim()).toBe('');
+  });
+
+  it('swallows the click on a loading button, so its form is not submitted', async () => {
+    const { fixture, host, button } = await render();
+    const later = vi.fn();
+    button.addEventListener('click', later);
+
+    host.loading.set(true);
+    await fixture.whenStable();
+    const click = new MouseEvent('click', { bubbles: true, cancelable: true });
+    button.dispatchEvent(click);
+
+    expect(click.defaultPrevented).toBe(true);
+    expect(later).not.toHaveBeenCalled();
   });
 
   it('swallows the click on a blocked link', async () => {

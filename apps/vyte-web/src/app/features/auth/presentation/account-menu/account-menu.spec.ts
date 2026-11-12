@@ -86,4 +86,16 @@ describe('AccountMenu', () => {
     expect(toast.error).toHaveBeenCalledWith('Abmelden fehlgeschlagen');
     expect(navigate).not.toHaveBeenCalled();
   });
+
+  it('has no accessibility violations for a visitor', async () => {
+    const { element } = await render(undefined);
+
+    await expect(element).toBeAccessible();
+  });
+
+  it('has no accessibility violations for a signed-in user', async () => {
+    const { element } = await render(ME);
+
+    await expect(element).toBeAccessible();
+  });
 });

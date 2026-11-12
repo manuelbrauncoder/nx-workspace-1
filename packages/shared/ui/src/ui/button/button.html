@@ -1,4 +1,6 @@
+<!-- Always rendered, so the text change while loading is announced. -->
+<span class="sr-only" aria-live="polite">{{ loading() ? _loadingText() : '' }}</span>
 @if (loading()) {
-  <app-ui-spinner [label]="loadingLabel()" />
+  <app-ui-spinner [announce]="false" />
 }
 <ng-content />

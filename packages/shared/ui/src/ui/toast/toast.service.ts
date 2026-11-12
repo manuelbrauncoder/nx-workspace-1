@@ -1,4 +1,4 @@
-import { Service } from '@angular/core';
+import { Service, signal } from '@angular/core';
 import { toast } from '@spartan-ng/brain/sonner';
 
 export type UiToastPosition =
@@ -13,8 +13,9 @@ export interface UiToastOptions {
 
 /**
  * Short, self-dismissing feedback after an action, shown by the `app-ui-toaster` in the app
- * shell. Use it for confirmations. A failure the user has to act on belongs into an
- * `app-failure-alert` next to the content.
+ * shell. Use it for confirmations. Errors stay until they are closed. A failure the user has to
+ * act on belongs into an `app-failure-alert` next to the content. The toaster's live regions read
+ * out every message, so a toast that vanishes is not missed.
  *
  * @example
  * private readonly _toast = inject(UiToastService);
@@ -30,19 +31,31 @@ export interface UiToastOptions {
  */
 @Service()
 export class UiToastService {
+  private readonly _status = signal('');
+  private readonly _alert = signal('');
+
+  /** The last confirmation, read by the polite live region of the toaster. */
+  readonly status = this._status.asReadonly();
+  /** The last error, read by the assertive live region of the toaster. */
+  readonly alert = this._alert.asReadonly();
+
   success(message: string, options?: UiToastOptions): void {
+    this._status.set(message);
     toast.success(message, options);
   }
 
   info(message: string, options?: UiToastOptions): void {
+    this._status.set(message);
     toast.info(message, options);
   }
 
   warning(message: string, options?: UiToastOptions): void {
+    this._status.set(message);
     toast.warning(message, options);
   }
 
   error(message: string, options?: UiToastOptions): void {
-    toast.error(message, options);
+    this._alert.set(message);
+    toast.error(message, { ...options, duration: Infinity, closeButton: true });
   }
 }

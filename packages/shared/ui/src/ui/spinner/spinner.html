@@ -1,1 +1,5 @@
-<hlm-spinner class="text-[length:inherit]" [aria-label]="_resolvedLabel()" />
+<hlm-spinner
+  class="text-[length:inherit]"
+  [aria-label]="_resolvedLabel()"
+  [attr.aria-hidden]="announce() ? null : 'true'"
+/>
