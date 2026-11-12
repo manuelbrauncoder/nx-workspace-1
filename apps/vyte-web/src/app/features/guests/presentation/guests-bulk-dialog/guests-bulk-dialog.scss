@@ -1,0 +1,11 @@
+.guests-bulk-dialog__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.guests-bulk-dialog__count {
+  margin-top: 0.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}

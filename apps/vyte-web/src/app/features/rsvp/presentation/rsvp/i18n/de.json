@@ -1,0 +1,72 @@
+{
+  "title": "Einladung",
+  "loading": "Einladung wird geladen …",
+  "loadFailed": "Die Einladung konnte nicht geladen werden",
+  "notFound": {
+    "heading": "Einladung nicht gefunden",
+    "lead": "Der Link ist nicht mehr gültig, vielleicht wurde er erneuert. Frag bei den Gastgebern nach dem aktuellen Link."
+  },
+  "past": {
+    "heading": "Das Event ist vorbei",
+    "lead": "Diese Einladung ist nicht mehr aktiv."
+  },
+  "invite": {
+    "greeting": "Hey {{ name }}!",
+    "hosts": "{{ hosts }} wollen mit dir feiern.",
+    "host": "{{ hosts }} will mit dir feiern."
+  },
+  "when": {
+    "heading": "Wann und wo",
+    "days": "{{ start }} bis {{ end }}",
+    "range": "{{ start }} bis {{ end }} Uhr",
+    "from": "ab {{ start }} Uhr",
+    "map": "In Karte öffnen",
+    "mapNamed": "In Karte öffnen, öffnet OpenStreetMap in einem neuen Tab",
+    "calendar": "Zum Kalender hinzufügen"
+  },
+  "gallery": {
+    "heading": "Bilder",
+    "open": "Bild {{ number }} von {{ total }} groß ansehen",
+    "image": "Bild {{ number }} von {{ total }}"
+  },
+  "form": {
+    "heading": "Bist du dabei?",
+    "until": "Sag bis {{ date }} Bescheid.",
+    "response": "Deine Antwort",
+    "accepted": "Bin dabei",
+    "declined": "Klappt nicht",
+    "responseRequired": "Bitte wähle, ob du kommst.",
+    "companions": "Ich bringe mit",
+    "companionsUpToOne": "bis zu 1 Person",
+    "companionsUpTo": "bis zu {{ max }} Personen",
+    "companionsDecrease": "Eine Person weniger",
+    "companionsIncrease": "Eine Person mehr",
+    "message": "Nachricht an die Gastgeber (optional)",
+    "messageTo": "Nachricht an {{ hosts }} (optional)",
+    "messageDescription": "Zum Beispiel Allergien oder Essenswünsche.",
+    "messageTooLong": "Höchstens {{ max }} Zeichen.",
+    "failed": "Deine Antwort konnte nicht gesendet werden",
+    "closed": "Die Frist ist inzwischen abgelaufen, Antworten ist nicht mehr möglich.",
+    "sending": "Wird gesendet",
+    "submit": "Antwort senden"
+  },
+  "thanks": {
+    "heading": "Danke, {{ name }}!",
+    "lead": "Deine Antwort ist angekommen.",
+    "leadHosts": "{{ hosts }} haben deine Antwort bekommen.",
+    "yourAnswer": "Deine Antwort",
+    "declined": "Schade, vielleicht beim nächsten Mal.",
+    "alone": "Du kommst allein.",
+    "withOne": "Du bringst 1 Person mit.",
+    "with": "Du bringst {{ count }} Personen mit.",
+    "change": "Antwort ändern",
+    "changeUntil": "Ändern geht bis {{ date }}.",
+    "keepLink": "Diesen Link brauchst du wieder, wenn du deine Antwort ändern willst. Am besten gleich speichern.",
+    "leadHost": "{{ hosts }} hat deine Antwort bekommen."
+  },
+  "closed": {
+    "heading": "Antworten ist nicht mehr möglich",
+    "lead": "Die Frist ist abgelaufen. Melde dich direkt bei den Gastgebern.",
+    "answerKept": "Die Frist ist abgelaufen, deine Antwort bleibt so stehen."
+  }
+}

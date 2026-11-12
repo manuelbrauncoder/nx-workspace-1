@@ -17,7 +17,8 @@
       "imprint": "Impressum",
       "privacy": "Datenschutz",
       "accessibility": "Barrierefreiheit"
-    }
+    },
+    "guestFooter": "Erstellt mit vyte"
   },
   "legal": {
     "email": "E-Mail",

@@ -1,0 +1,139 @@
+{
+  "title": "Gäste",
+  "titleFor": "Gäste · {{ title }}",
+  "heading": "Gäste",
+  "event": "Event",
+  "loading": "Gäste werden geladen …",
+  "loadFailed": "Die Gästeliste konnte nicht geladen werden",
+  "past": {
+    "heading": "Das Event ist vorbei",
+    "description": "Die Liste lässt sich nur noch ansehen und exportieren."
+  },
+  "counts": {
+    "heading": "Überblick",
+    "description": "Kommen und Höchstens zählen Personen samt Begleitung.",
+    "invited": "Eingeladen",
+    "coming": "Kommen",
+    "declined": "Abgesagt",
+    "pending": "Offen",
+    "atMost": "Höchstens"
+  },
+  "add": "Gast hinzufügen",
+  "addMany": "Liste einfügen",
+  "export": "Als CSV exportieren",
+  "actionFailed": "Die Änderung hat nicht geklappt",
+  "pastConflict": "Das Event ist vorbei oder die Liste ist voll. Lade die Seite neu und prüfe sie.",
+  "list": {
+    "heading": "Gästeliste",
+    "search": "Nach Name suchen",
+    "filter": "Antwort",
+    "sort": "Sortierung",
+    "loadFailed": "Die Gäste konnten nicht geladen werden",
+    "result": "{{ count }} von {{ total }} Gästen",
+    "none": "Kein Gast passt zu Filter und Suche."
+  },
+  "filter": {
+    "all": "Alle",
+    "accepted": "Zusagen",
+    "declined": "Absagen",
+    "pending": "Offen"
+  },
+  "sort": {
+    "name": "Name",
+    "answered": "Neueste Antworten"
+  },
+  "empty": {
+    "heading": "Noch keine Gäste",
+    "description": "Füge Gäste einzeln hinzu oder füge eine Liste mit Namen ein.",
+    "descriptionPast": "Auf der Liste dieses Events stand niemand."
+  },
+  "added": "{{ name }} steht auf der Liste",
+  "addedMany": "Gäste hinzugefügt: {{ count }}",
+  "saved": "{{ name }} gespeichert",
+  "answered": "Antwort für {{ name }} eingetragen",
+  "renew": {
+    "heading": "Neuen Link für {{ name }} erstellen?",
+    "description": "Der bisherige Link funktioniert danach nicht mehr. Schick den neuen an die richtige Person.",
+    "confirm": "Neuen Link erstellen",
+    "done": "Neuer Link für {{ name }} erstellt"
+  },
+  "remove": {
+    "heading": "{{ name }} entfernen?",
+    "description": "Die Antwort geht verloren und der persönliche Link funktioniert nicht mehr.",
+    "confirm": "Entfernen",
+    "done": "{{ name }} entfernt"
+  },
+  "copied": "Link für {{ name }} kopiert",
+  "copyFailed": "Der Link konnte nicht kopiert werden",
+  "shareText": "Du bist eingeladen: {{ title }} am {{ date }}",
+  "shareFailed": "Der Link konnte nicht geteilt werden",
+  "card": {
+    "actions": "Aktionen für {{ name }}",
+    "accepted": "Kommt",
+    "acceptedWithOne": "Kommt mit 1 Begleitung",
+    "acceptedWith": "Kommt mit {{ count }} Begleitungen",
+    "declined": "Abgesagt",
+    "pending": "Keine Antwort",
+    "allowanceOne": "Darf 1 Person mitbringen",
+    "allowance": "Darf {{ count }} Personen mitbringen",
+    "byHost": "Vom Host eingetragen",
+    "reduced": "Begleitungen auf das neue Limit gekürzt",
+    "respondedAt": "Geantwortet am {{ date }}",
+    "message": "Nachricht",
+    "note": "Notiz",
+    "copy": "Link kopieren",
+    "copyNamed": "Link kopieren: {{ name }}",
+    "share": "Teilen",
+    "shareNamed": "Teilen: Link für {{ name }}",
+    "edit": "Bearbeiten",
+    "answer": "Antwort eintragen",
+    "renew": "Link erneuern",
+    "remove": "Entfernen"
+  },
+  "form": {
+    "addHeading": "Gast hinzufügen",
+    "editHeading": "{{ name }} bearbeiten",
+    "name": "Name",
+    "nameDescription": "So steht er auf der Einladung, z. B. „Ada“ oder „Ada Lovelace“.",
+    "nameRequired": "Bitte gib einen Namen ein.",
+    "nameBlank": "Der Name darf nicht nur aus Leerzeichen bestehen.",
+    "tooLong": "Höchstens {{ max }} Zeichen.",
+    "companions": "Begleitungen",
+    "companionsDescription": "Wie viele Personen der Gast mitbringen darf.",
+    "companionsDecrease": "Eine Begleitung weniger",
+    "companionsIncrease": "Eine Begleitung mehr",
+    "note": "Notiz",
+    "noteDescription": "Nur für euch Hosts, der Gast sieht sie nicht.",
+    "failed": "Der Gast konnte nicht gespeichert werden",
+    "conflict": "Die Liste ist voll oder das Event ist vorbei.",
+    "saving": "Wird gespeichert",
+    "save": "Speichern",
+    "add": "Hinzufügen"
+  },
+  "bulk": {
+    "heading": "Liste einfügen",
+    "description": "Ein Name pro Zeile, höchstens {{ max }}. Leere Zeilen werden übersprungen.",
+    "names": "Namen",
+    "placeholder": "Ada Lovelace\nGrace Hopper\nAlan Turing",
+    "count": "Erkannt: {{ count }} von höchstens {{ max }} Namen",
+    "namesRequired": "Bitte füge mindestens einen Namen ein.",
+    "tooMany": "Höchstens {{ max }} Namen auf einmal.",
+    "nameTooLong": "„{{ name }}“ ist zu lang, höchstens {{ max }} Zeichen.",
+    "companions": "Begleitungen für alle",
+    "companionsDescription": "Lässt sich danach für jeden Gast einzeln ändern.",
+    "failed": "Die Gäste konnten nicht hinzugefügt werden",
+    "submit": "Alle hinzufügen"
+  },
+  "answer": {
+    "heading": "Antwort für {{ name }} eintragen",
+    "description": "Für eine Antwort, die du persönlich bekommen hast. Der Gast kann sie über seinen Link noch ändern.",
+    "response": "Antwort",
+    "accepted": "Kommt",
+    "declined": "Kommt nicht",
+    "responseRequired": "Bitte wähle eine Antwort.",
+    "companions": "Begleitungen",
+    "companionsDescription": "Bis zu {{ max }}.",
+    "failed": "Die Antwort konnte nicht gespeichert werden",
+    "submit": "Antwort speichern"
+  }
+}

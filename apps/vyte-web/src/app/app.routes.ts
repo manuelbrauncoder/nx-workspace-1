@@ -2,8 +2,21 @@ import { Routes } from '@angular/router';
 import { routeSeo } from '@core/seo/route-seo';
 import { adminGuard, authGuard } from '@features/auth/public-api';
 import { AppShell } from './layout/app-shell/app-shell';
+import { GuestShell } from './layout/guest-shell/guest-shell';
 
 export const routes: Routes = [
+  {
+    // Pages a guest opens through a link, in their own frame without header and sign-in. First,
+    // so the catch-all of the app shell below does not take them.
+    path: '',
+    component: GuestShell,
+    children: [
+      {
+        path: 'rsvp/:token',
+        loadChildren: () => import('./features/rsvp/rsvp.routes').then((m) => m.rsvpRoutes),
+      },
+    ],
+  },
   {
     path: '',
     component: AppShell,
@@ -12,6 +25,12 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         loadChildren: () => import('./features/home/home.routes').then((m) => m.homeRoutes),
+      },
+      {
+        // Its own feature, before `events`, so that one does not take the path.
+        path: 'events/:id/guests',
+        canActivate: [authGuard],
+        loadChildren: () => import('./features/guests/guests.routes').then((m) => m.guestsRoutes),
       },
       {
         path: 'events',

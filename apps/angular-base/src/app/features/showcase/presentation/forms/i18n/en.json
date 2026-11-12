@@ -22,7 +22,12 @@
     "newsletterDescription": "One mail a month at most.",
     "terms": "I agree to the terms",
     "customerNumber": "Customer number",
-    "customerNumberDescription": "Disabled through the form logic."
+    "customerNumberDescription": "Disabled through the form logic.",
+    "team": "Team size",
+    "teamDescription": "How many people work with you?",
+    "teamDecrease": "One person fewer",
+    "teamIncrease": "One person more",
+    "availability": "Availability"
   },
   "roles": {
     "developer": "Development",
@@ -45,5 +50,11 @@
   "value": {
     "heading": "Current value",
     "description": "The model behind the form, updated live."
+  },
+  "availability": {
+    "fullTime": "Full time",
+    "fullTimeDescription": "40 hours a week",
+    "partTime": "Part time",
+    "partTimeDescription": "up to 30 hours a week"
   }
 }

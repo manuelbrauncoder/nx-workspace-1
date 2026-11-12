@@ -51,6 +51,19 @@
         [options]="_contactWays()"
         [label]="'showcaseForms.fields.contactWay' | t"
       />
+      <app-form-radio-group
+        [formField]="_profileForm.availability"
+        [options]="_availabilities()"
+        [label]="'showcaseForms.fields.availability' | t"
+        layout="cards"
+      />
+      <app-form-stepper
+        [formField]="_profileForm.teamSize"
+        [label]="'showcaseForms.fields.team' | t"
+        [description]="'showcaseForms.fields.teamDescription' | t"
+        [decreaseLabel]="'showcaseForms.fields.teamDecrease' | t"
+        [increaseLabel]="'showcaseForms.fields.teamIncrease' | t"
+      />
       <app-form-switch
         [formField]="_profileForm.newsletter"
         [label]="'showcaseForms.fields.newsletter' | t"

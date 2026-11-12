@@ -1,0 +1,186 @@
+<app-ui-breadcrumb [items]="_breadcrumb()" />
+
+<!-- Outside of the loaded content, so the page has its heading while loading and after a failure. -->
+<div class="guest-list__heading">
+  <h1 appUiText="h1">{{ 'guestList.heading' | t }}</h1>
+  @if (_store.event(); as event) {
+    <p class="guest-list__event" appUiText="lead">{{ event.title }}</p>
+  }
+</div>
+
+<app-async-content
+  class="guest-list"
+  [state]="_store.eventState()"
+  [failureHeading]="'guestList.loadFailed' | t"
+  [loadingLabel]="'guestList.loading' | t"
+  (retry)="_store.reload()"
+  retryable
+>
+  <ng-template>
+    @if (_readonly()) {
+      <app-ui-alert class="guest-list__past" [heading]="'guestList.past.heading' | t">
+        {{ 'guestList.past.description' | t }}
+      </app-ui-alert>
+    }
+
+    <section class="guest-list__section" aria-labelledby="guest-list-counts">
+      <h2 id="guest-list-counts" appUiText="h3">{{ 'guestList.counts.heading' | t }}</h2>
+      <p class="guest-list__section-lead" appUiText="muted">
+        {{ 'guestList.counts.description' | t }}
+      </p>
+      @let counts = _store.counts();
+      <dl class="guest-list__counts">
+        <div class="guest-list__count">
+          <dt appUiText="muted">{{ 'guestList.counts.invited' | t }}</dt>
+          <dd appUiText="h3">{{ counts.invited }}</dd>
+        </div>
+        <div class="guest-list__count">
+          <dt appUiText="muted">{{ 'guestList.counts.coming' | t }}</dt>
+          <dd appUiText="h3">{{ counts.coming }}</dd>
+        </div>
+        <div class="guest-list__count">
+          <dt appUiText="muted">{{ 'guestList.counts.declined' | t }}</dt>
+          <dd appUiText="h3">{{ counts.declined }}</dd>
+        </div>
+        <div class="guest-list__count">
+          <dt appUiText="muted">{{ 'guestList.counts.pending' | t }}</dt>
+          <dd appUiText="h3">{{ counts.pending }}</dd>
+        </div>
+        <div class="guest-list__count">
+          <dt appUiText="muted">{{ 'guestList.counts.atMost' | t }}</dt>
+          <dd appUiText="h3">{{ counts.atMost }}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <div class="guest-list__actions">
+      @if (!_readonly()) {
+        <button (click)="_add()" appUiButton type="button">
+          <app-ui-icon name="userPlus" />
+          {{ 'guestList.add' | t }}
+        </button>
+        <button (click)="_addMany()" appUiButton variant="outline" type="button">
+          <app-ui-icon name="listPlus" />
+          {{ 'guestList.addMany' | t }}
+        </button>
+      }
+      @if (_exportUrl(); as exportUrl) {
+        <!-- The backend names the file; the browser sends the session cookie. -->
+        <a [href]="exportUrl" appUiButton variant="outline" download>
+          <app-ui-icon name="download" />
+          {{ 'guestList.export' | t }}
+        </a>
+      }
+    </div>
+
+    @if (_store.mutationState().failure; as failure) {
+      <app-failure-alert
+        class="guest-list__failure"
+        [failure]="failure"
+        [heading]="'guestList.actionFailed' | t"
+        [message]="failure.kind === 'conflict' ? ('guestList.pastConflict' | t) : undefined"
+      />
+    }
+
+    <section class="guest-list__section" aria-labelledby="guest-list-guests">
+      <h2 id="guest-list-guests" #listHeading appUiText="h3" tabindex="-1">
+        {{ 'guestList.list.heading' | t }}
+      </h2>
+
+      <div class="guest-list__tools">
+        <app-form-text
+          class="guest-list__search"
+          [formField]="_searchForm.query"
+          [label]="'guestList.list.search' | t"
+          type="search"
+          autocomplete="off"
+        />
+        <div class="guest-list__tool">
+          <span class="guest-list__tool-label" id="guest-list-filter" appUiText="small">
+            {{ 'guestList.list.filter' | t }}
+          </span>
+          <app-ui-toggle-group
+            [(value)]="_filter"
+            [options]="_filterOptions()"
+            ariaLabelledby="guest-list-filter"
+            variant="outline"
+            fullWidth
+          />
+        </div>
+        <div class="guest-list__tool">
+          <span class="guest-list__tool-label" id="guest-list-sort" appUiText="small">
+            {{ 'guestList.list.sort' | t }}
+          </span>
+          <app-ui-toggle-group
+            [(value)]="_sort"
+            [options]="_sortOptions()"
+            ariaLabelledby="guest-list-sort"
+            variant="outline"
+            fullWidth
+          />
+        </div>
+      </div>
+
+      <app-async-content
+        class="guest-list__body"
+        [state]="_store.guestsState()"
+        [failureHeading]="'guestList.list.loadFailed' | t"
+        [failureHeadingLevel]="3"
+        [loadingLabel]="'guestList.loading' | t"
+        (retry)="_store.reload()"
+        loadingIndicator="skeleton"
+        retryable
+      >
+        <ng-template>
+          <!-- Polite, so a new filter or search is told without interrupting. -->
+          <p class="guest-list__result" aria-live="polite" appUiText="muted">
+            @if (_store.guests().length > 0) {
+              {{
+                'guestList.list.result'
+                  | t: { count: _visible().length, total: _store.guests().length }
+              }}
+            }
+          </p>
+          @if (_store.guests().length === 0) {
+            <app-ui-empty
+              [heading]="'guestList.empty.heading' | t"
+              [description]="
+                (_readonly() ? 'guestList.empty.descriptionPast' : 'guestList.empty.description')
+                  | t
+              "
+              [headingLevel]="3"
+              icon="users"
+            >
+              @if (!_readonly()) {
+                <button (click)="_add()" appUiButton type="button">
+                  {{ 'guestList.add' | t }}
+                </button>
+              }
+            </app-ui-empty>
+          } @else if (_visible().length === 0) {
+            <p class="guest-list__none">{{ 'guestList.list.none' | t }}</p>
+          } @else {
+            <ul class="guest-list__grid">
+              @for (guest of _visible(); track guest.id) {
+                <li>
+                  <app-guest-card
+                    [guest]="guest"
+                    [timeZone]="_store.event()?.timeZone ?? 'UTC'"
+                    [readonly]="_readonly()"
+                    [canShare]="_canShare()"
+                    (copyLink)="_copy(guest)"
+                    (shareLink)="_share(guest)"
+                    (edit)="_edit(guest)"
+                    (answer)="_answer(guest)"
+                    (renewLink)="_renew(guest)"
+                    (remove)="_remove(guest)"
+                  />
+                </li>
+              }
+            </ul>
+          }
+        </ng-template>
+      </app-async-content>
+    </section>
+  </ng-template>
+</app-async-content>

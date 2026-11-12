@@ -430,6 +430,7 @@ export class ExampleDialog {
 - `heading` and `description` of `app-ui-dialog` become the accessible name and description of the dialog
 - The primary action goes last in `appUiDialogFooter`
 - `closeButton: false` hides the close button in the corner. Escape and a click outside still close
+- The spec of a dialog component renders it with `TestBed.createComponent()` and `providers: provideUiDialogTesting({ data, close })` from `@shared/testing/dialog-testing`, so the spec does not import Spartan (which an app may not)
 
 ### Confirm dialog
 

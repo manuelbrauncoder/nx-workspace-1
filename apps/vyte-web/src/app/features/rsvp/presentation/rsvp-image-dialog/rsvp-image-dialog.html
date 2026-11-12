@@ -1,0 +1,15 @@
+@let heading = 'rsvp.gallery.image' | t: { number: _image.number, total: _image.total };
+<app-ui-dialog [heading]="heading">
+  <img
+    class="rsvp-image-dialog__image"
+    [alt]="heading"
+    [height]="_image.height"
+    [ngSrc]="_image.src"
+    [width]="_image.width"
+  />
+  <div appUiDialogFooter>
+    <button (click)="_dialogRef.close()" appUiButton variant="outline" type="button">
+      {{ 'common.close' | t }}
+    </button>
+  </div>
+</app-ui-dialog>

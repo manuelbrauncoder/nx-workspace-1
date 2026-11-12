@@ -1,0 +1,314 @@
+@let state = _store.invitationState();
+@if (!_store.invitation()) {
+  <!-- While loading and after a failure the page still has its heading. -->
+  <div class="rsvp__intro">
+    <h1 class="rsvp__title" appUiText="section">
+      {{ (state.failure?.kind === 'not-found' ? 'rsvp.notFound.heading' : 'rsvp.title') | t }}
+    </h1>
+    @if (state.failure?.kind === 'not-found') {
+      <p class="rsvp__lead">{{ 'rsvp.notFound.lead' | t }}</p>
+    }
+  </div>
+}
+
+<!-- An unknown or renewed link has its own heading and lead above, without a second alert. -->
+@if (state.failure?.kind !== 'not-found') {
+  <app-async-content
+    class="rsvp"
+    [state]="state"
+    [failureHeading]="'rsvp.loadFailed' | t"
+    [loadingLabel]="'rsvp.loading' | t"
+    (retry)="_store.reload()"
+    retryable
+  >
+    <ng-template>
+      @if (_store.invitation(); as invitation) {
+        @if (invitation.past) {
+          <div class="rsvp__intro rsvp__intro--past">
+            <p class="rsvp__kicker">{{ invitation.event.title }}</p>
+            <h1 class="rsvp__title" #heading appUiText="section" tabindex="-1">
+              {{ 'rsvp.past.heading' | t }}
+            </h1>
+            <p class="rsvp__lead">{{ 'rsvp.past.lead' | t }}</p>
+          </div>
+        } @else {
+          @let event = invitation.event;
+          @let guest = invitation.guest;
+          @if (_showThanks()) {
+            <div class="rsvp__intro">
+              <p class="rsvp__kicker">{{ event.title }}</p>
+              <h1 class="rsvp__title" #heading appUiText="section" tabindex="-1">
+                {{ 'rsvp.thanks.heading' | t: { name: guest.name } }}
+              </h1>
+              <p class="rsvp__lead">
+                @if (_hosts(); as hosts) {
+                  {{
+                    (_oneHost() ? 'rsvp.thanks.leadHost' : 'rsvp.thanks.leadHosts') | t: { hosts }
+                  }}
+                } @else {
+                  {{ 'rsvp.thanks.lead' | t }}
+                }
+              </p>
+            </div>
+
+            <section class="rsvp__card rsvp__answer" aria-labelledby="rsvp-answer-heading">
+              <h2 class="rsvp__card-label" id="rsvp-answer-heading">
+                {{ 'rsvp.thanks.yourAnswer' | t }}
+              </h2>
+              <div class="rsvp__answer-row">
+                <span class="rsvp__answer-icon" [attr.data-response]="guest.response">
+                  <app-ui-icon [name]="guest.response === 'accepted' ? 'check' : 'x'" />
+                </span>
+                <div class="rsvp__answer-text">
+                  <p class="rsvp__answer-response">
+                    {{
+                      (guest.response === 'accepted' ? 'rsvp.form.accepted' : 'rsvp.form.declined')
+                        | t
+                    }}
+                  </p>
+                  <p>
+                    @if (guest.response === 'declined') {
+                      {{ 'rsvp.thanks.declined' | t }}
+                    } @else if (guest.companions === 0) {
+                      {{ 'rsvp.thanks.alone' | t }}
+                    } @else if (guest.companions === 1) {
+                      {{ 'rsvp.thanks.withOne' | t }}
+                    } @else {
+                      {{ 'rsvp.thanks.with' | t: { count: guest.companions } }}
+                    }
+                  </p>
+                </div>
+              </div>
+              @if (guest.message; as message) {
+                <blockquote class="rsvp__message">{{ message }}</blockquote>
+              }
+              @if (invitation.open) {
+                <div class="rsvp__change">
+                  <button (click)="_edit()" appUiButton variant="outline" type="button">
+                    {{ 'rsvp.thanks.change' | t }}
+                  </button>
+                  @if (_until(); as until) {
+                    <p class="rsvp__hint">
+                      {{
+                        'rsvp.thanks.changeUntil'
+                          | t: { date: until | localDate: 'weekdayDate' : event.timeZone }
+                      }}
+                    </p>
+                  }
+                </div>
+              } @else {
+                <p class="rsvp__hint">{{ 'rsvp.closed.answerKept' | t }}</p>
+              }
+            </section>
+
+            <section class="rsvp__section" aria-labelledby="rsvp-when-heading">
+              <h2 class="rsvp__section-heading" id="rsvp-when-heading" appUiText="h3">
+                {{ 'rsvp.when.heading' | t }}
+              </h2>
+              <ng-container
+                [ngTemplateOutlet]="whenWhere"
+                [ngTemplateOutletContext]="{ $implicit: event }"
+              />
+            </section>
+
+            @if (invitation.open) {
+              <p class="rsvp__note">{{ 'rsvp.thanks.keepLink' | t }}</p>
+            }
+          } @else {
+            <div class="rsvp__intro">
+              <p class="rsvp__greeting">{{ 'rsvp.invite.greeting' | t: { name: guest.name } }}</p>
+              <h1 class="rsvp__title" #heading appUiText="section" tabindex="-1">
+                {{ event.title }}
+              </h1>
+              @if (_hosts(); as hosts) {
+                <p class="rsvp__lead">
+                  {{ (_oneHost() ? 'rsvp.invite.host' : 'rsvp.invite.hosts') | t: { hosts } }}
+                </p>
+              }
+            </div>
+
+            @if (_cover(); as cover) {
+              <figure class="rsvp__cover">
+                <!-- Decorative: the page says everything the picture could. -->
+                <img
+                  [height]="cover.height"
+                  [ngSrc]="_imageUrl(cover)"
+                  [width]="cover.width"
+                  alt=""
+                  priority
+                />
+              </figure>
+            }
+
+            <ng-container
+              [ngTemplateOutlet]="whenWhere"
+              [ngTemplateOutletContext]="{ $implicit: event }"
+            />
+
+            @if (event.description) {
+              <app-ui-rich-text class="rsvp__description" [html]="event.description" />
+            }
+
+            @if (_gallery().length > 0) {
+              <section class="rsvp__section" aria-labelledby="rsvp-gallery-heading">
+                <h2 class="rsvp__section-heading" id="rsvp-gallery-heading" appUiText="h3">
+                  {{ 'rsvp.gallery.heading' | t }}
+                </h2>
+                <ul class="rsvp__gallery">
+                  @for (image of _gallery(); track image.id; let index = $index) {
+                    <li>
+                      <button
+                        class="rsvp__gallery-item"
+                        [attr.aria-label]="
+                          'rsvp.gallery.open' | t: { number: index + 2, total: event.images.length }
+                        "
+                        (click)="_openImage(image, index + 2, event.images.length)"
+                        type="button"
+                      >
+                        <img
+                          [height]="image.height"
+                          [ngSrc]="_imageUrl(image)"
+                          [width]="image.width"
+                          alt=""
+                        />
+                      </button>
+                    </li>
+                  }
+                </ul>
+              </section>
+            }
+
+            @if (_showForm()) {
+              <form class="rsvp__card rsvp__form" [formRoot]="_answerForm">
+                <div class="rsvp__form-heading">
+                  <h2 class="rsvp__card-heading" #formHeading appUiText="title" tabindex="-1">
+                    {{ 'rsvp.form.heading' | t }}
+                  </h2>
+                  @if (_until(); as until) {
+                    <p class="rsvp__hint">
+                      {{
+                        'rsvp.form.until'
+                          | t: { date: until | localDate: 'weekdayDate' : event.timeZone }
+                      }}
+                    </p>
+                  }
+                </div>
+                <app-form-radio-group
+                  [formField]="_answerForm.response"
+                  [options]="_responses()"
+                  [label]="'rsvp.form.response' | t"
+                  layout="cards"
+                />
+                @if (_bringsCompanions()) {
+                  <app-form-stepper
+                    [formField]="_answerForm.companions"
+                    [label]="'rsvp.form.companions' | t"
+                    [description]="
+                      (_maxCompanions() === 1
+                        ? 'rsvp.form.companionsUpToOne'
+                        : 'rsvp.form.companionsUpTo'
+                      ) | t: { max: _maxCompanions() }
+                    "
+                    [decreaseLabel]="'rsvp.form.companionsDecrease' | t"
+                    [increaseLabel]="'rsvp.form.companionsIncrease' | t"
+                  />
+                }
+                <app-form-textarea
+                  [formField]="_answerForm.message"
+                  [label]="
+                    (_hosts() ? 'rsvp.form.messageTo' : 'rsvp.form.message')
+                      | t: { hosts: _hosts() ?? '' }
+                  "
+                  [description]="'rsvp.form.messageDescription' | t"
+                  [rows]="3"
+                />
+                @if (_store.answerState().failure; as failure) {
+                  <!-- 409: the deadline passed while the page was open. -->
+                  <app-failure-alert
+                    [failure]="failure"
+                    [heading]="'rsvp.form.failed' | t"
+                    [headingLevel]="3"
+                    [message]="failure.kind === 'conflict' ? ('rsvp.form.closed' | t) : undefined"
+                  />
+                }
+                <div class="rsvp__form-actions">
+                  <button
+                    class="rsvp__submit"
+                    [loading]="_sending()"
+                    [loadingLabel]="'rsvp.form.sending' | t"
+                    appUiButton
+                    type="submit"
+                  >
+                    {{ 'rsvp.form.submit' | t }}
+                  </button>
+                  @if (_editing()) {
+                    <button (click)="_cancelEdit()" appUiButton variant="outline" type="button">
+                      {{ 'common.cancel' | t }}
+                    </button>
+                  }
+                </div>
+              </form>
+            } @else {
+              <section class="rsvp__card" aria-labelledby="rsvp-closed-heading">
+                <h2 class="rsvp__card-heading" id="rsvp-closed-heading" appUiText="title">
+                  {{ 'rsvp.closed.heading' | t }}
+                </h2>
+                <p class="rsvp__hint">{{ 'rsvp.closed.lead' | t }}</p>
+              </section>
+            }
+          }
+        }
+      }
+    </ng-template>
+  </app-async-content>
+}
+
+<!-- Date, time and place as chips, then the address with its links. -->
+<ng-template #whenWhere let-event>
+  @if (_time(); as time) {
+    <ul class="rsvp__chips">
+      <li class="rsvp__chip">
+        <time [attr.datetime]="event.startsAt.toISOString()">
+          @if (time.date.end; as end) {
+            {{ 'rsvp.when.days' | t: { start: time.date.start, end } }}
+          } @else {
+            {{ time.date.start }}
+          }
+        </time>
+      </li>
+      @if (time.time; as hours) {
+        <li class="rsvp__chip">
+          @if (hours.end; as end) {
+            {{ 'rsvp.when.range' | t: { start: hours.start, end } }}
+          } @else {
+            {{ 'rsvp.when.from' | t: { start: hours.start } }}
+          }
+        </li>
+      }
+      @if (event.locationName) {
+        <li class="rsvp__chip">{{ event.locationName }}</li>
+      }
+    </ul>
+  }
+  <div class="rsvp__place">
+    @if (event.address; as address) {
+      <p class="rsvp__address">{{ address }}</p>
+    }
+    <div class="rsvp__links">
+      @if (_mapUrl(); as mapUrl) {
+        <a
+          class="rsvp__link"
+          [attr.aria-label]="'rsvp.when.mapNamed' | t"
+          [href]="mapUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {{ 'rsvp.when.map' | t }}
+        </a>
+      }
+      @if (_calendarUrl(); as calendarUrl) {
+        <a class="rsvp__link" [href]="calendarUrl" download>{{ 'rsvp.when.calendar' | t }}</a>
+      }
+    </div>
+  </div>
+</ng-template>
