@@ -56,4 +56,12 @@ describe('FormDate', () => {
 
     expect(trigger.disabled).toBe(true);
   });
+
+  it('says in the label that a required date is required, the trigger button cannot', async () => {
+    const { element } = await render({ required: true });
+
+    const label = element.querySelector('label')!;
+    expect(label.querySelector('.sr-only')?.textContent?.trim()).toBe('Pflichtfeld');
+    expect(label.querySelector('[aria-hidden="true"]')?.textContent).toBe('*');
+  });
 });

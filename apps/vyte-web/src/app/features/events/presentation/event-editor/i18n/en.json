@@ -1,0 +1,65 @@
+{
+  "titleNew": "New event",
+  "titleEdit": "Edit event",
+  "breadcrumbEdit": "Edit",
+  "groups": {
+    "when": "When",
+    "where": "Where"
+  },
+  "fields": {
+    "title": "Title",
+    "description": "Description",
+    "locationName": "Place",
+    "address": "Address",
+    "addressDescription": "Guests see a link to a map with it.",
+    "allDay": "All day",
+    "startDate": "Start date",
+    "startTime": "Start time",
+    "endDate": "End date",
+    "endDateDescription": "Leave empty when the event ends on the same day or in the night after.",
+    "endTime": "End time",
+    "deadline": "Answers until",
+    "deadlineDescription": "Guests can accept or decline until the end of this day. Without a date until the start.",
+    "newImages": "Add images"
+  },
+  "validation": {
+    "titleRequired": "Please enter a title.",
+    "titleBlank": "The title must not consist of spaces only.",
+    "titleTooLong": "The title can have at most {{ max }} characters.",
+    "descriptionTooLong": "The description is too long. Please shorten it.",
+    "locationTooLong": "The place can have at most {{ max }} characters.",
+    "addressTooLong": "The address can have at most {{ max }} characters.",
+    "startDateRequired": "Please choose the date of the event.",
+    "startTimeRequired": "Please enter the start time.",
+    "endTimeRequired": "Please enter an end time for the end date.",
+    "endBeforeStart": "The end is before the start. Choose a later end date or end time.",
+    "deadlineAfterStart": "The deadline must end before the day of the event."
+  },
+  "images": {
+    "existing": "Images",
+    "cover": "Cover",
+    "alt": "Image {{ number }}",
+    "remove": "Delete image {{ number }}",
+    "moveEarlier": "Move image {{ number }} forward",
+    "moveLater": "Move image {{ number }} back",
+    "description": "JPEG, PNG, WebP or AVIF of at most {{ size }} MB. An event has at most {{ max }} images, the first is the cover.",
+    "full": "The event already has {{ max }} images. Delete one to add a new one.",
+    "uploadFailed": "The event is saved, but the images were not uploaded",
+    "invalid": "At least one file is not a valid image, so none was saved.",
+    "removeHeading": "Delete image {{ number }}?",
+    "removeDescription": "The image is deleted right away and for good, even if you do not save the event afterwards.",
+    "removeConfirm": "Delete",
+    "removed": "Image deleted",
+    "removeFailed": "The image could not be deleted",
+    "moveFailed": "The order of the images could not be saved",
+    "moved": "The image is now at position {{ number }}"
+  },
+  "past": {
+    "heading": "The event is over",
+    "description": "A past event cannot be edited any more."
+  },
+  "save": "Save",
+  "saving": "Saving",
+  "saved": "Event saved",
+  "saveFailed": "Saving failed"
+}

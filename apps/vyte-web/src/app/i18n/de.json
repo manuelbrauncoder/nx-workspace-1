@@ -31,5 +31,29 @@
   "seo": {
     "defaultDescription": "Vyte: Einladungen mit persönlichem Link, Zusagen ohne Konto und Fotos vom Fest an einem Ort.",
     "imageAlt": "Logo von Vyte"
+  },
+  "events": {
+    "breadcrumb": "Events",
+    "loading": "Event wird geladen",
+    "loadFailed": "Das Event konnte nicht geladen werden",
+    "edit": "Bearbeiten",
+    "editNamed": "Bearbeiten: {{ title }}",
+    "deleted": "Event gelöscht",
+    "delete": {
+      "label": "Löschen",
+      "labelNamed": "Löschen: {{ title }}",
+      "heading": "Event löschen?",
+      "description": "„{{ title }}“ wird mit allen Gästen, Links und Fotos dauerhaft gelöscht. Das lässt sich nicht rückgängig machen.",
+      "confirm": "Löschen"
+    },
+    "when": {
+      "at": "{{ date }}, {{ time }} Uhr",
+      "range": "{{ date }}, {{ start }} bis {{ end }} Uhr",
+      "allDay": "{{ date }}, ganztägig",
+      "days": "{{ start }} bis {{ end }}"
+    },
+    "counts": {
+      "summary": "Kommen: {{ coming }} · Offen: {{ pending }}"
+    }
   }
 }

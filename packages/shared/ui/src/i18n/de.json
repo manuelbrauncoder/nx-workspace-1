@@ -51,7 +51,8 @@
       "linkApply": "Übernehmen",
       "linkRemove": "Link entfernen",
       "linkUrlDescriptionPage": "Eine Webadresse, mailto:name@example.org, tel:+49… oder ein Pfad dieser Website wie /privacy."
-    }
+    },
+    "required": "Pflichtfeld"
   },
   "language": {
     "choose": "Sprache wählen"

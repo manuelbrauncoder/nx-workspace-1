@@ -112,6 +112,8 @@ private async _save(event: Event): Promise<void> {
 
 All controls share `label` (required) and `description` (optional). State such as errors, touched, disabled and required comes from the form through `[formField]` and is not set in the template.
 
+A required field shows an asterisk, hidden from screen readers, which hear the native `required` instead. `FormDate` is a button, which has no `required`, so its label carries a visually hidden "Pflichtfeld" (`announceRequired` on `FormControlShell`). A new control that is not a native input sets it as well.
+
 | Control           | Selector                | Value type      | Own inputs                            |
 | ----------------- | ----------------------- | --------------- | ------------------------------------- |
 | `FormText`        | `app-form-text`         | `string`        | `type`, `placeholder`, `autocomplete` |
@@ -138,7 +140,7 @@ All of them are shown on `/showcase/forms`.
 />
 ```
 
-`type` is one of `text`, `email`, `password`, `search`, `tel`, `url`.
+`type` is one of `text`, `email`, `password`, `search`, `tel`, `url`, `time`. `time` is the native time input, on a phone the system picker; its value is `'HH:MM'` or `''`. Combine it with `app-form-date` for a date and a time, as the event form of vyte-web does.
 
 ### `FormTextarea`
 

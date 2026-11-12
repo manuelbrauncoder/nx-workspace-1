@@ -86,7 +86,7 @@ What only the portfolio apps have. The overview is on the app pages [portfolio-w
 
 ## Vyte (API complete for v1, web app in progress)
 
-Event planning with a guest list and a personal link per guest. The API is complete for v1: accounts, admin, events, the guest list with its CSV export, the guest links, the team, the save the date and the guest photos exist. The web app has its frame: [vyte-web](apps/vyte-web.md) runs with the app shell, the sign-in, the legal pages and the complete API layer. The pages for events, guests, the team, photos and the guest links follow.
+Event planning with a guest list and a personal link per guest. The API is complete for v1: accounts, admin, events, the guest list with its CSV export, the guest links, the team, the save the date and the guest photos exist. The web app has its frame: [vyte-web](apps/vyte-web.md) runs with the app shell, the sign-in, the legal pages, the complete API layer and the event pages. The pages for guests, the team, photos and the guest links follow.
 
 | Page                            | What it covers                                                                |
 | ------------------------------- | ----------------------------------------------------------------------------- |

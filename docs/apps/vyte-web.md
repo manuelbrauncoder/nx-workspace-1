@@ -22,13 +22,16 @@ The ports differ from the other products, so all of them run side by side. `buil
 
 ## Pages
 
-| Route                                    | Feature | Content                                                      |
-| ---------------------------------------- | ------- | ------------------------------------------------------------ |
-| `/`                                      | `home`  | Placeholder: what vyte is and the way to the sign-in         |
-| `/sign-in`                               | `auth`  | Sign-in. There is no sign-up page, accounts come from a link |
-| `/imprint`, `/privacy`, `/accessibility` | `legal` | From `angular-base`, with `SITE_OWNER`                       |
+| Route                                    | Feature  | Content                                                                     |
+| ---------------------------------------- | -------- | --------------------------------------------------------------------------- |
+| `/`                                      | `home`   | What vyte is and the way to the sign-in. A signed-in user goes to `/events` |
+| `/events`                                | `events` | Own events, upcoming and past, "Neues Event"                                |
+| `/events/new`, `/events/:id/edit`        | `events` | Form of an event: texts, times, place, images with order and cover          |
+| `/events/:id`                            | `events` | When and where, map link, description, counts, images, edit and delete      |
+| `/sign-in`                               | `auth`   | Sign-in. There is no sign-up page, accounts come from a link                |
+| `/imprint`, `/privacy`, `/accessibility` | `legal`  | From `angular-base`, with `SITE_OWNER`                                      |
 
-Every other route of the [web draft](../vyte/spec.md#7-web-draft) is still missing and answers with the 404 page.
+The other routes of the [web draft](../vyte/spec.md#7-web-draft) (guests, team, photos, print, the guest pages, admin) are still missing and answer with the 404 page.
 
 ## API layer
 
@@ -56,9 +59,10 @@ Every other route of the [web draft](../vyte/spec.md#7-web-draft) is still missi
 
 ## Differences to angular-base
 
-- **Look**: the design "Konfetti" in light only, fonts Unbounded (headings) and DM Sans. `FORCED_THEME_MODE` is `'light'`, there is no theme toggle and no `_dark.scss`. `--brand` is the yellow with ink on it, `--primary` the blue; `--decor` and `--soft` are extra tokens. The values come from the [design](../vyte/design/README.md)
+- **Look**: the design "Konfetti" in light only, fonts Unbounded (headings) and DM Sans. `FORCED_THEME_MODE` is `'light'`, there is no theme toggle and no `_dark.scss`. `--brand` is the yellow with ink on it, `--primary` the blue; `--decor` and `--soft` are extra tokens. The Konfetti shapes are tokens as well: `--card-border`, `--card-radius` and `--card-shadow` (3px ink border, 28px radius, offset shadow without blur) for cards such as the event cards and the counts, `--chip-border` for pills such as "Vorbei". Text sizes come from `appUiText`, not from the SCSS of a page. `--ring` is the ink, not the blue: the helm controls draw their focus ring at 50%, which keeps the ink at about 3.3:1 on white, the blue would fall to 2.6:1. The values come from the [design](../vyte/design/README.md)
 - **No sign-up**: no page, no route, no `signUp` in `AuthStore`, `allowSignUp` is `false`. An account comes from an account link of the admin or from an editor invite, both are in the API layer already
-- **Navigation**: `APP_NAV_ITEMS` is empty until the first feature has a page. Header and drawer then show no navigation and no menu button
+- **Navigation**: the host pages navigate through breadcrumbs (`Events › <Titel> › Bearbeiten`), not through the header. `APP_NAV_ITEMS` stays empty, header and drawer show no navigation and no menu button. The logo leads to `/`, which sends a signed-in user to `/events`
+- **Times**: vyte is used in one country. A new event stores the zone of the host's browser, the form builds its instants in that zone, no zone field. Every page shows times through `localDate` with the zone of the event, so the server (UTC) renders the same times as the browser. The rules of start, end and deadline are in `features/events/domain/event-times.ts`
 - **App shell**: reads `shellLayout()`, so a page can ask for the full width, as in `portfolio-web`. The logo is the wordmark `vyte` as text
 - **No notes, no showcase**: the reference features of the base are left out
 - **SEO**: `/` is the only page in the sitemap, everything else is behind the sign-in or behind a personal link

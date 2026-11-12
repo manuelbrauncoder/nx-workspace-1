@@ -2,10 +2,20 @@
   <ol hlmBreadcrumbList>
     @for (item of items(); track $index; let last = $last) {
       <li hlmBreadcrumbItem>
-        @if (last || !item.path) {
-          <span hlmBreadcrumbPage>{{ item.labelKey | t }}</span>
+        <ng-template #text>
+          @if (item.label !== undefined) {
+            {{ item.label }}
+          } @else {
+            {{ item.labelKey! | t }}
+          }
+        </ng-template>
+        @if (last) {
+          <span hlmBreadcrumbPage><ng-container [ngTemplateOutlet]="text" /></span>
+        } @else if (item.path) {
+          <a [link]="item.path" hlmBreadcrumbLink><ng-container [ngTemplateOutlet]="text" /></a>
         } @else {
-          <a [link]="item.path" hlmBreadcrumbLink>{{ item.labelKey | t }}</a>
+          <!-- A step without a page of its own: plain text, not the current page. -->
+          <span><ng-container [ngTemplateOutlet]="text" /></span>
         }
       </li>
       @if (!last) {

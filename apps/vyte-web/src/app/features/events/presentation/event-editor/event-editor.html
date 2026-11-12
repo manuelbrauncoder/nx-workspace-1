@@ -1,0 +1,206 @@
+<app-ui-breadcrumb [items]="_breadcrumb()" />
+<h1 class="mt-4" appUiText="h1">
+  {{ (_isEdit() ? 'eventEditor.titleEdit' : 'eventEditor.titleNew') | t }}
+</h1>
+
+<app-async-content
+  class="event-editor"
+  [state]="_store.detailState()"
+  [failureHeading]="'events.loadFailed' | t"
+  [loadingLabel]="'events.loading' | t"
+>
+  <ng-template>
+    @if (_past()) {
+      <app-ui-alert [heading]="'eventEditor.past.heading' | t">
+        {{ 'eventEditor.past.description' | t }}
+      </app-ui-alert>
+    } @else {
+      <form class="event-editor__form" [formRoot]="_eventForm" (submit)="_focusFirstInvalid()">
+        <app-form-text
+          [formField]="_eventForm.title"
+          [label]="'eventEditor.fields.title' | t"
+          autocomplete="off"
+        />
+        <app-form-rich-text
+          [formField]="_eventForm.description"
+          [label]="'eventEditor.fields.description' | t"
+        />
+
+        <fieldset class="event-editor__group">
+          <legend appUiText="h4">{{ 'eventEditor.groups.when' | t }}</legend>
+          <app-form-switch
+            [formField]="_eventForm.allDay"
+            [label]="'eventEditor.fields.allDay' | t"
+          />
+          <div class="event-editor__pair">
+            <app-form-date
+              [formField]="_eventForm.startDate"
+              [label]="'eventEditor.fields.startDate' | t"
+            />
+            @if (!_model().allDay) {
+              <app-form-text
+                [formField]="_eventForm.startTime"
+                [label]="'eventEditor.fields.startTime' | t"
+                type="time"
+              />
+            }
+          </div>
+          <div class="event-editor__pair">
+            <app-form-date
+              [formField]="_eventForm.endDate"
+              [label]="'eventEditor.fields.endDate' | t"
+              [description]="'eventEditor.fields.endDateDescription' | t"
+            />
+            @if (!_model().allDay) {
+              <app-form-text
+                [formField]="_eventForm.endTime"
+                [label]="'eventEditor.fields.endTime' | t"
+                type="time"
+              />
+            }
+          </div>
+          <app-form-date
+            [formField]="_eventForm.deadlineDate"
+            [label]="'eventEditor.fields.deadline' | t"
+            [description]="'eventEditor.fields.deadlineDescription' | t"
+          />
+        </fieldset>
+
+        <fieldset class="event-editor__group">
+          <legend appUiText="h4">{{ 'eventEditor.groups.where' | t }}</legend>
+          <app-form-text
+            [formField]="_eventForm.locationName"
+            [label]="'eventEditor.fields.locationName' | t"
+            autocomplete="off"
+          />
+          <app-form-textarea
+            [formField]="_eventForm.address"
+            [label]="'eventEditor.fields.address' | t"
+            [description]="'eventEditor.fields.addressDescription' | t"
+            [rows]="3"
+          />
+        </fieldset>
+
+        @if (_images().length > 0) {
+          <div class="event-editor__images" role="group" aria-labelledby="event-editor-images">
+            <p id="event-editor-images" appUiText="small">
+              {{ 'eventEditor.images.existing' | t }}
+            </p>
+            <ol class="event-editor__image-list">
+              @for (
+                image of _images();
+                track image.id;
+                let index = $index, first = $first, last = $last
+              ) {
+                <li class="event-editor__image">
+                  <app-ui-attachment
+                    [imageAlt]="'eventEditor.images.alt' | t: { number: index + 1 }"
+                    [imageSrc]="image.url"
+                    [removeLabel]="'eventEditor.images.remove' | t: { number: index + 1 }"
+                    (remove)="_removeImage(image, index + 1)"
+                    orientation="vertical"
+                    removable
+                  />
+                  <div class="event-editor__image-actions">
+                    <button
+                      [attr.aria-label]="
+                        'eventEditor.images.moveEarlier' | t: { number: index + 1 }
+                      "
+                      [attr.data-move-image]="image.id"
+                      [disabled]="first"
+                      (click)="_move(index, -1)"
+                      appUiButton
+                      variant="ghost"
+                      size="icon-sm"
+                      type="button"
+                    >
+                      <app-ui-icon name="arrowLeft" />
+                    </button>
+                    <button
+                      [attr.aria-label]="'eventEditor.images.moveLater' | t: { number: index + 1 }"
+                      [attr.data-move-image]="image.id"
+                      [disabled]="last"
+                      (click)="_move(index, 1)"
+                      appUiButton
+                      variant="ghost"
+                      size="icon-sm"
+                      type="button"
+                    >
+                      <app-ui-icon name="arrowRight" />
+                    </button>
+                  </div>
+                  @if (first) {
+                    <span class="event-editor__cover" appUiText="small">{{
+                      'eventEditor.images.cover' | t
+                    }}</span>
+                  }
+                </li>
+              }
+            </ol>
+          </div>
+        }
+
+        <p class="sr-only" role="status">{{ _moveStatus() }}</p>
+
+        @if (_freeImages() > 0) {
+          <app-form-files
+            [accept]="_imageTypes"
+            [description]="
+              'eventEditor.images.description' | t: { size: _imageMaxMegabytes, max: _imagesMax }
+            "
+            [formField]="_eventForm.newImages"
+            [label]="'eventEditor.fields.newImages' | t"
+            [maxFiles]="_freeImages()"
+            [maxFileSize]="_imageMaxBytes"
+          />
+        } @else {
+          <p appUiText="muted">{{ 'eventEditor.images.full' | t: { max: _imagesMax } }}</p>
+        }
+
+        @if (_store.mutationState().failure; as failure) {
+          <app-failure-alert [failure]="failure" [heading]="'eventEditor.saveFailed' | t" />
+        }
+        @if (_store.imageMutationState().failure; as failure) {
+          @switch (_imageAction()) {
+            @case ('remove') {
+              <app-failure-alert
+                [failure]="failure"
+                [heading]="'eventEditor.images.removeFailed' | t"
+              />
+            }
+            @case ('move') {
+              <app-failure-alert
+                [failure]="failure"
+                [heading]="'eventEditor.images.moveFailed' | t"
+              />
+            }
+            @default {
+              <!-- A 400 here means the backend could not read one of the files as an image. -->
+              <app-failure-alert
+                [failure]="failure"
+                [heading]="'eventEditor.images.uploadFailed' | t"
+                [message]="
+                  failure.kind === 'bad-request' ? ('eventEditor.images.invalid' | t) : undefined
+                "
+              />
+            }
+          }
+        }
+
+        <div class="event-editor__actions">
+          <button
+            [loading]="_saving()"
+            [loadingLabel]="'eventEditor.saving' | t"
+            appUiButton
+            type="submit"
+          >
+            {{ 'eventEditor.save' | t }}
+          </button>
+          <a [routerLink]="id() ? ['/events', id()] : '/events'" appUiButton variant="outline">{{
+            'common.cancel' | t
+          }}</a>
+        </div>
+      </form>
+    }
+  </ng-template>
+</app-async-content>

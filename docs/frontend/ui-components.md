@@ -348,6 +348,7 @@ private readonly _breadcrumb: UiBreadcrumbItem[] = [
 ```
 
 - Labels are translation keys, the wrapper translates them. A label that depends on the page (a section, a legal page) goes into a `computed`
+- A label that comes from data, such as the title of an event, is a `label` (text as it is) instead of a `labelKey`: `{ label: event.title, path: '/events/' + event.id }`. An item has exactly one of the two
 - Every item but the last is a link through the router. The last item is the current page: no link, `aria-current="page"`, even if it has a `path`
 - The `<nav>` is named "Navigationspfad" (`common.breadcrumb`), `label` overrides it. The separators are hidden from screen readers
 - Built on Spartan's `breadcrumb`. The list wraps on narrow screens, there is no collapsing into an ellipsis

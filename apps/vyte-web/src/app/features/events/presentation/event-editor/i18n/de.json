@@ -1,0 +1,65 @@
+{
+  "titleNew": "Neues Event",
+  "titleEdit": "Event bearbeiten",
+  "breadcrumbEdit": "Bearbeiten",
+  "groups": {
+    "when": "Wann",
+    "where": "Wo"
+  },
+  "fields": {
+    "title": "Titel",
+    "description": "Beschreibung",
+    "locationName": "Ort",
+    "address": "Adresse",
+    "addressDescription": "Gäste sehen dazu einen Link zur Karte.",
+    "allDay": "Ganztägig",
+    "startDate": "Startdatum",
+    "startTime": "Startzeit",
+    "endDate": "Enddatum",
+    "endDateDescription": "Leer lassen, wenn das Event am selben Tag oder in der Nacht danach endet.",
+    "endTime": "Endzeit",
+    "deadline": "Antworten bis",
+    "deadlineDescription": "Gäste können bis einschließlich diesem Tag zu- oder absagen. Ohne Datum bis zum Beginn.",
+    "newImages": "Bilder hinzufügen"
+  },
+  "validation": {
+    "titleRequired": "Bitte gib einen Titel ein.",
+    "titleBlank": "Der Titel darf nicht nur aus Leerzeichen bestehen.",
+    "titleTooLong": "Der Titel darf höchstens {{ max }} Zeichen lang sein.",
+    "descriptionTooLong": "Die Beschreibung ist zu lang. Bitte kürze sie.",
+    "locationTooLong": "Der Ort darf höchstens {{ max }} Zeichen lang sein.",
+    "addressTooLong": "Die Adresse darf höchstens {{ max }} Zeichen lang sein.",
+    "startDateRequired": "Bitte wähle das Datum des Events.",
+    "startTimeRequired": "Bitte gib die Startzeit ein.",
+    "endTimeRequired": "Bitte gib zum Enddatum auch die Endzeit ein.",
+    "endBeforeStart": "Das Ende liegt vor dem Beginn. Wähle ein späteres Enddatum oder eine spätere Endzeit.",
+    "deadlineAfterStart": "Die Antwortfrist muss vor dem Tag des Events enden."
+  },
+  "images": {
+    "existing": "Bilder",
+    "cover": "Titelbild",
+    "alt": "Bild {{ number }}",
+    "remove": "Bild {{ number }} löschen",
+    "moveEarlier": "Bild {{ number }} nach vorn",
+    "moveLater": "Bild {{ number }} nach hinten",
+    "description": "JPEG, PNG, WebP oder AVIF mit höchstens {{ size }} MB. Ein Event hat höchstens {{ max }} Bilder, das erste ist das Titelbild.",
+    "full": "Das Event hat bereits {{ max }} Bilder. Lösche eines, um ein neues hinzuzufügen.",
+    "uploadFailed": "Das Event ist gespeichert, die Bilder wurden aber nicht hochgeladen",
+    "invalid": "Mindestens eine Datei ist kein gültiges Bild, deshalb wurde keines gespeichert.",
+    "removeHeading": "Bild {{ number }} löschen?",
+    "removeDescription": "Das Bild wird sofort und dauerhaft gelöscht, auch wenn du das Event danach nicht speicherst.",
+    "removeConfirm": "Löschen",
+    "removed": "Bild gelöscht",
+    "removeFailed": "Das Bild konnte nicht gelöscht werden",
+    "moveFailed": "Die Reihenfolge der Bilder konnte nicht gespeichert werden",
+    "moved": "Bild ist jetzt an Position {{ number }}"
+  },
+  "past": {
+    "heading": "Das Event ist vorbei",
+    "description": "Ein vergangenes Event lässt sich nicht mehr bearbeiten."
+  },
+  "save": "Speichern",
+  "saving": "Wird gespeichert",
+  "saved": "Event gespeichert",
+  "saveFailed": "Speichern fehlgeschlagen"
+}

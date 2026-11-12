@@ -61,4 +61,29 @@ describe('UiBreadcrumb', () => {
 
     expect(element.querySelector('nav')?.getAttribute('aria-label')).toBe('Pfad');
   });
+
+  it('shows a text from data as it is', async () => {
+    const element = await render({
+      items: [{ labelKey: 'breadcrumbSpec.notes', path: '/notes' }, { label: 'Einkauf' }],
+    });
+
+    expect(element.querySelector('a')?.textContent?.trim()).toBe('Notizen');
+    expect(element.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('Einkauf');
+  });
+
+  it('shows a step without a path as plain text, only the last one is the current page', async () => {
+    const element = await render({
+      items: [
+        { labelKey: 'breadcrumbSpec.home', path: '/' },
+        { label: 'Ohne Seite' },
+        { label: 'Hier' },
+      ],
+    });
+
+    const current = element.querySelectorAll('[aria-current="page"]');
+    expect(current).toHaveLength(1);
+    expect(current[0].textContent?.trim()).toBe('Hier');
+    expect(element.textContent).toContain('Ohne Seite');
+    await expect(element).toBeAccessible();
+  });
 });

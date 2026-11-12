@@ -1,0 +1,13 @@
+{
+  "title": "Events",
+  "heading": "Your events",
+  "new": "New event",
+  "upcoming": "Upcoming",
+  "past": "Past",
+  "loading": "Loading the events",
+  "loadFailed": "The events could not be loaded",
+  "empty": {
+    "heading": "No events yet",
+    "description": "Create your first event, then invite your guests."
+  }
+}

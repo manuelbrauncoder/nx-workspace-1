@@ -51,7 +51,8 @@
       "linkApply": "Apply",
       "linkRemove": "Remove link",
       "linkUrlDescriptionPage": "A web address, mailto:name@example.org, tel:+49… or a path of this site such as /privacy."
-    }
+    },
+    "required": "required"
   },
   "language": {
     "choose": "Choose language"

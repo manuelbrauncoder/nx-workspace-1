@@ -1,0 +1,50 @@
+<div class="events-header">
+  <h1 appUiText="h1">{{ 'eventsList.heading' | t }}</h1>
+  <a appUiButton routerLink="new">
+    <app-ui-icon name="plus" />
+    {{ 'eventsList.new' | t }}
+  </a>
+</div>
+
+<app-async-content
+  class="events-body"
+  [state]="_store.listState()"
+  [failureHeading]="'eventsList.loadFailed' | t"
+  [loadingLabel]="'eventsList.loading' | t"
+  (retry)="_store.reload()"
+  loadingIndicator="skeleton"
+  retryable
+>
+  <ng-template>
+    @if (_store.isEmpty()) {
+      <app-ui-empty
+        [heading]="'eventsList.empty.heading' | t"
+        [description]="'eventsList.empty.description' | t"
+        icon="calendar"
+      >
+        <a appUiButton routerLink="new">{{ 'eventsList.new' | t }}</a>
+      </app-ui-empty>
+    } @else {
+      @if (_store.upcoming().length > 0) {
+        <section class="events-section" aria-labelledby="events-upcoming">
+          <h2 id="events-upcoming" appUiText="h3">{{ 'eventsList.upcoming' | t }}</h2>
+          <ul class="events-grid">
+            @for (event of _store.upcoming(); track event.id) {
+              <li><app-event-card [event]="event" /></li>
+            }
+          </ul>
+        </section>
+      }
+      @if (_store.past().length > 0) {
+        <section class="events-section" aria-labelledby="events-past">
+          <h2 id="events-past" appUiText="h3">{{ 'eventsList.past' | t }}</h2>
+          <ul class="events-grid">
+            @for (event of _store.past(); track event.id) {
+              <li><app-event-card [event]="event" /></li>
+            }
+          </ul>
+        </section>
+      }
+    }
+  </ng-template>
+</app-async-content>

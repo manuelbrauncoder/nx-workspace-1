@@ -1,0 +1,27 @@
+{
+  "title": "Event",
+  "past": "Vorbei",
+  "facts": {
+    "when": "Wann",
+    "where": "Wo",
+    "deadline": "Antworten bis"
+  },
+  "map": "In Karte öffnen",
+  "mapNamed": "In Karte öffnen: {{ address }}, öffnet OpenStreetMap in einem neuen Tab",
+  "noDescription": "Keine Beschreibung",
+  "guests": {
+    "heading": "Gäste",
+    "description": "Kommen und Höchstens zählen Personen samt Begleitung.",
+    "invited": "Eingeladen",
+    "coming": "Kommen",
+    "declined": "Abgesagt",
+    "pending": "Offen",
+    "atMost": "Höchstens"
+  },
+  "images": {
+    "heading": "Bilder",
+    "alt": "Bild {{ number }}",
+    "open": "Bild {{ number }} in neuem Tab öffnen"
+  },
+  "deleteFailed": "Das Event konnte nicht gelöscht werden"
+}

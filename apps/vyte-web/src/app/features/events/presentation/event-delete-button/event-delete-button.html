@@ -1,0 +1,10 @@
+<button
+  [attr.aria-label]="'events.delete.labelNamed' | t: { title: title() }"
+  (click)="_askForConfirmation()"
+  appUiButton
+  variant="outline"
+  type="button"
+>
+  <app-ui-icon name="trash" />
+  {{ 'events.delete.label' | t }}
+</button>

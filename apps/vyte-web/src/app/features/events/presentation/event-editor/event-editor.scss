@@ -1,0 +1,76 @@
+@use 'styles/abstracts' as *;
+
+.event-editor {
+  display: block;
+  margin-top: 2rem;
+  max-width: 40rem;
+}
+
+.event-editor__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.event-editor__group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  legend {
+    margin-bottom: 0.5rem;
+    padding: 0;
+  }
+}
+
+// Date and time side by side once there is room, one below the other on a phone.
+.event-editor__pair {
+  display: grid;
+  gap: 1rem;
+
+  @include up(sm) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.event-editor__images {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.event-editor__image-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.event-editor__image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.event-editor__image-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+// A Konfetti chip.
+.event-editor__cover {
+  padding: 0.25rem 0.75rem;
+  border: var(--chip-border);
+  border-radius: 999px;
+}
+
+.event-editor__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
