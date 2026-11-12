@@ -123,6 +123,8 @@ A required field shows an asterisk, hidden from screen readers, which hear the n
 | `FormDate`        | `app-form-date`         | `Date \| null`  | `placeholder`                         |
 | `FormSelect`      | `app-form-select`       | `T \| null`     | `options` (required), `placeholder`   |
 | `FormToggleGroup` | `app-form-toggle-group` | `T \| null`     | `options` (required)                  |
+| `FormRadioGroup`  | `app-form-radio-group`  | `T \| null`     | `options` (required), `layout`        |
+| `FormStepper`     | `app-form-stepper`      | `number`        | `decreaseLabel`, `increaseLabel`      |
 | `FormCheckbox`    | `app-form-checkbox`     | `boolean`       |                                       |
 | `FormSwitch`      | `app-form-switch`       | `boolean`       |                                       |
 
@@ -221,6 +223,45 @@ The control is generic over the value type. An option can be switched off with `
 ```
 
 For two to four options shown side by side as buttons, one of them always selected. It uses `app-ui-toggle-group` inside. For longer lists use `FormSelect`.
+
+### `FormRadioGroup`
+
+```html
+<app-form-radio-group
+  [formField]="_answerForm.response"
+  [options]="_responses"
+  label="Deine Antwort"
+  layout="cards"
+/>
+```
+
+A real radio group (Spartan `radio-group`) for a few options where none is chosen yet, such as an answer. The field type is `T | null`, `required` in the schema makes a choice mandatory. An option can carry a `description` as a second line. The label wraps the whole option, so the option is clicked anywhere and the radio is named by its text.
+
+- `layout="list"` (default) stacks the options, `layout="cards"` sets them as tiles side by side; the chosen tile takes `--primary`
+- The tiles take their border, radius and shadow from `--form-choice-border`, `--form-choice-radius` and `--form-choice-shadow`, falling back to the input border and `--radius`. An app sets them where it wants another shape, vyte on its guest page
+
+### `FormStepper`
+
+```ts
+// in the schema
+min(path.companions, 0);
+max(path.companions, () => this._maxCompanions());
+```
+
+```html
+<app-form-stepper
+  [formField]="_answerForm.companions"
+  label="Ich bringe mit"
+  description="bis zu 3 Personen"
+  decreaseLabel="Eine Person weniger"
+  increaseLabel="Eine Person mehr"
+/>
+```
+
+A small whole number with "−" and "+", e.g. how many people someone brings. The bounds come from the `min()` and `max()` rules of the field, which the `FormField` directive binds (without them: from 0, no upper bound). The buttons have no visible text, so `decreaseLabel` and `increaseLabel` are required.
+
+- The number is an `<output>` named by the label and announced after a change (`aria-live="polite"`)
+- A button at its bound is disabled. If it had the focus, the focus moves to the other button instead of falling to the page
 
 ### `FormCheckbox` and `FormSwitch`
 

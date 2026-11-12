@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+.form-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  // Every button is a full touch target, round like a counter.
+  button {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border: var(--form-choice-border, 1px solid var(--input));
+    border-radius: 9999px;
+  }
+}
+
+.form-stepper__value {
+  min-width: 2.25rem;
+  text-align: center;
+  font-family: var(--font-heading, inherit);
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}

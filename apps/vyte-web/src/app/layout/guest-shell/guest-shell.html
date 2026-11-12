@@ -1,0 +1,28 @@
+<div class="guest-shell">
+  <!-- At most two flat shapes behind the content, decoration only. -->
+  <div class="guest-shell__decor-layer" aria-hidden="true">
+    <div class="guest-shell__decor guest-shell__decor--circle"></div>
+    <div class="guest-shell__decor guest-shell__decor--half"></div>
+  </div>
+
+  <header class="guest-shell__header">
+    <span class="guest-shell__wordmark">{{ _wordmark }}</span>
+  </header>
+
+  <main class="guest-shell__main" id="main" tabindex="-1">
+    <router-outlet />
+  </main>
+
+  <footer class="guest-shell__footer">
+    <span>{{ 'layout.guestFooter' | t }}</span>
+    <nav [attr.aria-label]="'layout.legalNavigation' | t">
+      <ul class="guest-shell__links">
+        @for (item of _items; track item.path) {
+          <li>
+            <a class="guest-shell__link" [routerLink]="item.path">{{ item.labelKey | t }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </footer>
+</div>

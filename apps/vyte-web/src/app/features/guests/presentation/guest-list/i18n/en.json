@@ -1,0 +1,139 @@
+{
+  "title": "Guests",
+  "titleFor": "Guests · {{ title }}",
+  "heading": "Guests",
+  "event": "Event",
+  "loading": "Loading guests …",
+  "loadFailed": "The guest list could not be loaded",
+  "past": {
+    "heading": "The event is over",
+    "description": "The list can only be viewed and exported now."
+  },
+  "counts": {
+    "heading": "Overview",
+    "description": "Coming and At most count people including companions.",
+    "invited": "Invited",
+    "coming": "Coming",
+    "declined": "Declined",
+    "pending": "No answer",
+    "atMost": "At most"
+  },
+  "add": "Add guest",
+  "addMany": "Paste a list",
+  "export": "Export as CSV",
+  "actionFailed": "The change did not work",
+  "pastConflict": "The event is over or the list is full. Reload the page and check it.",
+  "list": {
+    "heading": "Guest list",
+    "search": "Search by name",
+    "filter": "Answer",
+    "sort": "Order",
+    "loadFailed": "The guests could not be loaded",
+    "result": "{{ count }} of {{ total }} guests",
+    "none": "No guest matches the filter and search."
+  },
+  "filter": {
+    "all": "All",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "pending": "No answer"
+  },
+  "sort": {
+    "name": "Name",
+    "answered": "Newest answers"
+  },
+  "empty": {
+    "heading": "No guests yet",
+    "description": "Add guests one by one or paste a list of names.",
+    "descriptionPast": "Nobody was on the list of this event."
+  },
+  "added": "{{ name }} is on the list",
+  "addedMany": "Guests added: {{ count }}",
+  "saved": "{{ name }} saved",
+  "answered": "Answer recorded for {{ name }}",
+  "renew": {
+    "heading": "Create a new link for {{ name }}?",
+    "description": "The current link stops working. Send the new one to the right person.",
+    "confirm": "Create new link",
+    "done": "New link created for {{ name }}"
+  },
+  "remove": {
+    "heading": "Remove {{ name }}?",
+    "description": "The answer is lost and the personal link stops working.",
+    "confirm": "Remove",
+    "done": "{{ name }} removed"
+  },
+  "copied": "Link for {{ name }} copied",
+  "copyFailed": "The link could not be copied",
+  "shareText": "You are invited: {{ title }} on {{ date }}",
+  "shareFailed": "The link could not be shared",
+  "card": {
+    "actions": "Actions for {{ name }}",
+    "accepted": "Coming",
+    "acceptedWithOne": "Coming with 1 companion",
+    "acceptedWith": "Coming with {{ count }} companions",
+    "declined": "Declined",
+    "pending": "No answer",
+    "allowanceOne": "May bring 1 person",
+    "allowance": "May bring {{ count }} people",
+    "byHost": "Recorded by a host",
+    "reduced": "Companions cut down to the new limit",
+    "respondedAt": "Answered on {{ date }}",
+    "message": "Message",
+    "note": "Note",
+    "copy": "Copy link",
+    "copyNamed": "Copy link for {{ name }}",
+    "share": "Share",
+    "shareNamed": "Share link for {{ name }}",
+    "edit": "Edit",
+    "answer": "Record answer",
+    "renew": "Renew link",
+    "remove": "Remove"
+  },
+  "form": {
+    "addHeading": "Add guest",
+    "editHeading": "Edit {{ name }}",
+    "name": "Name",
+    "nameDescription": "As it appears on the invitation, e.g. “Ada” or “Ada Lovelace”.",
+    "nameRequired": "Please enter a name.",
+    "nameBlank": "The name cannot be only spaces.",
+    "tooLong": "At most {{ max }} characters.",
+    "companions": "Companions",
+    "companionsDescription": "How many people the guest may bring.",
+    "companionsDecrease": "One companion fewer",
+    "companionsIncrease": "One companion more",
+    "note": "Note",
+    "noteDescription": "For the hosts only, the guest does not see it.",
+    "failed": "The guest could not be saved",
+    "conflict": "The list is full or the event is over.",
+    "saving": "Saving",
+    "save": "Save",
+    "add": "Add"
+  },
+  "bulk": {
+    "heading": "Paste a list",
+    "description": "One name per line, at most {{ max }}. Empty lines are skipped.",
+    "names": "Names",
+    "placeholder": "Ada Lovelace\nGrace Hopper\nAlan Turing",
+    "count": "Found: {{ count }} of at most {{ max }} names",
+    "namesRequired": "Please paste at least one name.",
+    "tooMany": "At most {{ max }} names at once.",
+    "nameTooLong": "“{{ name }}” is too long, at most {{ max }} characters.",
+    "companions": "Companions for everyone",
+    "companionsDescription": "Can be changed for each guest afterwards.",
+    "failed": "The guests could not be added",
+    "submit": "Add all"
+  },
+  "answer": {
+    "heading": "Record answer for {{ name }}",
+    "description": "For an answer you got in person. The guest can still change it through their link.",
+    "response": "Answer",
+    "accepted": "Coming",
+    "declined": "Not coming",
+    "responseRequired": "Please choose an answer.",
+    "companions": "Companions",
+    "companionsDescription": "Up to {{ max }}.",
+    "failed": "The answer could not be saved",
+    "submit": "Save answer"
+  }
+}

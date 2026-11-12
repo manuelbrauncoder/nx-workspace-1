@@ -1,0 +1,38 @@
+<app-form-control-shell
+  #shell
+  [controlId]="_id"
+  [description]="description()"
+  [disabled]="disabled()"
+  [errors]="_errorMessages()"
+  [label]="label()"
+  [required]="required()"
+>
+  <!-- `aria-describedby` of the group comes from the shell through Spartan. -->
+  <hlm-radio-group
+    class="form-radio-group"
+    [attr.aria-labelledby]="shell.labelId()"
+    [attr.aria-required]="required() || null"
+    [disabled]="disabled()"
+    [id]="_id"
+    [name]="_id"
+    [required]="required()"
+    [value]="value()"
+    (focusout)="_leave($event)"
+    (valueChange)="_select($event)"
+  >
+    @for (option of options(); track option.value; let index = $index) {
+      <!-- The label wraps the whole option, so the tile is clickable and names the radio with its description. -->
+      <label class="form-radio-group__option" [for]="_optionId(index)">
+        <hlm-radio [disabled]="disabled()" [inputId]="_optionId(index)" [value]="option.value">
+          <hlm-radio-indicator indicator />
+        </hlm-radio>
+        <span class="form-radio-group__text">
+          <span class="form-radio-group__label">{{ option.label }}</span>
+          @if (option.description; as optionDescription) {
+            <span class="form-radio-group__description">{{ optionDescription }}</span>
+          }
+        </span>
+      </label>
+    }
+  </hlm-radio-group>
+</app-form-control-shell>

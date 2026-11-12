@@ -1,0 +1,41 @@
+<app-form-control-shell
+  #shell
+  [controlId]="_id"
+  [description]="description()"
+  [disabled]="disabled()"
+  [errors]="_errorMessages()"
+  [label]="label()"
+>
+  <div
+    class="form-stepper"
+    [attr.aria-describedby]="shell.describedBy()"
+    [attr.aria-labelledby]="shell.labelId() + ' ' + _id"
+    (focusout)="_leave($event)"
+    role="group"
+  >
+    <button
+      [attr.aria-label]="decreaseLabel()"
+      [disabled]="disabled() || _atMin()"
+      (click)="_step(-1)"
+      appUiButton
+      size="icon-lg"
+      type="button"
+      variant="outline"
+    >
+      <app-ui-icon name="minus" />
+    </button>
+    <!-- Labelled by the shell and part of the name of the group, so entering it tells the number. `aria-live` announces a change. -->
+    <output class="form-stepper__value" [id]="_id" aria-live="polite">{{ value() }}</output>
+    <button
+      [attr.aria-label]="increaseLabel()"
+      [disabled]="disabled() || _atMax()"
+      (click)="_step(1)"
+      appUiButton
+      size="icon-lg"
+      type="button"
+      variant="outline"
+    >
+      <app-ui-icon name="plus" />
+    </button>
+  </div>
+</app-form-control-shell>

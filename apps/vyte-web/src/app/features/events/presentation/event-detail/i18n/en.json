@@ -16,7 +16,8 @@
     "coming": "Coming",
     "declined": "Declined",
     "pending": "Open",
-    "atMost": "At most"
+    "atMost": "At most",
+    "manage": "Manage guests"
   },
   "images": {
     "heading": "Images",

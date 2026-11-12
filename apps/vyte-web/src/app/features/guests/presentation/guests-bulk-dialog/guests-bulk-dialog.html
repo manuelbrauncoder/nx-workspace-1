@@ -1,0 +1,48 @@
+<form [formRoot]="_bulkForm">
+  <!-- The instruction sits on the field, where it is heard again on coming back to it. -->
+  <app-ui-dialog [heading]="'guestList.bulk.heading' | t">
+    <div class="guests-bulk-dialog__fields">
+      <div>
+        <app-form-textarea
+          [formField]="_bulkForm.names"
+          [label]="'guestList.bulk.names' | t"
+          [description]="'guestList.bulk.description' | t: { max: _maxNames }"
+          [placeholder]="'guestList.bulk.placeholder' | t"
+          [rows]="8"
+        />
+        <!-- Polite, so the count follows the typing without interrupting it. -->
+        <p class="guests-bulk-dialog__count" aria-live="polite">
+          {{ 'guestList.bulk.count' | t: { count: _names().length, max: _maxNames } }}
+        </p>
+      </div>
+      <app-form-stepper
+        [formField]="_bulkForm.maxCompanions"
+        [label]="'guestList.bulk.companions' | t"
+        [description]="'guestList.bulk.companionsDescription' | t"
+        [decreaseLabel]="'guestList.form.companionsDecrease' | t"
+        [increaseLabel]="'guestList.form.companionsIncrease' | t"
+      />
+      @if (_failure(); as failure) {
+        <app-failure-alert
+          [failure]="failure"
+          [heading]="'guestList.bulk.failed' | t"
+          [headingLevel]="3"
+          [message]="failure.kind === 'conflict' ? ('guestList.form.conflict' | t) : undefined"
+        />
+      }
+    </div>
+    <div appUiDialogFooter>
+      <button (click)="_dialogRef.close()" appUiButton variant="outline" type="button">
+        {{ 'common.cancel' | t }}
+      </button>
+      <button
+        [loading]="_saving()"
+        [loadingLabel]="'guestList.form.saving' | t"
+        appUiButton
+        type="submit"
+      >
+        {{ 'guestList.bulk.submit' | t }}
+      </button>
+    </div>
+  </app-ui-dialog>
+</form>

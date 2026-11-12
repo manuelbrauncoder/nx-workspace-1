@@ -1,0 +1,144 @@
+@use 'styles/abstracts' as *;
+
+// Spacing as on the event pages: 1rem from the breadcrumb to the heading, 2rem from the heading
+// to the content, 2.5rem between the sections, 1rem from a section heading to its content.
+
+:host {
+  display: block;
+}
+
+.guest-list__heading {
+  margin-top: 1rem;
+
+  // A long word in a title must not push the page wider than the phone.
+  h1,
+  .guest-list__event {
+    overflow-wrap: anywhere;
+  }
+}
+
+.guest-list__event {
+  margin-top: 0.25rem;
+}
+
+.guest-list {
+  display: block;
+  margin-top: 2rem;
+}
+
+.guest-list__past {
+  display: block;
+  margin-bottom: 2.5rem;
+}
+
+.guest-list__section + .guest-list__actions,
+.guest-list__actions + .guest-list__failure,
+.guest-list__actions + .guest-list__section,
+.guest-list__failure + .guest-list__section {
+  margin-top: 2.5rem;
+}
+
+.guest-list__failure {
+  display: block;
+}
+
+.guest-list__section-lead {
+  margin-top: 0.25rem;
+}
+
+.guest-list__counts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+
+  @include up(sm) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+// Each count is a small Konfetti card, as on the event page.
+.guest-list__count {
+  padding: 0.75rem 1rem;
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+
+  // Five counts in two columns: the last one takes the whole row instead of standing alone.
+  &:last-child {
+    grid-column: 1 / -1;
+
+    @include up(sm) {
+      grid-column: auto;
+    }
+  }
+
+  dt {
+    overflow-wrap: anywhere;
+  }
+
+  dd {
+    margin-top: 0.25rem;
+  }
+}
+
+.guest-list__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.guest-list__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.guest-list__search {
+  flex: 1 1 16rem;
+  max-width: 24rem;
+}
+
+.guest-list__tool {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  // On a phone each tool takes the whole row, its buttons share the width.
+  flex: 1 1 100%;
+
+  @include up(sm) {
+    flex: 0 1 auto;
+  }
+}
+
+.guest-list__tool-label {
+  font-weight: 500;
+}
+
+.guest-list__body {
+  display: block;
+  margin-top: 1rem;
+}
+
+.guest-list__result:not(:empty) {
+  margin-bottom: 1rem;
+}
+
+.guest-list__none {
+  color: var(--muted-foreground);
+}
+
+.guest-list__grid {
+  display: grid;
+  gap: 1rem;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up(lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

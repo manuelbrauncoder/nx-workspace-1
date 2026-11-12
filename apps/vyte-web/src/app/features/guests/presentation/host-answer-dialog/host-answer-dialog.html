@@ -1,0 +1,47 @@
+<form [formRoot]="_answerForm">
+  <app-ui-dialog
+    [heading]="'guestList.answer.heading' | t: { name: _guest.name }"
+    [description]="'guestList.answer.description' | t"
+  >
+    <div class="host-answer-dialog__fields">
+      <app-form-radio-group
+        [formField]="_answerForm.response"
+        [options]="_responses()"
+        [label]="'guestList.answer.response' | t"
+        layout="cards"
+      />
+      @if (_bringsCompanions()) {
+        <app-form-stepper
+          [formField]="_answerForm.companions"
+          [label]="'guestList.answer.companions' | t"
+          [description]="
+            'guestList.answer.companionsDescription' | t: { max: _guest.maxCompanions }
+          "
+          [decreaseLabel]="'guestList.form.companionsDecrease' | t"
+          [increaseLabel]="'guestList.form.companionsIncrease' | t"
+        />
+      }
+      @if (_failure(); as failure) {
+        <app-failure-alert
+          [failure]="failure"
+          [heading]="'guestList.answer.failed' | t"
+          [headingLevel]="3"
+          [message]="failure.kind === 'conflict' ? ('guestList.pastConflict' | t) : undefined"
+        />
+      }
+    </div>
+    <div appUiDialogFooter>
+      <button (click)="_dialogRef.close()" appUiButton variant="outline" type="button">
+        {{ 'common.cancel' | t }}
+      </button>
+      <button
+        [loading]="_saving()"
+        [loadingLabel]="'guestList.form.saving' | t"
+        appUiButton
+        type="submit"
+      >
+        {{ 'guestList.answer.submit' | t }}
+      </button>
+    </div>
+  </app-ui-dialog>
+</form>

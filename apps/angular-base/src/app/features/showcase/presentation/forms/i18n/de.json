@@ -22,7 +22,12 @@
     "newsletterDescription": "Höchstens eine Mail im Monat.",
     "terms": "Ich stimme den Bedingungen zu",
     "customerNumber": "Kundennummer",
-    "customerNumberDescription": "Deaktiviert über die Formular-Logik."
+    "customerNumberDescription": "Deaktiviert über die Formular-Logik.",
+    "team": "Team-Größe",
+    "teamDescription": "Wie viele Personen arbeiten mit dir?",
+    "teamDecrease": "Eine Person weniger",
+    "teamIncrease": "Eine Person mehr",
+    "availability": "Verfügbarkeit"
   },
   "roles": {
     "developer": "Entwicklung",
@@ -45,5 +50,11 @@
   "value": {
     "heading": "Aktueller Wert",
     "description": "Das Model hinter dem Formular, live aktualisiert."
+  },
+  "availability": {
+    "fullTime": "Vollzeit",
+    "fullTimeDescription": "40 Stunden pro Woche",
+    "partTime": "Teilzeit",
+    "partTimeDescription": "bis 30 Stunden pro Woche"
   }
 }

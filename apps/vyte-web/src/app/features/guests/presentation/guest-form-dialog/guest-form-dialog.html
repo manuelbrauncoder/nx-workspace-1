@@ -1,0 +1,52 @@
+<form [formRoot]="_guestForm">
+  <app-ui-dialog
+    [heading]="
+      _guest
+        ? ('guestList.form.editHeading' | t: { name: _guest.name })
+        : ('guestList.form.addHeading' | t)
+    "
+  >
+    <div class="guest-form-dialog__fields">
+      <app-form-text
+        [formField]="_guestForm.name"
+        [label]="'guestList.form.name' | t"
+        [description]="'guestList.form.nameDescription' | t"
+        autocomplete="off"
+      />
+      <app-form-stepper
+        [formField]="_guestForm.maxCompanions"
+        [label]="'guestList.form.companions' | t"
+        [description]="'guestList.form.companionsDescription' | t"
+        [decreaseLabel]="'guestList.form.companionsDecrease' | t"
+        [increaseLabel]="'guestList.form.companionsIncrease' | t"
+      />
+      <app-form-textarea
+        [formField]="_guestForm.note"
+        [label]="'guestList.form.note' | t"
+        [description]="'guestList.form.noteDescription' | t"
+        [rows]="3"
+      />
+      @if (_failure(); as failure) {
+        <app-failure-alert
+          [failure]="failure"
+          [heading]="'guestList.form.failed' | t"
+          [headingLevel]="3"
+          [message]="failure.kind === 'conflict' ? ('guestList.form.conflict' | t) : undefined"
+        />
+      }
+    </div>
+    <div appUiDialogFooter>
+      <button (click)="_dialogRef.close()" appUiButton variant="outline" type="button">
+        {{ 'common.cancel' | t }}
+      </button>
+      <button
+        [loading]="_saving()"
+        [loadingLabel]="'guestList.form.saving' | t"
+        appUiButton
+        type="submit"
+      >
+        {{ (_guest ? 'guestList.form.save' : 'guestList.form.add') | t }}
+      </button>
+    </div>
+  </app-ui-dialog>
+</form>

@@ -139,12 +139,13 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 ### Form Controls und UI-Wrapper
 
 - Spartan, `@ng-icons` und Tiptap (`@tiptap/*`) werden nur in der Lib `ui` importiert (`packages/shared/ui/src/ui/` und `packages/shared/ui/src/form-controls/`). Apps und `core` nutzen ausschließlich die Wrapper, so bleibt ein Tausch der UI-Library auf diese Lib begrenzt. Die Nx-Tags erzwingen das (`bannedExternalImports` für `type:app` und `type:core`, `type:helm` nur für `type:ui`)
-- Namensschema: Ordner `form-<name>/`, Selector `app-form-<name>`, Klasse `Form<Name>`. Vorhanden: `FormText`, `FormTextarea`, `FormRichText`, `FormFiles`, `FormDate`, `FormSelect`, `FormToggleGroup`, `FormCheckbox`, `FormSwitch`
+- Namensschema: Ordner `form-<name>/`, Selector `app-form-<name>`, Klasse `Form<Name>`. Vorhanden: `FormText`, `FormTextarea`, `FormRichText`, `FormFiles`, `FormDate`, `FormSelect`, `FormToggleGroup`, `FormRadioGroup`, `FormStepper`, `FormCheckbox`, `FormSwitch`
 - Jedes Control ist ein komplettes Feld mit Label, Beschreibung und Fehlermeldungen: `<app-form-text [formField]="_noteForm.title" label="Titel" />`
 - Die Controls sind Custom Controls von Signal Forms: `FormValueControl<T>` mit `value = model()` bzw. `FormCheckboxControl` mit `checked = model()`. Zustand (`errors`, `touched`, `disabled`, `required` usw.) kommt nur über die Inputs, die die `FormField`-Direktive bindet. Verlassen des Controls meldet der Output `touch`
 - Label, Beschreibung und Fehler rendert ausschließlich `FormControlShell` (`form-control-shell/`), jedes Control setzt sich per Content-Projection hinein. Fehler erscheinen erst, wenn das Feld `touched` ist (`visibleErrorMessages`)
 - Die Hülle stellt Spartan `aria-describedby` und den Invalid-Zustand bereit (`BrnFieldA11yService`, eigener `NgControl`-Ersatz). Controls binden deshalb kein `aria-invalid` und kein `forceInvalid` selbst. Ausnahme ist `FormRichText`: sein editierbares `div` ist kein Spartan-Control und bindet die ARIA-Attribute über `shell.labelId()` und `shell.describedBy()`
 - `FormFiles` ist eine Drop-Zone und liefert `File[]`. `maxFiles`, `accept` (MIME-Types) und `maxFileSize` begrenzen die Auswahl, abgelehnte Dateien meldet das Control selbst. Das Hochladen übernimmt das Formular
+- `FormStepper` (− / +) holt seine Grenzen aus `min()`/`max()` im Schema. `FormRadioGroup` mit `layout="cards"` zeigt große Kacheln, ihre Form kommt aus `--form-choice-border`/`--form-choice-radius`
 - `FormRichText` liefert einen HTML-String (leer `''`). Die erlaubten Formate stehen einmal in `packages/contracts/src/rich-text.ts`, Tiptap wird nur in `form-rich-text/rich-text-editor.ts` importiert
 
 #### Spartan-Styles

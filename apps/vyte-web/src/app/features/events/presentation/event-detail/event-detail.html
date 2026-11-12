@@ -101,6 +101,15 @@
               <dd appUiText="h3">{{ event.counts.atMost }}</dd>
             </div>
           </dl>
+          <a
+            class="event-detail__guests-link"
+            [routerLink]="['/events', event.id, 'guests']"
+            appUiButton
+            variant="outline"
+          >
+            <app-ui-icon name="users" />
+            {{ 'eventDetail.guests.manage' | t }}
+          </a>
         </section>
 
         @if (event.images.length > 0) {

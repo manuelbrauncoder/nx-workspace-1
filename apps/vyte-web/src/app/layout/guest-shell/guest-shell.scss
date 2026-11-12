@@ -1,0 +1,112 @@
+// The ground of the guest pages from the Konfetti design: yellow, ink, two flat shapes. Mobile
+// first, on a wide screen the content stays a narrow column in the middle.
+
+:host {
+  display: block;
+}
+
+.guest-shell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-height: 100dvh;
+  padding: 1rem 1rem 2rem;
+  background: var(--brand);
+  color: var(--brand-foreground);
+}
+
+// Only the shapes are clipped, content that does not fit may still scroll (reflow).
+.guest-shell__decor-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.guest-shell__decor {
+  position: absolute;
+}
+
+// Never behind text (spec, "Look"): the circle sits in the top corner next to the wordmark, the
+// half circle peeks out of the bottom edge below the footer.
+.guest-shell__decor--circle {
+  top: -3.5rem;
+  right: -3rem;
+  width: 8.75rem;
+  height: 8.75rem;
+  border-radius: 50%;
+  background: var(--decor);
+}
+
+.guest-shell__decor--half {
+  bottom: -1.75rem;
+  left: -2rem;
+  width: 7rem;
+  height: 3.5rem;
+  border-radius: 7rem 7rem 0 0;
+  background: var(--primary);
+}
+
+.guest-shell__header,
+.guest-shell__main,
+.guest-shell__footer {
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+  margin-inline: auto;
+}
+
+.guest-shell__header {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: 0.25rem;
+}
+
+.guest-shell__wordmark {
+  font-family: var(--font-heading);
+  font-size: 1.375rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.guest-shell__main {
+  flex: 1 1 auto;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.guest-shell__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0 1rem;
+  font-weight: 500;
+}
+
+.guest-shell__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 1rem;
+}
+
+// The design's link blue keeps 4.5:1 on the yellow ground. Each link is a full touch target.
+.guest-shell__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:focus-visible {
+    outline: 2px solid var(--foreground);
+    outline-offset: 2px;
+  }
+}

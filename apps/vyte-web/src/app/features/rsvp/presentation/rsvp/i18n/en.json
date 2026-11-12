@@ -1,0 +1,72 @@
+{
+  "title": "Invitation",
+  "loading": "Loading the invitation …",
+  "loadFailed": "The invitation could not be loaded",
+  "notFound": {
+    "heading": "Invitation not found",
+    "lead": "This link is no longer valid, it may have been renewed. Ask the hosts for the current link."
+  },
+  "past": {
+    "heading": "The event is over",
+    "lead": "This invitation is no longer active."
+  },
+  "invite": {
+    "greeting": "Hey {{ name }}!",
+    "hosts": "{{ hosts }} want to celebrate with you.",
+    "host": "{{ hosts }} wants to celebrate with you."
+  },
+  "when": {
+    "heading": "When and where",
+    "days": "{{ start }} to {{ end }}",
+    "range": "{{ start }} to {{ end }}",
+    "from": "from {{ start }}",
+    "map": "Open in map",
+    "mapNamed": "Open in map, opens OpenStreetMap in a new tab",
+    "calendar": "Add to calendar"
+  },
+  "gallery": {
+    "heading": "Pictures",
+    "open": "View picture {{ number }} of {{ total }} large",
+    "image": "Picture {{ number }} of {{ total }}"
+  },
+  "form": {
+    "heading": "Are you in?",
+    "until": "Let us know by {{ date }}.",
+    "response": "Your answer",
+    "accepted": "I'm in",
+    "declined": "Can't make it",
+    "responseRequired": "Please choose whether you come.",
+    "companions": "I'm bringing",
+    "companionsUpToOne": "up to 1 person",
+    "companionsUpTo": "up to {{ max }} people",
+    "companionsDecrease": "One person fewer",
+    "companionsIncrease": "One person more",
+    "message": "Message to the hosts (optional)",
+    "messageTo": "Message to {{ hosts }} (optional)",
+    "messageDescription": "For example allergies or food wishes.",
+    "messageTooLong": "At most {{ max }} characters.",
+    "failed": "Your answer could not be sent",
+    "closed": "The deadline has passed in the meantime, answers are closed.",
+    "sending": "Sending",
+    "submit": "Send answer"
+  },
+  "thanks": {
+    "heading": "Thank you, {{ name }}!",
+    "lead": "Your answer has arrived.",
+    "leadHosts": "{{ hosts }} got your answer.",
+    "yourAnswer": "Your answer",
+    "declined": "What a pity, maybe next time.",
+    "alone": "You are coming alone.",
+    "withOne": "You are bringing 1 person.",
+    "with": "You are bringing {{ count }} people.",
+    "change": "Change answer",
+    "changeUntil": "You can change it until {{ date }}.",
+    "keepLink": "You need this link again to change your answer. Best save it right away.",
+    "leadHost": "{{ hosts }} got your answer."
+  },
+  "closed": {
+    "heading": "Answers are closed",
+    "lead": "The deadline has passed. Please contact the hosts directly.",
+    "answerKept": "The deadline has passed, your answer stays as it is."
+  }
+}

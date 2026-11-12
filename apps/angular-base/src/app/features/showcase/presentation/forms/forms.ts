@@ -5,6 +5,8 @@ import {
   email,
   form,
   FormField,
+  max,
+  min,
   required,
   submit,
   validate,
@@ -14,8 +16,13 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { FormCheckbox } from '@shared/form-controls/form-checkbox/form-checkbox';
 import { FormDate } from '@shared/form-controls/form-date/form-date';
 import { FormFiles } from '@shared/form-controls/form-files/form-files';
+import {
+  FormRadioGroup,
+  FormRadioOption,
+} from '@shared/form-controls/form-radio-group/form-radio-group';
 import { FormRichText } from '@shared/form-controls/form-rich-text/form-rich-text';
 import { FormSelect, FormSelectOption } from '@shared/form-controls/form-select/form-select';
+import { FormStepper } from '@shared/form-controls/form-stepper/form-stepper';
 import { FormSwitch } from '@shared/form-controls/form-switch/form-switch';
 import { FormText } from '@shared/form-controls/form-text/form-text';
 import { FormTextarea } from '@shared/form-controls/form-textarea/form-textarea';
@@ -26,6 +33,7 @@ import { ShowcaseSection } from '../showcase-section/showcase-section';
 
 type Role = 'developer' | 'designer' | 'product';
 type ContactWay = 'mail' | 'phone';
+type Availability = 'fullTime' | 'partTime';
 
 interface Profile {
   name: string;
@@ -36,6 +44,8 @@ interface Profile {
   birthday: Date | null;
   role: Role | null;
   contactWay: ContactWay;
+  availability: Availability | null;
+  teamSize: number;
   newsletter: boolean;
   terms: boolean;
   customerNumber: string;
@@ -50,8 +60,10 @@ interface Profile {
     FormCheckbox,
     FormDate,
     FormFiles,
+    FormRadioGroup,
     FormRichText,
     FormSelect,
+    FormStepper,
     FormSwitch,
     FormText,
     FormTextarea,
@@ -78,6 +90,19 @@ export class Forms {
     { value: 'phone' as const, label: this._i18n.translate('showcaseForms.contactWays.phone') },
   ]);
 
+  private readonly _availabilities = computed<FormRadioOption<Availability>[]>(() => [
+    {
+      value: 'fullTime',
+      label: this._i18n.translate('showcaseForms.availability.fullTime'),
+      description: this._i18n.translate('showcaseForms.availability.fullTimeDescription'),
+    },
+    {
+      value: 'partTime',
+      label: this._i18n.translate('showcaseForms.availability.partTime'),
+      description: this._i18n.translate('showcaseForms.availability.partTimeDescription'),
+    },
+  ]);
+
   private readonly _profile = signal<Profile>({
     name: '',
     email: '',
@@ -87,6 +112,8 @@ export class Forms {
     birthday: null,
     role: null,
     contactWay: 'mail',
+    availability: null,
+    teamSize: 1,
     newsletter: false,
     terms: false,
     customerNumber: 'K-2048',
@@ -110,6 +137,8 @@ export class Forms {
         ? undefined
         : { kind: 'terms', message: this._i18n.translate('showcaseForms.validation.terms') },
     );
+    min(path.teamSize, 1);
+    max(path.teamSize, 10);
     disabled(path.customerNumber);
   });
 
