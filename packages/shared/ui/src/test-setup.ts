@@ -4,5 +4,8 @@ import { provideI18nTesting } from '@core/i18n/testing/provide-i18n-testing';
 import { setupTestEnvironment } from '@core/testing/setup-test-environment';
 import uiDe from './i18n/de.json';
 import { uiI18n } from './i18n/ui.i18n';
+import { registerAccessibilityMatcher } from './testing/accessibility';
 
 setupTestEnvironment([provideI18nTesting({ shared: [uiI18n], sharedDe: [uiDe] })]);
+
+registerAccessibilityMatcher();

@@ -14,11 +14,14 @@
     <p [id]="_descriptionId()" hlmFieldDescription>{{ description }}</p>
   }
   @if (_invalid()) {
-    <ul class="form-control-shell__errors" [id]="_errorId()" role="alert">
-      @for (error of errors(); track error) {
-        <li>{{ error }}</li>
-      }
-    </ul>
+    <!-- The live role sits on the wrapper: `role="alert"` on a list would hide its items from assistive tech. -->
+    <div [id]="_errorId()" role="alert">
+      <ul class="form-control-shell__errors">
+        @for (error of errors(); track error) {
+          <li>{{ error }}</li>
+        }
+      </ul>
+    </div>
   }
 </ng-template>
 

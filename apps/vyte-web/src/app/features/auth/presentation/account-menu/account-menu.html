@@ -19,7 +19,7 @@
           <span class="account-menu__email">{{ me.email }}</span>
         }
       </div>
-      <app-ui-menu-group>
+      <app-ui-menu-group [attr.aria-label]="me.name ?? me.email">
         <button (triggered)="_signOut()" appUiMenuItem type="button">
           <app-ui-icon name="logOut" />
           {{ 'auth.signOut' | t }}
@@ -28,5 +28,13 @@
     </app-ui-menu>
   </ng-template>
 } @else {
-  <a [routerLink]="_signInPath" appUiButton variant="ghost" size="sm">{{ 'auth.signIn' | t }}</a>
+  <a
+    [routerLink]="_signInPath"
+    routerLinkActive
+    ariaCurrentWhenActive="page"
+    appUiButton
+    variant="ghost"
+    size="sm"
+    >{{ 'auth.signIn' | t }}</a
+  >
 }

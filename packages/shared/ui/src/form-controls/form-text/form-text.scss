@@ -1,3 +1,8 @@
 :host {
   display: block;
 }
+
+// The helm ring is half transparent, too faint on white. A solid primary ring keeps the focus visible.
+input:focus-visible {
+  --tw-ring-color: var(--primary);
+}

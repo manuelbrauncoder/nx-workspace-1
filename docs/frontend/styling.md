@@ -208,6 +208,13 @@ Components do not need to know about any of this. A component that uses tokens i
   }
   ```
 
+### Touch targets and spacing
+
+- Every interactive element of a product page is at least **44 × 44 CSS pixels** (WCAG 2.5.5, AAA, used as the bar for all apps). Below that, the element gets padding that makes up the difference inside the tap area, not a bigger visual control
+- Two targets next to each other keep at least 8px between them, so a thumb hits the one it means
+- Rhythm: sections of a page are separated by the same spacing step (`gap-*` or `py-*` from the Tailwind scale, 4px per step), not by ad-hoc margins. Lists of cards use one gap
+- The `ui` wrappers are smaller by default: `size="default"` is 36px high, `icon` 36px square. A product page that needs 44px asks for a bigger size or wraps the control; changing the wrapper defaults is a decision for the lib, not for a page
+
 ## Rules in short
 
 - `tailwind.css` first, `styles.scss` second. `styles.scss` only has `@use`

@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { booleanAttribute, Component, computed, inject, input } from '@angular/core';
 import { I18nService } from '@core/i18n/i18n.service';
 import { HlmSpinnerImports } from '@spartan-ng/helm/spinner';
 
@@ -17,6 +17,8 @@ import { HlmSpinnerImports } from '@spartan-ng/helm/spinner';
 export class UiSpinner {
   /** Announced to screen readers. Defaults to a generic "loading" text. */
   readonly label = input<string>();
+  /** Off when the surrounding control announces the loading state itself, as `UiButton` does. */
+  readonly announce = input(true, { transform: booleanAttribute });
 
   private readonly _i18n = inject(I18nService);
 

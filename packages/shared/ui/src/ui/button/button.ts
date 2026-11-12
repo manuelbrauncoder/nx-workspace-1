@@ -1,4 +1,5 @@
 import { booleanAttribute, Component, computed, HOST_TAG_NAME, inject, input } from '@angular/core';
+import { I18nService } from '@core/i18n/i18n.service';
 import { buttonVariants } from '@spartan-ng/helm/button';
 import { classes, hlm } from '@spartan-ng/helm/utils';
 import { UiSpinner } from '../spinner/spinner';
@@ -36,10 +37,11 @@ export type UiButtonSize =
   templateUrl: './button.html',
   host: {
     'data-slot': 'button',
-    '[attr.disabled]': "!_isAnchor && _blocked() ? '' : null",
-    '[attr.aria-disabled]': "_isAnchor && _blocked() ? 'true' : null",
+    // A loading button keeps the focus: a natively disabled one drops it to the body.
+    '[attr.disabled]': "!_isAnchor && disabled() ? '' : null",
+    '[attr.aria-disabled]': "_blocked() ? 'true' : null",
     '[attr.data-disabled]': "_blocked() ? '' : null",
-    '[attr.tabindex]': '_isAnchor && _blocked() ? -1 : null',
+    '[attr.tabindex]': '_isAnchor && disabled() ? -1 : null',
     '[attr.aria-busy]': "loading() ? 'true' : null",
     '(click)': '_onClick($event)',
   },
@@ -53,8 +55,12 @@ export class UiButton {
   /** Announced to screen readers while `loading`. Defaults to a generic "loading" text. */
   readonly loadingLabel = input<string>();
 
+  private readonly _i18n = inject(I18nService);
   private readonly _isAnchor = inject(HOST_TAG_NAME) === 'a';
   private readonly _blocked = computed(() => this.disabled() || this.loading());
+  private readonly _loadingText = computed(
+    () => this.loadingLabel() ?? this._i18n.translate('common.loading'),
+  );
 
   constructor() {
     classes(() => {
@@ -66,9 +72,12 @@ export class UiButton {
     });
   }
 
-  /** A link has no `disabled` attribute, so a blocked one has to swallow the click itself. */
+  /**
+   * Blocked buttons swallow the click: a link has no `disabled` attribute, and a loading button
+   * keeps `aria-disabled` only, so its form submit has to be stopped here.
+   */
   private _onClick(event: Event): void {
-    if (this._isAnchor && this._blocked()) {
+    if (this._blocked()) {
       event.preventDefault();
       event.stopImmediatePropagation();
     }

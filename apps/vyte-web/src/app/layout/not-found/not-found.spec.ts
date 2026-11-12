@@ -23,4 +23,12 @@ describe('NotFound', () => {
 
     expect(response.status).toBe(404);
   });
+
+  it('has no accessibility violations', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const fixture = TestBed.createComponent(NotFound);
+    fixture.detectChanges();
+
+    await expect(fixture.nativeElement as HTMLElement).toBeAccessible();
+  });
 });

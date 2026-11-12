@@ -92,4 +92,10 @@ describe('AppShell', () => {
 
     expect(document.activeElement).toBe(main);
   });
+
+  it('has no accessibility violations', async () => {
+    const { element } = await render();
+
+    await expect(element).toBeAccessible();
+  });
 });

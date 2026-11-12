@@ -61,4 +61,10 @@ describe('FormText', () => {
     expect(input.value).toBe('Alt');
     expect(element.querySelector('label')?.textContent).toContain('*');
   });
+
+  it('has no accessibility violations while showing errors', async () => {
+    const { element } = await render({ errors, touched: true, description: 'Kurz halten.' });
+
+    await expect(element).toBeAccessible();
+  });
 });

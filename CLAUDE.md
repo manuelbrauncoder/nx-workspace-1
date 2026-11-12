@@ -47,6 +47,8 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 
 - It MUST pass all AXE checks.
 - It MUST follow all WCAG AA minimums, including focus management, color contrast, and ARIA attributes.
+- Touch targets are at least 44 × 44 CSS px on product pages. The rules are in `docs/frontend/styling.md` ("Touch targets and spacing") and the checklist in the skill `a11y`
+- After a frontend feature is written, run the reviewers before committing: `ui-ux-reviewer` (spacing, touch targets, phone width), `a11y-reviewer` (WCAG AA), `frontend-api-reviewer` (for `src/api`), and `frontend-test-writer` for the specs. The API counterparts are `api-reviewer`, `security-reviewer` and `api-test-writer`
 
 ### Components
 

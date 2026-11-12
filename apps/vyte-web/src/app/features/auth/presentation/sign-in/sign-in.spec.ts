@@ -133,4 +133,25 @@ describe('SignIn', () => {
 
     expect(element.querySelector('[role="alert"]')?.textContent).toContain('Zu viele Versuche.');
   });
+
+  it('has no accessibility violations', async () => {
+    const { element } = await render();
+
+    await expect(element).toBeAccessible();
+  });
+
+  it('has no accessibility violations with the field errors of an empty submission', async () => {
+    const { element } = await render();
+
+    await submit(element);
+
+    expect(element.querySelector('[role="alert"] li')).not.toBeNull();
+    await expect(element).toBeAccessible();
+  });
+
+  it('has no accessibility violations after a failed sign-in', async () => {
+    const { element } = await render(failed(new Failure('unauthorized', 'Invalid credentials')));
+
+    await expect(element).toBeAccessible();
+  });
 });

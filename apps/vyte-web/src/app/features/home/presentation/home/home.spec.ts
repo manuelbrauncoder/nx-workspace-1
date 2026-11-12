@@ -33,4 +33,10 @@ describe('Home', () => {
     expect(element.querySelector('a[href="/sign-in"]')).toBeNull();
     expect(element.textContent).toContain('Du bist angemeldet');
   });
+
+  it('has no accessibility violations', async () => {
+    const element = await render(false);
+
+    await expect(element).toBeAccessible();
+  });
 });

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService } from '@core/i18n/i18n.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { UiButton } from '@shared/ui/button/button';
@@ -15,7 +15,7 @@ import { SIGN_IN_PATH } from '../../application/return-url';
  */
 @Component({
   selector: 'app-account-menu',
-  imports: [RouterLink, TranslatePipe, UiButton, UiIcon, UiMenuImports],
+  imports: [RouterLink, RouterLinkActive, TranslatePipe, UiButton, UiIcon, UiMenuImports],
   styleUrl: './account-menu.scss',
   templateUrl: './account-menu.html',
 })

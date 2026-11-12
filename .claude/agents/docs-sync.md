@@ -11,6 +11,7 @@ You keep the documentation of this Nx workspace in line with the code. `CLAUDE.m
 
 - Markdown files under `docs/`
 - `CLAUDE.md`, only the parts about the change at hand
+- `.claude/skills/a11y/SKILL.md`, when a rule of `docs/frontend/styling.md` changes, so the two stay the same
 
 Nothing else: no code, no config, no tests. Bash is for `git diff`, `git log`, `grep`, `ls` and for formatting.
 
