@@ -36,6 +36,8 @@ export class EventsStore {
   // Images are written after the event itself. With a state of their own, a failed upload does
   // not hide that the event was saved.
   private readonly _imageMutation = mutation();
+  // A failed save the date must not read like a failed deletion of the event.
+  private readonly _saveTheDateMutation = mutation();
 
   // Reading `value()` of a failed resource throws, hence the `hasValue()` guards.
   readonly events = computed(() => (this._list.hasValue() ? this._list.value() : []));
@@ -51,12 +53,15 @@ export class EventsStore {
   readonly mutationState = this._mutation.state;
   /** State of the most recent upload, reordering or deletion of images. */
   readonly imageMutationState = this._imageMutation.state;
+  /** State of the most recent change to the save-the-date page. */
+  readonly saveTheDateState = this._saveTheDateMutation.state;
 
   /** Loads a single event. Pass `undefined` to clear the selection. */
   select(id: string | undefined): void {
     this._selectedId.set(id);
     this._mutation.reset();
     this._imageMutation.reset();
+    this._saveTheDateMutation.reset();
   }
 
   reload(): void {
@@ -95,6 +100,19 @@ export class EventsStore {
     return removed ?? false;
   }
 
+  /** Turns the save-the-date page on or changes its note. */
+  async setSaveTheDate(id: string, note: string): Promise<VyteEvent | undefined> {
+    return this._writeSaveTheDate(id, this._useCase.setSaveTheDate(id, note));
+  }
+
+  async removeSaveTheDate(id: string): Promise<VyteEvent | undefined> {
+    return this._writeSaveTheDate(id, this._useCase.removeSaveTheDate(id));
+  }
+
+  async renewSaveTheDateToken(id: string): Promise<VyteEvent | undefined> {
+    return this._writeSaveTheDate(id, this._useCase.renewSaveTheDateToken(id));
+  }
+
   /** Adds images to an event. The backend stores all of them or none. */
   async uploadImages(id: string, files: File[]): Promise<EventImage[] | undefined> {
     return this._writeImages(id, this._useCase.uploadImages(id, files));
@@ -124,5 +142,22 @@ export class EventsStore {
       }
     }
     return images;
+  }
+
+  /** Every save-the-date request answers with the whole event, which replaces the loaded one. */
+  private async _writeSaveTheDate(
+    id: string,
+    request: Observable<VyteEvent>,
+  ): Promise<VyteEvent | undefined> {
+    const event = await this._saveTheDateMutation.run(request);
+    if (event) {
+      patchResource(this._list, (events) =>
+        events.map((existing) => (existing.id === id ? event : existing)),
+      );
+      if (this._selectedId() === id) {
+        this._detail.set(event);
+      }
+    }
+    return event;
   }
 }

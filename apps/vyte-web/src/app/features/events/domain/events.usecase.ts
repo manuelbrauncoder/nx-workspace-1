@@ -45,4 +45,18 @@ export class EventsUseCase {
   deleteImage(id: string, imageId: string): Observable<EventImage[]> {
     return this._repository.deleteImage(id, imageId);
   }
+
+  /** Turns the save-the-date page on or changes its note. */
+  setSaveTheDate(id: string, note: string): Observable<VyteEvent> {
+    return this._repository.setSaveTheDate(id, note);
+  }
+
+  removeSaveTheDate(id: string): Observable<VyteEvent> {
+    return this._repository.removeSaveTheDate(id);
+  }
+
+  /** The old link stops working. */
+  renewSaveTheDateToken(id: string): Observable<VyteEvent> {
+    return this._repository.renewSaveTheDateToken(id);
+  }
 }

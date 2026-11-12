@@ -18,6 +18,9 @@ describe('EventsUseCase', () => {
     uploadImages: vi.fn(() => of([IMAGE])),
     reorderImages: vi.fn(() => of([IMAGE])),
     deleteImage: vi.fn(() => of([])),
+    setSaveTheDate: vi.fn(() => of(EVENT)),
+    removeSaveTheDate: vi.fn(() => of(EVENT)),
+    renewSaveTheDateToken: vi.fn(() => of(EVENT)),
   };
   let useCase: EventsUseCase;
 
@@ -54,5 +57,15 @@ describe('EventsUseCase', () => {
     expect(repository.uploadImages).toHaveBeenCalledWith('e1', [file]);
     expect(repository.reorderImages).toHaveBeenCalledWith('e1', [IMAGE]);
     expect(repository.deleteImage).toHaveBeenCalledWith('e1', 'i1');
+  });
+
+  it('passes save the date on to the repository', async () => {
+    expect(await firstValueFrom(useCase.setSaveTheDate('e1', 'Bald mehr'))).toBe(EVENT);
+    expect(await firstValueFrom(useCase.removeSaveTheDate('e1'))).toBe(EVENT);
+    expect(await firstValueFrom(useCase.renewSaveTheDateToken('e1'))).toBe(EVENT);
+
+    expect(repository.setSaveTheDate).toHaveBeenCalledWith('e1', 'Bald mehr');
+    expect(repository.removeSaveTheDate).toHaveBeenCalledWith('e1');
+    expect(repository.renewSaveTheDateToken).toHaveBeenCalledWith('e1');
   });
 });

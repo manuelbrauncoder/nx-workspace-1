@@ -1,0 +1,18 @@
+{
+  "title": "Save the Date",
+  "badge": "Save the Date",
+  "loading": "Wird geladen …",
+  "loadFailed": "Die Seite konnte nicht geladen werden",
+  "notFound": {
+    "heading": "Nicht gefunden",
+    "lead": "Der Link ist nicht mehr gültig, vielleicht wurde er erneuert. Frag bei den Gastgebern nach dem aktuellen Link."
+  },
+  "past": {
+    "heading": "Das Event ist vorbei",
+    "lead": "Diese Ankündigung ist nicht mehr aktiv."
+  },
+  "when": "Datum und Ort",
+  "time": "{{ time }} Uhr",
+  "defaultNote": "Halte dir den Termin frei, die Einladung folgt.",
+  "calendar": "Zum Kalender hinzufügen"
+}
