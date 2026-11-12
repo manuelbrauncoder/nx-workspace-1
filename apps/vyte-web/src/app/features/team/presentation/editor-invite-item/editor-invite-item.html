@@ -1,0 +1,42 @@
+<article class="editor-invite" appUiCard>
+  <div appUiCardHeader>
+    <h3 appUiCardTitle>{{ 'teamPage.invites.created' | t: { date: _created() } }}</h3>
+    <p appUiCardDescription>{{ 'teamPage.invites.expires' | t: { date: _expires() } }}</p>
+  </div>
+  <p class="editor-invite__url" appUiCardContent>
+    <span class="sr-only">{{ 'teamPage.invites.address' | t }}: </span>
+    <code appUiText="code">{{ url() }}</code>
+  </p>
+  <div class="editor-invite__actions" appUiCardFooter>
+    <button
+      [attr.aria-label]="'teamPage.invites.copyNamed' | t: { date: _created() }"
+      (click)="copyLink.emit()"
+      appUiButton
+      type="button"
+    >
+      <app-ui-icon name="copy" />
+      {{ 'teamPage.invites.copy' | t }}
+    </button>
+    @if (canShare()) {
+      <button
+        [attr.aria-label]="'teamPage.invites.shareNamed' | t: { date: _created() }"
+        (click)="shareLink.emit()"
+        appUiButton
+        variant="outline"
+        type="button"
+      >
+        <app-ui-icon name="share" />
+        {{ 'teamPage.invites.share' | t }}
+      </button>
+    }
+    <button
+      [attr.aria-label]="'teamPage.invites.revokeNamed' | t: { date: _created() }"
+      (click)="revoke.emit()"
+      appUiButton
+      variant="outline"
+      type="button"
+    >
+      {{ 'teamPage.invites.revoke' | t }}
+    </button>
+  </div>
+</article>

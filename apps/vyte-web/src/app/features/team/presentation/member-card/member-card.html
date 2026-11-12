@@ -1,0 +1,51 @@
+@let item = member();
+<article class="member-card" appUiCard>
+  <div class="member-card__header" appUiCardHeader>
+    <div class="member-card__identity">
+      <h3 class="member-card__name" appUiCardTitle>{{ _displayName() }}</h3>
+      @if (item.name) {
+        <p class="member-card__email" appUiCardDescription>{{ item.email }}</p>
+      }
+    </div>
+    @if (manageable()) {
+      <button
+        [appUiMenuTrigger]="actions"
+        [attr.aria-label]="'teamPage.members.actions' | t: { name: _displayName() }"
+        appUiButton
+        variant="ghost"
+        size="icon-sm"
+        type="button"
+        align="end"
+      >
+        <app-ui-icon name="ellipsis" />
+      </button>
+    }
+  </div>
+  <div class="member-card__details" appUiCardContent>
+    <span class="member-card__chip" [class.member-card__chip--owner]="_isOwner()" appUiText="small">
+      <app-ui-icon [name]="_isOwner() ? 'shieldCheck' : 'user'" />
+      {{ (_isOwner() ? 'teamPage.members.owner' : 'teamPage.members.editor') | t }}
+    </span>
+    @if (isMe()) {
+      <span class="member-card__chip" appUiText="small">{{ 'teamPage.members.me' | t }}</span>
+    }
+    <p class="member-card__since" appUiText="muted">
+      {{ 'teamPage.members.since' | t: { date: item.joinedAt | localDate: 'date' : _timeZone } }}
+    </p>
+  </div>
+</article>
+
+<ng-template #actions>
+  <app-ui-menu class="w-60">
+    <app-ui-menu-group>
+      <button (triggered)="handOver.emit()" appUiMenuItem type="button">
+        <app-ui-icon name="shieldCheck" />
+        {{ 'teamPage.members.handOver' | t }}
+      </button>
+      <button (triggered)="remove.emit()" appUiMenuItem variant="destructive" type="button">
+        <app-ui-icon name="trash" />
+        {{ 'teamPage.members.remove' | t }}
+      </button>
+    </app-ui-menu-group>
+  </app-ui-menu>
+</ng-template>

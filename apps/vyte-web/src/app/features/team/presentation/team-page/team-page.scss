@@ -1,0 +1,64 @@
+@use 'styles/abstracts' as *;
+
+// Spacing as on the event pages: 1rem from the breadcrumb to the heading, 2rem from the heading
+// to the content, 2.5rem between the sections, 1rem from a section heading to its content.
+
+:host {
+  display: block;
+}
+
+.team-page__heading {
+  margin-top: 1rem;
+
+  // A long word in a title must not push the page wider than the phone.
+  h1,
+  .team-page__event {
+    overflow-wrap: anywhere;
+  }
+}
+
+.team-page__event {
+  margin-top: 0.25rem;
+}
+
+.team-page {
+  display: block;
+  margin-top: 2rem;
+}
+
+.team-page__past {
+  display: block;
+  margin-bottom: 2.5rem;
+}
+
+.team-page__section + .team-page__section {
+  margin-top: 2.5rem;
+}
+
+.team-page__section-lead {
+  margin-top: 0.25rem;
+}
+
+.team-page__create,
+.team-page__leave {
+  margin-top: 1rem;
+}
+
+.team-page__failure,
+.team-page__body {
+  display: block;
+  margin-top: 1rem;
+}
+
+.team-page__grid {
+  display: grid;
+  gap: 1rem;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up(lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

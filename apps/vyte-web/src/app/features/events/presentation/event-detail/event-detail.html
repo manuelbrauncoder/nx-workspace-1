@@ -139,6 +139,15 @@
         }
 
         <div class="event-detail__actions">
+          <a
+            [routerLink]="['/events', event.id, 'team']"
+            [attr.aria-label]="'eventDetail.teamNamed' | t: { title: event.title }"
+            appUiButton
+            variant="outline"
+          >
+            <app-ui-icon name="user" />
+            {{ 'eventDetail.team' | t }}
+          </a>
           @if (!event.past) {
             <a
               [routerLink]="['/events', event.id, 'edit']"

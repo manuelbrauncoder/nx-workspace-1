@@ -1,0 +1,162 @@
+<app-ui-breadcrumb [items]="_breadcrumb()" />
+
+<!-- Outside of the loaded content, so the page has its heading while loading and after a failure. -->
+<div class="team-page__heading">
+  <h1 appUiText="h1">{{ 'teamPage.heading' | t }}</h1>
+  @if (_store.event(); as event) {
+    <p class="team-page__event" appUiText="lead">{{ event.title }}</p>
+  }
+</div>
+
+<app-async-content
+  class="team-page"
+  [state]="_store.eventState()"
+  [failureHeading]="'teamPage.loadFailed' | t"
+  [loadingLabel]="'teamPage.loading' | t"
+  (retry)="_store.reload()"
+  retryable
+>
+  <ng-template>
+    @if (_past()) {
+      <app-ui-alert class="team-page__past" [heading]="'teamPage.past.heading' | t">
+        {{ 'teamPage.past.description' | t }}
+      </app-ui-alert>
+    }
+
+    <section class="team-page__section" aria-labelledby="team-page-members">
+      <h2 id="team-page-members" #membersHeading appUiText="h3" tabindex="-1">
+        {{ 'teamPage.members.heading' | t }}
+      </h2>
+      <p class="team-page__section-lead" appUiText="muted">
+        {{ 'teamPage.members.description' | t }}
+      </p>
+      @if (_store.isOwner() && _store.memberMutationState().failure; as failure) {
+        <!-- 409: the event is over or the member is the owner. An editor's only change is leaving, its failure sits there. -->
+        <app-failure-alert
+          class="team-page__failure"
+          [failure]="failure"
+          [heading]="'teamPage.members.failed' | t"
+          [headingLevel]="3"
+          [message]="failure.kind === 'conflict' ? ('teamPage.members.conflict' | t) : undefined"
+        />
+      }
+      <app-async-content
+        class="team-page__body"
+        [state]="_store.membersState()"
+        [failureHeading]="'teamPage.members.loadFailed' | t"
+        [failureHeadingLevel]="3"
+        [loadingLabel]="'teamPage.loading' | t"
+        (retry)="_store.reload()"
+        loadingIndicator="skeleton"
+        retryable
+      >
+        <ng-template>
+          <ul class="team-page__grid">
+            @for (member of _store.members(); track member.userId) {
+              <li>
+                <app-member-card
+                  [member]="member"
+                  [isMe]="member.userId === _store.me()?.userId"
+                  [manageable]="_manages() && member.role === 'editor'"
+                  (handOver)="_handOver(member)"
+                  (remove)="_remove(member)"
+                />
+              </li>
+            }
+          </ul>
+        </ng-template>
+      </app-async-content>
+    </section>
+
+    @if (_manages()) {
+      <section class="team-page__section" aria-labelledby="team-page-invites">
+        <h2 id="team-page-invites" #invitesHeading appUiText="h3" tabindex="-1">
+          {{ 'teamPage.invites.heading' | t }}
+        </h2>
+        <p class="team-page__section-lead" appUiText="muted">
+          {{ 'teamPage.invites.description' | t }}
+        </p>
+        <button
+          class="team-page__create"
+          [loading]="_creating()"
+          [loadingLabel]="'teamPage.invites.creating' | t"
+          (click)="_createInvite()"
+          appUiButton
+          type="button"
+        >
+          <app-ui-icon name="link" />
+          {{ 'teamPage.invites.create' | t }}
+        </button>
+        @if (_store.inviteMutationState().failure; as failure) {
+          <!-- 409: ten links are open already. -->
+          <app-failure-alert
+            class="team-page__failure"
+            [failure]="failure"
+            [heading]="'teamPage.invites.failed' | t"
+            [headingLevel]="3"
+            [message]="failure.kind === 'conflict' ? ('teamPage.invites.conflict' | t) : undefined"
+          />
+        }
+        <app-async-content
+          class="team-page__body"
+          [state]="_store.invitesState()"
+          [failureHeading]="'teamPage.invites.loadFailed' | t"
+          [failureHeadingLevel]="3"
+          [loadingLabel]="'teamPage.invites.loading' | t"
+          (retry)="_store.reloadInvites()"
+          retryable
+        >
+          <ng-template>
+            @if (_store.invites().length === 0) {
+              <p appUiText="muted">{{ 'teamPage.invites.empty' | t }}</p>
+            } @else {
+              <ul class="team-page__grid">
+                @for (invite of _store.invites(); track invite.id) {
+                  <li>
+                    <app-editor-invite-item
+                      [invite]="invite"
+                      [url]="_url(invite)"
+                      [canShare]="_canShare()"
+                      (copyLink)="_copy(invite)"
+                      (shareLink)="_share(invite)"
+                      (revoke)="_revoke(invite)"
+                    />
+                  </li>
+                }
+              </ul>
+            }
+          </ng-template>
+        </app-async-content>
+      </section>
+    }
+
+    @if (_store.me()?.role === 'editor') {
+      <section class="team-page__section" aria-labelledby="team-page-leave">
+        <h2 id="team-page-leave" appUiText="h3">{{ 'teamPage.leave.sectionHeading' | t }}</h2>
+        <p class="team-page__section-lead" appUiText="muted">
+          {{ 'teamPage.leave.sectionDescription' | t }}
+        </p>
+        @if (_store.memberMutationState().failure; as failure) {
+          <app-failure-alert
+            class="team-page__failure"
+            [failure]="failure"
+            [heading]="'teamPage.leave.failed' | t"
+            [headingLevel]="3"
+          />
+        }
+        <button
+          class="team-page__leave"
+          [loading]="_leaving()"
+          [loadingLabel]="'teamPage.leave.leaving' | t"
+          (click)="_leave()"
+          appUiButton
+          variant="destructive"
+          type="button"
+        >
+          <app-ui-icon name="logOut" />
+          {{ 'teamPage.leave.button' | t }}
+        </button>
+      </section>
+    }
+  </ng-template>
+</app-async-content>

@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+// The card of the lib in the Konfetti shape, as the account links of the admin.
+.editor-invite {
+  height: 100%;
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+
+// The address is long and has no spaces, it may break anywhere.
+.editor-invite__url code {
+  word-break: break-all;
+}
+
+.editor-invite__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

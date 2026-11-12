@@ -24,5 +24,7 @@
     "alt": "Image {{ number }}",
     "open": "Open image {{ number }} in a new tab"
   },
-  "deleteFailed": "The event could not be deleted"
+  "deleteFailed": "The event could not be deleted",
+  "team": "Team",
+  "teamNamed": "Team: {{ title }}"
 }

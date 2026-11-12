@@ -1,0 +1,43 @@
+{
+  "title": "Invitation",
+  "heading": "Invitation to {{ title }}",
+  "invalid": "Invalid invitation",
+  "linkGone": "This link has expired, was used already or was revoked. Ask for a new one.",
+  "loading": "Checking the invitation",
+  "loadFailed": "The invitation could not be loaded",
+  "lead": "You are invited to plan this event.",
+  "leadOwner": "{{ owner }} invites you to plan this event.",
+  "signedInAs": "Signed in as {{ name }}.",
+  "accept": "Accept invitation",
+  "accepting": "Accepting",
+  "joined": "You are now planning {{ title }}",
+  "failed": "That did not work",
+  "teamFull": "The team is full. Ask the owner.",
+  "emailTaken": "There is an account for this email address already. Sign in with it.",
+  "signIn": {
+    "heading": "Have an account?",
+    "description": "Sign in, afterwards you come back here.",
+    "link": "Sign in"
+  },
+  "signUp": {
+    "heading": "New to vyte?",
+    "description": "Create your account and you are a co-host right away.",
+    "submit": "Create account and join",
+    "submitting": "Creating the account"
+  },
+  "fields": {
+    "name": "Name (optional)",
+    "nameDescription": "How guests and other hosts see you.",
+    "email": "Email",
+    "password": "Password",
+    "passwordDescription": "At least {{ min }} characters."
+  },
+  "validation": {
+    "nameTooLong": "The name can be at most {{ max }} characters long.",
+    "emailRequired": "Please enter your email address.",
+    "emailInvalid": "Please enter a valid email address.",
+    "passwordRequired": "Please enter a password.",
+    "passwordTooShort": "The password must be at least {{ min }} characters long.",
+    "passwordTooLong": "The password can be at most {{ max }} characters long."
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "title": "Einladung",
+  "heading": "Einladung zu {{ title }}",
+  "invalid": "Einladung ungültig",
+  "linkGone": "Der Link ist abgelaufen, wurde schon benutzt oder zurückgezogen. Frag nach einem neuen.",
+  "loading": "Einladung wird geprüft",
+  "loadFailed": "Die Einladung konnte nicht geladen werden",
+  "lead": "Du bist eingeladen, dieses Event mitzuplanen.",
+  "leadOwner": "{{ owner }} lädt dich ein, dieses Event mitzuplanen.",
+  "signedInAs": "Angemeldet als {{ name }}.",
+  "accept": "Einladung annehmen",
+  "accepting": "Wird angenommen",
+  "joined": "Du planst jetzt {{ title }} mit",
+  "failed": "Das hat nicht geklappt",
+  "teamFull": "Das Team ist voll. Frag beim Owner nach.",
+  "emailTaken": "Zu dieser E-Mail-Adresse gibt es schon ein Konto. Melde dich damit an.",
+  "signIn": {
+    "heading": "Schon ein Konto?",
+    "description": "Melde dich an, danach kommst du hierher zurück.",
+    "link": "Anmelden"
+  },
+  "signUp": {
+    "heading": "Neu bei vyte?",
+    "description": "Leg dein Konto an, damit bist du gleich Mitplaner.",
+    "submit": "Konto anlegen und mitplanen",
+    "submitting": "Konto wird angelegt"
+  },
+  "fields": {
+    "name": "Name (optional)",
+    "nameDescription": "So sehen dich Gäste und andere Gastgeber.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "passwordDescription": "Mindestens {{ min }} Zeichen."
+  },
+  "validation": {
+    "nameTooLong": "Der Name darf höchstens {{ max }} Zeichen lang sein.",
+    "emailRequired": "Bitte gib deine E-Mail-Adresse ein.",
+    "emailInvalid": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "passwordRequired": "Bitte gib ein Passwort ein.",
+    "passwordTooShort": "Das Passwort muss mindestens {{ min }} Zeichen lang sein.",
+    "passwordTooLong": "Das Passwort darf höchstens {{ max }} Zeichen lang sein."
+  }
+}
