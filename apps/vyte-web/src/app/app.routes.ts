@@ -33,6 +33,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/guests/guests.routes').then((m) => m.guestsRoutes),
       },
       {
+        path: 'events/:id/team',
+        canActivate: [authGuard],
+        loadChildren: () => import('./features/team/team.routes').then((m) => m.teamRoutes),
+      },
+      {
         path: 'events',
         // The backend only hands out the events the signed-in user is a member of.
         canActivate: [authGuard],
@@ -43,6 +48,11 @@ export const routes: Routes = [
         path: 'admin',
         canActivate: [adminGuard],
         loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes),
+      },
+      {
+        // An editor invite: accept it, sign in or create an account.
+        path: 'invite/:token',
+        loadChildren: () => import('./features/invite/invite.routes').then((m) => m.inviteRoutes),
       },
       {
         // `/sign-in` and `/welcome/:token`.

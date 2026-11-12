@@ -1,0 +1,55 @@
+// A narrow column in the middle, as the sign-in and the account link: 0.5rem from the heading to
+// the lead in every state, 2rem to the next block, 2.5rem between the two ways in. The buttons
+// take the width of the column, as on the sign-in.
+
+.invite-page {
+  max-width: 24rem;
+  margin-inline: auto;
+}
+
+// A long title must not push the page wider than the phone.
+.invite-page__title {
+  overflow-wrap: anywhere;
+}
+
+.invite-page__lead {
+  margin-top: 0.5rem;
+}
+
+.invite-page__date {
+  margin-top: 0.5rem;
+}
+
+.invite-page__body,
+.invite-page__failure {
+  display: block;
+}
+
+.invite-page__failure,
+.invite-page__signed-in,
+.invite-page__section {
+  margin-top: 2rem;
+}
+
+.invite-page__accept {
+  margin-top: 1rem;
+}
+
+.invite-page__section + .invite-page__section {
+  margin-top: 2.5rem;
+}
+
+.invite-page__section-lead {
+  margin-top: 0.25rem;
+}
+
+.invite-page__sign-in {
+  margin-top: 1rem;
+}
+
+.invite-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}

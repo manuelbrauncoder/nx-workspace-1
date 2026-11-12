@@ -24,5 +24,7 @@
     "alt": "Bild {{ number }}",
     "open": "Bild {{ number }} in neuem Tab öffnen"
   },
-  "deleteFailed": "Das Event konnte nicht gelöscht werden"
+  "deleteFailed": "Das Event konnte nicht gelöscht werden",
+  "team": "Team",
+  "teamNamed": "Team: {{ title }}"
 }

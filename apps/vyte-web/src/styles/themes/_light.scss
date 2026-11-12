@@ -27,7 +27,8 @@
   --muted-foreground: #55546a;
   --accent: #fff6c7;
   --accent-foreground: #1a1a2e;
-  --destructive: #c8321a;
+  // Dark enough that the destructive button keeps 4.5:1 also on its hover tint.
+  --destructive: #a3260f;
   --border: #dddce6;
   // Border of a form field, 3:1 against the background.
   --input: #8a899e;

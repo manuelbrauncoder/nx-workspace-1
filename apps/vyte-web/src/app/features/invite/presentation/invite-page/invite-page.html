@@ -1,0 +1,141 @@
+<div class="invite-page">
+  <!-- Outside of the loaded content, so the page has its heading in every state. -->
+  <h1 class="invite-page__title" appUiText="h1">
+    @if (_store.preview(); as preview) {
+      {{ 'invitePage.heading' | t: { title: preview.eventTitle } }}
+    } @else if (_notFound()) {
+      {{ 'invitePage.invalid' | t }}
+    } @else {
+      {{ 'invitePage.title' | t }}
+    }
+  </h1>
+
+  @if (_notFound()) {
+    <!-- An unknown, used, expired or revoked link has this text only, without a second alert. -->
+    <p class="invite-page__lead" appUiText="lead">{{ 'invitePage.linkGone' | t }}</p>
+  } @else {
+    <app-async-content
+      class="invite-page__body"
+      [state]="_store.previewState()"
+      [failureHeading]="'invitePage.loadFailed' | t"
+      [loadingLabel]="'invitePage.loading' | t"
+      (retry)="_store.reload()"
+      retryable
+    >
+      <ng-template>
+        @if (_store.preview(); as preview) {
+          <p class="invite-page__lead" appUiText="lead">
+            @if (preview.ownerName; as owner) {
+              {{ 'invitePage.leadOwner' | t: { owner } }}
+            } @else {
+              {{ 'invitePage.lead' | t }}
+            }
+          </p>
+          <p class="invite-page__date" appUiText="muted">
+            <time [attr.datetime]="preview.startsAt.toISOString()">{{
+              preview.startsAt | localDate: 'weekdayDate' : preview.timeZone
+            }}</time>
+          </p>
+
+          @if (_auth.isSignedIn()) {
+            @if (_store.mutationState().failure; as failure) {
+              <!-- 409: the team is full. 404: the link went meanwhile. -->
+              <app-failure-alert
+                class="invite-page__failure"
+                [failure]="failure"
+                [heading]="'invitePage.failed' | t"
+                [message]="
+                  failure.kind === 'conflict'
+                    ? ('invitePage.teamFull' | t)
+                    : failure.kind === 'not-found'
+                      ? ('invitePage.linkGone' | t)
+                      : undefined
+                "
+              />
+            }
+            <p class="invite-page__signed-in" appUiText="muted">
+              {{ 'invitePage.signedInAs' | t: { name: _meName() ?? '' } }}
+            </p>
+            <button
+              class="invite-page__accept"
+              [loading]="_busy()"
+              [loadingLabel]="'invitePage.accepting' | t"
+              (click)="_accept()"
+              appUiButton
+              type="button"
+            >
+              {{ 'invitePage.accept' | t }}
+            </button>
+          } @else {
+            <section class="invite-page__section" aria-labelledby="invite-page-sign-in">
+              <h2 id="invite-page-sign-in" appUiText="h3">{{ 'invitePage.signIn.heading' | t }}</h2>
+              <p class="invite-page__section-lead" appUiText="muted">
+                {{ 'invitePage.signIn.description' | t }}
+              </p>
+              <a
+                class="invite-page__sign-in"
+                [queryParams]="{ returnUrl: _returnUrl() }"
+                appUiButton
+                variant="outline"
+                routerLink="/sign-in"
+              >
+                {{ 'invitePage.signIn.link' | t }}
+              </a>
+            </section>
+
+            <section class="invite-page__section" aria-labelledby="invite-page-sign-up">
+              <h2 id="invite-page-sign-up" appUiText="h3">{{ 'invitePage.signUp.heading' | t }}</h2>
+              <p class="invite-page__section-lead" appUiText="muted">
+                {{ 'invitePage.signUp.description' | t }}
+              </p>
+              <form class="invite-page__form" [formRoot]="_signUpForm">
+                <app-form-text
+                  [formField]="_signUpForm.name"
+                  [label]="'invitePage.fields.name' | t"
+                  [description]="'invitePage.fields.nameDescription' | t"
+                  autocomplete="name"
+                />
+                <app-form-text
+                  [formField]="_signUpForm.email"
+                  [label]="'invitePage.fields.email' | t"
+                  type="email"
+                  autocomplete="username"
+                />
+                <app-form-text
+                  [formField]="_signUpForm.password"
+                  [label]="'invitePage.fields.password' | t"
+                  [description]="'invitePage.fields.passwordDescription' | t: { min: _passwordMin }"
+                  type="password"
+                  autocomplete="new-password"
+                />
+                @if (_store.mutationState().failure; as failure) {
+                  <!-- Next to the button. 409: the email has an account. 404: the link went meanwhile. -->
+                  <app-failure-alert
+                    [failure]="failure"
+                    [heading]="'invitePage.failed' | t"
+                    [headingLevel]="3"
+                    [message]="
+                      failure.kind === 'conflict'
+                        ? ('invitePage.emailTaken' | t)
+                        : failure.kind === 'not-found'
+                          ? ('invitePage.linkGone' | t)
+                          : undefined
+                    "
+                  />
+                }
+                <button
+                  [loading]="_busy()"
+                  [loadingLabel]="'invitePage.signUp.submitting' | t"
+                  appUiButton
+                  type="submit"
+                >
+                  {{ 'invitePage.signUp.submit' | t }}
+                </button>
+              </form>
+            </section>
+          }
+        }
+      </ng-template>
+    </app-async-content>
+  }
+</div>
