@@ -14,7 +14,8 @@ import { HlmInputImports } from '@spartan-ng/helm/input';
 import { FormControlErrors, visibleErrorMessages } from '../form-control-shell/form-control-errors';
 import { FormControlShell } from '../form-control-shell/form-control-shell';
 
-export type FormTextType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'url';
+/** `time` is the native time input, its value is `'HH:MM'` (or `''`). */
+export type FormTextType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'time';
 
 /** Single-line text field for Signal Forms: `<app-form-text [formField]="form.title" label="Titel" />`. */
 @Component({

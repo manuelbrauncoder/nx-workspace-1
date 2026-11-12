@@ -1,0 +1,27 @@
+{
+  "title": "Event",
+  "past": "Over",
+  "facts": {
+    "when": "When",
+    "where": "Where",
+    "deadline": "Answers until"
+  },
+  "map": "Open in map",
+  "mapNamed": "Open in map: {{ address }}, opens OpenStreetMap in a new tab",
+  "noDescription": "No description",
+  "guests": {
+    "heading": "Guests",
+    "description": "Coming and at most count people, companions included.",
+    "invited": "Invited",
+    "coming": "Coming",
+    "declined": "Declined",
+    "pending": "Open",
+    "atMost": "At most"
+  },
+  "images": {
+    "heading": "Images",
+    "alt": "Image {{ number }}",
+    "open": "Open image {{ number }} in a new tab"
+  },
+  "deleteFailed": "The event could not be deleted"
+}

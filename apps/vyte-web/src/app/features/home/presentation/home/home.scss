@@ -13,15 +13,14 @@
   }
 }
 
+// A Konfetti chip on the brand colour.
 .home__eyebrow {
-  padding: 0.25rem 0.875rem;
-  border: 2px solid var(--foreground);
+  padding: 0.25rem 0.75rem;
+  border: var(--chip-border);
   border-radius: 999px;
   background: var(--brand);
   color: var(--brand-foreground);
   font-family: var(--font-heading);
-  font-size: 0.8125rem;
-  font-weight: 600;
 }
 
 .home__lead {

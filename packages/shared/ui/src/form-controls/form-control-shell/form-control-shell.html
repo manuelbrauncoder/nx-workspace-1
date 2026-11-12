@@ -5,6 +5,9 @@
     {{ label() }}
     @if (required()) {
       <span class="form-control-shell__required" aria-hidden="true">*</span>
+      @if (announceRequired()) {
+        <span class="sr-only">{{ 'form.required' | t }}</span>
+      }
     }
   </label>
 </ng-template>

@@ -31,5 +31,29 @@
   "seo": {
     "defaultDescription": "Vyte: invitations with a personal link, answers without an account and the photos of the party in one place.",
     "imageAlt": "Logo of Vyte"
+  },
+  "events": {
+    "breadcrumb": "Events",
+    "loading": "Loading the event",
+    "loadFailed": "The event could not be loaded",
+    "edit": "Edit",
+    "editNamed": "Edit: {{ title }}",
+    "deleted": "Event deleted",
+    "delete": {
+      "label": "Delete",
+      "labelNamed": "Delete: {{ title }}",
+      "heading": "Delete the event?",
+      "description": "“{{ title }}” is deleted for good, with all guests, links and photos. This cannot be undone.",
+      "confirm": "Delete"
+    },
+    "when": {
+      "at": "{{ date }}, {{ time }}",
+      "range": "{{ date }}, {{ start }} to {{ end }}",
+      "allDay": "{{ date }}, all day",
+      "days": "{{ start }} to {{ end }}"
+    },
+    "counts": {
+      "summary": "Coming: {{ coming }} · Open: {{ pending }}"
+    }
   }
 }

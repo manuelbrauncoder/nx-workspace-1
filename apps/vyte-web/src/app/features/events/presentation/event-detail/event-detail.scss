@@ -1,0 +1,146 @@
+@use 'styles/abstracts' as *;
+
+// Spacing of the page: 1rem from the breadcrumb to the heading, 2rem from the heading to the
+// content, 2.5rem between the sections, 1rem from a section heading to its content.
+
+.event-detail {
+  display: block;
+  max-width: 48rem;
+}
+
+.event-detail__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 48rem;
+  margin-top: 1rem;
+
+  // A long word in a title must not push the page wider than the phone.
+  h1 {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+// A Konfetti chip.
+.event-detail__badge {
+  padding: 0.25rem 0.75rem;
+  border: var(--chip-border);
+  border-radius: 999px;
+  background: var(--background);
+}
+
+.event-detail__facts {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.event-detail__fact dt {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.event-detail__fact dd {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.event-detail__place {
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+// Line breaks of the address are kept, as typed.
+.event-detail__address {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.event-detail__map {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  align-self: flex-start;
+  border-radius: calc(var(--radius) - 4px);
+  color: var(--primary);
+  text-decoration: underline;
+
+  &:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}
+
+.event-detail__description {
+  margin-top: 2.5rem;
+}
+
+.event-detail__description--empty {
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+.event-detail__section {
+  margin-top: 2.5rem;
+}
+
+.event-detail__section-lead {
+  margin-top: 0.25rem;
+}
+
+.event-detail__counts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+
+  @include up(sm) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+// Each count is a small Konfetti card.
+.event-detail__count {
+  padding: 0.75rem 1rem;
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+
+  // Five counts in two columns: the last one takes the whole row instead of standing alone.
+  &:last-child {
+    grid-column: 1 / -1;
+
+    @include up(sm) {
+      grid-column: auto;
+    }
+  }
+
+  dt {
+    overflow-wrap: anywhere;
+  }
+
+  dd {
+    margin-top: 0.25rem;
+  }
+}
+
+.event-detail__images {
+  margin-top: 1rem;
+}
+
+.event-detail__failure {
+  display: block;
+  margin-top: 2.5rem;
+}
+
+.event-detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2.5rem;
+}

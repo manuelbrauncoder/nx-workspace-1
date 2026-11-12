@@ -4,6 +4,7 @@ import type de from './de.json';
 declare module '@core/i18n/translation-key' {
   interface I18nSharedTexts {
     auth: (typeof de)['auth'];
+    events: (typeof de)['events'];
     layout: (typeof de)['layout'];
     legal: (typeof de)['legal'];
     notFound: (typeof de)['notFound'];

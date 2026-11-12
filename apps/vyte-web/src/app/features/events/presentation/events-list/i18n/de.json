@@ -1,0 +1,13 @@
+{
+  "title": "Events",
+  "heading": "Deine Events",
+  "new": "Neues Event",
+  "upcoming": "Kommend",
+  "past": "Vergangen",
+  "loading": "Events werden geladen",
+  "loadFailed": "Die Events konnten nicht geladen werden",
+  "empty": {
+    "heading": "Noch keine Events",
+    "description": "Lege dein erstes Event an und lade danach deine Gäste ein."
+  }
+}

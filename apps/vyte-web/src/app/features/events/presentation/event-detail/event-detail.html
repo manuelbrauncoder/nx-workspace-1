@@ -1,0 +1,150 @@
+<app-ui-breadcrumb [items]="_breadcrumb()" />
+
+<!-- Outside of the loaded content, so the page has its heading while loading and after a failure. -->
+<div class="event-detail__heading">
+  <h1 appUiText="h1">{{ _store.selected()?.title ?? ('eventDetail.title' | t) }}</h1>
+  @if (_store.selected()?.past) {
+    <span class="event-detail__badge" appUiText="small">{{ 'eventDetail.past' | t }}</span>
+  }
+</div>
+
+<app-async-content
+  class="event-detail"
+  [state]="_store.detailState()"
+  [failureHeading]="'events.loadFailed' | t"
+  [loadingLabel]="'events.loading' | t"
+>
+  <ng-template>
+    @if (_store.selected(); as event) {
+      <article>
+        <dl class="event-detail__facts">
+          <div class="event-detail__fact">
+            <dt appUiText="muted">
+              <app-ui-icon name="calendar" />
+              {{ 'eventDetail.facts.when' | t }}
+            </dt>
+            <dd><app-event-when [event]="event" /></dd>
+          </div>
+          @if (event.locationName || event.address) {
+            <div class="event-detail__fact">
+              <dt appUiText="muted">
+                <app-ui-icon name="mapPin" />
+                {{ 'eventDetail.facts.where' | t }}
+              </dt>
+              <dd>
+                @if (event.locationName) {
+                  <span class="event-detail__place">{{ event.locationName }}</span>
+                }
+                @if (event.address; as address) {
+                  <span class="event-detail__address">{{ address }}</span>
+                  <a
+                    class="event-detail__map"
+                    [href]="_mapUrl()"
+                    [attr.aria-label]="'eventDetail.mapNamed' | t: { address }"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {{ 'eventDetail.map' | t }}
+                    <app-ui-icon name="externalLink" />
+                  </a>
+                }
+              </dd>
+            </div>
+          }
+          @if (event.rsvpDeadline; as deadline) {
+            <div class="event-detail__fact">
+              <dt appUiText="muted">
+                <app-ui-icon name="clock" />
+                {{ 'eventDetail.facts.deadline' | t }}
+              </dt>
+              <dd>
+                <time [attr.datetime]="deadline.toISOString()">{{
+                  deadline | localDate: 'weekdayDate' : event.timeZone
+                }}</time>
+              </dd>
+            </div>
+          }
+        </dl>
+
+        @if (event.description) {
+          <app-ui-rich-text class="event-detail__description" [html]="event.description" />
+        } @else {
+          <p class="event-detail__description event-detail__description--empty">
+            {{ 'eventDetail.noDescription' | t }}
+          </p>
+        }
+
+        <section class="event-detail__section" aria-labelledby="event-detail-guests">
+          <h2 id="event-detail-guests" appUiText="h3">{{ 'eventDetail.guests.heading' | t }}</h2>
+          <p class="event-detail__section-lead" appUiText="muted">
+            {{ 'eventDetail.guests.description' | t }}
+          </p>
+          <dl class="event-detail__counts">
+            <div class="event-detail__count">
+              <dt appUiText="muted">{{ 'eventDetail.guests.invited' | t }}</dt>
+              <dd appUiText="h3">{{ event.counts.invited }}</dd>
+            </div>
+            <div class="event-detail__count">
+              <dt appUiText="muted">{{ 'eventDetail.guests.coming' | t }}</dt>
+              <dd appUiText="h3">{{ event.counts.coming }}</dd>
+            </div>
+            <div class="event-detail__count">
+              <dt appUiText="muted">{{ 'eventDetail.guests.declined' | t }}</dt>
+              <dd appUiText="h3">{{ event.counts.declined }}</dd>
+            </div>
+            <div class="event-detail__count">
+              <dt appUiText="muted">{{ 'eventDetail.guests.pending' | t }}</dt>
+              <dd appUiText="h3">{{ event.counts.pending }}</dd>
+            </div>
+            <div class="event-detail__count">
+              <dt appUiText="muted">{{ 'eventDetail.guests.atMost' | t }}</dt>
+              <dd appUiText="h3">{{ event.counts.atMost }}</dd>
+            </div>
+          </dl>
+        </section>
+
+        @if (event.images.length > 0) {
+          <section class="event-detail__section" aria-labelledby="event-detail-images">
+            <h2 id="event-detail-images" appUiText="h3">{{ 'eventDetail.images.heading' | t }}</h2>
+            <div class="event-detail__images" appUiAttachmentGroup role="list">
+              @for (image of event.images; track image.id; let index = $index) {
+                <app-ui-attachment
+                  [href]="image.url"
+                  [imageAlt]="'eventDetail.images.alt' | t: { number: index + 1 }"
+                  [imageSrc]="image.url"
+                  [linkLabel]="'eventDetail.images.open' | t: { number: index + 1 }"
+                  orientation="vertical"
+                  role="listitem"
+                />
+              }
+            </div>
+          </section>
+        }
+
+        @if (_store.mutationState().failure; as failure) {
+          <app-failure-alert
+            class="event-detail__failure"
+            [failure]="failure"
+            [heading]="'eventDetail.deleteFailed' | t"
+          />
+        }
+
+        <div class="event-detail__actions">
+          @if (!event.past) {
+            <a
+              [routerLink]="['/events', event.id, 'edit']"
+              [attr.aria-label]="'events.editNamed' | t: { title: event.title }"
+              appUiButton
+            >
+              <app-ui-icon name="pencil" />
+              {{ 'events.edit' | t }}
+            </a>
+          }
+          @if (event.role === 'owner') {
+            <app-event-delete-button [title]="event.title" (confirmed)="_remove()" />
+          }
+        </div>
+      </article>
+    }
+  </ng-template>
+</app-async-content>

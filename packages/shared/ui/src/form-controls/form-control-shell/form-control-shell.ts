@@ -1,6 +1,15 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, effect, inject, input, Signal } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  Signal,
+} from '@angular/core';
 import { NgControl } from '@angular/forms';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { BrnFieldA11yService } from '@spartan-ng/brain/field';
 import { HlmFieldImports } from '@spartan-ng/helm/field';
 
@@ -32,7 +41,7 @@ function spartanControlState(invalid: Signal<boolean>) {
  */
 @Component({
   selector: 'app-form-control-shell',
-  imports: [NgTemplateOutlet, HlmFieldImports],
+  imports: [NgTemplateOutlet, HlmFieldImports, TranslatePipe],
   providers: [
     // The projected control resolves this instance and takes its `aria-describedby` from it.
     BrnFieldA11yService,
@@ -51,6 +60,11 @@ export class FormControlShell {
   /** Messages to show, already reduced to the visible ones. */
   readonly errors = input<readonly string[]>([]);
   readonly required = input(false);
+  /**
+   * Puts "required" into the label as text. For controls that are a button, such as the date
+   * picker: a button has no `required`, so assistive tech would not hear it otherwise.
+   */
+  readonly announceRequired = input(false, { transform: booleanAttribute });
   readonly disabled = input(false);
   /** `horizontal` puts the control in front of the label, as for a checkbox. */
   readonly orientation = input<'vertical' | 'horizontal'>('vertical');

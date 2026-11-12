@@ -182,7 +182,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 - Keys sind typisiert (`TranslationKey`), ein Tippfehler ist ein Compile-Fehler. Jeder Key steht in jeder Sprachdatei
 - Routen-`title` ist ein Translation-Key, `SeoService` übersetzt ihn
 - Texte, die stehen bleiben (Navigation, Optionen, Statuszeilen), als Key halten und im Template übersetzen, nicht als fertigen String speichern. Validierungsmeldungen als Funktion: `message: () => this._i18n.translate(...)`
-- Datum über `localDate` (`'date'`, `'dateTime'`), nicht über `DatePipe`. Die Locale kommt aus `I18nService.locale()`
+- Datum über `localDate` (`'date'`, `'dateTime'`, `'weekdayDate'`, `'time'`), nicht über `DatePipe`. Die Locale kommt aus `I18nService.locale()`. Gehört ein Zeitpunkt zu etwas mit eigener Zeitzone (ein Event), die Zone als zweites Argument übergeben (`| localDate: 'time' : event.timeZone`), sonst rendert der Server in UTC eine andere Uhrzeit als der Browser
 - Texte aus dem Backend in beiden Sprachen sind `Localized<T>` (`{ de, en }`, `@core/i18n/localized`) und werden über die Pipe `localized` bzw. `I18nService.localize()` angezeigt, nicht über Keys
 - Die Sprache steht im Cookie `lang`. Der Server liest Cookie und `Accept-Language` und rendert `<html lang>`, der Browser übernimmt das. Umschalten über `I18nService.setLanguage()` bzw. `app-language-toggle`
 - `Failure.message` ist englisch und fürs Log, auch wenn sie vom Backend kommt. Dem Nutzer zeigt `app-failure-alert` den übersetzten Text zu `failure.<kind>` oder den eigenen Text der Page

@@ -33,7 +33,9 @@
   --input: #8a899e;
   // Fill of a form field. Matches the Spartan inputs (`bg-transparent dark:bg-input/30`).
   --input-background: transparent;
-  --ring: #1f3bd6;
+  // Ink, not the blue: the helm controls draw their focus ring at 50%, which keeps ink above
+  // 3:1 on white, the blue would fall to about 2.6:1.
+  --ring: #1a1a2e;
   --sidebar: #ffffff;
   --sidebar-foreground: #1a1a2e;
   --sidebar-primary: #1f3bd6;
@@ -41,10 +43,17 @@
   --sidebar-accent: #fff6c7;
   --sidebar-accent-foreground: #1a1a2e;
   --sidebar-border: #dddce6;
-  --sidebar-ring: #1f3bd6;
+  --sidebar-ring: #1a1a2e;
 
   // Decoration only (shapes, confetti), too light for text on white.
   --decor: #ff5a3c;
   // Quiet yellow surface, e.g. a hint or the answer of a guest.
   --soft: #fff6c7;
+
+  // Konfetti shapes. Cards: ink border, large radius, an offset shadow without blur. Chips: pills
+  // with a thinner ink border, for short labels such as a state or a date.
+  --card-radius: 1.75rem;
+  --card-border: 3px solid var(--foreground);
+  --card-shadow: 3px 3px 0 var(--foreground);
+  --chip-border: 2px solid var(--foreground);
 }

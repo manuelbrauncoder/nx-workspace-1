@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { routeSeo } from '@core/seo/route-seo';
+import { authGuard } from '@features/auth/public-api';
 import { AppShell } from './layout/app-shell/app-shell';
 
 export const routes: Routes = [
@@ -11,6 +12,12 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         loadChildren: () => import('./features/home/home.routes').then((m) => m.homeRoutes),
+      },
+      {
+        path: 'events',
+        // The backend only hands out the events the signed-in user is a member of.
+        canActivate: [authGuard],
+        loadChildren: () => import('./features/events/events.routes').then((m) => m.eventsRoutes),
       },
       {
         // `/sign-in`.
