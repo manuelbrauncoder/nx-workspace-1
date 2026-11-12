@@ -1,0 +1,96 @@
+@let state = _store.saveTheDateState();
+@if (!_store.saveTheDate()) {
+  <!-- While loading and after a failure the page still has its heading. -->
+  <div class="save-the-date__intro">
+    <h1 class="save-the-date__title" appUiText="section">
+      {{
+        (state.failure?.kind === 'not-found'
+          ? 'saveTheDatePage.notFound.heading'
+          : 'saveTheDatePage.title'
+        ) | t
+      }}
+    </h1>
+    @if (state.failure?.kind === 'not-found') {
+      <p class="save-the-date__lead">{{ 'saveTheDatePage.notFound.lead' | t }}</p>
+    }
+  </div>
+}
+
+<!-- An unknown, switched off or renewed link has its own heading and lead above, without a
+     second alert and without a retry. -->
+@if (state.failure?.kind !== 'not-found') {
+  <app-async-content
+    class="save-the-date"
+    [state]="state"
+    [failureHeading]="'saveTheDatePage.loadFailed' | t"
+    [loadingLabel]="'saveTheDatePage.loading' | t"
+    (retry)="_store.reload()"
+    retryable
+  >
+    <ng-template>
+      @if (_store.saveTheDate(); as saveTheDate) {
+        @if (saveTheDate.past) {
+          <div class="save-the-date__intro save-the-date__intro--past">
+            <p class="save-the-date__kicker">{{ saveTheDate.title }}</p>
+            <h1 class="save-the-date__title" appUiText="section">
+              {{ 'saveTheDatePage.past.heading' | t }}
+            </h1>
+            <p class="save-the-date__lead">{{ 'saveTheDatePage.past.lead' | t }}</p>
+          </div>
+        } @else {
+          <div class="save-the-date__intro">
+            <p class="save-the-date__badge">{{ 'saveTheDatePage.badge' | t }}</p>
+            <h1 class="save-the-date__title" appUiText="section">{{ saveTheDate.title }}</h1>
+          </div>
+
+          @if (_cover(); as cover) {
+            <figure class="save-the-date__cover">
+              <!-- Decorative: the page says everything the picture could. -->
+              <img
+                [height]="cover.height"
+                [ngSrc]="cover.url"
+                [width]="cover.width"
+                alt=""
+                priority
+              />
+            </figure>
+          }
+
+          <section class="save-the-date__card" [attr.aria-label]="'saveTheDatePage.when' | t">
+            @if (_time(); as time) {
+              <time class="save-the-date__date" [attr.datetime]="time.datetime">
+                <span class="save-the-date__weekday">{{ time.weekday }}</span>
+                <span
+                  class="save-the-date__day"
+                  [class.save-the-date__day--range]="time.severalDays"
+                >
+                  {{ time.dayMonth }}
+                </span>
+                <span class="save-the-date__year">{{ time.year }}</span>
+                @if (time.time; as hours) {
+                  <span class="save-the-date__time">
+                    {{ 'saveTheDatePage.time' | t: { time: hours } }}
+                  </span>
+                }
+              </time>
+            }
+            @if (saveTheDate.locationName; as locationName) {
+              <p class="save-the-date__location">{{ locationName }}</p>
+            }
+          </section>
+
+          <p class="save-the-date__note">
+            {{ saveTheDate.note ?? ('saveTheDatePage.defaultNote' | t) }}
+          </p>
+
+          @if (_calendarUrl(); as calendarUrl) {
+            <a class="save-the-date__calendar" [href]="calendarUrl" appUiButton download>
+              <app-ui-icon name="calendarPlus" />
+              {{ 'saveTheDatePage.calendar' | t }}
+            </a>
+          }
+        }
+      }
+    </ng-template>
+  </app-async-content>
+}

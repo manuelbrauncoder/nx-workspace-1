@@ -1,0 +1,120 @@
+@let link = _link();
+@if (_store.saveTheDateState().failure; as failure) {
+  <!-- 409: the event is over, only turning it off is left. -->
+  <app-failure-alert
+    class="save-the-date__failure"
+    [failure]="failure"
+    [heading]="'eventDetail.saveTheDate.failed' | t"
+    [headingLevel]="3"
+    [message]="failure.kind === 'conflict' ? ('eventDetail.saveTheDate.conflict' | t) : undefined"
+  />
+}
+
+@if (link) {
+  <div class="save-the-date__link">
+    <p class="save-the-date__state" appUiText="small">
+      <app-ui-icon name="check" />
+      {{ 'eventDetail.saveTheDate.on' | t }}
+    </p>
+    <p class="save-the-date__url">
+      <span class="sr-only">{{ 'eventDetail.saveTheDate.address' | t }}: </span>
+      <code appUiText="code">{{ _url() }}</code>
+    </p>
+    <div class="save-the-date__actions">
+      <button class="save-the-date__copy" (click)="_copy()" appUiButton type="button">
+        <app-ui-icon name="copy" />
+        {{ 'eventDetail.saveTheDate.copy' | t }}
+      </button>
+      @if (_canShare()) {
+        <button
+          [attr.aria-label]="'eventDetail.saveTheDate.shareNamed' | t"
+          (click)="_share()"
+          appUiButton
+          variant="outline"
+          type="button"
+        >
+          <app-ui-icon name="share" />
+          {{ 'eventDetail.saveTheDate.share' | t }}
+        </button>
+      }
+      <a
+        [attr.aria-label]="'eventDetail.saveTheDate.openNamed' | t"
+        [href]="_url()"
+        appUiButton
+        variant="outline"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <app-ui-icon name="externalLink" />
+        {{ 'eventDetail.saveTheDate.open' | t }}
+      </a>
+    </div>
+  </div>
+
+  @if (!event().past) {
+    <form class="save-the-date__form" (submit)="_saveNote($event)" novalidate>
+      <app-form-textarea
+        [formField]="_noteForm.note"
+        [label]="'eventDetail.saveTheDate.note' | t"
+        [description]="'eventDetail.saveTheDate.noteDescription' | t: { max: _noteMax }"
+        [rows]="3"
+      />
+      <button
+        [loading]="_running() === 'note'"
+        [loadingLabel]="'eventDetail.saveTheDate.saving' | t"
+        appUiButton
+        variant="outline"
+        type="submit"
+      >
+        {{ 'eventDetail.saveTheDate.saveNote' | t }}
+      </button>
+    </form>
+  }
+
+  <div class="save-the-date__actions">
+    @if (!event().past) {
+      <button
+        [loading]="_running() === 'renew'"
+        [loadingLabel]="'eventDetail.saveTheDate.renewing' | t"
+        [attr.aria-label]="'eventDetail.saveTheDate.renewNamed' | t"
+        (click)="_renew()"
+        appUiButton
+        variant="outline"
+        type="button"
+      >
+        <app-ui-icon name="refresh" />
+        {{ 'eventDetail.saveTheDate.renew' | t }}
+      </button>
+    }
+    <button
+      [loading]="_running() === 'disable'"
+      [loadingLabel]="'eventDetail.saveTheDate.disabling' | t"
+      [attr.aria-label]="'eventDetail.saveTheDate.disableNamed' | t"
+      (click)="_disable()"
+      appUiButton
+      variant="destructive"
+      type="button"
+    >
+      {{ 'eventDetail.saveTheDate.disable' | t }}
+    </button>
+  </div>
+} @else if (event().past) {
+  <p appUiText="muted">{{ 'eventDetail.saveTheDate.pastOff' | t }}</p>
+} @else {
+  <form class="save-the-date__form" (submit)="_enable($event)" novalidate>
+    <app-form-textarea
+      [formField]="_noteForm.note"
+      [label]="'eventDetail.saveTheDate.note' | t"
+      [description]="'eventDetail.saveTheDate.noteDescription' | t: { max: _noteMax }"
+      [rows]="3"
+    />
+    <button
+      [loading]="_running() === 'enable'"
+      [loadingLabel]="'eventDetail.saveTheDate.enabling' | t"
+      appUiButton
+      type="submit"
+    >
+      {{ 'eventDetail.saveTheDate.enable' | t }}
+    </button>
+  </form>
+}

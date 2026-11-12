@@ -17,6 +17,7 @@ import { UiToastService } from '@shared/ui/toast/toast.service';
 import { EventsStore } from '../../application/events.store';
 import { EventDeleteButton } from '../event-delete-button/event-delete-button';
 import { EventWhen } from '../event-when/event-when';
+import { SaveTheDatePanel } from '../save-the-date-panel/save-the-date-panel';
 
 /** The page of one event on `/events/:id`: when and where, the description, images and counts. */
 @Component({
@@ -35,6 +36,7 @@ import { EventWhen } from '../event-when/event-when';
     UiText,
     EventDeleteButton,
     EventWhen,
+    SaveTheDatePanel,
   ],
   styleUrl: './event-detail.scss',
   templateUrl: './event-detail.html',

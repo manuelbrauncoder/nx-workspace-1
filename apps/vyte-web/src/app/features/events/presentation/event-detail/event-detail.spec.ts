@@ -2,6 +2,7 @@ import { signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter, Router } from '@angular/router';
+import { AppConfigService } from '@core/config/app-config';
 import { Failure } from '@core/failure/failure';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
 import { AsyncState, failed, idle, loading, success } from '@core/state/async-state';
@@ -60,8 +61,10 @@ describe('EventDetail', () => {
             selected: signal(event),
             detailState: signal(state),
             mutationState: signal(idle()),
+            saveTheDateState: signal(idle()),
           },
         },
+        { provide: AppConfigService, useValue: { siteUrl: 'https://vyte.example.com' } },
         { provide: UiToastService, useValue: toast },
       ],
     });
@@ -160,6 +163,14 @@ describe('EventDetail', () => {
       'Das Event konnte nicht gelöscht werden',
     );
     expect(element.querySelector('h1')?.textContent).toBe('Sommerfest');
+  });
+
+  it('shows the save the date section with its panel', async () => {
+    const { element } = await render(success(), EVENT);
+
+    const heading = element.querySelector('#event-detail-save-the-date');
+    expect(heading?.textContent?.trim()).toBe('Save the date');
+    expect(element.querySelector('app-save-the-date-panel')).not.toBeNull();
   });
 
   it('has no accessibility violations', async () => {

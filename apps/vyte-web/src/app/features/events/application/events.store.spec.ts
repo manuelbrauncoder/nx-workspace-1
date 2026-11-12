@@ -69,7 +69,22 @@ class FakeEventsUseCase {
   deleteImage(): Observable<EventImage[]> {
     return this._respond(() => [image('i2', 0)]);
   }
+
+  setSaveTheDate(id: string, note: string): Observable<VyteEvent> {
+    return this._respond(() => withLink(id, { token: 'tok-1', note: note || null }));
+  }
+
+  removeSaveTheDate(id: string): Observable<VyteEvent> {
+    return this._respond(() => withLink(id, null));
+  }
+
+  renewSaveTheDateToken(id: string): Observable<VyteEvent> {
+    return this._respond(() => withLink(id, { token: 'tok-2', note: 'Bald mehr' }));
+  }
 }
+
+const withLink = (id: string, saveTheDate: VyteEvent['saveTheDate']): VyteEvent =>
+  ({ ...event(id, 'Sommerfest', '2027-07-01T16:00:00.000Z'), saveTheDate }) as VyteEvent;
 
 describe('sortEvents', () => {
   it('puts upcoming events soonest first and past ones latest first', () => {
@@ -212,5 +227,60 @@ describe('EventsStore', () => {
 
     expect(store.imageMutationState().failure?.kind).toBe('server');
     expect(store.selected()?.images).toEqual([]);
+  });
+
+  describe('save the date', () => {
+    it('replaces the selected event and its entry in the list', async () => {
+      store.select('e1');
+      await settle();
+
+      const result = await store.setSaveTheDate('e1', 'Bald mehr');
+      expect(result?.saveTheDate).toEqual({ token: 'tok-1', note: 'Bald mehr' });
+      expect(store.selected()?.saveTheDate?.token).toBe('tok-1');
+      expect(store.events().find((existing) => existing.id === 'e1')?.saveTheDate?.token).toBe(
+        'tok-1',
+      );
+
+      await store.renewSaveTheDateToken('e1');
+      expect(store.selected()?.saveTheDate?.token).toBe('tok-2');
+
+      await store.removeSaveTheDate('e1');
+      expect(store.selected()?.saveTheDate).toBeNull();
+      expect(ids()).toEqual(['e1', 'e2', 'e0']);
+    });
+
+    it('leaves the detail alone when another event was changed', async () => {
+      store.select('e2');
+      await settle();
+
+      await store.setSaveTheDate('e1', '');
+
+      expect(store.selected()?.saveTheDate).toBeUndefined();
+      expect(store.events().find((existing) => existing.id === 'e1')?.saveTheDate?.token).toBe(
+        'tok-1',
+      );
+    });
+
+    it('puts a failure in saveTheDateState, not in mutationState', async () => {
+      useCase.failWith = new Failure('conflict', 'Over');
+
+      expect(await store.setSaveTheDate('e1', '')).toBeUndefined();
+      expect(await store.removeSaveTheDate('e1')).toBeUndefined();
+      expect(await store.renewSaveTheDateToken('e1')).toBeUndefined();
+
+      expect(store.saveTheDateState().failure?.kind).toBe('conflict');
+      expect(store.mutationState().loadingState).toBe('idle');
+      expect(store.events().every((existing) => !existing.saveTheDate)).toBe(true);
+    });
+
+    it('is reset by select()', async () => {
+      useCase.failWith = new Failure('conflict', 'Over');
+      await store.setSaveTheDate('e1', '');
+      expect(store.saveTheDateState().failure).toBeDefined();
+
+      store.select('e2');
+
+      expect(store.saveTheDateState().loadingState).toBe('idle');
+    });
   });
 });

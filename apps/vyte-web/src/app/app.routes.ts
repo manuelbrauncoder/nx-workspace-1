@@ -15,6 +15,11 @@ export const routes: Routes = [
         path: 'rsvp/:token',
         loadChildren: () => import('./features/rsvp/rsvp.routes').then((m) => m.rsvpRoutes),
       },
+      {
+        path: 'save-the-date/:token',
+        loadChildren: () =>
+          import('./features/save-the-date/save-the-date.routes').then((m) => m.saveTheDateRoutes),
+      },
     ],
   },
   {

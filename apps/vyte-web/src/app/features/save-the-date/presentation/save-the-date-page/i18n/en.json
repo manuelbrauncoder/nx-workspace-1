@@ -1,0 +1,18 @@
+{
+  "title": "Save the date",
+  "badge": "Save the Date",
+  "loading": "Loading …",
+  "loadFailed": "The page could not be loaded",
+  "notFound": {
+    "heading": "Not found",
+    "lead": "This link is no longer valid, maybe it was renewed. Ask the hosts for the current link."
+  },
+  "past": {
+    "heading": "The event is over",
+    "lead": "This announcement is no longer active."
+  },
+  "when": "Date and place",
+  "time": "{{ time }}",
+  "defaultNote": "Keep the date free, the invitation will follow.",
+  "calendar": "Add to calendar"
+}
