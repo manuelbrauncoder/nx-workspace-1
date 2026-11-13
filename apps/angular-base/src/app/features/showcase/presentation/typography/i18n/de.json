@@ -12,7 +12,7 @@
   },
   "headings": {
     "heading": "Überschriften",
-    "description": "Varianten h1 bis h4 von appUiText. Überschriften-Elemente nutzen automatisch Space Grotesk.",
+    "description": "Varianten h1 bis h4, page und heading von appUiText. page ist der Titel einer Arbeitsseite, heading ein Abschnitt darin. Überschriften-Elemente nutzen bei h1 bis h4 automatisch Space Grotesk.",
     "sample": "Gestaltung beginnt mit der Schrift"
   },
   "body": {

@@ -6,7 +6,7 @@ import { UiButton } from '@shared/ui/button/button';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiNavMenu } from '@shared/ui/nav-menu/nav-menu';
 import { AppLogo } from '../app-logo/app-logo';
-import { APP_NAV_ITEMS } from '../app-nav-items';
+import { injectAppNavItems } from '../app-nav-items';
 
 @Component({
   selector: 'app-header',
@@ -18,5 +18,5 @@ export class AppHeader {
   /** Whether the mobile drawer is open. Set to `true` by the menu button. */
   readonly drawerOpen = model(false);
 
-  private readonly _items = APP_NAV_ITEMS;
+  private readonly _items = injectAppNavItems();
 }

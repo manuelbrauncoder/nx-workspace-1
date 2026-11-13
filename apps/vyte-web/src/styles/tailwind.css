@@ -25,6 +25,9 @@
   --color-brand-foreground: var(--brand-foreground);
   --color-decor: var(--decor);
   --color-soft: var(--soft);
+  --color-status-yes: var(--status-yes);
+  --color-status-no: var(--status-no);
+  --color-status-open: var(--status-open);
   --radius-card: var(--card-radius);
   --shadow-card: var(--card-shadow);
 }

@@ -1,0 +1,28 @@
+@layer components {
+  // No `overflow: hidden`, it would clip the focus ring of a row that is a link. The first and
+  // last row round their own corners instead.
+  .ui-list {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    color: var(--card-foreground);
+  }
+
+  .ui-list__item {
+    padding: 0.75rem 1rem;
+
+    &:first-child {
+      border-top-left-radius: calc(var(--radius) - 1px);
+      border-top-right-radius: calc(var(--radius) - 1px);
+    }
+
+    &:last-child {
+      border-bottom-left-radius: calc(var(--radius) - 1px);
+      border-bottom-right-radius: calc(var(--radius) - 1px);
+    }
+
+    & + & {
+      border-top: 1px solid var(--border);
+    }
+  }
+}

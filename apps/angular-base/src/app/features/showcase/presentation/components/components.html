@@ -198,6 +198,30 @@
     />
   </app-showcase-section>
 
+  <app-showcase-section [description]="'showcaseComponents.list.description' | t" heading="List">
+    <ul appUiList>
+      <li appUiListItem>{{ 'showcaseComponents.list.item1' | t }}</li>
+      <li appUiListItem>{{ 'showcaseComponents.list.item2' | t }}</li>
+      <li appUiListItem>{{ 'showcaseComponents.list.item3' | t }}</li>
+    </ul>
+  </app-showcase-section>
+
+  <app-showcase-section
+    [description]="'showcaseComponents.pagination.description' | t"
+    heading="Pagination"
+  >
+    <div class="demo-stack">
+      <p appUiText="muted">
+        {{ 'showcaseComponents.pagination.current' | t: { page: _page(), count: _pageCount } }}
+      </p>
+      <app-ui-pagination
+        [label]="'showcaseComponents.pagination.label' | t"
+        [page]="_page()"
+        [pageCount]="_pageCount"
+      />
+    </div>
+  </app-showcase-section>
+
   <app-showcase-section [description]="'showcaseComponents.sheet.description' | t" heading="Sheet">
     <button (click)="_sheetOpen.set(true)" appUiButton variant="outline" type="button">
       {{ 'showcaseComponents.sheet.open' | t }}

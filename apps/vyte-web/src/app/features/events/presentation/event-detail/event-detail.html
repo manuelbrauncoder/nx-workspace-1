@@ -2,7 +2,7 @@
 
 <!-- Outside of the loaded content, so the page has its heading while loading and after a failure. -->
 <div class="event-detail__heading">
-  <h1 appUiText="h1">{{ _store.selected()?.title ?? ('eventDetail.title' | t) }}</h1>
+  <h1 appUiText="page">{{ _store.selected()?.title ?? ('eventDetail.title' | t) }}</h1>
   @if (_store.selected()?.past) {
     <span class="event-detail__badge" appUiText="small">{{ 'eventDetail.past' | t }}</span>
   }
@@ -75,7 +75,9 @@
         }
 
         <section class="event-detail__section" aria-labelledby="event-detail-guests">
-          <h2 id="event-detail-guests" appUiText="h3">{{ 'eventDetail.guests.heading' | t }}</h2>
+          <h2 id="event-detail-guests" appUiText="heading">
+            {{ 'eventDetail.guests.heading' | t }}
+          </h2>
           <p class="event-detail__section-lead" appUiText="muted">
             {{ 'eventDetail.guests.description' | t }}
           </p>
@@ -113,7 +115,7 @@
         </section>
 
         <section class="event-detail__section" aria-labelledby="event-detail-save-the-date">
-          <h2 id="event-detail-save-the-date" appUiText="h3" tabindex="-1">
+          <h2 id="event-detail-save-the-date" appUiText="heading" tabindex="-1">
             {{ 'eventDetail.saveTheDate.heading' | t }}
           </h2>
           <p class="event-detail__section-lead" appUiText="muted">
@@ -123,7 +125,7 @@
         </section>
 
         <section class="event-detail__section" aria-labelledby="event-detail-photo-stand">
-          <h2 id="event-detail-photo-stand" appUiText="h3" tabindex="-1">
+          <h2 id="event-detail-photo-stand" appUiText="heading" tabindex="-1">
             {{ 'eventDetail.photoStand.heading' | t }}
           </h2>
           <p class="event-detail__section-lead" appUiText="muted">
@@ -134,7 +136,9 @@
 
         @if (event.images.length > 0) {
           <section class="event-detail__section" aria-labelledby="event-detail-images">
-            <h2 id="event-detail-images" appUiText="h3">{{ 'eventDetail.images.heading' | t }}</h2>
+            <h2 id="event-detail-images" appUiText="heading">
+              {{ 'eventDetail.images.heading' | t }}
+            </h2>
             <div class="event-detail__images" appUiAttachmentGroup role="list">
               @for (image of event.images; track image.id; let index = $index) {
                 <app-ui-attachment

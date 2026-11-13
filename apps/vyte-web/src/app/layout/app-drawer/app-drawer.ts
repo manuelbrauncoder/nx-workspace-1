@@ -3,7 +3,7 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { UiNavMenu } from '@shared/ui/nav-menu/nav-menu';
 import { UiSheet } from '@shared/ui/sheet/sheet';
 import { AppLogo } from '../app-logo/app-logo';
-import { APP_NAV_ITEMS } from '../app-nav-items';
+import { injectAppNavItems } from '../app-nav-items';
 
 @Component({
   selector: 'app-drawer',
@@ -14,5 +14,5 @@ import { APP_NAV_ITEMS } from '../app-nav-items';
 export class AppDrawer {
   readonly open = model(false);
 
-  private readonly _items = APP_NAV_ITEMS;
+  private readonly _items = injectAppNavItems();
 }

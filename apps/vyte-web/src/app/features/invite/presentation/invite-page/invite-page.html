@@ -1,6 +1,6 @@
 <div class="invite-page">
   <!-- Outside of the loaded content, so the page has its heading in every state. -->
-  <h1 class="invite-page__title" appUiText="h1">
+  <h1 class="invite-page__title" appUiText="page">
     @if (_store.preview(); as preview) {
       {{ 'invitePage.heading' | t: { title: preview.eventTitle } }}
     } @else if (_notFound()) {
@@ -68,7 +68,9 @@
             </button>
           } @else {
             <section class="invite-page__section" aria-labelledby="invite-page-sign-in">
-              <h2 id="invite-page-sign-in" appUiText="h3">{{ 'invitePage.signIn.heading' | t }}</h2>
+              <h2 id="invite-page-sign-in" appUiText="heading">
+                {{ 'invitePage.signIn.heading' | t }}
+              </h2>
               <p class="invite-page__section-lead" appUiText="muted">
                 {{ 'invitePage.signIn.description' | t }}
               </p>
@@ -84,7 +86,9 @@
             </section>
 
             <section class="invite-page__section" aria-labelledby="invite-page-sign-up">
-              <h2 id="invite-page-sign-up" appUiText="h3">{{ 'invitePage.signUp.heading' | t }}</h2>
+              <h2 id="invite-page-sign-up" appUiText="heading">
+                {{ 'invitePage.signUp.heading' | t }}
+              </h2>
               <p class="invite-page__section-lead" appUiText="muted">
                 {{ 'invitePage.signUp.description' | t }}
               </p>

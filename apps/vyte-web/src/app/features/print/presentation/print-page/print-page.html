@@ -6,7 +6,7 @@
       <app-ui-icon name="arrowLeft" />
       {{ 'printPage.back' | t }}
     </a>
-    <h1 appUiText="h1">{{ 'printPage.heading' | t }}</h1>
+    <h1 appUiText="page">{{ 'printPage.heading' | t }}</h1>
     @if (_store.event(); as event) {
       <p class="print-page__event" appUiText="lead">{{ event.title }}</p>
     }
@@ -84,7 +84,7 @@
           <button class="print-page__print" (click)="_print()" appUiButton type="button">
             {{ 'printPage.print' | t }}
           </button>
-          <h2 class="print-page__preview-heading" id="print-page-preview" appUiText="h3">
+          <h2 class="print-page__preview-heading" id="print-page-preview" appUiText="heading">
             {{ 'printPage.preview' | t }}
           </h2>
         }

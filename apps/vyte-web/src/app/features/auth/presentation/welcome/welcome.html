@@ -1,6 +1,6 @@
 <div class="welcome">
   <!-- Outside of the loaded content, so the page has its heading in every state. -->
-  <h1 appUiText="h1">
+  <h1 appUiText="page">
     @if (_welcome.invite(); as invite) {
       {{ 'welcome.heading' | t: { name: invite.name } }}
     } @else {

@@ -1,8 +1,8 @@
-<h1 appUiText="h1">{{ 'userList.heading' | t }}</h1>
+<h1 appUiText="page">{{ 'userList.heading' | t }}</h1>
 <p class="user-list__lead" appUiText="lead">{{ 'userList.lead' | t }}</p>
 
 <section class="user-list__section" aria-labelledby="user-list-create">
-  <h2 id="user-list-create" appUiText="h3">{{ 'userList.create.heading' | t }}</h2>
+  <h2 id="user-list-create" appUiText="heading">{{ 'userList.create.heading' | t }}</h2>
   <p class="user-list__section-lead" appUiText="muted">{{ 'userList.create.description' | t }}</p>
   <form class="user-list__create" [formRoot]="_createForm">
     <app-form-text
@@ -31,7 +31,7 @@
 </section>
 
 <section class="user-list__section" aria-labelledby="user-list-invites">
-  <h2 id="user-list-invites" #invitesHeading appUiText="h3" tabindex="-1">
+  <h2 id="user-list-invites" #invitesHeading appUiText="heading" tabindex="-1">
     {{ 'userList.invites.heading' | t }}
   </h2>
   @if (_store.inviteMutationState().failure; as failure) {
@@ -73,7 +73,7 @@
 </section>
 
 <section class="user-list__section" aria-labelledby="user-list-users">
-  <h2 id="user-list-users" #usersHeading appUiText="h3" tabindex="-1">
+  <h2 id="user-list-users" #usersHeading appUiText="heading" tabindex="-1">
     {{ 'userList.users.heading' | t }}
   </h2>
   @if (_store.userMutationState().failure; as failure) {

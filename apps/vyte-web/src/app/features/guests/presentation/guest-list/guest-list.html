@@ -2,7 +2,7 @@
 
 <!-- Outside of the loaded content, so the page has its heading while loading and after a failure. -->
 <div class="guest-list__heading">
-  <h1 appUiText="h1">{{ 'guestList.heading' | t }}</h1>
+  <h1 appUiText="page">{{ 'guestList.heading' | t }}</h1>
   @if (_store.event(); as event) {
     <p class="guest-list__event" appUiText="lead">{{ event.title }}</p>
   }
@@ -24,7 +24,7 @@
     }
 
     <section class="guest-list__section" aria-labelledby="guest-list-counts">
-      <h2 id="guest-list-counts" appUiText="h3">{{ 'guestList.counts.heading' | t }}</h2>
+      <h2 id="guest-list-counts" appUiText="heading">{{ 'guestList.counts.heading' | t }}</h2>
       <p class="guest-list__section-lead" appUiText="muted">
         {{ 'guestList.counts.description' | t }}
       </p>
@@ -83,7 +83,7 @@
     }
 
     <section class="guest-list__section" aria-labelledby="guest-list-guests">
-      <h2 id="guest-list-guests" #listHeading appUiText="h3" tabindex="-1">
+      <h2 id="guest-list-guests" #listHeading appUiText="heading" tabindex="-1">
         {{ 'guestList.list.heading' | t }}
       </h2>
 

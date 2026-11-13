@@ -19,6 +19,8 @@ export type UiTextVariant =
   | 'display'
   | 'section'
   | 'title'
+  | 'page'
+  | 'heading'
   | 'h1'
   | 'h2'
   | 'h3'
@@ -42,10 +44,18 @@ const SECTION =
 const TITLE =
   'font-heading font-extrabold tracking-[-0.025em] text-[clamp(1.875rem,3vw,2.5rem)] leading-[1.05]';
 
+// Work pages, where a page title and its section headings should not shout: a smaller title in
+// the heading font, section headings in the text font.
+const PAGE =
+  'font-heading font-extrabold tracking-[-0.02em] text-[1.875rem] leading-tight sm:text-[2.25rem]';
+const HEADING = 'font-sans text-xl font-semibold tracking-tight';
+
 const VARIANT_CLASSES: Record<UiTextVariant, string> = {
   display: DISPLAY,
   section: SECTION,
   title: TITLE,
+  page: PAGE,
+  heading: HEADING,
   h1: hlmH1,
   h2: hlmH2,
   h3: hlmH3,
@@ -67,6 +77,7 @@ const VARIANT_CLASSES: Record<UiTextVariant, string> = {
  * @example
  * <h1 appUiText="h1">Notizen</h1>
  * <h2 appUiText="section">Projekte</h2>
+ * <h1 appUiText="page">Gäste</h1> <!-- title of a work page, `heading` for its sections -->
  * <p class="mt-2" appUiText="lead">Kurze Einleitung zur Seite.</p>
  * <ul appUiText="list"><li>Eintrag</li></ul>
  */
