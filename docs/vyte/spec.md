@@ -285,8 +285,8 @@ The event page shows the counts, the guest page the list.
 | At most   | everyone who could come: all guests plus all allowances, for planning |
 
 - Filter by answer (all, coming, declined, no answer), search by name
-- Each card: name, allowance ("+1", "+3"), answer with companions, "vom Host eingetragen" when a host answered, message of the guest, note of the hosts, time of the answer
-- Sorted by name; "newest answers first" as a second order
+- One row per guest, 25 to a page: name, answer as a dot and its word (with companions), allowance ("bis +1", "Ohne Begleitung"), "vom Host eingetragen" when a host answered, message of the guest, note of the hosts, time of the answer
+- Sorted by name; "newest answers first" as a second order. Page, filter and sort live in the address (`?page=2&filter=accepted&sort=answered`), the search does not
 - CSV export: one row per guest, sorted by name, with name, allowance, answer, companions, people in total, message, note, answered by, time of the answer (`YYYY-MM-DD HH:mm` in the event's time zone). UTF-8 with BOM, `;` as separator and CRLF between rows, so Excel opens it directly. Headings and answers in German, in English with `lang=en` (`?lang=de|en`, German by default). File name `<title>-gaeste.csv` or `<title>-guests.csv`: the title reduced to letters and digits, at most 60 characters
 
 ## 6. API draft

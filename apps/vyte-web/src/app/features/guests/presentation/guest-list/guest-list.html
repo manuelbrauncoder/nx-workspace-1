@@ -23,69 +23,69 @@
       </app-ui-alert>
     }
 
-    <section class="guest-list__section" aria-labelledby="guest-list-counts">
-      <h2 id="guest-list-counts" appUiText="heading">{{ 'guestList.counts.heading' | t }}</h2>
-      <p class="guest-list__section-lead" appUiText="muted">
-        {{ 'guestList.counts.description' | t }}
-      </p>
+    <section class="guest-list__section" aria-labelledby="guest-list-guests">
+      <div class="guest-list__head">
+        <h2 id="guest-list-guests" #listHeading appUiText="heading" tabindex="-1">
+          {{ 'guestList.list.heading' | t }}
+        </h2>
+        <div class="guest-list__actions">
+          @if (!_readonly()) {
+            <button (click)="_add()" appUiButton size="sm" type="button">
+              <app-ui-icon name="userPlus" />
+              {{ 'guestList.add' | t }}
+            </button>
+            <button (click)="_addMany()" appUiButton variant="outline" size="sm" type="button">
+              <app-ui-icon name="listPlus" />
+              {{ 'guestList.addMany' | t }}
+            </button>
+          }
+          @if (_exportUrl(); as exportUrl) {
+            <!-- The backend names the file; the browser sends the session cookie. -->
+            <a [href]="exportUrl" appUiButton variant="outline" size="sm" download>
+              <app-ui-icon name="download" />
+              {{ 'guestList.export' | t }}
+            </a>
+          }
+        </div>
+      </div>
+
+      <!-- The numbers as one quiet line of labelled values. -->
       @let counts = _store.counts();
       <dl class="guest-list__counts">
         <div class="guest-list__count">
-          <dt appUiText="muted">{{ 'guestList.counts.invited' | t }}</dt>
-          <dd appUiText="h3">{{ counts.invited }}</dd>
+          <dt>{{ 'guestList.counts.invited' | t }}</dt>
+          <dd>{{ counts.invited }}</dd>
         </div>
         <div class="guest-list__count">
-          <dt appUiText="muted">{{ 'guestList.counts.coming' | t }}</dt>
-          <dd appUiText="h3">{{ counts.coming }}</dd>
+          <dt>{{ 'guestList.counts.coming' | t }}</dt>
+          <dd>{{ counts.coming }}</dd>
         </div>
         <div class="guest-list__count">
-          <dt appUiText="muted">{{ 'guestList.counts.declined' | t }}</dt>
-          <dd appUiText="h3">{{ counts.declined }}</dd>
+          <dt>{{ 'guestList.counts.declined' | t }}</dt>
+          <dd>{{ counts.declined }}</dd>
         </div>
         <div class="guest-list__count">
-          <dt appUiText="muted">{{ 'guestList.counts.pending' | t }}</dt>
-          <dd appUiText="h3">{{ counts.pending }}</dd>
+          <dt>{{ 'guestList.counts.pending' | t }}</dt>
+          <dd>{{ counts.pending }}</dd>
         </div>
         <div class="guest-list__count">
-          <dt appUiText="muted">{{ 'guestList.counts.atMost' | t }}</dt>
-          <dd appUiText="h3">{{ counts.atMost }}</dd>
+          <dt>{{ 'guestList.counts.atMost' | t }}</dt>
+          <dd>{{ counts.atMost }}</dd>
         </div>
       </dl>
-    </section>
+      <p class="guest-list__counts-note" id="guest-list-counts-note" appUiText="muted">
+        {{ 'guestList.counts.description' | t }}
+      </p>
 
-    <div class="guest-list__actions">
-      @if (!_readonly()) {
-        <button (click)="_add()" appUiButton type="button">
-          <app-ui-icon name="userPlus" />
-          {{ 'guestList.add' | t }}
-        </button>
-        <button (click)="_addMany()" appUiButton variant="outline" type="button">
-          <app-ui-icon name="listPlus" />
-          {{ 'guestList.addMany' | t }}
-        </button>
+      @if (_store.mutationState().failure; as failure) {
+        <app-failure-alert
+          class="guest-list__failure"
+          [failure]="failure"
+          [heading]="'guestList.actionFailed' | t"
+          [headingLevel]="3"
+          [message]="failure.kind === 'conflict' ? ('guestList.pastConflict' | t) : undefined"
+        />
       }
-      @if (_exportUrl(); as exportUrl) {
-        <!-- The backend names the file; the browser sends the session cookie. -->
-        <a [href]="exportUrl" appUiButton variant="outline" download>
-          <app-ui-icon name="download" />
-          {{ 'guestList.export' | t }}
-        </a>
-      }
-    </div>
-
-    @if (_store.mutationState().failure; as failure) {
-      <app-failure-alert
-        class="guest-list__failure"
-        [failure]="failure"
-        [heading]="'guestList.actionFailed' | t"
-        [message]="failure.kind === 'conflict' ? ('guestList.pastConflict' | t) : undefined"
-      />
-    }
-
-    <section class="guest-list__section" aria-labelledby="guest-list-guests">
-      <h2 id="guest-list-guests" #listHeading appUiText="heading" tabindex="-1">
-        {{ 'guestList.list.heading' | t }}
-      </h2>
 
       <div class="guest-list__tools">
         <app-form-text
@@ -100,11 +100,12 @@
             {{ 'guestList.list.filter' | t }}
           </span>
           <app-ui-toggle-group
-            [(value)]="_filter"
+            [value]="_filter()"
             [options]="_filterOptions()"
+            (valueChange)="_setFilter($event)"
             ariaLabelledby="guest-list-filter"
             variant="outline"
-            fullWidth
+            size="sm"
           />
         </div>
         <div class="guest-list__tool">
@@ -112,11 +113,12 @@
             {{ 'guestList.list.sort' | t }}
           </span>
           <app-ui-toggle-group
-            [(value)]="_sort"
+            [value]="_sort()"
             [options]="_sortOptions()"
+            (valueChange)="_setSort($event)"
             ariaLabelledby="guest-list-sort"
             variant="outline"
-            fullWidth
+            size="sm"
           />
         </div>
       </div>
@@ -135,10 +137,23 @@
           <!-- Polite, so a new filter or search is told without interrupting. -->
           <p class="guest-list__result" aria-live="polite" appUiText="muted">
             @if (_store.guests().length > 0) {
-              {{
-                'guestList.list.result'
-                  | t: { count: _visible().length, total: _store.guests().length }
-              }}
+              @if (_pageCount() > 1) {
+                {{
+                  'guestList.list.resultPaged'
+                    | t
+                      : {
+                          count: _visible().length,
+                          total: _store.guests().length,
+                          page: _page(),
+                          pages: _pageCount(),
+                        }
+                }}
+              } @else {
+                {{
+                  'guestList.list.result'
+                    | t: { count: _visible().length, total: _store.guests().length }
+                }}
+              }
             }
           </p>
           @if (_store.guests().length === 0) {
@@ -160,10 +175,10 @@
           } @else if (_visible().length === 0) {
             <p class="guest-list__none">{{ 'guestList.list.none' | t }}</p>
           } @else {
-            <ul class="guest-list__grid">
-              @for (guest of _visible(); track guest.id) {
-                <li>
-                  <app-guest-card
+            <ul appUiList>
+              @for (guest of _pageGuests(); track guest.id) {
+                <li appUiListItem>
+                  <app-guest-row
                     [guest]="guest"
                     [timeZone]="_store.event()?.timeZone ?? 'UTC'"
                     [readonly]="_readonly()"
@@ -179,6 +194,13 @@
                 </li>
               }
             </ul>
+            <app-ui-pagination
+              class="guest-list__pages"
+              [label]="'guestList.list.pages' | t"
+              [page]="_page()"
+              [pageCount]="_pageCount()"
+              fragment="guest-list-guests"
+            />
           }
         </ng-template>
       </app-async-content>

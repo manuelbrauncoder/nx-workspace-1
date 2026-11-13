@@ -1,5 +1,17 @@
 import { Guest } from './guest';
-import { countGuests, filterGuests, guestLinkUrl, parseNames, sortGuests } from './guest-list';
+import {
+  clampPage,
+  countGuests,
+  countPages,
+  filterGuests,
+  GUEST_PAGE_SIZE,
+  guestLinkUrl,
+  pageOf,
+  parseNames,
+  sortGuests,
+  toGuestFilter,
+  toGuestSort,
+} from './guest-list';
 
 const guest = (id: string, name: string, overrides: Partial<Guest> = {}): Guest => ({
   id,
@@ -170,5 +182,88 @@ describe('guestLinkUrl', () => {
     expect(guestLinkUrl('https://vyte.example.com', 'a/b c')).toBe(
       'https://vyte.example.com/rsvp/a%2Fb%20c',
     );
+  });
+});
+
+describe('toGuestFilter', () => {
+  it.each(['all', 'accepted', 'declined', 'pending'] as const)('keeps %s', (value) => {
+    expect(toGuestFilter(value)).toBe(value);
+  });
+
+  it.each([undefined, '', 'ACCEPTED', 'coming', 'name'])('falls back to all for %j', (value) => {
+    expect(toGuestFilter(value)).toBe('all');
+  });
+});
+
+describe('toGuestSort', () => {
+  it.each(['name', 'answered'] as const)('keeps %s', (value) => {
+    expect(toGuestSort(value)).toBe(value);
+  });
+
+  it.each([undefined, '', 'Name', 'accepted', 'date'])('falls back to name for %j', (value) => {
+    expect(toGuestSort(value)).toBe('name');
+  });
+});
+
+describe('countPages', () => {
+  it('has 25 guests to a page', () => {
+    expect(GUEST_PAGE_SIZE).toBe(25);
+  });
+
+  it.each([
+    [0, 1],
+    [1, 1],
+    [25, 1],
+    [26, 2],
+    [50, 2],
+    [51, 3],
+  ])('takes %i entries %i page(s)', (total, pages) => {
+    expect(countPages(total)).toBe(pages);
+  });
+
+  it('counts with a given size', () => {
+    expect(countPages(11, 5)).toBe(3);
+  });
+});
+
+describe('clampPage', () => {
+  it.each([
+    [1, 3, 1],
+    [2, 3, 2],
+    [3, 3, 3],
+    [4, 3, 3],
+    [999, 3, 3],
+    [0, 3, 1],
+    [-4, 3, 1],
+    [NaN, 3, 1],
+    [Infinity, 3, 1],
+    [2.7, 3, 2],
+    [0.5, 3, 1],
+    [5, 1, 1],
+  ])('turns page %f of %i into %i', (page, count, expected) => {
+    expect(clampPage(page, count)).toBe(expected);
+  });
+});
+
+describe('pageOf', () => {
+  const items = Array.from({ length: 60 }, (_, index) => index + 1);
+
+  it('takes 25 entries from the first page', () => {
+    expect(pageOf(items, 1)).toEqual(items.slice(0, 25));
+  });
+
+  it('takes the next ones and a shorter last page', () => {
+    expect(pageOf(items, 2)).toEqual(items.slice(25, 50));
+    expect(pageOf(items, 3)).toEqual(items.slice(50));
+  });
+
+  it('is empty beyond the end and for an empty list', () => {
+    expect(pageOf(items, 4)).toEqual([]);
+    expect(pageOf([], 1)).toEqual([]);
+  });
+
+  it('uses a given size and leaves the list alone', () => {
+    expect(pageOf(items, 2, 10)).toEqual(items.slice(10, 20));
+    expect(items).toHaveLength(60);
   });
 });
