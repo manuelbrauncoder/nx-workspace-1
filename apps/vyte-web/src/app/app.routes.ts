@@ -1,8 +1,21 @@
-import { Routes } from '@angular/router';
+import { Data, LoadChildren, Route, Routes } from '@angular/router';
 import { routeSeo } from '@core/seo/route-seo';
 import { adminGuard, authGuard } from '@features/auth/public-api';
 import { AppShell } from './layout/app-shell/app-shell';
 import { GuestShell } from './layout/guest-shell/guest-shell';
+
+/**
+ * A page in `GuestShell` at `path`. The feature hangs below as an empty child, which inherits the
+ * route parameters and `data` of this entry.
+ */
+function guestPage(path: string, loadChildren: LoadChildren, data?: Data): Route {
+  return {
+    path,
+    component: GuestShell,
+    ...(data ? { data } : {}),
+    children: [{ path: '', loadChildren }],
+  };
+}
 
 export const routes: Routes = [
   {
@@ -11,35 +24,25 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadChildren: () => import('./features/print/print.routes').then((m) => m.printRoutes),
   },
-  {
-    // Pages a guest opens through a link, in their own frame without header and sign-in. First,
-    // so the catch-all of the app shell below does not take them.
-    path: '',
-    component: GuestShell,
-    children: [
-      {
-        path: 'rsvp/:token',
-        loadChildren: () => import('./features/rsvp/rsvp.routes').then((m) => m.rsvpRoutes),
-      },
-      {
-        // The upload page of a guest, the QR code of their place card.
-        path: 'photos/:token',
-        data: { kind: 'guest' },
-        loadChildren: () => import('./features/upload/upload.routes').then((m) => m.uploadRoutes),
-      },
-      {
-        // The shared upload page of the photo stand.
-        path: 'stand/:token',
-        data: { kind: 'stand' },
-        loadChildren: () => import('./features/upload/upload.routes').then((m) => m.uploadRoutes),
-      },
-      {
-        path: 'save-the-date/:token',
-        loadChildren: () =>
-          import('./features/save-the-date/save-the-date.routes').then((m) => m.saveTheDateRoutes),
-      },
-    ],
-  },
+  // Pages a guest opens through a link, in their own frame without header and sign-in. One entry
+  // each, so the frame only takes its own paths: a group under `''` would also take `/`. Before
+  // the app shell, whose catch-all would take them otherwise.
+  guestPage('rsvp/:token', () => import('./features/rsvp/rsvp.routes').then((m) => m.rsvpRoutes)),
+  // The upload page of a guest, the QR code of their place card.
+  guestPage(
+    'photos/:token',
+    () => import('./features/upload/upload.routes').then((m) => m.uploadRoutes),
+    { kind: 'guest' },
+  ),
+  // The shared upload page of the photo stand.
+  guestPage(
+    'stand/:token',
+    () => import('./features/upload/upload.routes').then((m) => m.uploadRoutes),
+    { kind: 'stand' },
+  ),
+  guestPage('save-the-date/:token', () =>
+    import('./features/save-the-date/save-the-date.routes').then((m) => m.saveTheDateRoutes),
+  ),
   {
     path: '',
     component: AppShell,
