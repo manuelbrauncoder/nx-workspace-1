@@ -6,7 +6,11 @@ import { shellLayout } from '@core/layout/shell-layout';
 import { AuthStore } from '@features/auth/public-api';
 import { AppShell } from './app-shell';
 
-@Component({ template: `<h1>Seite</h1>` })
+@Component({
+  template: `<h1>Seite</h1>
+    <h2 id="section" tabindex="-1">Abschnitt</h2>
+    <h2 id="plain">Ohne Fokus</h2>`,
+})
 class Page {}
 
 describe('AppShell', () => {
@@ -83,6 +87,52 @@ describe('AppShell', () => {
     const { harness, main } = await render();
 
     await harness.navigateByUrl('/wide');
+    await harness.fixture.whenStable();
+
+    expect(document.activeElement).toBe(main);
+  });
+
+  it('keeps the focus when only the query changes', async () => {
+    const { harness, element } = await render();
+    const button = document.createElement('button');
+    element.appendChild(button);
+    button.focus();
+
+    await harness.navigateByUrl('/events?filter=accepted');
+    await harness.fixture.whenStable();
+
+    expect(document.activeElement).toBe(button);
+  });
+
+  it('focuses the section of a fragment when only the query changes', async () => {
+    const { harness, element } = await render();
+    const button = document.createElement('button');
+    element.appendChild(button);
+    button.focus();
+
+    await harness.navigateByUrl('/events?page=2#section');
+    await harness.fixture.whenStable();
+
+    expect(document.activeElement).toBe(element.querySelector('#section'));
+  });
+
+  it('focuses the main area for a fragment without tabindex when only the query changes', async () => {
+    const { harness, main } = await render();
+
+    await harness.navigateByUrl('/events?page=2#plain');
+    await harness.fixture.whenStable();
+
+    expect(document.activeElement).toBe(main);
+  });
+
+  it('focuses the main area when the query change removed the focused element', async () => {
+    const { harness, element, main } = await render();
+    const button = document.createElement('button');
+    element.appendChild(button);
+    button.focus();
+    button.remove();
+
+    await harness.navigateByUrl('/events?page=2');
     await harness.fixture.whenStable();
 
     expect(document.activeElement).toBe(main);

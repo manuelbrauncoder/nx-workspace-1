@@ -6,6 +6,37 @@ export type GuestFilter = 'all' | GuestResponse;
 /** By name, or the newest answers first. */
 export type GuestSort = 'name' | 'answered';
 
+/** Guests on one page of the list. */
+export const GUEST_PAGE_SIZE = 25;
+
+const GUEST_FILTERS: readonly GuestFilter[] = ['all', 'accepted', 'declined', 'pending'];
+const GUEST_SORTS: readonly GuestSort[] = ['name', 'answered'];
+
+/** The filter of a query parameter, `all` for anything else. */
+export function toGuestFilter(value: string | undefined): GuestFilter {
+  return GUEST_FILTERS.find((filter) => filter === value) ?? 'all';
+}
+
+/** The sort of a query parameter, `name` for anything else. */
+export function toGuestSort(value: string | undefined): GuestSort {
+  return GUEST_SORTS.find((sort) => sort === value) ?? 'name';
+}
+
+/** How many pages a list of `total` entries takes, at least one. */
+export function countPages(total: number, size = GUEST_PAGE_SIZE): number {
+  return Math.max(1, Math.ceil(total / size));
+}
+
+/** A page number within 1 and `pageCount`, also for a page that no longer exists. */
+export function clampPage(page: number, pageCount: number): number {
+  return Math.min(Math.max(1, Number.isFinite(page) ? Math.trunc(page) : 1), pageCount);
+}
+
+/** The entries of one page, counted from 1. */
+export function pageOf<T>(items: readonly T[], page: number, size = GUEST_PAGE_SIZE): T[] {
+  return items.slice((page - 1) * size, page * size);
+}
+
 /** The numbers of the guest list overview (spec section 5), counted from the guests. */
 export function countGuests(guests: readonly Guest[]): EventCounts {
   const counts: EventCounts = { invited: 0, coming: 0, declined: 0, pending: 0, atMost: 0 };

@@ -1,6 +1,7 @@
 import { ApplicationRef, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router, withComponentInputBinding } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { AppConfigService } from '@core/config/app-config';
 import { Failure } from '@core/failure/failure';
 import { I18nService } from '@core/i18n/i18n.service';
@@ -89,20 +90,26 @@ describe('GuestList', () => {
       guests?: Guest[];
       guestsState?: AsyncState;
       mutationState?: AsyncState;
+      /** Query of the address, e.g. `?page=2`. */
+      query?: string;
     } = {},
   ) {
     const guests = options.guests ?? GUESTS;
     const event = 'event' in options ? options.event : EVENT;
+    const guestsSignal = signal(guests);
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
+        provideRouter(
+          [{ path: 'events/:id/guests', component: GuestList }],
+          withComponentInputBinding(),
+        ),
         {
           provide: GuestsStore,
           useValue: {
             ...store,
             event: signal(event),
             eventState: signal(options.eventState ?? success()),
-            guests: signal(guests),
+            guests: guestsSignal,
             guestsState: signal(options.guestsState ?? success()),
             counts: signal(countGuests(guests)),
             mutationState: signal(options.mutationState ?? idle()),
@@ -115,15 +122,15 @@ describe('GuestList', () => {
       ],
     });
     await loadI18nScopes(guestListI18n);
-    const fixture = TestBed.createComponent(GuestList);
-    fixture.componentRef.setInput('id', 'e1');
-    await fixture.whenStable();
-    const element = fixture.nativeElement as HTMLElement;
-    return { fixture, element };
+    const harness = await RouterTestingHarness.create(`/events/e1/guests${options.query ?? ''}`);
+    await harness.fixture.whenStable();
+    const element = harness.routeNativeElement as HTMLElement;
+    const router = TestBed.inject(Router);
+    return { harness, fixture: harness.fixture, element, router, guestsSignal };
   }
 
   const cardNames = (element: HTMLElement) =>
-    Array.from(element.querySelectorAll('app-guest-card h3'), (heading) =>
+    Array.from(element.querySelectorAll('app-guest-row h3'), (heading) =>
       heading.textContent?.trim(),
     );
   const result = (element: HTMLElement) =>
@@ -176,7 +183,7 @@ describe('GuestList', () => {
     expect(element.querySelector('h1')?.textContent?.trim()).toBe('Gäste');
     expect(element.querySelector('nav a[href="/events/e1"]')?.textContent?.trim()).toBe('Event');
     expect(element.querySelector('.guest-list__event')).toBeNull();
-    expect(element.querySelector('app-guest-card')).toBeNull();
+    expect(element.querySelector('app-guest-row')).toBeNull();
   });
 
   it('shows a failure to load the event with a retry that reloads', async () => {
@@ -188,7 +195,7 @@ describe('GuestList', () => {
     });
 
     expect(element.textContent).toContain('Die Gästeliste konnte nicht geladen werden');
-    expect(element.querySelector('app-guest-card')).toBeNull();
+    expect(element.querySelector('app-guest-row')).toBeNull();
     buttonWith(element, 'Erneut versuchen')!.click();
     expect(store.reload).toHaveBeenCalledTimes(1);
   });
@@ -236,8 +243,8 @@ describe('GuestList', () => {
       'Das Event ist vorbei',
     );
     expect(element.querySelector('a[download]')).not.toBeNull();
-    // The cards only show.
-    expect(element.querySelector('app-guest-card button')).toBeNull();
+    // The rows only show.
+    expect(element.querySelector('app-guest-row button')).toBeNull();
   });
 
   it('links the CSV export in the language of the page', async () => {
@@ -265,7 +272,7 @@ describe('GuestList', () => {
     expect(element.querySelector('.guest-list__result')?.getAttribute('aria-live')).toBe('polite');
   });
 
-  it('labels the filter with the number of guests per answer', async () => {
+  it('offers the filter and the sort as toggles', async () => {
     const { element } = await render();
 
     const labels = Array.from(element.querySelectorAll('.ui-toggle-group__item'), (item) =>
@@ -308,6 +315,7 @@ describe('GuestList', () => {
     );
     expect(result(element)).toBe('0 von 3 Gästen');
     expect(element.querySelector('app-ui-empty')).toBeNull();
+    expect(element.querySelector('app-ui-pagination nav')).toBeNull();
   });
 
   it('sorts by the newest answers with the guests without one last, and back by name', async () => {
@@ -358,6 +366,22 @@ describe('GuestList', () => {
     );
   });
 
+  const cardOf = (element: HTMLElement, name: string) =>
+    Array.from(element.querySelectorAll<HTMLElement>('app-guest-row')).find((card) =>
+      card.textContent?.includes(name),
+    )!;
+
+  async function pick(element: HTMLElement, name: string, item: string): Promise<void> {
+    cardOf(element, name)
+      .querySelector<HTMLButtonElement>(`button[aria-label="Aktionen für ${name}"]`)!
+      .click();
+    await settle();
+    Array.from(document.querySelectorAll<HTMLElement>('[role="menuitem"]'))
+      .find((candidate) => candidate.textContent?.includes(item))!
+      .click();
+    await settle();
+  }
+
   describe('dialogs', () => {
     it('opens the add dialog with a save through the store and toasts the new guest', async () => {
       const added = guest('g4', 'Dan');
@@ -402,22 +426,6 @@ describe('GuestList', () => {
   });
 
   describe('card actions', () => {
-    const cardOf = (element: HTMLElement, name: string) =>
-      Array.from(element.querySelectorAll<HTMLElement>('app-guest-card')).find((card) =>
-        card.textContent?.includes(name),
-      )!;
-
-    async function pick(element: HTMLElement, name: string, item: string): Promise<void> {
-      cardOf(element, name)
-        .querySelector<HTMLButtonElement>(`button[aria-label="Aktionen für ${name}"]`)!
-        .click();
-      await settle();
-      Array.from(document.querySelectorAll<HTMLElement>('[role="menuitem"]'))
-        .find((candidate) => candidate.textContent?.includes(item))!
-        .click();
-      await settle();
-    }
-
     it('copies the link of the guest and says so', async () => {
       const writeText = vi.fn().mockResolvedValue(undefined);
       Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
@@ -448,9 +456,14 @@ describe('GuestList', () => {
 
     it('offers sharing only where the device can share, with the title, date and link', async () => {
       const without = await render();
-      expect(
-        without.element.querySelector('button[aria-label^="Teilen: Link für Ada Lovelace"]'),
-      ).toBeNull();
+      without.element
+        .querySelector<HTMLButtonElement>('button[aria-label="Aktionen für Ada Lovelace"]')!
+        .click();
+      await settle();
+      const items = () =>
+        Array.from(document.querySelectorAll('[role="menuitem"]'), (item) => item.textContent);
+      expect(items().some((text) => text?.includes('Bearbeiten'))).toBe(true);
+      expect(items().some((text) => text?.includes('Teilen'))).toBe(false);
 
       TestBed.resetTestingModule();
       vi.resetAllMocks();
@@ -461,10 +474,7 @@ describe('GuestList', () => {
         const { element, fixture } = await render();
         await fixture.whenStable();
 
-        element
-          .querySelector<HTMLButtonElement>('button[aria-label="Teilen: Link für Ada Lovelace"]')!
-          .click();
-        await settle();
+        await pick(element, 'Ada Lovelace', 'Teilen');
 
         expect(share).toHaveBeenCalledWith({
           title: 'Sommerfest',
@@ -582,6 +592,278 @@ describe('GuestList', () => {
     });
   });
 
+  describe('counts', () => {
+    it('are a definition list and there is no overview heading any more', async () => {
+      const { element } = await render();
+
+      expect(element.querySelector('dl.guest-list__counts')).not.toBeNull();
+      expect(Array.from(element.querySelectorAll('h2'), (h) => h.textContent?.trim())).toEqual([
+        'Gästeliste',
+      ]);
+      expect(element.textContent).not.toContain('Überblick');
+    });
+  });
+
+  describe('rows', () => {
+    it('renders each guest as a row in a list', async () => {
+      const { element } = await render();
+
+      expect(element.querySelectorAll('ul > li app-guest-row')).toHaveLength(3);
+      expect(element.querySelector('app-guest-row')?.getAttribute('data-guest')).toBe('g1');
+    });
+  });
+
+  describe('paging', () => {
+    const many = (count: number) =>
+      Array.from({ length: count }, (_, index) =>
+        guest(`m${index + 1}`, `Gast ${String(index + 1).padStart(2, '0')}`),
+      );
+    const pageLinks = (element: HTMLElement) =>
+      Array.from(element.querySelectorAll('app-ui-pagination a'), (link) =>
+        link.getAttribute('href'),
+      );
+
+    it('shows 25 guests on the first page with the result line of a paged list', async () => {
+      const { element } = await render({ guests: many(60) });
+
+      const names = cardNames(element);
+      expect(names).toHaveLength(25);
+      expect(names[0]).toBe('Gast 01');
+      expect(names[24]).toBe('Gast 25');
+      expect(result(element)).toBe('60 von 60 Gästen, Seite 1 von 3');
+      expect(
+        element.querySelector('app-ui-pagination nav[aria-label="Seiten der Gästeliste"]'),
+      ).not.toBeNull();
+    });
+
+    it('shows exactly 25 guests without pagination', async () => {
+      const { element } = await render({ guests: many(25) });
+
+      expect(cardNames(element)).toHaveLength(25);
+      expect(result(element)).toBe('25 von 25 Gästen');
+      expect(element.querySelector('app-ui-pagination nav')).toBeNull();
+    });
+
+    it('shows the page of the address', async () => {
+      const { element } = await render({ guests: many(60), query: '?page=3' });
+
+      expect(cardNames(element)).toHaveLength(10);
+      expect(cardNames(element)[0]).toBe('Gast 51');
+      expect(result(element)).toBe('60 von 60 Gästen, Seite 3 von 3');
+    });
+
+    it('links the pages with the fragment of the list heading', async () => {
+      const { element } = await render({ guests: many(60) });
+
+      const links = pageLinks(element);
+      expect(links.length).toBeGreaterThan(0);
+      for (const href of links) {
+        expect(href).toMatch(/#guest-list-guests$/);
+      }
+      expect(links).toContain('/events/e1/guests?page=2#guest-list-guests');
+    });
+
+    it('clamps a page beyond the end to the last page', async () => {
+      const { element } = await render({ guests: many(60), query: '?page=99' });
+
+      expect(cardNames(element)[0]).toBe('Gast 51');
+      expect(result(element)).toBe('60 von 60 Gästen, Seite 3 von 3');
+    });
+
+    it.each(['?page=0', '?page=-2', '?page=abc'])('shows the first page for %s', async (query) => {
+      const { element } = await render({ guests: many(60), query });
+
+      expect(cardNames(element)[0]).toBe('Gast 01');
+      expect(result(element)).toBe('60 von 60 Gästen, Seite 1 von 3');
+    });
+
+    it('pages the filtered list and counts against all guests', async () => {
+      const guests = [
+        ...many(30).map((entry) => ({ ...entry, response: 'declined' as const })),
+        guest('x1', 'Zoe'),
+      ];
+      const { element } = await render({ guests, query: '?filter=declined&page=2' });
+
+      expect(cardNames(element)).toHaveLength(5);
+      expect(result(element)).toBe('30 von 31 Gästen, Seite 2 von 2');
+    });
+
+    it('falls back to all and by name for unknown values', async () => {
+      const { element } = await render({ query: '?filter=coming&sort=date' });
+
+      expect(cardNames(element)).toEqual(['Ada Lovelace', 'Ben Müller', 'Cleo Ángel']);
+    });
+
+    it('reads filter and sort from the address', async () => {
+      const { element } = await render({ query: '?filter=accepted&sort=answered' });
+
+      expect(cardNames(element)).toEqual(['Ada Lovelace']);
+    });
+  });
+
+  describe('navigation of filter, sort and search', () => {
+    const many = Array.from({ length: 40 }, (_, index) =>
+      guest(`m${index + 1}`, `Gast ${String(index + 1).padStart(2, '0')}`),
+    );
+
+    it('puts the filter into the address, keeps the other parameters and drops the page', async () => {
+      const { element, router } = await render({
+        guests: many,
+        query: '?page=2&sort=answered',
+      });
+      const navigate = vi.spyOn(router, 'navigate');
+
+      await choose(element, 'Offen');
+
+      expect(navigate).toHaveBeenCalledWith(
+        [],
+        expect.objectContaining({
+          queryParams: { filter: 'pending', page: null },
+          queryParamsHandling: 'merge',
+          scroll: 'manual',
+        }),
+      );
+      expect(router.url).toBe('/events/e1/guests?sort=answered&filter=pending');
+    });
+
+    it('removes the filter from the address when all is chosen', async () => {
+      const { element, router } = await render({ query: '?filter=declined' });
+
+      await choose(element, 'Alle');
+
+      expect(router.url).toBe('/events/e1/guests');
+    });
+
+    it('puts the sort into the address and removes it for the name', async () => {
+      const { element, router } = await render({ guests: many, query: '?page=2' });
+      const navigate = vi.spyOn(router, 'navigate');
+
+      await choose(element, 'Neueste Antworten');
+      expect(navigate).toHaveBeenLastCalledWith(
+        [],
+        expect.objectContaining({
+          queryParams: { sort: 'answered', page: null },
+          queryParamsHandling: 'merge',
+          scroll: 'manual',
+        }),
+      );
+      expect(router.url).toBe('/events/e1/guests?sort=answered');
+
+      await choose(element, 'Name');
+      expect(router.url).toBe('/events/e1/guests');
+    });
+
+    it('drops the page with a replaced address on a new search', async () => {
+      const { element, router } = await render({ guests: many, query: '?page=2&filter=pending' });
+      const navigate = vi.spyOn(router, 'navigate');
+
+      await search(element, 'Gast 1');
+
+      expect(navigate).toHaveBeenCalledWith(
+        [],
+        expect.objectContaining({
+          queryParams: { page: null },
+          replaceUrl: true,
+          queryParamsHandling: 'merge',
+        }),
+      );
+      expect(router.url).toBe('/events/e1/guests?filter=pending');
+      expect(cardNames(element)[0]).toBe('Gast 10');
+    });
+
+    it('does not navigate for a search on the first page', async () => {
+      const { element, router } = await render({ guests: many });
+      const navigate = vi.spyOn(router, 'navigate');
+
+      await search(element, 'Gast 1');
+
+      expect(navigate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('after adding a guest', () => {
+    const base = Array.from({ length: 30 }, (_, index) =>
+      guest(`m${index + 1}`, `Gast ${String(index + 1).padStart(2, '0')}`),
+    );
+    const focused = () =>
+      document.activeElement?.closest('[data-guest]')?.getAttribute('data-guest');
+
+    it('turns to the page of the new guest and focuses their link button', async () => {
+      const added = guest('new', 'Zed');
+      open.mockReturnValue({ closed: Promise.resolve(added) });
+      const { element, router } = await render({ guests: [...base, added] });
+      expect(cardNames(element)).not.toContain('Zed');
+
+      buttonWith(element, 'Gast hinzufügen')!.click();
+      await vi.waitFor(() => expect(router.url).toBe('/events/e1/guests?page=2'));
+      await settle();
+
+      await vi.waitFor(() => expect(focused()).toBe('new'));
+      expect(document.activeElement?.classList.contains('guest-row__copy')).toBe(true);
+      expect(cardNames(element)).toContain('Zed');
+    });
+
+    it('stays on the page and focuses the link button when the guest is on it', async () => {
+      const added = guest('new', 'Aaron');
+      open.mockReturnValue({ closed: Promise.resolve(added) });
+      const { element, router } = await render({ guests: [...base, added] });
+      const navigate = vi.spyOn(router, 'navigate');
+
+      buttonWith(element, 'Gast hinzufügen')!.click();
+
+      await vi.waitFor(() => expect(focused()).toBe('new'));
+      expect(navigate).not.toHaveBeenCalled();
+    });
+
+    it('turns back to the first page, dropping the parameter, when the guest is there', async () => {
+      const added = guest('new', 'Aaron');
+      open.mockReturnValue({ closed: Promise.resolve(added) });
+      const { element, router } = await render({ guests: [...base, added], query: '?page=2' });
+
+      buttonWith(element, 'Gast hinzufügen')!.click();
+
+      await vi.waitFor(() => expect(router.url).toBe('/events/e1/guests'));
+      await vi.waitFor(() => expect(focused()).toBe('new'));
+    });
+
+    it('follows an edited guest to the page their new name sorts them onto', async () => {
+      const renamed = guest('new', 'Zed');
+      open.mockReturnValue({ closed: Promise.resolve(renamed) });
+      const { element, router } = await render({ guests: [...base, renamed] });
+
+      await pick(element, 'Gast 01', 'Bearbeiten');
+
+      await vi.waitFor(() => expect(router.url).toBe('/events/e1/guests?page=2'));
+      await vi.waitFor(() => expect(focused()).toBe('new'));
+    });
+
+    it('moves the focus to the list heading when a filter hides the answered guest', async () => {
+      const answered = guest('m01', 'Gast 01');
+      open.mockReturnValue({ closed: Promise.resolve({ ...answered, id: 'gone' }) });
+      const { element } = await render({ guests: base });
+
+      await pick(element, 'Gast 01', 'Antwort eintragen');
+
+      await vi.waitFor(() => expect(document.activeElement?.id).toBe('guest-list-guests'));
+    });
+
+    it('does not turn the page when a filter hides the new guest', async () => {
+      const added = guest('new', 'Aaron');
+      open.mockReturnValue({ closed: Promise.resolve(added) });
+      const { element, router } = await render({
+        guests: [...base, added],
+        query: '?filter=accepted',
+      });
+      const navigate = vi.spyOn(router, 'navigate');
+
+      buttonWith(element, 'Gast hinzufügen')!.click();
+      await settle();
+
+      expect(navigate).not.toHaveBeenCalled();
+      expect(toast.success).toHaveBeenCalledWith('Aaron steht auf der Liste');
+    });
+  });
+
   it('has no accessibility violations', async () => {
     const { element } = await render();
 
@@ -590,6 +872,15 @@ describe('GuestList', () => {
 
   it('has no accessibility violations for a past event', async () => {
     const { element } = await render({ event: { ...EVENT, past: true } });
+
+    await expect(element).toBeAccessible();
+  });
+
+  it('has no accessibility violations with several pages', async () => {
+    const guests = Array.from({ length: 60 }, (_, index) =>
+      guest(`m${index + 1}`, `Gast ${String(index + 1).padStart(2, '0')}`),
+    );
+    const { element } = await render({ guests, query: '?page=2' });
 
     await expect(element).toBeAccessible();
   });

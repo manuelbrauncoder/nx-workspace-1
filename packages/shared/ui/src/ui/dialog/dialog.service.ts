@@ -45,6 +45,9 @@ export class UiDialogService {
         showCloseButton: options.closeButton ?? true,
         closeLabel: this._i18n.translate('common.close'),
         restoreFocus: focusReturnTarget(this._document),
+        // A dialog taller than the screen (a long pasted list) scrolls inside, so its buttons
+        // stay reachable.
+        contentClass: 'max-h-[calc(100dvh-2rem)] overflow-y-auto',
       }),
     );
   }

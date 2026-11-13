@@ -1,0 +1,137 @@
+@use 'styles/abstracts' as *;
+
+// A row of the calm workspace: no frame of its own, the list draws the lines. On a phone the
+// name and the actions share the first line, answer and details follow below. From `lg` on the
+// answer gets two columns of its own, so the answers of many guests read down like a table.
+
+:host {
+  display: block;
+}
+
+.guest-row {
+  display: grid;
+  grid-template-areas:
+    'name actions'
+    'facts facts'
+    'details details';
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.25rem 1rem;
+  // A name over two lines keeps the actions at its first line.
+  align-items: start;
+
+  // Three columns only where the name still has room next to them.
+  @include up(lg) {
+    grid-template-areas:
+      'name facts actions'
+      'details details .';
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem) auto;
+    align-items: center;
+  }
+}
+
+.guest-row__name {
+  grid-area: name;
+  // A row, not a section: the body font, so the names read as a calm column.
+  font-family: var(--font-sans);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.guest-row__facts {
+  display: flex;
+  flex-wrap: wrap;
+  grid-area: facts;
+  gap: 0.25rem 1rem;
+
+  @include up(lg) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(8rem, auto);
+  }
+}
+
+.guest-row__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &[data-response='pending'] {
+    color: var(--muted-foreground);
+  }
+}
+
+.guest-row__dot {
+  flex: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--status-open);
+
+  [data-response='accepted'] > & {
+    background: var(--status-yes);
+  }
+
+  [data-response='declined'] > & {
+    background: var(--status-no);
+  }
+
+  // Pending stays a ring, so the three differ also without color.
+  [data-response='pending'] > & {
+    border: 2px solid var(--status-open);
+    background: none;
+  }
+}
+
+.guest-row__allowance {
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+.guest-row__actions {
+  display: flex;
+  grid-area: actions;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+// On a phone only the icon, the name of the button stays in its aria-label.
+.guest-row__copy-text {
+  display: none;
+
+  @include up(sm) {
+    display: inline;
+  }
+}
+
+.guest-row__details {
+  display: flex;
+  flex-direction: column;
+  grid-area: details;
+  gap: 0.25rem;
+}
+
+.guest-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.guest-row__text {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.guest-row__text > span {
+  min-width: 0;
+}
+
+.guest-row__text-icon {
+  flex: none;
+  margin-top: 0.125rem;
+  color: var(--muted-foreground);
+}

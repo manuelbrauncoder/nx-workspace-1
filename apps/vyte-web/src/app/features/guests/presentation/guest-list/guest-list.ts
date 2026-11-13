@@ -7,10 +7,13 @@ import {
   inject,
   Injector,
   input,
+  numberAttribute,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
+import { Router } from '@angular/router';
 import { AppConfigService } from '@core/config/app-config';
 import { I18nService } from '@core/i18n/i18n.service';
 import { formatLocalDate } from '@core/i18n/local-date';
@@ -26,27 +29,37 @@ import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog
 import { UiDialogService } from '@shared/ui/dialog/dialog.service';
 import { UiEmpty } from '@shared/ui/empty/empty';
 import { UiIcon } from '@shared/ui/icon/icon';
+import { UiListImports } from '@shared/ui/list/list';
+import { UiPagination } from '@shared/ui/pagination/pagination';
 import { UiText } from '@shared/ui/text/text';
 import { UiToastService } from '@shared/ui/toast/toast.service';
 import { UiToggleGroup, UiToggleGroupOption } from '@shared/ui/toggle-group/toggle-group';
 import { GuestsStore } from '../../application/guests.store';
 import { Guest } from '../../domain/guest';
 import {
+  clampPage,
+  countPages,
   filterGuests,
+  GUEST_PAGE_SIZE,
   GuestFilter,
   guestLinkUrl,
   GuestSort,
+  pageOf,
   sortGuests,
+  toGuestFilter,
+  toGuestSort,
 } from '../../domain/guest-list';
-import { GuestCard } from '../guest-card/guest-card';
 import { GuestFormDialog, GuestFormDialogData } from '../guest-form-dialog/guest-form-dialog';
+import { GuestRow } from '../guest-row/guest-row';
 import { GuestsBulkDialog, GuestsBulkDialogData } from '../guests-bulk-dialog/guests-bulk-dialog';
 import { HostAnswerDialog, HostAnswerDialogData } from '../host-answer-dialog/host-answer-dialog';
 
 /**
  * The guest list of an event on `/events/:id/guests`: the counts, adding one guest or a pasted
- * list, filter and search, and per guest their link, answer and changes. A past event only shows
- * the list and its export.
+ * list, filter, sort and search, and a row per guest with their link, answer and changes, 25 to a
+ * page. Page, filter and sort live in the address (`?page=2&filter=accepted&sort=answered`), so
+ * the back button and a shared link keep them; the search stays on the page. A past event only
+ * shows the list and its export.
  */
 @Component({
   selector: 'app-guest-list',
@@ -63,7 +76,9 @@ import { HostAnswerDialog, HostAnswerDialogData } from '../host-answer-dialog/ho
     UiIcon,
     UiText,
     UiToggleGroup,
-    GuestCard,
+    UiListImports,
+    UiPagination,
+    GuestRow,
   ],
   styleUrl: './guest-list.scss',
   templateUrl: './guest-list.html',
@@ -71,6 +86,10 @@ import { HostAnswerDialog, HostAnswerDialogData } from '../host-answer-dialog/ho
 export class GuestList {
   /** Route parameter, bound through `withComponentInputBinding()`. */
   readonly id = input.required<string>();
+  /** Query parameters, bound the same way. Unknown values fall back to the defaults. */
+  readonly page = input(1, { transform: (value: unknown) => numberAttribute(value, 1) });
+  readonly filter = input<string>();
+  readonly sort = input<string>();
 
   private readonly _store = inject(GuestsStore);
   private readonly _config = inject(AppConfigService);
@@ -80,11 +99,12 @@ export class GuestList {
   private readonly _confirmDialog = inject(UiConfirmDialogService);
   private readonly _host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly _injector = inject(Injector);
+  private readonly _router = inject(Router);
 
   private readonly _listHeading = viewChild<ElementRef<HTMLElement>>('listHeading');
 
-  private readonly _filter = signal<GuestFilter>('all');
-  private readonly _sort = signal<GuestSort>('name');
+  private readonly _filter = computed(() => toGuestFilter(this.filter()));
+  private readonly _sort = computed(() => toGuestSort(this.sort()));
   private readonly _search = signal({ query: '' });
   private readonly _searchForm = form(this._search);
 
@@ -101,8 +121,13 @@ export class GuestList {
     ),
   );
 
+  private readonly _pageCount = computed(() => countPages(this._visible().length));
+  /** A page beyond the end, e.g. after removing the last guest on it, shows the last one. */
+  private readonly _page = computed(() => clampPage(this.page(), this._pageCount()));
+  private readonly _pageGuests = computed(() => pageOf(this._visible(), this._page()));
+
   /**
-   * Computed, so the labels follow the language. Without counts: they stand in the overview and
+   * Computed, so the labels follow the language. Without counts: they stand above the list and
    * in the result line, and the four options have to fit side by side on a phone.
    */
   private readonly _filterOptions = computed((): UiToggleGroupOption<GuestFilter>[] =>
@@ -137,6 +162,66 @@ export class GuestList {
       return event && { title: this._i18n.translate('guestList.titleFor', { title: event.title }) };
     });
     afterNextRender(() => this._canShare.set(typeof navigator.share === 'function'));
+    // A new search starts on the first page. The search is not in the address, so the page is
+    // replaced instead of adding a step to the history.
+    let query = this._search().query;
+    effect(() => {
+      const next = this._search().query;
+      if (next !== query) {
+        query = next;
+        untracked(() => this.page() > 1 && void this._navigate({ page: null }, true));
+      }
+    });
+  }
+
+  private _setFilter(filter: GuestFilter | null): void {
+    void this._navigate({ filter: filter === 'all' || !filter ? null : filter, page: null });
+  }
+
+  private _setSort(sort: GuestSort | null): void {
+    void this._navigate({ sort: sort === 'name' || !sort ? null : sort, page: null });
+  }
+
+  /**
+   * Changes the query of the page. Without scrolling: the page stays where it is, and the app
+   * shell keeps the focus on the control that changed it.
+   */
+  private _navigate(params: Record<string, string | number | null>, replaceUrl = false) {
+    return this._router.navigate([], {
+      queryParams: params,
+      queryParamsHandling: 'merge',
+      replaceUrl,
+      scroll: 'manual',
+    });
+  }
+
+  /**
+   * After a change that may move the guest (a new name, an answer under a filter or a sort):
+   * on the same page the dialog has given the focus back to their menu already. Otherwise the
+   * focus follows them to their page, or goes to the list heading when a filter hides them.
+   */
+  private _followGuest(guest: Guest): void {
+    if (this._pageGuests().some((shown) => shown.id === guest.id)) {
+      return;
+    }
+    if (this._visible().some((visible) => visible.id === guest.id)) {
+      void this._showGuest(guest);
+    } else {
+      this._focusLater('#guest-list-guests');
+    }
+  }
+
+  /** Turns to the page that shows the guest, then moves the focus to their link button. */
+  private async _showGuest(guest: Guest): Promise<void> {
+    const index = this._visible().findIndex((visible) => visible.id === guest.id);
+    if (index === -1) {
+      return;
+    }
+    const page = Math.floor(index / GUEST_PAGE_SIZE) + 1;
+    if (page !== this._page()) {
+      await this._navigate({ page: page === 1 ? null : page });
+    }
+    this._focusLater(`[data-guest="${guest.id}"] .guest-row__copy`);
   }
 
   private _link(guest: Guest): string {
@@ -152,7 +237,7 @@ export class GuestList {
       if (guest) {
         this._toast.success(this._i18n.translate('guestList.added', { name: guest.name }));
         // The link of the new guest is what the host wants next.
-        this._focusLater(`[data-guest="${guest.id}"] .guest-card__footer button`);
+        void this._showGuest(guest);
       }
     });
   }
@@ -181,6 +266,7 @@ export class GuestList {
     void ref.closed.then((saved) => {
       if (saved) {
         this._toast.success(this._i18n.translate('guestList.saved', { name: saved.name }));
+        this._followGuest(saved);
       }
     });
   }
@@ -197,6 +283,7 @@ export class GuestList {
     void ref.closed.then((saved) => {
       if (saved) {
         this._toast.success(this._i18n.translate('guestList.answered', { name: saved.name }));
+        this._followGuest(saved);
       }
     });
   }
@@ -232,7 +319,7 @@ export class GuestList {
     });
     if (confirmed && (await this._store.remove(guest.id))) {
       this._toast.success(this._i18n.translate('guestList.remove.done', { name: guest.name }));
-      // The card that held the focus is gone.
+      // The row that held the focus is gone.
       this._listHeading()?.nativeElement.focus();
     }
   }

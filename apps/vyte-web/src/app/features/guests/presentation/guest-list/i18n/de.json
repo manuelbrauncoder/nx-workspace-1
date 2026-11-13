@@ -10,7 +10,6 @@
     "description": "Die Liste lässt sich nur noch ansehen und exportieren."
   },
   "counts": {
-    "heading": "Überblick",
     "description": "Kommen und Höchstens zählen Personen samt Begleitung.",
     "invited": "Eingeladen",
     "coming": "Kommen",
@@ -30,7 +29,9 @@
     "sort": "Sortierung",
     "loadFailed": "Die Gäste konnten nicht geladen werden",
     "result": "{{ count }} von {{ total }} Gästen",
-    "none": "Kein Gast passt zu Filter und Suche."
+    "none": "Kein Gast passt zu Filter und Suche.",
+    "resultPaged": "{{ count }} von {{ total }} Gästen, Seite {{ page }} von {{ pages }}",
+    "pages": "Seiten der Gästeliste"
   },
   "filter": {
     "all": "Alle",
@@ -89,7 +90,9 @@
     "answer": "Antwort eintragen",
     "renew": "Link erneuern",
     "remove": "Entfernen",
-    "renewPhoto": "Foto-Link erneuern"
+    "renewPhoto": "Foto-Link erneuern",
+    "allowanceShort": "bis +{{ count }}",
+    "allowanceNone": "Ohne Begleitung"
   },
   "form": {
     "addHeading": "Gast hinzufügen",

@@ -2,30 +2,29 @@ import { booleanAttribute, Component, computed, input, output } from '@angular/c
 import { LocalDatePipe } from '@core/i18n/local-date.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { UiButton } from '@shared/ui/button/button';
-import { UiCardImports } from '@shared/ui/card/card';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiMenuImports } from '@shared/ui/menu/menu';
-import { UiText } from '@shared/ui/text/text';
 import { Guest } from '../../domain/guest';
 
 /**
- * One guest of the list: name, how many they may bring, their answer and message, the note of
- * the hosts. Copying and sharing the personal link sit on the card, everything else in a menu.
+ * One guest as a row of the list: name, answer as a dot and its word, how many they may bring,
+ * their message and the note of the hosts. Copying the personal link sits on the row, everything
+ * else in a menu.
  */
 @Component({
-  selector: 'app-guest-card',
-  imports: [LocalDatePipe, TranslatePipe, UiButton, UiCardImports, UiIcon, UiMenuImports, UiText],
-  styleUrl: './guest-card.scss',
-  templateUrl: './guest-card.html',
+  selector: 'app-guest-row',
+  imports: [LocalDatePipe, TranslatePipe, UiButton, UiIcon, UiMenuImports],
+  styleUrl: './guest-row.scss',
+  templateUrl: './guest-row.html',
   host: {
     '[attr.data-guest]': 'guest().id',
   },
 })
-export class GuestCard {
+export class GuestRow {
   readonly guest = input.required<Guest>();
   /** Zone of the event, in which the time of the answer is shown. */
   readonly timeZone = input.required<string>();
-  /** A past event cannot be changed, the card then only shows. */
+  /** A past event cannot be changed, the row then only shows. */
   readonly readonly = input(false, { transform: booleanAttribute });
   /** The device can share a link (Web Share API). */
   readonly canShare = input(false, { transform: booleanAttribute });
@@ -50,7 +49,24 @@ export class GuestCard {
     return guest.response === 'declined' ? 'guestList.card.declined' : 'guestList.card.pending';
   });
 
-  private readonly _allowanceKey = computed(() =>
-    this.guest().maxCompanions === 1 ? 'guestList.card.allowanceOne' : 'guestList.card.allowance',
-  );
+  private readonly _allowanceKey = computed(() => {
+    const max = this.guest().maxCompanions;
+    return max === 0
+      ? 'guestList.card.allowanceNone'
+      : max === 1
+        ? 'guestList.card.allowanceOne'
+        : 'guestList.card.allowance';
+  });
+
+  /** Whether the second line has anything to tell. */
+  private readonly _hasDetails = computed(() => {
+    const guest = this.guest();
+    return (
+      guest.answeredBy === 'host' ||
+      guest.companionsReduced ||
+      guest.respondedAt !== null ||
+      !!guest.message ||
+      !!guest.note
+    );
+  });
 }

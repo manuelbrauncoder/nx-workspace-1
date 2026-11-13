@@ -10,7 +10,6 @@
     "description": "The list can only be viewed and exported now."
   },
   "counts": {
-    "heading": "Overview",
     "description": "Coming and At most count people including companions.",
     "invited": "Invited",
     "coming": "Coming",
@@ -30,7 +29,9 @@
     "sort": "Order",
     "loadFailed": "The guests could not be loaded",
     "result": "{{ count }} of {{ total }} guests",
-    "none": "No guest matches the filter and search."
+    "none": "No guest matches the filter and search.",
+    "resultPaged": "{{ count }} of {{ total }} guests, page {{ page }} of {{ pages }}",
+    "pages": "Pages of the guest list"
   },
   "filter": {
     "all": "All",
@@ -89,7 +90,9 @@
     "answer": "Record answer",
     "renew": "Renew link",
     "remove": "Remove",
-    "renewPhoto": "Renew photo link"
+    "renewPhoto": "Renew photo link",
+    "allowanceShort": "up to +{{ count }}",
+    "allowanceNone": "No companions"
   },
   "form": {
     "addHeading": "Add guest",

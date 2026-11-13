@@ -1,0 +1,120 @@
+@let item = guest();
+<div class="guest-row">
+  <h3 class="guest-row__name">{{ item.name }}</h3>
+
+  <div class="guest-row__facts">
+    <!-- The answer is told by its word, the dot only supports it. -->
+    <p class="guest-row__status" [attr.data-response]="item.response">
+      <span class="guest-row__dot" aria-hidden="true"></span>
+      {{ _answerKey() | t: { count: item.companions } }}
+    </p>
+    <p class="guest-row__allowance">
+      @if (item.maxCompanions > 0) {
+        <span aria-hidden="true">{{
+          'guestList.card.allowanceShort' | t: { count: item.maxCompanions }
+        }}</span>
+        <span class="sr-only">{{ _allowanceKey() | t: { count: item.maxCompanions } }}</span>
+      } @else {
+        {{ _allowanceKey() | t }}
+      }
+    </p>
+  </div>
+
+  @if (_hasDetails()) {
+    <div class="guest-row__details">
+      @if (item.respondedAt || item.answeredBy === 'host' || item.companionsReduced) {
+        <p class="guest-row__meta">
+          @if (item.respondedAt; as respondedAt) {
+            <span>
+              {{
+                'guestList.card.respondedAt'
+                  | t: { date: respondedAt | localDate: 'dateTime' : timeZone() }
+              }}
+            </span>
+          }
+          @if (item.answeredBy === 'host') {
+            <span>{{ 'guestList.card.byHost' | t }}</span>
+          }
+          @if (item.companionsReduced) {
+            <span>{{ 'guestList.card.reduced' | t }}</span>
+          }
+        </p>
+      }
+      @if (item.message; as message) {
+        <p class="guest-row__text">
+          <app-ui-icon class="guest-row__text-icon" name="quote" />
+          <span class="sr-only">{{ 'guestList.card.message' | t }}:</span>
+          <span class="guest-row__message">{{ message }}</span>
+        </p>
+      }
+      @if (item.note; as note) {
+        <p class="guest-row__text">
+          <app-ui-icon class="guest-row__text-icon" name="notebookPen" />
+          <span class="sr-only">{{ 'guestList.card.note' | t }}:</span>
+          <span>{{ note }}</span>
+        </p>
+      }
+    </div>
+  }
+
+  @if (!readonly()) {
+    <div class="guest-row__actions">
+      <button
+        class="guest-row__copy"
+        [attr.aria-label]="'guestList.card.copyNamed' | t: { name: item.name }"
+        (click)="copyLink.emit()"
+        appUiButton
+        variant="outline"
+        size="sm"
+        type="button"
+      >
+        <app-ui-icon name="copy" />
+        <span class="guest-row__copy-text">{{ 'guestList.card.copy' | t }}</span>
+      </button>
+      <button
+        [appUiMenuTrigger]="actions"
+        [attr.aria-label]="'guestList.card.actions' | t: { name: item.name }"
+        appUiButton
+        variant="ghost"
+        size="icon-sm"
+        type="button"
+        align="end"
+      >
+        <app-ui-icon name="ellipsis" />
+      </button>
+    </div>
+  }
+</div>
+
+<ng-template #actions>
+  <app-ui-menu class="w-60">
+    <app-ui-menu-group>
+      @if (canShare()) {
+        <button (triggered)="shareLink.emit()" appUiMenuItem type="button">
+          <app-ui-icon name="share" />
+          {{ 'guestList.card.share' | t }}
+        </button>
+      }
+      <button (triggered)="edit.emit()" appUiMenuItem type="button">
+        <app-ui-icon name="pencil" />
+        {{ 'guestList.card.edit' | t }}
+      </button>
+      <button (triggered)="answer.emit()" appUiMenuItem type="button">
+        <app-ui-icon name="reply" />
+        {{ 'guestList.card.answer' | t }}
+      </button>
+      <button (triggered)="renewLink.emit()" appUiMenuItem type="button">
+        <app-ui-icon name="refresh" />
+        {{ 'guestList.card.renew' | t }}
+      </button>
+      <button (triggered)="renewPhotoLink.emit()" appUiMenuItem type="button">
+        <app-ui-icon name="images" />
+        {{ 'guestList.card.renewPhoto' | t }}
+      </button>
+      <button (triggered)="remove.emit()" appUiMenuItem variant="destructive" type="button">
+        <app-ui-icon name="trash" />
+        {{ 'guestList.card.remove' | t }}
+      </button>
+    </app-ui-menu-group>
+  </app-ui-menu>
+</ng-template>
