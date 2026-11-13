@@ -120,5 +120,16 @@
   "qrCode": {
     "description": "app-ui-qr-code zeichnet einen QR-Code als SVG, scharf im Druck und gleich auf Server und Browser. So groß wie sein Container, braucht ein label.",
     "label": "QR-Code einer Beispiel-Adresse"
+  },
+  "list": {
+    "description": "appUiList auf ul oder ol, appUiListItem auf li: Zeilen mit Trennlinien in einem ruhigen Rahmen, für Listen auf Arbeitsseiten.",
+    "item1": "Ada Lovelace",
+    "item2": "Alan Turing",
+    "item3": "Grace Hopper"
+  },
+  "pagination": {
+    "description": "app-ui-pagination blättert per Query-Parameter (page), die Seite liest ihn über Input-Binding. Bei nur einer Seite unsichtbar.",
+    "label": "Seiten des Beispiels",
+    "current": "Seite {{ page }} von {{ count }}"
   }
 }

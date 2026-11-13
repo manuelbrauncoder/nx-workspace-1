@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, numberAttribute, signal } from '@angular/core';
 import { I18nService } from '@core/i18n/i18n.service';
 import { LocalDatePipe } from '@core/i18n/local-date.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -14,8 +14,10 @@ import { UiDialogService } from '@shared/ui/dialog/dialog.service';
 import { UiEmpty } from '@shared/ui/empty/empty';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UI_ICON_NAMES } from '@shared/ui/icon/ui-icons';
+import { UiListImports } from '@shared/ui/list/list';
 import { UiMenuImports } from '@shared/ui/menu/menu';
 import { UiNavMenu, UiNavMenuItem } from '@shared/ui/nav-menu/nav-menu';
+import { UiPagination } from '@shared/ui/pagination/pagination';
 import { UiQrCode } from '@shared/ui/qr-code/qr-code';
 import { UiRichText } from '@shared/ui/rich-text/rich-text';
 import { UiSheet } from '@shared/ui/sheet/sheet';
@@ -50,8 +52,10 @@ interface Message {
     UiCardImports,
     UiEmpty,
     UiIcon,
+    UiListImports,
     UiMenuImports,
     UiNavMenu,
+    UiPagination,
     UiRichText,
     UiSheet,
     UiSkeleton,
@@ -64,6 +68,14 @@ interface Message {
   templateUrl: './components.html',
 })
 export class Components {
+  /** Page of the pagination example, from the query parameter `page`. */
+  readonly page = input(1, { transform: (value: unknown) => numberAttribute(value, 1) });
+
+  private readonly _pageCount = 12;
+  private readonly _page = computed(() =>
+    Math.min(Math.max(1, Math.trunc(this.page())), this._pageCount),
+  );
+
   private readonly _dialog = inject(UiDialogService);
   private readonly _confirmDialog = inject(UiConfirmDialogService);
   private readonly _toast = inject(UiToastService);

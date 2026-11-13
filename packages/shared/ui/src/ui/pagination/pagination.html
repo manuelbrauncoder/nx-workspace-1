@@ -1,0 +1,59 @@
+@if (pageCount() > 1) {
+  <nav [aria-label]="label()" hlmPagination>
+    <ul hlmPaginationContent>
+      @if (page() > 1) {
+        <li hlmPaginationItem>
+          <a
+            class="ui-pagination__step ui-pagination__step--previous"
+            [attr.aria-label]="'common.pagination.previousLabel' | t"
+            [fragment]="fragment()"
+            [link]="[]"
+            [queryParams]="_params(page() - 1)"
+            hlmPaginationLink
+            queryParamsHandling="merge"
+            size="default"
+          >
+            <app-ui-icon name="chevronLeft" />
+            <span class="ui-pagination__step-text">{{ 'common.pagination.previous' | t }}</span>
+          </a>
+        </li>
+      }
+      @for (item of _items(); track $index) {
+        <li hlmPaginationItem>
+          @if (item === 'gap') {
+            <hlm-pagination-ellipsis [srOnlyText]="'common.pagination.gap' | t" />
+          } @else {
+            <a
+              [attr.aria-label]="'common.pagination.page' | t: { page: item }"
+              [fragment]="fragment()"
+              [isActive]="item === page()"
+              [link]="[]"
+              [queryParams]="_params(item)"
+              hlmPaginationLink
+              queryParamsHandling="merge"
+            >
+              {{ item }}
+            </a>
+          }
+        </li>
+      }
+      @if (page() < pageCount()) {
+        <li hlmPaginationItem>
+          <a
+            class="ui-pagination__step ui-pagination__step--next"
+            [attr.aria-label]="'common.pagination.nextLabel' | t"
+            [fragment]="fragment()"
+            [link]="[]"
+            [queryParams]="_params(page() + 1)"
+            hlmPaginationLink
+            queryParamsHandling="merge"
+            size="default"
+          >
+            <span class="ui-pagination__step-text">{{ 'common.pagination.next' | t }}</span>
+            <app-ui-icon name="chevronRight" />
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+}

@@ -39,4 +39,18 @@ describe('UiText', () => {
     expect(text.classList.contains('text-muted-foreground')).toBe(false);
     expect(text.classList.contains('font-semibold')).toBe(true);
   });
+
+  it.each([
+    ['page', 'font-heading', 'font-extrabold'],
+    ['heading', 'font-sans', 'font-semibold'],
+  ] as const)('styles the work page variant %s', async (variant, family, weight) => {
+    const { fixture, text } = await render();
+
+    fixture.componentInstance.variant.set(variant);
+    await fixture.whenStable();
+
+    expect(text.classList.contains(family)).toBe(true);
+    expect(text.classList.contains(weight)).toBe(true);
+    expect(text.classList.contains('text-muted-foreground')).toBe(false);
+  });
 });

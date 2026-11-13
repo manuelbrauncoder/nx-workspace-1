@@ -79,6 +79,8 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 | `UiSheet`                | `app-ui-sheet`                                | `@shared/ui/sheet/sheet`                           |
 | `UiDialog`               | `app-ui-dialog`                               | `@shared/ui/dialog/dialog`                         |
 | `UiQrCode`               | `app-ui-qr-code`                              | `@shared/ui/qr-code/qr-code`                       |
+| `UiListImports`          | `ul[appUiList]`, `li[appUiListItem]`          | `@shared/ui/list/list`                             |
+| `UiPagination`           | `app-ui-pagination`                           | `@shared/ui/pagination/pagination`                 |
 | `UiDialogService`        | `open()`                                      | `@shared/ui/dialog/dialog.service`                 |
 | `UiConfirmDialogService` | `confirm()`                                   | `@shared/ui/confirm-dialog/confirm-dialog.service` |
 | `UiToastService`         | `success()`, `info()`, `warning()`, `error()` | `@shared/ui/toast/toast.service`                   |
@@ -122,9 +124,11 @@ Typography goes through `appUiText` with a variant:
 </ul>
 ```
 
-Variants: `display`, `section`, `title`, `h1`, `h2`, `h3`, `h4`, `p`, `lead`, `large`, `small`, `muted`, `code`, `blockquote`, `list`.
+Variants: `display`, `section`, `title`, `page`, `heading`, `h1`, `h2`, `h3`, `h4`, `p`, `lead`, `large`, `small`, `muted`, `code`, `blockquote`, `list`.
 
 `display`, `section` and `title` are large sizes for landing pages, e.g. in `portfolio-web` the name in the hero, the section headings and the project titles. They scale with the viewport through `clamp()`.
+
+`page` and `heading` are for work pages behind the login, which stay calm: `page` is the title of the page (the heading font, smaller than `h1`), `heading` a section in it (the body font, semibold).
 
 The element decides the semantics, the variant only the look. An `h2` may look like an `h3` when the page outline needs it. Classes on the element win over the variant.
 
@@ -503,6 +507,30 @@ A QR code as an SVG: sharp in print and rendered the same on the server and in t
 - `label` is required: the SVG is an image with that name
 - It is as wide as its container and draws black on white in every theme, with the quiet zone of four modules scanners need: light modules on a dark ground do not scan everywhere
 - `errorCorrection` is `M` (about 15 % may be damaged) by default, `L`, `Q` and `H` are the others
+
+### List
+
+Rows with dividers in a calm frame, for lists on work pages (guests, members, accounts). The semantics stay native: `ul` or `ol` with `li`, what goes into a row is up to the page.
+
+```html
+<ul appUiList>
+  @for (guest of guests(); track guest.id) {
+  <li appUiListItem>{{ guest.name }}</li>
+  }
+</ul>
+```
+
+### Pagination
+
+Pages of a long list as links. The page lives in a query parameter of the current route (`page` by default, page 1 without one), so the back button and a shared address keep it. The page reads it through component input binding, slices its list and passes the numbers in. Hidden while there is only one page.
+
+```html
+<app-ui-pagination [page]="_page()" [pageCount]="_pageCount()" label="Seiten der Gästeliste" />
+```
+
+- `label` names the navigation, so two on one page stay apart
+- The first and last page, the current one and its neighbours are links, the rest a gap, at most seven entries so it fits a phone
+- A filter that changes the list sets the page back to 1 by removing the parameter, `queryParamsHandling: 'merge'` keeps the other parameters
 
 ## Adding a wrapper
 

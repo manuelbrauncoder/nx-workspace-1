@@ -5,7 +5,15 @@
     "loading": "Wird geladen …",
     "retry": "Erneut versuchen",
     "breadcrumb": "Navigationspfad",
-    "version": "Version {{ version }}"
+    "version": "Version {{ version }}",
+    "pagination": {
+      "previous": "Zurück",
+      "previousLabel": "Zurück zur vorherigen Seite",
+      "next": "Weiter",
+      "nextLabel": "Weiter zur nächsten Seite",
+      "page": "Seite {{ page }}",
+      "gap": "Weitere Seiten"
+    }
   },
   "failure": {
     "network": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",

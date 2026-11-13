@@ -5,7 +5,15 @@
     "loading": "Loading …",
     "retry": "Try again",
     "breadcrumb": "Breadcrumb",
-    "version": "Version {{ version }}"
+    "version": "Version {{ version }}",
+    "pagination": {
+      "previous": "Previous",
+      "previousLabel": "Previous page",
+      "next": "Next",
+      "nextLabel": "Next page",
+      "page": "Page {{ page }}",
+      "gap": "More pages"
+    }
   },
   "failure": {
     "network": "The server cannot be reached. Please check your connection.",

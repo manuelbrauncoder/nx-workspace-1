@@ -51,6 +51,12 @@
   // Quiet yellow surface, e.g. a hint or the answer of a guest.
   --soft: #fff6c7;
 
+  // The answer of a guest as a dot next to the word, never the colour alone. Each keeps 4.5:1 on
+  // white, so the word may take it too.
+  --status-yes: #17703a;
+  --status-no: #a3260f;
+  --status-open: #55546a;
+
   // Konfetti shapes. Cards: ink border, large radius, an offset shadow without blur. Chips: pills
   // with a thinner ink border, for short labels such as a state or a date.
   --card-radius: 1.75rem;

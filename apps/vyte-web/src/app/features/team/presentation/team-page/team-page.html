@@ -2,7 +2,7 @@
 
 <!-- Outside of the loaded content, so the page has its heading while loading and after a failure. -->
 <div class="team-page__heading">
-  <h1 appUiText="h1">{{ 'teamPage.heading' | t }}</h1>
+  <h1 appUiText="page">{{ 'teamPage.heading' | t }}</h1>
   @if (_store.event(); as event) {
     <p class="team-page__event" appUiText="lead">{{ event.title }}</p>
   }
@@ -24,7 +24,7 @@
     }
 
     <section class="team-page__section" aria-labelledby="team-page-members">
-      <h2 id="team-page-members" #membersHeading appUiText="h3" tabindex="-1">
+      <h2 id="team-page-members" #membersHeading appUiText="heading" tabindex="-1">
         {{ 'teamPage.members.heading' | t }}
       </h2>
       <p class="team-page__section-lead" appUiText="muted">
@@ -70,7 +70,7 @@
 
     @if (_manages()) {
       <section class="team-page__section" aria-labelledby="team-page-invites">
-        <h2 id="team-page-invites" #invitesHeading appUiText="h3" tabindex="-1">
+        <h2 id="team-page-invites" #invitesHeading appUiText="heading" tabindex="-1">
           {{ 'teamPage.invites.heading' | t }}
         </h2>
         <p class="team-page__section-lead" appUiText="muted">
@@ -132,7 +132,7 @@
 
     @if (_store.me()?.role === 'editor') {
       <section class="team-page__section" aria-labelledby="team-page-leave">
-        <h2 id="team-page-leave" appUiText="h3">{{ 'teamPage.leave.sectionHeading' | t }}</h2>
+        <h2 id="team-page-leave" appUiText="heading">{{ 'teamPage.leave.sectionHeading' | t }}</h2>
         <p class="team-page__section-lead" appUiText="muted">
           {{ 'teamPage.leave.sectionDescription' | t }}
         </p>

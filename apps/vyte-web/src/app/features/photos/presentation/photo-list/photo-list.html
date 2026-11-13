@@ -2,7 +2,7 @@
 
 <!-- Outside of the loaded content, so the page has its heading while loading and after a failure. -->
 <div class="photo-list__heading">
-  <h1 appUiText="h1">{{ 'photoList.heading' | t }}</h1>
+  <h1 appUiText="page">{{ 'photoList.heading' | t }}</h1>
   @if (_store.event(); as event) {
     <p class="photo-list__event" appUiText="lead">{{ event.title }}</p>
   }
@@ -18,7 +18,7 @@
 >
   <ng-template>
     <section class="photo-list__section" aria-labelledby="photo-list-photos">
-      <h2 id="photo-list-photos" #listHeading appUiText="h3" tabindex="-1">
+      <h2 id="photo-list-photos" #listHeading appUiText="heading" tabindex="-1">
         {{ 'photoList.list.heading' | t }}
       </h2>
       @if (_store.mutationState().failure; as failure) {

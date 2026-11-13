@@ -24,7 +24,10 @@ describe('AppShell', () => {
           },
         ]),
         // The header shows the account menu, which reads who is signed in.
-        { provide: AuthStore, useValue: { me: signal(undefined) } },
+        {
+          provide: AuthStore,
+          useValue: { me: signal(undefined), isSignedIn: () => false, isAdmin: () => false },
+        },
       ],
     });
     const harness = await RouterTestingHarness.create('/events');

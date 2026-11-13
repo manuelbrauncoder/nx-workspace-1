@@ -18,7 +18,11 @@
       "privacy": "Privacy",
       "accessibility": "Accessibility"
     },
-    "guestFooter": "Made with vyte"
+    "guestFooter": "Made with vyte",
+    "nav": {
+      "events": "Events",
+      "accounts": "Accounts"
+    }
   },
   "legal": {
     "email": "Email",
