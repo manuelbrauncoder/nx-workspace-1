@@ -21,6 +21,9 @@ describe('EventsUseCase', () => {
     setSaveTheDate: vi.fn(() => of(EVENT)),
     removeSaveTheDate: vi.fn(() => of(EVENT)),
     renewSaveTheDateToken: vi.fn(() => of(EVENT)),
+    enablePhotoStand: vi.fn(() => of(EVENT)),
+    disablePhotoStand: vi.fn(() => of(EVENT)),
+    renewPhotoStandToken: vi.fn(() => of(EVENT)),
   };
   let useCase: EventsUseCase;
 
@@ -67,5 +70,15 @@ describe('EventsUseCase', () => {
     expect(repository.setSaveTheDate).toHaveBeenCalledWith('e1', 'Bald mehr');
     expect(repository.removeSaveTheDate).toHaveBeenCalledWith('e1');
     expect(repository.renewSaveTheDateToken).toHaveBeenCalledWith('e1');
+  });
+
+  it('passes the photo stand on to the repository', async () => {
+    expect(await firstValueFrom(useCase.enablePhotoStand('e1'))).toBe(EVENT);
+    expect(await firstValueFrom(useCase.disablePhotoStand('e1'))).toBe(EVENT);
+    expect(await firstValueFrom(useCase.renewPhotoStandToken('e1'))).toBe(EVENT);
+
+    expect(repository.enablePhotoStand).toHaveBeenCalledWith('e1');
+    expect(repository.disablePhotoStand).toHaveBeenCalledWith('e1');
+    expect(repository.renewPhotoStandToken).toHaveBeenCalledWith('e1');
   });
 });

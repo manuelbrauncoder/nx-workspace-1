@@ -1,0 +1,10 @@
+// As large as the dialog allows, never taller than the screen.
+.photo-dialog__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  // Room for the heading and the close button on a phone.
+  max-height: 60dvh;
+  object-fit: contain;
+  border-radius: var(--radius);
+}

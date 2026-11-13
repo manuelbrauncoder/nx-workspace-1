@@ -1,0 +1,64 @@
+@let item = photo();
+<article class="photo-card">
+  <button
+    class="photo-card__open"
+    [attr.aria-label]="'photoList.card.openNamed' | t: { name: _name(), number: number() }"
+    (click)="open.emit()"
+    type="button"
+  >
+    <img
+      [height]="item.height"
+      [ngSrc]="src()"
+      [priority]="priority()"
+      [width]="item.width"
+      alt=""
+    />
+  </button>
+  <div class="photo-card__body">
+    <h3 class="photo-card__name" appUiText="large">{{ _name() }}</h3>
+    <p class="photo-card__chips">
+      <span class="photo-card__chip" appUiText="small">
+        {{ (item.source === 'guest' ? 'photoList.card.placeCard' : 'photoList.card.stand') | t }}
+      </span>
+      @if (item.hidden) {
+        <span class="photo-card__chip photo-card__chip--hidden" appUiText="small">
+          <app-ui-icon name="shieldOff" />
+          {{ 'photoList.card.hidden' | t }}
+        </span>
+      }
+    </p>
+    <p appUiText="muted">
+      <time [attr.datetime]="item.createdAt.toISOString()">{{
+        item.createdAt | localDate: 'dateTime' : _timeZone
+      }}</time>
+    </p>
+    <div class="photo-card__actions">
+      <button
+        [attr.aria-label]="
+          (item.hidden ? 'photoList.card.showNamed' : 'photoList.card.hideNamed')
+            | t: { name: _name(), number: number() }
+        "
+        [loading]="busy()"
+        [loadingLabel]="'photoList.card.saving' | t"
+        (click)="toggleHidden.emit()"
+        appUiButton
+        variant="outline"
+        size="sm"
+        type="button"
+      >
+        {{ (item.hidden ? 'photoList.card.show' : 'photoList.card.hide') | t }}
+      </button>
+      <button
+        [attr.aria-label]="'photoList.card.removeNamed' | t: { name: _name(), number: number() }"
+        (click)="remove.emit()"
+        appUiButton
+        variant="outline"
+        size="sm"
+        type="button"
+      >
+        <app-ui-icon name="trash" />
+        {{ 'photoList.card.remove' | t }}
+      </button>
+    </div>
+  </div>
+</article>

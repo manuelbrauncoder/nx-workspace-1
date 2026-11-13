@@ -23,7 +23,7 @@ import { UiText } from '@shared/ui/text/text';
 import { UiToastService } from '@shared/ui/toast/toast.service';
 import { EventsStore } from '../../application/events.store';
 import { SAVE_THE_DATE_NOTE_MAX_LENGTH, VyteEvent } from '../../domain/event';
-import { saveTheDateUrl } from '../../domain/save-the-date-link';
+import { saveTheDateUrl } from '../../domain/public-links';
 
 /** Which button started the running request, so only that one shows the spinner. */
 type SaveTheDateAction = 'enable' | 'note' | 'renew' | 'disable';

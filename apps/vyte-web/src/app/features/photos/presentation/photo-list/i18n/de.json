@@ -1,0 +1,46 @@
+{
+  "title": "Fotos",
+  "titleFor": "Fotos · {{ title }}",
+  "heading": "Fotos",
+  "event": "Event",
+  "loading": "Fotos werden geladen …",
+  "loadFailed": "Das Event konnte nicht geladen werden",
+  "list": {
+    "heading": "Alle Fotos",
+    "loadFailed": "Die Fotos konnten nicht geladen werden"
+  },
+  "count": "{{ count }} Fotos, neueste zuerst",
+  "countHidden": "{{ count }} Fotos, davon {{ hidden }} verborgen, neueste zuerst",
+  "archive": "Sichtbare als ZIP laden",
+  "empty": {
+    "heading": "Noch keine Fotos",
+    "description": "Gäste laden Fotos über den QR-Code ihrer Tischkarte oder über die Fotostation hoch. Beides findest du auf der Seite des Events."
+  },
+  "actionFailed": "Die Änderung am Foto hat nicht geklappt",
+  "hiddenToast": "Foto verborgen",
+  "shownToast": "Foto wird wieder gezeigt",
+  "card": {
+    "noName": "Ohne Namen",
+    "placeCard": "Tischkarte",
+    "stand": "Fotostation",
+    "hidden": "Verborgen",
+    "openNamed": "Foto {{ number }} von {{ name }} groß ansehen",
+    "hide": "Verbergen",
+    "hideNamed": "Verbergen: Foto {{ number }} von {{ name }}",
+    "show": "Wieder zeigen",
+    "showNamed": "Wieder zeigen: Foto {{ number }} von {{ name }}",
+    "remove": "Löschen",
+    "removeNamed": "Löschen: Foto {{ number }} von {{ name }}",
+    "saving": "Wird gespeichert"
+  },
+  "dialog": {
+    "heading": "Foto von {{ name }}",
+    "description": "{{ source }} · {{ date }}"
+  },
+  "remove": {
+    "heading": "Foto von {{ name }} löschen?",
+    "description": "Das Foto ist danach für alle weg, auch für die Person, die es hochgeladen hat. Nur verbergen behält es.",
+    "confirm": "Löschen",
+    "done": "Foto gelöscht"
+  }
+}

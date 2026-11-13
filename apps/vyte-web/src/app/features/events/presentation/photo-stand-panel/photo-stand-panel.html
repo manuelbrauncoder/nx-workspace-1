@@ -1,0 +1,81 @@
+@if (_store.photoStandState().failure; as failure) {
+  <!-- 409: the event is over or the upload window closed. -->
+  <app-failure-alert
+    class="photo-stand__failure"
+    [failure]="failure"
+    [heading]="'eventDetail.photoStand.failed' | t"
+    [headingLevel]="3"
+    [message]="failure.kind === 'conflict' ? ('eventDetail.photoStand.conflict' | t) : undefined"
+  />
+}
+
+@if (_url(); as url) {
+  <div class="photo-stand__link">
+    <p class="photo-stand__state" appUiText="small">
+      <app-ui-icon name="check" />
+      {{ 'eventDetail.photoStand.on' | t }}
+    </p>
+    <p class="photo-stand__url">
+      <span class="sr-only">{{ 'eventDetail.photoStand.address' | t }}: </span>
+      <code appUiText="code">{{ url }}</code>
+    </p>
+    <p appUiText="muted">{{ 'eventDetail.photoStand.printHint' | t }}</p>
+    <div class="photo-stand__actions">
+      <button class="photo-stand__copy" (click)="_copy()" appUiButton type="button">
+        <app-ui-icon name="copy" />
+        {{ 'eventDetail.photoStand.copy' | t }}
+      </button>
+      <a
+        [attr.aria-label]="'eventDetail.photoStand.openNamed' | t"
+        [href]="url"
+        appUiButton
+        variant="outline"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <app-ui-icon name="externalLink" />
+        {{ 'eventDetail.photoStand.open' | t }}
+      </a>
+    </div>
+  </div>
+
+  <div class="photo-stand__actions">
+    <button
+      [attr.aria-label]="'eventDetail.photoStand.renewNamed' | t"
+      [loading]="_running() === 'renew'"
+      [loadingLabel]="'eventDetail.photoStand.renewing' | t"
+      (click)="_renew()"
+      appUiButton
+      variant="outline"
+      type="button"
+    >
+      <app-ui-icon name="refresh" />
+      {{ 'eventDetail.photoStand.renew' | t }}
+    </button>
+    <button
+      [attr.aria-label]="'eventDetail.photoStand.disableNamed' | t"
+      [loading]="_running() === 'disable'"
+      [loadingLabel]="'eventDetail.photoStand.disabling' | t"
+      (click)="_disable()"
+      appUiButton
+      variant="destructive"
+      type="button"
+    >
+      {{ 'eventDetail.photoStand.disable' | t }}
+    </button>
+  </div>
+} @else if (event().past) {
+  <p appUiText="muted">{{ 'eventDetail.photoStand.pastOff' | t }}</p>
+} @else {
+  <button
+    class="photo-stand__enable"
+    [loading]="_running() === 'enable'"
+    [loadingLabel]="'eventDetail.photoStand.enabling' | t"
+    (click)="_enable()"
+    appUiButton
+    type="button"
+  >
+    <app-ui-icon name="images" />
+    {{ 'eventDetail.photoStand.enable' | t }}
+  </button>
+}

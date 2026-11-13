@@ -1,0 +1,46 @@
+{
+  "title": "Photos",
+  "titleFor": "Photos · {{ title }}",
+  "heading": "Photos",
+  "event": "Event",
+  "loading": "Loading photos …",
+  "loadFailed": "The event could not be loaded",
+  "list": {
+    "heading": "All photos",
+    "loadFailed": "The photos could not be loaded"
+  },
+  "count": "{{ count }} photos, newest first",
+  "countHidden": "{{ count }} photos, {{ hidden }} of them hidden, newest first",
+  "archive": "Download visible as ZIP",
+  "empty": {
+    "heading": "No photos yet",
+    "description": "Guests upload photos through the QR code of their place card or through the photo stand. You find both on the page of the event."
+  },
+  "actionFailed": "The change to the photo did not work",
+  "hiddenToast": "Photo hidden",
+  "shownToast": "Photo shown again",
+  "card": {
+    "noName": "No name",
+    "placeCard": "Place card",
+    "stand": "Photo stand",
+    "hidden": "Hidden",
+    "openNamed": "View photo {{ number }} by {{ name }} large",
+    "hide": "Hide",
+    "hideNamed": "Hide: photo {{ number }} by {{ name }}",
+    "show": "Show again",
+    "showNamed": "Show again: photo {{ number }} by {{ name }}",
+    "remove": "Delete",
+    "removeNamed": "Delete: photo {{ number }} by {{ name }}",
+    "saving": "Saving"
+  },
+  "dialog": {
+    "heading": "Photo by {{ name }}",
+    "description": "{{ source }} · {{ date }}"
+  },
+  "remove": {
+    "heading": "Delete the photo by {{ name }}?",
+    "description": "The photo is then gone for everyone, also for the person who uploaded it. Hiding keeps it.",
+    "confirm": "Delete",
+    "done": "Photo deleted"
+  }
+}

@@ -81,7 +81,22 @@ class FakeEventsUseCase {
   renewSaveTheDateToken(id: string): Observable<VyteEvent> {
     return this._respond(() => withLink(id, { token: 'tok-2', note: 'Bald mehr' }));
   }
+
+  enablePhotoStand(id: string): Observable<VyteEvent> {
+    return this._respond(() => withStand(id, { token: 'stand-1' }));
+  }
+
+  disablePhotoStand(id: string): Observable<VyteEvent> {
+    return this._respond(() => withStand(id, null));
+  }
+
+  renewPhotoStandToken(id: string): Observable<VyteEvent> {
+    return this._respond(() => withStand(id, { token: 'stand-2' }));
+  }
 }
+
+const withStand = (id: string, photoStand: unknown): VyteEvent =>
+  ({ ...event(id, 'Sommerfest', '2027-07-01T16:00:00.000Z'), photoStand }) as unknown as VyteEvent;
 
 const withLink = (id: string, saveTheDate: VyteEvent['saveTheDate']): VyteEvent =>
   ({ ...event(id, 'Sommerfest', '2027-07-01T16:00:00.000Z'), saveTheDate }) as VyteEvent;
@@ -281,6 +296,65 @@ describe('EventsStore', () => {
       store.select('e2');
 
       expect(store.saveTheDateState().loadingState).toBe('idle');
+    });
+  });
+
+  describe('photo stand', () => {
+    const standOf = (target: VyteEvent | undefined) =>
+      (target as unknown as { photoStand?: { token: string } | null } | undefined)?.photoStand;
+
+    it('replaces the selected event and its entry in the list', async () => {
+      store.select('e1');
+      await settle();
+
+      const result = await store.enablePhotoStand('e1');
+      expect(standOf(result)?.token).toBe('stand-1');
+      expect(standOf(store.selected())?.token).toBe('stand-1');
+      expect(standOf(store.events().find((existing) => existing.id === 'e1'))?.token).toBe(
+        'stand-1',
+      );
+
+      await store.renewPhotoStandToken('e1');
+      expect(standOf(store.selected())?.token).toBe('stand-2');
+
+      await store.disablePhotoStand('e1');
+      expect(standOf(store.selected())).toBeNull();
+      expect(ids()).toEqual(['e1', 'e2', 'e0']);
+    });
+
+    it('leaves the detail alone when another event was changed', async () => {
+      store.select('e2');
+      await settle();
+
+      await store.enablePhotoStand('e1');
+
+      expect(standOf(store.selected())).toBeUndefined();
+      expect(standOf(store.events().find((existing) => existing.id === 'e1'))?.token).toBe(
+        'stand-1',
+      );
+    });
+
+    it('puts a failure in photoStandState only', async () => {
+      useCase.failWith = new Failure('conflict', 'Over');
+
+      expect(await store.enablePhotoStand('e1')).toBeUndefined();
+      expect(await store.disablePhotoStand('e1')).toBeUndefined();
+      expect(await store.renewPhotoStandToken('e1')).toBeUndefined();
+
+      expect(store.photoStandState().failure?.kind).toBe('conflict');
+      expect(store.saveTheDateState().loadingState).toBe('idle');
+      expect(store.mutationState().loadingState).toBe('idle');
+      expect(store.events().every((existing) => !('photoStand' in existing))).toBe(true);
+    });
+
+    it('is reset by select()', async () => {
+      useCase.failWith = new Failure('conflict', 'Over');
+      await store.enablePhotoStand('e1');
+      expect(store.photoStandState().failure).toBeDefined();
+
+      store.select('e2');
+
+      expect(store.photoStandState().loadingState).toBe('idle');
     });
   });
 });

@@ -1,0 +1,53 @@
+// Inside the section of the event page: 1rem between its blocks, as the save-the-date panel.
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.photo-stand__failure,
+.photo-stand__link {
+  align-self: stretch;
+}
+
+.photo-stand__failure {
+  display: block;
+}
+
+// The live link as a small Konfetti card, as the save-the-date link.
+.photo-stand__link {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--card);
+  box-shadow: var(--card-shadow);
+}
+
+.photo-stand__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  align-self: flex-start;
+  padding: 0.25rem 0.75rem;
+  border: var(--chip-border);
+  border-radius: 999px;
+  background: var(--brand);
+  color: var(--brand-foreground);
+}
+
+// The address is long and has no spaces, it may break anywhere.
+.photo-stand__url code {
+  word-break: break-all;
+}
+
+.photo-stand__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

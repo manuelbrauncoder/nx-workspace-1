@@ -1,0 +1,235 @@
+@let state = _store.uploadState();
+@if (!_store.upload()) {
+  <!-- While loading and after a failure the page still has its heading. -->
+  <div class="upload-page__intro">
+    <h1 class="upload-page__title" appUiText="section">
+      {{ (_notFound() ? 'uploadPage.notFound.heading' : 'uploadPage.title') | t }}
+    </h1>
+    @if (_notFound()) {
+      <p class="upload-page__lead">{{ 'uploadPage.notFound.lead' | t }}</p>
+    }
+  </div>
+}
+
+<!-- An unknown or renewed link has its own heading and lead above, without a second alert. -->
+@if (!_notFound()) {
+  <app-async-content
+    class="upload-page"
+    [state]="state"
+    [failureHeading]="'uploadPage.loadFailed' | t"
+    [loadingLabel]="'uploadPage.loading' | t"
+    (retry)="_store.reload()"
+    retryable
+  >
+    <ng-template>
+      @if (_store.upload(); as upload) {
+        <div class="upload-page__intro">
+          <p class="upload-page__kicker">{{ upload.eventTitle }}</p>
+          <h1 class="upload-page__title" appUiText="section">
+            @if (kind() === 'guest' && upload.guestName; as guestName) {
+              {{ 'uploadPage.headingGuest' | t: { name: guestName } }}
+            } @else {
+              {{ 'uploadPage.headingStand' | t }}
+            }
+          </h1>
+        </div>
+
+        <section class="upload-page__card" aria-labelledby="upload-page-add">
+          <h2 class="sr-only" id="upload-page-add">{{ 'uploadPage.add.heading' | t }}</h2>
+          @if (upload.open) {
+            <div class="upload-page__count">
+              <p class="upload-page__left">
+                {{ 'uploadPage.left' | t: { left: upload.left, limit: upload.limit } }}
+              </p>
+              <span class="upload-page__dots" aria-hidden="true">
+                @for (used of _dots(); track $index) {
+                  <span class="upload-page__dot" [class.upload-page__dot--used]="used"></span>
+                }
+              </span>
+            </div>
+
+            @if (kind() === 'stand') {
+              <app-form-text
+                [formField]="_personForm.name"
+                [label]="'uploadPage.name' | t"
+                [description]="'uploadPage.nameDescription' | t"
+                autocomplete="name"
+              />
+            }
+
+            @if (_store.free() > 0) {
+              <!-- The label is the button; the phone offers camera and gallery itself. -->
+              <label class="upload-page__choose">
+                <app-ui-icon name="images" />
+                {{ 'uploadPage.choose' | t }}
+                <input
+                  class="sr-only"
+                  [accept]="_accept"
+                  (change)="_choose($event)"
+                  multiple
+                  type="file"
+                />
+              </label>
+            } @else if (upload.left === 0) {
+              <p class="upload-page__hint">
+                {{ 'uploadPage.limitReached' | t: { limit: upload.limit } }}
+              </p>
+            }
+            <p class="upload-page__hint">
+              {{
+                'uploadPage.until'
+                  | t: { date: upload.closesAt | localDate: 'weekdayDate' : _timeZone }
+              }}
+            </p>
+          } @else if (_beforeWindow()) {
+            <p class="upload-page__window">
+              {{
+                'uploadPage.notYet'
+                  | t: { date: upload.opensAt | localDate: 'weekdayDate' : _timeZone }
+              }}
+            </p>
+          } @else {
+            <p class="upload-page__window">{{ 'uploadPage.over' | t }}</p>
+          }
+
+          <!-- Polite, so what happened to the chosen photos is told without interrupting. -->
+          <p class="upload-page__notice" aria-live="polite">
+            {{ _notice() }}
+            @if (_store.batch().total > 0) {
+              {{
+                (_store.failedCount() > 0 ? 'uploadPage.progressFailed' : 'uploadPage.progress')
+                  | t
+                    : {
+                        done: _store.batch().done,
+                        total: _store.batch().total,
+                        failed: _store.failedCount(),
+                      }
+              }}
+            }
+          </p>
+          @if (_store.batch().total > 0) {
+            <div
+              class="upload-page__progress"
+              [attr.aria-valuemax]="_store.batch().total"
+              [attr.aria-valuenow]="_store.batch().done"
+              [attr.aria-label]="'uploadPage.progressLabel' | t"
+              [attr.aria-valuetext]="
+                'uploadPage.progress'
+                  | t: { done: _store.batch().done, total: _store.batch().total }
+              "
+              aria-valuemin="0"
+              role="progressbar"
+            >
+              <span
+                class="upload-page__progress-bar"
+                [style.width.%]="(_store.batch().done / _store.batch().total) * 100"
+              ></span>
+            </div>
+          }
+        </section>
+
+        <section class="upload-page__section" aria-labelledby="upload-page-own">
+          <h2
+            class="upload-page__section-heading"
+            id="upload-page-own"
+            appUiText="h3"
+            tabindex="-1"
+          >
+            {{ 'uploadPage.own.heading' | t }}
+          </h2>
+          @if (_store.deleteState().failure; as failure) {
+            <app-failure-alert
+              [failure]="failure"
+              [heading]="'uploadPage.delete.failed' | t"
+              [headingLevel]="3"
+            />
+          }
+          @if (upload.photos.length === 0 && _store.queue().length === 0) {
+            <p class="upload-page__empty">
+              {{ (kind() === 'stand' ? 'uploadPage.own.emptyStand' : 'uploadPage.own.empty') | t }}
+            </p>
+          } @else {
+            <ul class="upload-page__grid">
+              @for (photo of upload.photos; track photo.id; let index = $index) {
+                <li class="upload-page__tile">
+                  <img
+                    [alt]="'uploadPage.own.photo' | t: { number: index + 1 }"
+                    [height]="photo.height"
+                    [ngSrc]="_photoUrl(photo)"
+                    [width]="photo.width"
+                  />
+                  <button
+                    class="upload-page__delete"
+                    [attr.aria-label]="'uploadPage.own.delete' | t: { number: index + 1 }"
+                    (click)="_delete(photo, index + 1)"
+                    type="button"
+                  >
+                    <app-ui-icon name="trash" />
+                  </button>
+                </li>
+              }
+              @for (item of _store.queue(); track item.id) {
+                <li
+                  class="upload-page__tile upload-page__tile--queued"
+                  [attr.data-state]="item.state"
+                >
+                  <!-- A local preview of the chosen file, not yet a photo of the event. -->
+                  <img [src]="item.preview" alt="" />
+                  <div class="upload-page__status">
+                    <span class="sr-only">{{ item.file.name }}:</span>
+                    @switch (item.state) {
+                      @case ('uploading') {
+                        <app-ui-spinner [announce]="false" />
+                        <span>{{ 'uploadPage.queue.uploading' | t }}</span>
+                      }
+                      @case ('waiting') {
+                        <span>{{ 'uploadPage.queue.waiting' | t }}</span>
+                      }
+                      @case ('failed') {
+                        <span>
+                          {{
+                            (item.failure?.kind === 'conflict'
+                              ? 'uploadPage.queue.refused'
+                              : 'uploadPage.queue.failed'
+                            ) | t
+                          }}
+                        </span>
+                        <span class="upload-page__queue-actions">
+                          <button
+                            [attr.aria-label]="
+                              'uploadPage.queue.retryNamed' | t: { name: item.file.name }
+                            "
+                            (click)="_retry(item)"
+                            appUiButton
+                            size="sm"
+                            type="button"
+                          >
+                            {{ 'uploadPage.queue.retry' | t }}
+                          </button>
+                          <button
+                            [attr.aria-label]="
+                              'uploadPage.queue.discardNamed' | t: { name: item.file.name }
+                            "
+                            (click)="_discard(item)"
+                            appUiButton
+                            size="sm"
+                            type="button"
+                            variant="outline"
+                          >
+                            {{ 'uploadPage.queue.discard' | t }}
+                          </button>
+                        </span>
+                      }
+                    }
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+
+        <p class="upload-page__note">{{ 'uploadPage.consent' | t }}</p>
+      }
+    </ng-template>
+  </app-async-content>
+}

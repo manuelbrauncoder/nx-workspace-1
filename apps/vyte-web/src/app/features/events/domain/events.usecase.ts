@@ -59,4 +59,19 @@ export class EventsUseCase {
   renewSaveTheDateToken(id: string): Observable<VyteEvent> {
     return this._repository.renewSaveTheDateToken(id);
   }
+
+  /** Turns the photo stand on, its link is made once. */
+  enablePhotoStand(id: string): Observable<VyteEvent> {
+    return this._repository.enablePhotoStand(id);
+  }
+
+  /** The photos stay. */
+  disablePhotoStand(id: string): Observable<VyteEvent> {
+    return this._repository.disablePhotoStand(id);
+  }
+
+  /** The old link and its printed QR code stop working. */
+  renewPhotoStandToken(id: string): Observable<VyteEvent> {
+    return this._repository.renewPhotoStandToken(id);
+  }
 }

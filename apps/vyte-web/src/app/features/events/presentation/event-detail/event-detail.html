@@ -122,6 +122,16 @@
           <app-save-the-date-panel [event]="event" />
         </section>
 
+        <section class="event-detail__section" aria-labelledby="event-detail-photo-stand">
+          <h2 id="event-detail-photo-stand" appUiText="h3" tabindex="-1">
+            {{ 'eventDetail.photoStand.heading' | t }}
+          </h2>
+          <p class="event-detail__section-lead" appUiText="muted">
+            {{ 'eventDetail.photoStand.description' | t }}
+          </p>
+          <app-photo-stand-panel [event]="event" />
+        </section>
+
         @if (event.images.length > 0) {
           <section class="event-detail__section" aria-labelledby="event-detail-images">
             <h2 id="event-detail-images" appUiText="h3">{{ 'eventDetail.images.heading' | t }}</h2>
@@ -149,6 +159,15 @@
         }
 
         <div class="event-detail__actions">
+          <a
+            [routerLink]="['/events', event.id, 'photos']"
+            [attr.aria-label]="'eventDetail.photosNamed' | t: { title: event.title }"
+            appUiButton
+            variant="outline"
+          >
+            <app-ui-icon name="images" />
+            {{ 'eventDetail.photos' | t }}
+          </a>
           <a
             [routerLink]="['/events', event.id, 'team']"
             [attr.aria-label]="'eventDetail.teamNamed' | t: { title: event.title }"

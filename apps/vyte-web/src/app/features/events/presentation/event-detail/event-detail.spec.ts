@@ -62,6 +62,7 @@ describe('EventDetail', () => {
             detailState: signal(state),
             mutationState: signal(idle()),
             saveTheDateState: signal(idle()),
+            photoStandState: signal(idle()),
           },
         },
         { provide: AppConfigService, useValue: { siteUrl: 'https://vyte.example.com' } },

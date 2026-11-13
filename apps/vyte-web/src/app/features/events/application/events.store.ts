@@ -1,7 +1,7 @@
 import { computed, inject, Service, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { asyncState } from '@core/state/async-state';
-import { mutation } from '@core/state/mutation';
+import { Mutation, mutation } from '@core/state/mutation';
 import { patchResource } from '@core/state/patch-resource';
 import { map, Observable } from 'rxjs';
 import { EventDraft, EventImage, VyteEvent } from '../domain/event';
@@ -38,6 +38,7 @@ export class EventsStore {
   private readonly _imageMutation = mutation();
   // A failed save the date must not read like a failed deletion of the event.
   private readonly _saveTheDateMutation = mutation();
+  private readonly _photoStandMutation = mutation();
 
   // Reading `value()` of a failed resource throws, hence the `hasValue()` guards.
   readonly events = computed(() => (this._list.hasValue() ? this._list.value() : []));
@@ -55,6 +56,8 @@ export class EventsStore {
   readonly imageMutationState = this._imageMutation.state;
   /** State of the most recent change to the save-the-date page. */
   readonly saveTheDateState = this._saveTheDateMutation.state;
+  /** State of the most recent change to the photo stand. */
+  readonly photoStandState = this._photoStandMutation.state;
 
   /** Loads a single event. Pass `undefined` to clear the selection. */
   select(id: string | undefined): void {
@@ -62,6 +65,7 @@ export class EventsStore {
     this._mutation.reset();
     this._imageMutation.reset();
     this._saveTheDateMutation.reset();
+    this._photoStandMutation.reset();
   }
 
   reload(): void {
@@ -102,15 +106,27 @@ export class EventsStore {
 
   /** Turns the save-the-date page on or changes its note. */
   async setSaveTheDate(id: string, note: string): Promise<VyteEvent | undefined> {
-    return this._writeSaveTheDate(id, this._useCase.setSaveTheDate(id, note));
+    return this._writeEvent(this._saveTheDateMutation, id, this._useCase.setSaveTheDate(id, note));
   }
 
   async removeSaveTheDate(id: string): Promise<VyteEvent | undefined> {
-    return this._writeSaveTheDate(id, this._useCase.removeSaveTheDate(id));
+    return this._writeEvent(this._saveTheDateMutation, id, this._useCase.removeSaveTheDate(id));
   }
 
   async renewSaveTheDateToken(id: string): Promise<VyteEvent | undefined> {
-    return this._writeSaveTheDate(id, this._useCase.renewSaveTheDateToken(id));
+    return this._writeEvent(this._saveTheDateMutation, id, this._useCase.renewSaveTheDateToken(id));
+  }
+
+  async enablePhotoStand(id: string): Promise<VyteEvent | undefined> {
+    return this._writeEvent(this._photoStandMutation, id, this._useCase.enablePhotoStand(id));
+  }
+
+  async disablePhotoStand(id: string): Promise<VyteEvent | undefined> {
+    return this._writeEvent(this._photoStandMutation, id, this._useCase.disablePhotoStand(id));
+  }
+
+  async renewPhotoStandToken(id: string): Promise<VyteEvent | undefined> {
+    return this._writeEvent(this._photoStandMutation, id, this._useCase.renewPhotoStandToken(id));
   }
 
   /** Adds images to an event. The backend stores all of them or none. */
@@ -144,12 +160,16 @@ export class EventsStore {
     return images;
   }
 
-  /** Every save-the-date request answers with the whole event, which replaces the loaded one. */
-  private async _writeSaveTheDate(
+  /**
+   * Save-the-date and photo-stand requests answer with the whole event, which replaces the
+   * loaded one. Each part has its own state, so a failure shows where it happened.
+   */
+  private async _writeEvent(
+    target: Mutation,
     id: string,
     request: Observable<VyteEvent>,
   ): Promise<VyteEvent | undefined> {
-    const event = await this._saveTheDateMutation.run(request);
+    const event = await target.run(request);
     if (event) {
       patchResource(this._list, (events) =>
         events.map((existing) => (existing.id === id ? event : existing)),

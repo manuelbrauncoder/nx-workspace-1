@@ -1,0 +1,231 @@
+// The upload pages in the Konfetti design (`docs/vyte/design/previews/Fotos.html` and
+// `Aufsteller.html`), on the yellow ground of `GuestShell`: 1.25rem between the blocks, as on the
+// guest page.
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  // The text field of the stand takes the ink border of the design.
+  --input: var(--foreground);
+}
+
+.upload-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.upload-page__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 0.5rem 0.25rem 0;
+}
+
+.upload-page__kicker {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.upload-page__title {
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.upload-page__lead {
+  font-weight: 500;
+}
+
+// A white Konfetti card: the count, the name of the stand, the choice.
+.upload-page__card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem 1.25rem;
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--card-shadow);
+}
+
+.upload-page__count {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.upload-page__left {
+  font-weight: 700;
+}
+
+.upload-page__dots {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.upload-page__dot {
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid var(--foreground);
+  border-radius: 50%;
+}
+
+.upload-page__dot--used {
+  background: var(--foreground);
+}
+
+// The label is the button, as large as the main action of the guest page.
+.upload-page__choose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  min-height: 3.5rem;
+  padding: 0 1rem;
+  border: var(--card-border);
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 2px 2px 0 var(--foreground);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  cursor: pointer;
+
+  &:has(input:focus-visible) {
+    outline: 3px solid var(--foreground);
+    outline-offset: 3px;
+  }
+}
+
+.upload-page__hint {
+  color: var(--muted-foreground);
+}
+
+.upload-page__window {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.upload-page__notice:empty {
+  display: none;
+}
+
+.upload-page__progress {
+  height: 0.75rem;
+  overflow: hidden;
+  border: var(--chip-border);
+  border-radius: 999px;
+  background: var(--muted);
+}
+
+.upload-page__progress-bar {
+  display: block;
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.2s ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.upload-page__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.upload-page__section-heading {
+  padding-inline: 0.25rem;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.upload-page__empty {
+  padding: 1rem;
+  border: 2px dashed var(--foreground);
+  border-radius: var(--radius);
+  font-weight: 500;
+}
+
+.upload-page__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.upload-page__tile {
+  position: relative;
+  overflow: hidden;
+  border: var(--chip-border);
+  border-radius: var(--radius);
+  background: var(--card);
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+}
+
+// A chosen photo on its way up: the preview is quieter, its state is told below it.
+.upload-page__tile--queued img {
+  opacity: 0.5;
+}
+
+// A failed photo needs room for its message and two buttons, so it takes the whole row.
+.upload-page__tile[data-state='failed'] {
+  grid-column: 1 / -1;
+}
+
+.upload-page__delete {
+  position: absolute;
+  top: 0.375rem;
+  right: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: var(--chip-border);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--foreground);
+
+  // An ink ring on a white halo, visible on a dark photo too.
+  &:focus-visible {
+    outline: 3px solid var(--foreground);
+    outline-offset: 0;
+    box-shadow: 0 0 0 6px var(--card);
+  }
+}
+
+.upload-page__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+}
+
+.upload-page__queue-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.upload-page__note {
+  padding-inline: 0.25rem;
+  font-weight: 500;
+  text-wrap: pretty;
+}
