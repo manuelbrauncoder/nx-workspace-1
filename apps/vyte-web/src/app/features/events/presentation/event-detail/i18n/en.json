@@ -76,7 +76,6 @@
     "enabled": "Photo stand is on",
     "on": "On",
     "address": "Address of the upload page",
-    "printHint": "You print the stand card through “Print” once it is there. Until then you can copy the link.",
     "copy": "Copy link",
     "copied": "Link copied",
     "copyFailed": "The link could not be copied",
@@ -98,8 +97,11 @@
     "disabled": "Photo stand is off",
     "pastOff": "After the event, the photo stand cannot be turned on any more.",
     "failed": "The photo stand could not be changed",
-    "conflict": "The event is over or uploads have ended. The photo stand can only be turned off."
+    "conflict": "The event is over or uploads have ended. The photo stand can only be turned off.",
+    "printCard": "Print card"
   },
   "photos": "Photos",
-  "photosNamed": "Photos: {{ title }}"
+  "photosNamed": "Photos: {{ title }}",
+  "print": "Print",
+  "printNamed": "Print: {{ title }}"
 }

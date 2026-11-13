@@ -55,6 +55,10 @@ class FakeGuestsUseCase {
     );
   renewToken = (eventId: string, id: string) =>
     this._respond('renewToken', [eventId, id], () => guest(id, 'Ada', { token: 'renewed' }));
+  renewPhotoToken = (eventId: string, id: string) =>
+    this._respond('renewPhotoToken', [eventId, id], () =>
+      guest(id, 'Ada', { photoToken: 'renewed-photo' }),
+    );
   delete = (eventId: string, id: string) => this._respond('delete', [eventId, id], () => undefined);
   exportUrl = (eventId: string, language: string) => `export/${eventId}?lang=${language}`;
 }
@@ -163,6 +167,17 @@ describe('GuestsStore', () => {
     expect(store.guests()[0]?.token).toBe('renewed');
   });
 
+  it('replaces a guest with a new photo link and keeps the link to the answer', async () => {
+    const before = store.guests()[0]!.token;
+
+    const renewed = await store.renewPhotoToken('g1');
+
+    expect(renewed?.photoToken).toBe('renewed-photo');
+    expect(store.guests()[0]?.photoToken).toBe('renewed-photo');
+    expect(store.guests()[0]?.token).toBe(before);
+    expect(names()).toEqual(['Ada', 'Ben', 'Cleo']);
+  });
+
   it('removes a guest', async () => {
     expect(await store.remove('g2')).toBe(true);
 
@@ -178,6 +193,7 @@ describe('GuestsStore', () => {
     expect(await store.update('g1', { name: 'X', note: '', maxCompanions: 0 })).toBeUndefined();
     expect(await store.setResponse('g1', { response: 'declined', companions: 0 })).toBeUndefined();
     expect(await store.renewToken('g1')).toBeUndefined();
+    expect(await store.renewPhotoToken('g1')).toBeUndefined();
     expect(await store.remove('g1')).toBe(false);
 
     expect(store.mutationState().failure?.kind).toBe('conflict');

@@ -212,6 +212,17 @@ export class GuestList {
     }
   }
 
+  private async _renewPhoto(guest: Guest): Promise<void> {
+    const confirmed = await this._confirmDialog.confirm({
+      heading: this._i18n.translate('guestList.renewPhoto.heading', { name: guest.name }),
+      description: this._i18n.translate('guestList.renewPhoto.description'),
+      confirmLabel: this._i18n.translate('guestList.renewPhoto.confirm'),
+    });
+    if (confirmed && (await this._store.renewPhotoToken(guest.id))) {
+      this._toast.success(this._i18n.translate('guestList.renewPhoto.done', { name: guest.name }));
+    }
+  }
+
   private async _remove(guest: Guest): Promise<void> {
     const confirmed = await this._confirmDialog.confirm({
       heading: this._i18n.translate('guestList.remove.heading', { name: guest.name }),

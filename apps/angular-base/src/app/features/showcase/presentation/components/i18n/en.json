@@ -116,5 +116,9 @@
     "description": "app-language-toggle switches the language, the localDate pipe formats in the locale of the language.",
     "date": "localDate: 'date'",
     "dateTime": "localDate: 'dateTime'"
+  },
+  "qrCode": {
+    "description": "app-ui-qr-code draws a QR code as an SVG, sharp in print and the same on server and browser. As large as its container, needs a label.",
+    "label": "QR code of an example address"
   }
 }

@@ -22,7 +22,7 @@
   "addMany": "Liste einfügen",
   "export": "Als CSV exportieren",
   "actionFailed": "Die Änderung hat nicht geklappt",
-  "pastConflict": "Das Event ist vorbei oder die Liste ist voll. Lade die Seite neu und prüfe sie.",
+  "pastConflict": "Das geht gerade nicht: Das Event ist vorbei, die Liste ist voll oder der Upload ist beendet. Lade die Seite neu und prüfe sie.",
   "list": {
     "heading": "Gästeliste",
     "search": "Nach Name suchen",
@@ -88,7 +88,8 @@
     "edit": "Bearbeiten",
     "answer": "Antwort eintragen",
     "renew": "Link erneuern",
-    "remove": "Entfernen"
+    "remove": "Entfernen",
+    "renewPhoto": "Foto-Link erneuern"
   },
   "form": {
     "addHeading": "Gast hinzufügen",
@@ -135,5 +136,11 @@
     "companionsDescription": "Bis zu {{ max }}.",
     "failed": "Die Antwort konnte nicht gespeichert werden",
     "submit": "Antwort speichern"
+  },
+  "renewPhoto": {
+    "heading": "Neuen Foto-Link für {{ name }}?",
+    "description": "Der QR-Code einer schon gedruckten Tischkarte funktioniert danach nicht mehr, drucke die Karte neu. Hochgeladene Fotos bleiben. Geht nur, solange Uploads offen sind.",
+    "confirm": "Neuen Foto-Link erstellen",
+    "done": "Neuer Foto-Link für {{ name }} erstellt"
   }
 }

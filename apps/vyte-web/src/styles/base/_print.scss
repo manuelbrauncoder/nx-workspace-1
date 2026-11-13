@@ -1,0 +1,9 @@
+// Only the page prints, nothing of the app around it: a toast that happens to be up would land
+// on the sheet. The print page brings its own print styles.
+@layer base {
+  @media print {
+    app-ui-toaster {
+      display: none !important;
+    }
+  }
+}

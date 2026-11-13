@@ -76,7 +76,6 @@
     "enabled": "Fotostation ist an",
     "on": "Eingeschaltet",
     "address": "Adresse der Upload-Seite",
-    "printHint": "Die Karte zum Aufstellen druckst du über „Drucken“, sobald es das gibt. Bis dahin kannst du den Link kopieren.",
     "copy": "Link kopieren",
     "copied": "Link kopiert",
     "copyFailed": "Der Link konnte nicht kopiert werden",
@@ -98,8 +97,11 @@
     "disabled": "Fotostation ist aus",
     "pastOff": "Nach dem Event lässt sich die Fotostation nicht mehr einschalten.",
     "failed": "Die Fotostation konnte nicht geändert werden",
-    "conflict": "Das Event ist vorbei oder der Upload ist beendet. Die Fotostation lässt sich nur noch abschalten."
+    "conflict": "Das Event ist vorbei oder der Upload ist beendet. Die Fotostation lässt sich nur noch abschalten.",
+    "printCard": "Karte drucken"
   },
   "photos": "Fotos",
-  "photosNamed": "Fotos: {{ title }}"
+  "photosNamed": "Fotos: {{ title }}",
+  "print": "Drucken",
+  "printNamed": "Drucken: {{ title }}"
 }

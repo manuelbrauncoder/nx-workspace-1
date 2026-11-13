@@ -8,6 +8,7 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AppConfigService } from '@core/config/app-config';
 import { I18nService } from '@core/i18n/i18n.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -31,7 +32,7 @@ type PhotoStandAction = 'enable' | 'renew' | 'disable';
  */
 @Component({
   selector: 'app-photo-stand-panel',
-  imports: [TranslatePipe, FailureAlert, UiButton, UiIcon, UiText],
+  imports: [RouterLink, TranslatePipe, FailureAlert, UiButton, UiIcon, UiText],
   styleUrl: './photo-stand-panel.scss',
   templateUrl: './photo-stand-panel.html',
 })

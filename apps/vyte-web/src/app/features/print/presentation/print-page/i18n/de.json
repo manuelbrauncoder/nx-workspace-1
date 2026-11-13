@@ -1,0 +1,48 @@
+{
+  "title": "Drucken",
+  "titleFor": "Drucken · {{ title }}",
+  "heading": "Drucken",
+  "back": "Zurück zum Event",
+  "loading": "Wird geladen …",
+  "loadFailed": "Das Event konnte nicht geladen werden",
+  "kinds": {
+    "label": "Was drucken?",
+    "placeCards": "Tischkarten",
+    "stand": "Karte der Fotostation"
+  },
+  "which": {
+    "label": "Für wen?",
+    "all": "Alle Gäste",
+    "accepted": "Nur Zusagen"
+  },
+  "summary": "{{ cards }} Tischkarten",
+  "noneAccepted": "Noch hat niemand zugesagt.",
+  "noGuests": "Auf der Gästeliste steht noch niemand.",
+  "standSummary": "Eine Karte im Format A5 zum Aufstellen auf den Tischen oder am Eingang.",
+  "standOff": "Die Fotostation ist aus.",
+  "standOffLink": "Auf der Seite des Events einschalten",
+  "hints": {
+    "scale": "Im Druckdialog „Tatsächliche Größe“ bzw. 100 % wählen, damit die QR-Codes passen.",
+    "cut": "An den gestrichelten Linien ausschneiden.",
+    "fold": "An der gepunkteten Linie in der Mitte falten, der Name steht dann auf beiden Seiten.",
+    "a5": "Im Druckdialog das Format A5 wählen."
+  },
+  "print": "Drucken",
+  "preview": "Vorschau",
+  "sheet": "Blatt {{ number }} von {{ total }}",
+  "standSheet": "Karte der Fotostation",
+  "card": {
+    "qr": "QR-Code zur Upload-Seite von {{ name }}",
+    "call": "Teil deine Fotos: Code scannen"
+  },
+  "stand": {
+    "heading": "Teil deine Fotos vom Abend",
+    "qr": "QR-Code zur Upload-Seite der Fotostation",
+    "call": "Mit der Kamera scannen, kein Konto nötig."
+  },
+  "summaryOne": "1 Tischkarte",
+  "sheetsOne": "auf 1 A4-Blatt, vier pro Blatt.",
+  "sheets": "auf {{ sheets }} A4-Blättern, vier pro Blatt.",
+  "loadingGuests": "Die Gäste werden geladen …",
+  "guestsFailed": "Die Gäste konnten nicht geladen werden"
+}

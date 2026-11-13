@@ -66,6 +66,7 @@ describe('GuestList', () => {
     update: vi.fn(),
     setResponse: vi.fn(),
     renewToken: vi.fn(),
+    renewPhotoToken: vi.fn(),
     remove: vi.fn(),
   };
   const open = vi.fn();
@@ -353,7 +354,7 @@ describe('GuestList', () => {
     TestBed.resetTestingModule();
     const conflict = await render({ mutationState: failed(new Failure('conflict', 'Past')) });
     expect(conflict.element.querySelector('.guest-list__failure')?.textContent).toContain(
-      'Das Event ist vorbei oder die Liste ist voll.',
+      'Das Event ist vorbei, die Liste ist voll oder der Upload ist beendet.',
     );
   });
 
@@ -522,6 +523,35 @@ describe('GuestList', () => {
       );
       expect(store.renewToken).toHaveBeenCalledWith('g2');
       expect(toast.success).toHaveBeenCalledWith('Neuer Link für Ben Müller erstellt');
+    });
+
+    it('renews a photo link only after confirmation', async () => {
+      confirm.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+      store.renewPhotoToken.mockResolvedValue(guest('g2', 'Ben Müller'));
+      const { element } = await render();
+
+      await pick(element, 'Ben Müller', 'Foto-Link erneuern');
+      expect(store.renewPhotoToken).not.toHaveBeenCalled();
+      expect(toast.success).not.toHaveBeenCalled();
+
+      await pick(element, 'Ben Müller', 'Foto-Link erneuern');
+      expect(confirm).toHaveBeenLastCalledWith(
+        expect.objectContaining({ heading: 'Neuen Foto-Link für Ben Müller?' }),
+      );
+      expect(store.renewPhotoToken).toHaveBeenCalledWith('g2');
+      expect(store.renewToken).not.toHaveBeenCalled();
+      expect(toast.success).toHaveBeenCalledWith('Neuer Foto-Link für Ben Müller erstellt');
+    });
+
+    it('says nothing when renewing a photo link fails', async () => {
+      confirm.mockResolvedValue(true);
+      store.renewPhotoToken.mockResolvedValue(undefined);
+      const { element } = await render();
+
+      await pick(element, 'Ben Müller', 'Foto-Link erneuern');
+
+      expect(store.renewPhotoToken).toHaveBeenCalledWith('g2');
+      expect(toast.success).not.toHaveBeenCalled();
     });
 
     it('removes a guest only after confirmation and focuses the list heading', async () => {

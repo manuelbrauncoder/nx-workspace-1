@@ -19,12 +19,20 @@
       <span class="sr-only">{{ 'eventDetail.photoStand.address' | t }}: </span>
       <code appUiText="code">{{ url }}</code>
     </p>
-    <p appUiText="muted">{{ 'eventDetail.photoStand.printHint' | t }}</p>
     <div class="photo-stand__actions">
       <button class="photo-stand__copy" (click)="_copy()" appUiButton type="button">
         <app-ui-icon name="copy" />
         {{ 'eventDetail.photoStand.copy' | t }}
       </button>
+      <a
+        [queryParams]="{ kind: 'stand' }"
+        [routerLink]="['/events', event().id, 'print']"
+        appUiButton
+        variant="outline"
+      >
+        <app-ui-icon name="printer" />
+        {{ 'eventDetail.photoStand.printCard' | t }}
+      </a>
       <a
         [attr.aria-label]="'eventDetail.photoStand.openNamed' | t"
         [href]="url"

@@ -92,6 +92,10 @@ export class GuestsStore {
     return this._replace(await this._write((id) => this._useCase.renewToken(id, guestId)));
   }
 
+  async renewPhotoToken(guestId: string): Promise<Guest | undefined> {
+    return this._replace(await this._write((id) => this._useCase.renewPhotoToken(id, guestId)));
+  }
+
   async remove(guestId: string): Promise<boolean> {
     const removed = await this._write((id) =>
       this._useCase.delete(id, guestId).pipe(map(() => true)),

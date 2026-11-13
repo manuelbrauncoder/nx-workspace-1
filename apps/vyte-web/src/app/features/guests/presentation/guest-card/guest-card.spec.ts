@@ -170,12 +170,13 @@ describe('GuestCard', () => {
     expect(share).toHaveBeenCalledTimes(1);
   });
 
-  it('emits edit, answer, renew and remove from the menu', async () => {
+  it('emits edit, answer, renew, renew photo and remove from the menu', async () => {
     const { fixture, element } = await render();
     const outputs = {
       edit: vi.fn(),
       answer: vi.fn(),
       renewLink: vi.fn(),
+      renewPhotoLink: vi.fn(),
       remove: vi.fn(),
     };
     for (const [name, spy] of Object.entries(outputs)) {
@@ -191,6 +192,7 @@ describe('GuestCard', () => {
       ['Bearbeiten', outputs.edit],
       ['Antwort eintragen', outputs.answer],
       ['Link erneuern', outputs.renewLink],
+      ['Foto-Link erneuern', outputs.renewPhotoLink],
       ['Entfernen', outputs.remove],
     ] as const;
     for (const [label, spy] of labels) {

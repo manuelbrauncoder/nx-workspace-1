@@ -6,6 +6,12 @@ import { GuestShell } from './layout/guest-shell/guest-shell';
 
 export const routes: Routes = [
   {
+    // Place cards and the stand card. Outside every shell: the sheets must print alone.
+    path: 'events/:id/print',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/print/print.routes').then((m) => m.printRoutes),
+  },
+  {
     // Pages a guest opens through a link, in their own frame without header and sign-in. First,
     // so the catch-all of the app shell below does not take them.
     path: '',

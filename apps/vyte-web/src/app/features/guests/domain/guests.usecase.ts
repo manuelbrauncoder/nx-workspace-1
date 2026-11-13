@@ -54,6 +54,11 @@ export class GuestsUseCase {
     return this._guests.renewToken(eventId, guestId);
   }
 
+  /** The old upload link of the guest, the QR code of a printed place card, stops working. */
+  renewPhotoToken(eventId: string, guestId: string): Observable<Guest> {
+    return this._guests.renewPhotoToken(eventId, guestId);
+  }
+
   exportUrl(eventId: string, language: GuestsExportLanguage): string {
     return this._guests.exportUrl(eventId, language);
   }
