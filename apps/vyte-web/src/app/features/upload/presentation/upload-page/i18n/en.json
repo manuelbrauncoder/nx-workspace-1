@@ -1,0 +1,56 @@
+{
+  "title": "Photos",
+  "loading": "Loading the page …",
+  "loadFailed": "The page could not be loaded",
+  "notFound": {
+    "heading": "Invalid link",
+    "lead": "This link no longer works, it may have been renewed. Ask the hosts."
+  },
+  "headingGuest": "Hey {{ name }}, share your photos",
+  "headingStand": "Share your photos of the evening",
+  "add": {
+    "heading": "Add photos"
+  },
+  "left": "{{ left }} of {{ limit }} photos left",
+  "name": "Your name (optional)",
+  "nameDescription": "So the hosts know who took the photos.",
+  "nameTooLong": "At most {{ max }} characters.",
+  "choose": "Choose photos",
+  "limitReached": "You uploaded all {{ limit }} photos. Delete one to make room.",
+  "until": "From the camera or the gallery. Uploads are open until {{ date }}.",
+  "notYet": "From {{ date }} you can upload photos here.",
+  "over": "Uploads have ended.",
+  "queued": "Chosen: {{ count }}.",
+  "overLimit": "Skipped for lack of room: {{ count }}.",
+  "wrongType": "Not a photo in a supported format (JPEG, PNG, WebP, AVIF): {{ count }}.",
+  "progress": "Uploaded: {{ done }} of {{ total }}.",
+  "progressLabel": "Progress of the chosen photos",
+  "own": {
+    "heading": "Your photos",
+    "empty": "No photos yet.",
+    "emptyStand": "No photos from this phone yet.",
+    "photo": "Photo {{ number }}",
+    "delete": "Delete photo {{ number }}"
+  },
+  "queue": {
+    "waiting": "Waiting …",
+    "uploading": "Uploading …",
+    "failed": "That did not work.",
+    "refused": "Not possible any more: no room or uploads ended.",
+    "retry": "Retry",
+    "retryNamed": "Retry: {{ name }}",
+    "discard": "Discard",
+    "discardNamed": "Discard: {{ name }}",
+    "discarded": "Discarded: {{ name }}."
+  },
+  "delete": {
+    "heading": "Delete photo {{ number }}?",
+    "description": "The hosts no longer see it, and you have room for one more photo.",
+    "confirm": "Delete",
+    "done": "Photo {{ number }} deleted.",
+    "failed": "The photo could not be deleted"
+  },
+  "consent": "The hosts see all photos, other guests do not. Please ask before you take pictures of people.",
+  "titleFor": "Photos · {{ title }}",
+  "progressFailed": "Uploaded: {{ done }} of {{ total }}, {{ failed }} did not work."
+}

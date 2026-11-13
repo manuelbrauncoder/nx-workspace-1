@@ -1,0 +1,56 @@
+{
+  "title": "Fotos",
+  "loading": "Seite wird geladen …",
+  "loadFailed": "Die Seite konnte nicht geladen werden",
+  "notFound": {
+    "heading": "Link ungültig",
+    "lead": "Dieser Link funktioniert nicht mehr, vielleicht wurde er erneuert. Frag bei den Gastgebern nach."
+  },
+  "headingGuest": "Hey {{ name }}, teil deine Fotos",
+  "headingStand": "Teil deine Fotos vom Abend",
+  "add": {
+    "heading": "Fotos hinzufügen"
+  },
+  "left": "Noch {{ left }} von {{ limit }} Fotos",
+  "name": "Dein Name (optional)",
+  "nameDescription": "Damit die Gastgeber wissen, von wem die Fotos sind.",
+  "nameTooLong": "Höchstens {{ max }} Zeichen.",
+  "choose": "Fotos auswählen",
+  "limitReached": "Du hast alle {{ limit }} Fotos hochgeladen. Löschst du eins, ist wieder Platz.",
+  "until": "Aus der Kamera oder der Galerie. Hochladen geht bis {{ date }}.",
+  "notYet": "Ab {{ date }} kannst du hier Fotos hochladen.",
+  "over": "Der Upload ist beendet.",
+  "queued": "Ausgewählt: {{ count }}.",
+  "overLimit": "Übersprungen, weil kein Platz mehr ist: {{ count }}.",
+  "wrongType": "Kein Foto im passenden Format (JPEG, PNG, WebP, AVIF): {{ count }}.",
+  "progress": "Hochgeladen: {{ done }} von {{ total }}.",
+  "progressLabel": "Fortschritt der ausgewählten Fotos",
+  "own": {
+    "heading": "Deine Fotos",
+    "empty": "Noch keine Fotos.",
+    "emptyStand": "Von diesem Handy sind noch keine Fotos da.",
+    "photo": "Foto {{ number }}",
+    "delete": "Foto {{ number }} löschen"
+  },
+  "queue": {
+    "waiting": "Wartet …",
+    "uploading": "Lädt hoch …",
+    "failed": "Hat nicht geklappt.",
+    "refused": "Nicht mehr möglich: kein Platz oder Upload beendet.",
+    "retry": "Erneut",
+    "retryNamed": "Erneut hochladen: {{ name }}",
+    "discard": "Verwerfen",
+    "discardNamed": "Verwerfen: {{ name }}",
+    "discarded": "Verworfen: {{ name }}."
+  },
+  "delete": {
+    "heading": "Foto {{ number }} löschen?",
+    "description": "Die Gastgeber sehen es danach nicht mehr, und du hast wieder Platz für ein Foto.",
+    "confirm": "Löschen",
+    "done": "Foto {{ number }} gelöscht.",
+    "failed": "Das Foto konnte nicht gelöscht werden"
+  },
+  "consent": "Die Gastgeber sehen alle Fotos, andere Gäste nicht. Frag bitte kurz, bevor du Leute fotografierst.",
+  "titleFor": "Fotos · {{ title }}",
+  "progressFailed": "Hochgeladen: {{ done }} von {{ total }}, {{ failed }} hat nicht geklappt."
+}

@@ -1,0 +1,14 @@
+<app-ui-dialog [description]="_photo.description" [heading]="_photo.heading">
+  <img
+    class="photo-dialog__image"
+    [alt]="_photo.heading"
+    [height]="_photo.height"
+    [ngSrc]="_photo.src"
+    [width]="_photo.width"
+  />
+  <div appUiDialogFooter>
+    <button (click)="_dialogRef.close()" appUiButton variant="outline" type="button">
+      {{ 'common.close' | t }}
+    </button>
+  </div>
+</app-ui-dialog>

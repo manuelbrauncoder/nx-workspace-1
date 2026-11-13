@@ -16,6 +16,18 @@ export const routes: Routes = [
         loadChildren: () => import('./features/rsvp/rsvp.routes').then((m) => m.rsvpRoutes),
       },
       {
+        // The upload page of a guest, the QR code of their place card.
+        path: 'photos/:token',
+        data: { kind: 'guest' },
+        loadChildren: () => import('./features/upload/upload.routes').then((m) => m.uploadRoutes),
+      },
+      {
+        // The shared upload page of the photo stand.
+        path: 'stand/:token',
+        data: { kind: 'stand' },
+        loadChildren: () => import('./features/upload/upload.routes').then((m) => m.uploadRoutes),
+      },
+      {
         path: 'save-the-date/:token',
         loadChildren: () =>
           import('./features/save-the-date/save-the-date.routes').then((m) => m.saveTheDateRoutes),
@@ -36,6 +48,11 @@ export const routes: Routes = [
         path: 'events/:id/guests',
         canActivate: [authGuard],
         loadChildren: () => import('./features/guests/guests.routes').then((m) => m.guestsRoutes),
+      },
+      {
+        path: 'events/:id/photos',
+        canActivate: [authGuard],
+        loadChildren: () => import('./features/photos/photos.routes').then((m) => m.photosRoutes),
       },
       {
         path: 'events/:id/team',
