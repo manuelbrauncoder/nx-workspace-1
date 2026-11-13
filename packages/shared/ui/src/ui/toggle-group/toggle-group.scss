@@ -24,3 +24,10 @@
   color: var(--brand-foreground);
   font-weight: 800;
 }
+
+// The outline variant marks the selected option with Spartan's muted fill, which disappears on a
+// muted or white ground. Ink keeps it visible on any ground (about 15:1).
+:host([data-variant='outline']) .ui-toggle-group__item[data-state='on'] {
+  background: var(--foreground);
+  color: var(--background);
+}

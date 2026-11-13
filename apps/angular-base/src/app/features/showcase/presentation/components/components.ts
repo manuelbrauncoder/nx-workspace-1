@@ -16,6 +16,7 @@ import { UiIcon } from '@shared/ui/icon/icon';
 import { UI_ICON_NAMES } from '@shared/ui/icon/ui-icons';
 import { UiMenuImports } from '@shared/ui/menu/menu';
 import { UiNavMenu, UiNavMenuItem } from '@shared/ui/nav-menu/nav-menu';
+import { UiQrCode } from '@shared/ui/qr-code/qr-code';
 import { UiRichText } from '@shared/ui/rich-text/rich-text';
 import { UiSheet } from '@shared/ui/sheet/sheet';
 import { UiSkeleton } from '@shared/ui/skeleton/skeleton';
@@ -54,6 +55,7 @@ interface Message {
     UiRichText,
     UiSheet,
     UiSkeleton,
+    UiQrCode,
     UiSpinner,
     UiText,
     UiToggleGroup,

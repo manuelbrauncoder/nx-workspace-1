@@ -163,7 +163,7 @@ describe('HostAnswerDialog', () => {
     TestBed.resetTestingModule();
     const conflict = await render({}, failed(new Failure('conflict', 'Past')));
     expect(conflict.element.querySelector('app-failure-alert')?.textContent).toContain(
-      'Das Event ist vorbei oder die Liste ist voll.',
+      'Das Event ist vorbei, die Liste ist voll oder der Upload ist beendet.',
     );
   });
 

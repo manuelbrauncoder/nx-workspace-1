@@ -4,7 +4,7 @@ import nx from '@nx/eslint-plugin';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
-const UI_LIBRARIES = ['@spartan-ng/*', '@ng-icons/*', '@tiptap/*'];
+const UI_LIBRARIES = ['@spartan-ng/*', '@ng-icons/*', '@tiptap/*', 'qrcode'];
 
 /**
  * The presets of Nx and typescript-eslint are typed with the config type of typescript-eslint,

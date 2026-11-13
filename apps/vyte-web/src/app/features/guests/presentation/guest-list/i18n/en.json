@@ -22,7 +22,7 @@
   "addMany": "Paste a list",
   "export": "Export as CSV",
   "actionFailed": "The change did not work",
-  "pastConflict": "The event is over or the list is full. Reload the page and check it.",
+  "pastConflict": "That is not possible now: the event is over, the list is full or uploads have ended. Reload the page and check it.",
   "list": {
     "heading": "Guest list",
     "search": "Search by name",
@@ -88,7 +88,8 @@
     "edit": "Edit",
     "answer": "Record answer",
     "renew": "Renew link",
-    "remove": "Remove"
+    "remove": "Remove",
+    "renewPhoto": "Renew photo link"
   },
   "form": {
     "addHeading": "Add guest",
@@ -135,5 +136,11 @@
     "companionsDescription": "Up to {{ max }}.",
     "failed": "The answer could not be saved",
     "submit": "Save answer"
+  },
+  "renewPhoto": {
+    "heading": "New photo link for {{ name }}?",
+    "description": "The QR code of a place card printed already stops working, print the card again. Uploaded photos stay. Only while uploads are open.",
+    "confirm": "Create new photo link",
+    "done": "New photo link created for {{ name }}"
   }
 }

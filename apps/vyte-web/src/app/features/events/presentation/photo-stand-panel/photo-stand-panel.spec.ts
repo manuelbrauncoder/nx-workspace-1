@@ -1,5 +1,6 @@
 import { Component, signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { AppConfigService } from '@core/config/app-config';
 import { Failure } from '@core/failure/failure';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
@@ -54,6 +55,7 @@ describe('PhotoStandPanel', () => {
   async function render(event: Partial<VyteEvent> = {}, state: AsyncState = idle()) {
     TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         { provide: EventsStore, useValue: { ...store, photoStandState: signal(state) } },
         { provide: AppConfigService, useValue: { siteUrl: 'https://vyte.example.com' } },
         { provide: UiConfirmDialogService, useValue: { confirm } },
@@ -137,6 +139,16 @@ describe('PhotoStandPanel', () => {
       expect(element.querySelector('code')?.textContent?.trim()).toBe(ADDRESS);
       expect(element.textContent).toContain('Eingeschaltet');
       expect(buttonWith(element, 'Fotostation einschalten')).toBeUndefined();
+    });
+
+    it('links to the stand card on the print page and no longer explains printing', async () => {
+      const { element } = await render(on);
+
+      const link = Array.from(element.querySelectorAll('a')).find((candidate) =>
+        candidate.textContent?.includes('Karte drucken'),
+      );
+      expect(link?.getAttribute('href')).toBe('/events/e1/print?kind=stand');
+      expect(element.textContent).not.toContain('druckst du');
     });
 
     it('copies the address and confirms with a toast', async () => {

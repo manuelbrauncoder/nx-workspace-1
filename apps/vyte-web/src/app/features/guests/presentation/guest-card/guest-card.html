@@ -104,6 +104,10 @@
         <app-ui-icon name="refresh" />
         {{ 'guestList.card.renew' | t }}
       </button>
+      <button (triggered)="renewPhotoLink.emit()" appUiMenuItem type="button">
+        <app-ui-icon name="images" />
+        {{ 'guestList.card.renewPhoto' | t }}
+      </button>
       <button (triggered)="remove.emit()" appUiMenuItem variant="destructive" type="button">
         <app-ui-icon name="trash" />
         {{ 'guestList.card.remove' | t }}

@@ -35,6 +35,7 @@ export class GuestCard {
   readonly edit = output<void>();
   readonly answer = output<void>();
   readonly renewLink = output<void>();
+  readonly renewPhotoLink = output<void>();
   readonly remove = output<void>();
 
   private readonly _answerKey = computed(() => {

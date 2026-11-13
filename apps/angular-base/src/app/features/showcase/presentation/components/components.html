@@ -187,6 +187,17 @@
     </div>
   </app-showcase-section>
 
+  <app-showcase-section
+    [description]="'showcaseComponents.qrCode.description' | t"
+    heading="QR code"
+  >
+    <app-ui-qr-code
+      class="showcase-qr-code"
+      [label]="'showcaseComponents.qrCode.label' | t"
+      value="https://example.org/stand/demo"
+    />
+  </app-showcase-section>
+
   <app-showcase-section [description]="'showcaseComponents.sheet.description' | t" heading="Sheet">
     <button (click)="_sheetOpen.set(true)" appUiButton variant="outline" type="button">
       {{ 'showcaseComponents.sheet.open' | t }}

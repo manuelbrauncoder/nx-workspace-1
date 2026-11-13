@@ -13,6 +13,7 @@ describe('GuestsUseCase', () => {
     setResponse: vi.fn(),
     delete: vi.fn(),
     renewToken: vi.fn(),
+    renewPhotoToken: vi.fn(),
     exportUrl: vi.fn(),
   };
   const events = { getById: vi.fn() };
@@ -46,6 +47,7 @@ describe('GuestsUseCase', () => {
     ['setResponse', 'setResponse', ['e1', 'g1', { response: 'accepted', companions: 1 }]],
     ['delete', 'delete', ['e1', 'g1']],
     ['renewToken', 'renewToken', ['e1', 'g1']],
+    ['renewPhotoToken', 'renewPhotoToken', ['e1', 'g1']],
   ] as const)('passes %s through to the guests repository', (method, repositoryMethod, args) => {
     const result = of(undefined);
     guests[repositoryMethod].mockReturnValue(result);

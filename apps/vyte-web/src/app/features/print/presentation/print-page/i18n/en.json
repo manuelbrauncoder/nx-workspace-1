@@ -1,0 +1,48 @@
+{
+  "title": "Print",
+  "titleFor": "Print · {{ title }}",
+  "heading": "Print",
+  "back": "Back to the event",
+  "loading": "Loading …",
+  "loadFailed": "The event could not be loaded",
+  "kinds": {
+    "label": "What to print?",
+    "placeCards": "Place cards",
+    "stand": "Photo stand card"
+  },
+  "which": {
+    "label": "For whom?",
+    "all": "All guests",
+    "accepted": "Accepted only"
+  },
+  "summary": "{{ cards }} place cards",
+  "noneAccepted": "Nobody has accepted yet.",
+  "noGuests": "There is nobody on the guest list yet.",
+  "standSummary": "One A5 card to put on the tables or at the entrance.",
+  "standOff": "The photo stand is off.",
+  "standOffLink": "Turn it on on the page of the event",
+  "hints": {
+    "scale": "Choose “Actual size” or 100 % in the print dialog, so the QR codes fit.",
+    "cut": "Cut along the dashed lines.",
+    "fold": "Fold along the dotted line in the middle, the name then shows on both sides.",
+    "a5": "Choose the paper size A5 in the print dialog."
+  },
+  "print": "Print",
+  "preview": "Preview",
+  "sheet": "Sheet {{ number }} of {{ total }}",
+  "standSheet": "Photo stand card",
+  "card": {
+    "qr": "QR code to the upload page of {{ name }}",
+    "call": "Share your photos: scan the code"
+  },
+  "stand": {
+    "heading": "Share your photos of the evening",
+    "qr": "QR code to the upload page of the photo stand",
+    "call": "Scan with your camera, no account needed."
+  },
+  "summaryOne": "1 place card",
+  "sheetsOne": "on 1 A4 sheet, four per sheet.",
+  "sheets": "on {{ sheets }} A4 sheets, four per sheet.",
+  "loadingGuests": "Loading the guests …",
+  "guestsFailed": "The guests could not be loaded"
+}

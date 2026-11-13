@@ -1,0 +1,147 @@
+<!-- Outside the app shell, so the page brings its own main landmark. -->
+<main class="print-page" id="main" #main tabindex="-1">
+  <!-- Screen only: the way back, the choice and the button. Print shows the sheets alone. -->
+  <div class="print-page__controls">
+    <a class="print-page__back" [routerLink]="['/events', id()]" appUiButton variant="ghost">
+      <app-ui-icon name="arrowLeft" />
+      {{ 'printPage.back' | t }}
+    </a>
+    <h1 appUiText="h1">{{ 'printPage.heading' | t }}</h1>
+    @if (_store.event(); as event) {
+      <p class="print-page__event" appUiText="lead">{{ event.title }}</p>
+    }
+
+    <app-async-content
+      class="print-page__body"
+      [state]="_store.eventState()"
+      [failureHeading]="'printPage.loadFailed' | t"
+      [loadingLabel]="'printPage.loading' | t"
+      (retry)="_store.reload()"
+      retryable
+    >
+      <ng-template>
+        <div class="print-page__choice">
+          <span class="print-page__choice-label" id="print-page-kind" appUiText="small">
+            {{ 'printPage.kinds.label' | t }}
+          </span>
+          <app-ui-toggle-group
+            [(value)]="_kind"
+            [options]="_kinds()"
+            ariaLabelledby="print-page-kind"
+            variant="outline"
+          />
+        </div>
+
+        @if (_kind() === 'placeCards') {
+          <div class="print-page__choice">
+            <span class="print-page__choice-label" id="print-page-which" appUiText="small">
+              {{ 'printPage.which.label' | t }}
+            </span>
+            <app-ui-toggle-group
+              [(value)]="_which"
+              [options]="_whichOptions()"
+              ariaLabelledby="print-page-which"
+              variant="outline"
+            />
+          </div>
+        }
+
+        <!-- One polite region for both kinds, so every new choice tells what will be printed. -->
+        <p class="print-page__summary" aria-live="polite">
+          {{ _summary() }}
+          @if (_kind() === 'stand' && !_standUrl()) {
+            <a class="print-page__link" [routerLink]="['/events', id()]">{{
+              'printPage.standOffLink' | t
+            }}</a>
+          }
+        </p>
+
+        @if (_kind() === 'placeCards' && _store.guestsState().failure; as failure) {
+          <app-failure-alert
+            [failure]="failure"
+            [heading]="'printPage.guestsFailed' | t"
+            (retry)="_store.reload()"
+            retryable
+          />
+        }
+
+        @if (_kind() === 'placeCards' && _cards().length > 0) {
+          <ul class="print-page__hints">
+            <li>{{ 'printPage.hints.scale' | t }}</li>
+            <li>{{ 'printPage.hints.cut' | t }}</li>
+            <li>{{ 'printPage.hints.fold' | t }}</li>
+          </ul>
+        } @else if (_kind() === 'stand' && _standUrl()) {
+          <ul class="print-page__hints">
+            <li>{{ 'printPage.hints.scale' | t }}</li>
+            <li>{{ 'printPage.hints.a5' | t }}</li>
+          </ul>
+        }
+
+        @if (
+          (_kind() === 'placeCards' && _cards().length > 0) || (_kind() === 'stand' && _standUrl())
+        ) {
+          <button class="print-page__print" (click)="_print()" appUiButton type="button">
+            {{ 'printPage.print' | t }}
+          </button>
+          <h2 class="print-page__preview-heading" id="print-page-preview" appUiText="h3">
+            {{ 'printPage.preview' | t }}
+          </h2>
+        }
+      </ng-template>
+    </app-async-content>
+  </div>
+
+  @if (_store.event(); as event) {
+    <!-- The sheets: a preview on screen, the only thing on paper. -->
+    <!-- Focusable, so keyboard users can scroll a sheet wider than the screen (Safari). -->
+    <div class="print-page__sheets" aria-labelledby="print-page-preview" role="region" tabindex="0">
+      @if (_kind() === 'placeCards') {
+        @for (sheet of _sheets(); track $index; let sheetIndex = $index) {
+          <section
+            class="print-page__sheet"
+            [attr.aria-label]="
+              'printPage.sheet' | t: { number: sheetIndex + 1, total: _sheets().length }
+            "
+          >
+            @for (card of sheet; track card.id) {
+              <article class="place-card">
+                <!-- The top half stands on its head, so the name reads from the other side too. -->
+                <div class="place-card__half place-card__half--back" aria-hidden="true">
+                  <p class="place-card__name">{{ card.name }}</p>
+                </div>
+                <div class="place-card__half">
+                  <p class="place-card__name">{{ card.name }}</p>
+                  <app-ui-qr-code
+                    class="place-card__qr"
+                    [label]="'printPage.card.qr' | t: { name: card.name }"
+                    [value]="card.url"
+                  />
+                  <p class="place-card__call">{{ 'printPage.card.call' | t }}</p>
+                  <p class="place-card__event">{{ event.title }}</p>
+                </div>
+              </article>
+            }
+          </section>
+        }
+      } @else if (_standUrl(); as url) {
+        <section
+          class="print-page__sheet print-page__sheet--a5"
+          [attr.aria-label]="'printPage.standSheet' | t"
+        >
+          <article class="stand-card">
+            <p class="stand-card__event">{{ event.title }}</p>
+            <p class="stand-card__heading">{{ 'printPage.stand.heading' | t }}</p>
+            <app-ui-qr-code
+              class="stand-card__qr"
+              [label]="'printPage.stand.qr' | t"
+              [value]="url"
+            />
+            <p class="stand-card__call">{{ 'printPage.stand.call' | t }}</p>
+            <p class="stand-card__url">{{ url }}</p>
+          </article>
+        </section>
+      }
+    </div>
+  }
+</main>

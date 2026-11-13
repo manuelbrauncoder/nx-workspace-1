@@ -1,0 +1,14 @@
+<!-- `crispEdges` keeps neighbouring modules from showing hairline gaps when scaled. -->
+<svg
+  class="ui-qr-code"
+  [attr.aria-label]="label()"
+  [attr.viewBox]="_code().viewBox"
+  role="img"
+  shape-rendering="crispEdges"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- White in every theme: scanners need dark modules on a light ground. -->
+  <rect fill="#fff" height="100%" width="100%" />
+  <!-- Black in every theme as well: light modules on a dark ground do not scan everywhere. -->
+  <path [attr.d]="_code().path" fill="#000" />
+</svg>

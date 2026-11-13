@@ -78,6 +78,7 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 | `UiNavMenu`              | `app-ui-nav-menu`                             | `@shared/ui/nav-menu/nav-menu`                     |
 | `UiSheet`                | `app-ui-sheet`                                | `@shared/ui/sheet/sheet`                           |
 | `UiDialog`               | `app-ui-dialog`                               | `@shared/ui/dialog/dialog`                         |
+| `UiQrCode`               | `app-ui-qr-code`                              | `@shared/ui/qr-code/qr-code`                       |
 | `UiDialogService`        | `open()`                                      | `@shared/ui/dialog/dialog.service`                 |
 | `UiConfirmDialogService` | `confirm()`                                   | `@shared/ui/confirm-dialog/confirm-dialog.service` |
 | `UiToastService`         | `success()`, `info()`, `warning()`, `error()` | `@shared/ui/toast/toast.service`                   |
@@ -487,9 +488,21 @@ A row of buttons of which exactly one is selected, outside a form. In a Signal F
 
 - `options` are `{ value, label, disabled? }`, generic over the value type
 - `value` is two-way bound. Clicking the selected option again keeps it, so the value never becomes `null` by a click
-- `variant` is `default`, `outline` or `brand` (the selected option in the brand color of the app)
+- `variant` is `default`, `outline` (the selected option in ink, so it stays visible on a white or muted ground) or `brand` (the selected option in the brand color of the app)
 - `fullWidth` lets the options share the width; the app sets their height through `--ui-toggle-group-item-height`
 - The group needs an accessible name: `ariaLabel`, or `ariaLabelledby` with the id of a visible heading
+
+### QR code
+
+A QR code as an SVG: sharp in print and rendered the same on the server and in the browser. The library `qrcode` is imported only here, like Spartan (ESLint bans it for apps and `core`).
+
+```html
+<app-ui-qr-code [value]="standUrl" label="QR-Code der Upload-Seite" />
+```
+
+- `label` is required: the SVG is an image with that name
+- It is as wide as its container and draws black on white in every theme, with the quiet zone of four modules scanners need: light modules on a dark ground do not scan everywhere
+- `errorCorrection` is `M` (about 15 % may be damaged) by default, `L`, `Q` and `H` are the others
 
 ## Adding a wrapper
 

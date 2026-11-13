@@ -28,3 +28,8 @@
     gap: 0.5rem;
   }
 }
+
+// A QR code is as wide as its container.
+.showcase-qr-code {
+  width: 10rem;
+}

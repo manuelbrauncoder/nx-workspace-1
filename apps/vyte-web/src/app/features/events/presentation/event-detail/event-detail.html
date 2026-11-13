@@ -169,6 +169,15 @@
             {{ 'eventDetail.photos' | t }}
           </a>
           <a
+            [routerLink]="['/events', event.id, 'print']"
+            [attr.aria-label]="'eventDetail.printNamed' | t: { title: event.title }"
+            appUiButton
+            variant="outline"
+          >
+            <app-ui-icon name="printer" />
+            {{ 'eventDetail.print' | t }}
+          </a>
+          <a
             [routerLink]="['/events', event.id, 'team']"
             [attr.aria-label]="'eventDetail.teamNamed' | t: { title: event.title }"
             appUiButton

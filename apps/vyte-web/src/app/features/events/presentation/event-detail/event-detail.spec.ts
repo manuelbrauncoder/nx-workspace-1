@@ -124,6 +124,17 @@ describe('EventDetail', () => {
     expect(element.querySelector('app-event-delete-button')).not.toBeNull();
   });
 
+  it('links to the print page, also for an editor and after the event', async () => {
+    for (const event of [EVENT, { ...EVENT, role: 'editor' as const }, { ...EVENT, past: true }]) {
+      TestBed.resetTestingModule();
+      const { element } = await render(success(), event);
+
+      const link = element.querySelector('a[href="/events/e1/print"]');
+      expect(link?.textContent).toContain('Drucken');
+      expect(link?.getAttribute('aria-label')).toBe('Drucken: Sommerfest');
+    }
+  });
+
   it('lets an editor edit but not delete', async () => {
     const { element } = await render(success(), { ...EVENT, role: 'editor' });
 
