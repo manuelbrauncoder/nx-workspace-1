@@ -18,7 +18,6 @@ import { injectPageSeo } from '@core/seo/inject-page-seo';
 import { AsyncContent } from '@shared/async-content/async-content';
 import { FailureAlert } from '@shared/failure-alert/failure-alert';
 import { UiAlert } from '@shared/ui/alert/alert';
-import { UiBreadcrumb, UiBreadcrumbItem } from '@shared/ui/breadcrumb/breadcrumb';
 import { UiButton } from '@shared/ui/button/button';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
 import { UiIcon } from '@shared/ui/icon/icon';
@@ -41,7 +40,6 @@ import { MemberCard } from '../member-card/member-card';
     AsyncContent,
     FailureAlert,
     UiAlert,
-    UiBreadcrumb,
     UiButton,
     UiIcon,
     UiText,
@@ -76,18 +74,6 @@ export class TeamPage {
   // Revoking runs through the same state in the store, the button must not spin then.
   private readonly _creating = signal(false);
   private readonly _leaving = signal(false);
-
-  private readonly _breadcrumb = computed((): UiBreadcrumbItem[] => {
-    const event = this._store.event();
-    const eventPath = `/events/${this.id()}`;
-    return [
-      { labelKey: 'events.breadcrumb', path: '/events' },
-      event
-        ? { label: event.title, path: eventPath }
-        : { labelKey: 'teamPage.event', path: eventPath },
-      { labelKey: 'teamPage.heading' },
-    ];
-  });
 
   constructor() {
     effect(() => this._store.select(this.id()));

@@ -5,8 +5,8 @@ import { GuestsStore } from './application/guests.store';
 import { GuestsUseCase } from './domain/guests.usecase';
 import { guestListI18n } from './presentation/guest-list/guest-list.i18n';
 
-// Mounted at `events/:id/guests` with `authGuard` in `app.routes.ts`. The empty paths below
-// inherit the `id` of that route.
+// Mounted at `guests` below the frame of an event (`events/:id`, with `authGuard`) in
+// `app.routes.ts`. The routes below inherit its `id` (`paramsInheritanceStrategy: 'always'`).
 export const guestsRoutes: Routes = [
   {
     path: '',

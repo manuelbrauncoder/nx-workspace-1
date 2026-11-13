@@ -11,28 +11,24 @@
   display: block;
 }
 
-// The live link as a small Konfetti card, as the invite links of the team.
+// The live link on a quiet ground inside the panel of the overview.
 .save-the-date__link {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.5rem;
-  border: var(--card-border);
-  background: var(--card);
-  border-radius: var(--card-radius);
-  box-shadow: var(--card-shadow);
+  padding: 1rem;
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--muted);
 }
 
 .save-the-date__state {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
   align-self: flex-start;
-  padding: 0.25rem 0.75rem;
-  border: var(--chip-border);
-  border-radius: 999px;
-  background: var(--brand);
-  color: var(--brand-foreground);
+  gap: 0.5rem;
+  font-weight: 600;
+  // The word and its check mark in the green of an accepted answer, above 5:1 on the quiet ground.
+  color: var(--status-yes);
 }
 
 // The address is long and has no spaces, it may break anywhere.

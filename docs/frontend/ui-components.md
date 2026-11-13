@@ -81,6 +81,7 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 | `UiQrCode`               | `app-ui-qr-code`                              | `@shared/ui/qr-code/qr-code`                       |
 | `UiListImports`          | `ul[appUiList]`, `li[appUiListItem]`          | `@shared/ui/list/list`                             |
 | `UiPagination`           | `app-ui-pagination`                           | `@shared/ui/pagination/pagination`                 |
+| `UiTabNav`               | `app-ui-tab-nav`                              | `@shared/ui/tab-nav/tab-nav`                       |
 | `UiDialogService`        | `open()`                                      | `@shared/ui/dialog/dialog.service`                 |
 | `UiConfirmDialogService` | `confirm()`                                   | `@shared/ui/confirm-dialog/confirm-dialog.service` |
 | `UiToastService`         | `success()`, `info()`, `warning()`, `error()` | `@shared/ui/toast/toast.service`                   |
@@ -531,6 +532,18 @@ Pages of a long list as links. The page lives in a query parameter of the curren
 - `label` names the navigation, so two on one page stay apart
 - The first and last page, the current one and its neighbours are links, the rest a gap, at most seven entries so it fits a phone
 - A filter that changes the list sets the page back to 1 by removing the parameter, `queryParamsHandling: 'merge'` keeps the other parameters
+
+### Tab nav
+
+Tabs between the pages of one thing, e.g. overview, guests and team of an event. Each tab is a link, the current one gets `aria-current="page"` and an ink line (bold text, 3px line). On a phone the row scrolls sideways.
+
+```html
+<app-ui-tab-nav [items]="_tabs()" label="Bereiche des Events" />
+```
+
+- `items` are `{ labelKey, path, exact? }`, `exact` for a tab whose path is the start of the others (the overview)
+- `label` names the navigation
+- The page below the tabs is the child route of the page that holds them, so the tabs stay while the user switches
 
 ## Adding a wrapper
 

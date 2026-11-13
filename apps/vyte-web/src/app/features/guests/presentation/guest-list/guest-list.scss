@@ -1,29 +1,14 @@
 @use 'styles/abstracts' as *;
 
-// Calm workspace page: 1rem from the breadcrumb to the heading, 2rem from the heading to the
-// content, 1rem between the parts of the list. The note under the counts belongs to them, 0.5rem.
+// A tab below the frame of the event, which brings title and spacing above. 1rem between the
+// parts of the list, the note under the counts belongs to them, 0.5rem.
 
 :host {
   display: block;
 }
 
-.guest-list__heading {
-  margin-top: 1rem;
-
-  // A long word in a title must not push the page wider than the phone.
-  h1,
-  .guest-list__event {
-    overflow-wrap: anywhere;
-  }
-}
-
-.guest-list__event {
-  margin-top: 0.25rem;
-}
-
 .guest-list {
   display: block;
-  margin-top: 2rem;
 }
 
 .guest-list__past {

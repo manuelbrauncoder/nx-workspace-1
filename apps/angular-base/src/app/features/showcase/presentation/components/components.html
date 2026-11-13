@@ -198,6 +198,13 @@
     />
   </app-showcase-section>
 
+  <app-showcase-section
+    [description]="'showcaseComponents.tabNav.description' | t"
+    heading="Tab nav"
+  >
+    <app-ui-tab-nav [items]="_tabs" [label]="'showcaseComponents.tabNav.label' | t" />
+  </app-showcase-section>
+
   <app-showcase-section [description]="'showcaseComponents.list.description' | t" heading="List">
     <ul appUiList>
       <li appUiListItem>{{ 'showcaseComponents.list.item1' | t }}</li>

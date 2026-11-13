@@ -1,7 +1,12 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideClientHydration } from '@angular/platform-browser';
-import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withInMemoryScrolling,
+  withRouterConfig,
+} from '@angular/router';
 import { APP_NAME } from '@core/app-name';
 import { APP_VERSION } from '@core/app-version';
 import { provideAppConfig } from '@core/config/provide-app-config';
@@ -31,6 +36,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withComponentInputBinding(),
+      // The pages of one event sit below its frame (`events/:id`) and read its `id` as input.
+      withRouterConfig({ paramsInheritanceStrategy: 'always' }),
       // A new page starts at the top, going back restores the position, `#fragment` links scroll.
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
     ),

@@ -1,10 +1,8 @@
 {
   "title": "Event",
-  "past": "Vorbei",
   "facts": {
-    "when": "Wann",
-    "where": "Wo",
-    "deadline": "Antworten bis"
+    "deadline": "Antworten bis",
+    "address": "Adresse"
   },
   "map": "In Karte öffnen",
   "mapNamed": "In Karte öffnen: {{ address }}, öffnet OpenStreetMap in einem neuen Tab",
@@ -17,16 +15,13 @@
     "declined": "Abgesagt",
     "pending": "Offen",
     "atMost": "Höchstens",
-    "manage": "Gäste verwalten"
+    "manage": "Zur Gästeliste"
   },
   "images": {
     "heading": "Bilder",
     "alt": "Bild {{ number }}",
     "open": "Bild {{ number }} in neuem Tab öffnen"
   },
-  "deleteFailed": "Das Event konnte nicht gelöscht werden",
-  "team": "Team",
-  "teamNamed": "Team: {{ title }}",
   "saveTheDate": {
     "heading": "Save the date",
     "description": "Ein öffentlicher Link, der den Termin ankündigt, bevor die Einladungen rausgehen. Er zeigt Titel, Datum, Ort und deine Notiz, nie die Adresse oder Namen. Gut für einen Gruppenchat.",
@@ -100,8 +95,7 @@
     "conflict": "Das Event ist vorbei oder der Upload ist beendet. Die Fotostation lässt sich nur noch abschalten.",
     "printCard": "Karte drucken"
   },
-  "photos": "Fotos",
-  "photosNamed": "Fotos: {{ title }}",
-  "print": "Drucken",
-  "printNamed": "Drucken: {{ title }}"
+  "share": "Teilen",
+  "description": "Beschreibung",
+  "details": "Details"
 }

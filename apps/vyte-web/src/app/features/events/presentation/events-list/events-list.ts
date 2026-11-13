@@ -18,4 +18,8 @@ import { EventCard } from '../event-card/event-card';
 })
 export class EventsList {
   private readonly _store = inject(EventsStore);
+
+  constructor() {
+    this._store.loadList();
+  }
 }
