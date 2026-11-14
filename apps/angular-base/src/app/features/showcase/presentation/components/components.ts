@@ -23,6 +23,7 @@ import { UiRichText } from '@shared/ui/rich-text/rich-text';
 import { UiSheet } from '@shared/ui/sheet/sheet';
 import { UiSkeleton } from '@shared/ui/skeleton/skeleton';
 import { UiSpinner } from '@shared/ui/spinner/spinner';
+import { UiTabNav, UiTabNavItem } from '@shared/ui/tab-nav/tab-nav';
 import { UiText } from '@shared/ui/text/text';
 import { UiToastService } from '@shared/ui/toast/toast.service';
 import { UiToggleGroup } from '@shared/ui/toggle-group/toggle-group';
@@ -61,6 +62,7 @@ interface Message {
     UiSkeleton,
     UiQrCode,
     UiSpinner,
+    UiTabNav,
     UiText,
     UiToggleGroup,
   ],
@@ -110,6 +112,12 @@ export class Components {
         { path: '/showcase/components', labelKey: 'showcaseComponents.navMenu.components' },
       ],
     },
+  ];
+
+  private readonly _tabs: UiTabNavItem[] = [
+    { path: '/showcase/components', labelKey: 'showcaseComponents.navMenu.components' },
+    { path: '/showcase/forms', labelKey: 'showcaseComponents.navMenu.forms' },
+    { path: '/notes', labelKey: 'showcaseComponents.navMenu.notes' },
   ];
 
   private readonly _loading = signal(false);

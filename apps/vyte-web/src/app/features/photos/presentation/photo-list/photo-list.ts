@@ -1,20 +1,10 @@
-import {
-  Component,
-  computed,
-  effect,
-  ElementRef,
-  inject,
-  input,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { Component, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { I18nService } from '@core/i18n/i18n.service';
 import { formatLocalDate } from '@core/i18n/local-date';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { injectPageSeo } from '@core/seo/inject-page-seo';
 import { AsyncContent } from '@shared/async-content/async-content';
 import { FailureAlert } from '@shared/failure-alert/failure-alert';
-import { UiBreadcrumb, UiBreadcrumbItem } from '@shared/ui/breadcrumb/breadcrumb';
 import { UiButton } from '@shared/ui/button/button';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
 import { UiDialogService } from '@shared/ui/dialog/dialog.service';
@@ -41,7 +31,6 @@ const EAGER_PHOTOS = 6;
     TranslatePipe,
     AsyncContent,
     FailureAlert,
-    UiBreadcrumb,
     UiButton,
     UiEmpty,
     UiIcon,
@@ -65,18 +54,6 @@ export class PhotoList {
   private readonly _eager = EAGER_PHOTOS;
   /** The photo whose hiding or showing is being saved, so a second press does not repeat it. */
   private readonly _saving = signal<string | undefined>(undefined);
-
-  private readonly _breadcrumb = computed((): UiBreadcrumbItem[] => {
-    const event = this._store.event();
-    const eventPath = `/events/${this.id()}`;
-    return [
-      { labelKey: 'events.breadcrumb', path: '/events' },
-      event
-        ? { label: event.title, path: eventPath }
-        : { labelKey: 'photoList.event', path: eventPath },
-      { labelKey: 'photoList.heading' },
-    ];
-  });
 
   constructor() {
     effect(() => this._store.select(this.id()));

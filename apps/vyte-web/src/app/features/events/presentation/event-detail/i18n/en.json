@@ -1,10 +1,8 @@
 {
   "title": "Event",
-  "past": "Over",
   "facts": {
-    "when": "When",
-    "where": "Where",
-    "deadline": "Answers until"
+    "deadline": "Answers until",
+    "address": "Address"
   },
   "map": "Open in map",
   "mapNamed": "Open in map: {{ address }}, opens OpenStreetMap in a new tab",
@@ -17,16 +15,13 @@
     "declined": "Declined",
     "pending": "Open",
     "atMost": "At most",
-    "manage": "Manage guests"
+    "manage": "Go to the guest list"
   },
   "images": {
     "heading": "Images",
     "alt": "Image {{ number }}",
     "open": "Open image {{ number }} in a new tab"
   },
-  "deleteFailed": "The event could not be deleted",
-  "team": "Team",
-  "teamNamed": "Team: {{ title }}",
   "saveTheDate": {
     "heading": "Save the date",
     "description": "A public link that announces the date before the invitations go out. It shows title, date, place and your note, never the address or names. Good for a group chat.",
@@ -100,8 +95,7 @@
     "conflict": "The event is over or uploads have ended. The photo stand can only be turned off.",
     "printCard": "Print card"
   },
-  "photos": "Photos",
-  "photosNamed": "Photos: {{ title }}",
-  "print": "Print",
-  "printNamed": "Print: {{ title }}"
+  "share": "Share",
+  "description": "Description",
+  "details": "Details"
 }

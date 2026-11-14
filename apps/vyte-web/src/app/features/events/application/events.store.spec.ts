@@ -127,6 +127,7 @@ describe('EventsStore', () => {
       providers: [{ provide: EventsUseCase, useValue: useCase }, EventsStore],
     });
     store = TestBed.inject(EventsStore);
+    store.loadList();
     await settle();
   });
 
@@ -355,6 +356,30 @@ describe('EventsStore', () => {
       store.select('e2');
 
       expect(store.photoStandState().loadingState).toBe('idle');
+    });
+  });
+
+  describe('without loadList()', () => {
+    it('does not request the list, also not when an event is selected', async () => {
+      TestBed.resetTestingModule();
+      const fake = new FakeEventsUseCase();
+      const getAll = vi.spyOn(fake, 'getAll');
+      TestBed.configureTestingModule({
+        providers: [{ provide: EventsUseCase, useValue: fake }, EventsStore],
+      });
+      const lazy = TestBed.inject(EventsStore);
+      lazy.select('e1');
+      await settle();
+
+      expect(getAll).not.toHaveBeenCalled();
+      expect(lazy.events()).toEqual([]);
+      expect(lazy.selected()?.id).toBe('e1');
+
+      lazy.loadList();
+      await settle();
+
+      expect(getAll).toHaveBeenCalledTimes(1);
+      expect(lazy.events()).toHaveLength(3);
     });
   });
 });

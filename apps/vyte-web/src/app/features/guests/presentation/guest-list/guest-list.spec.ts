@@ -158,21 +158,15 @@ describe('GuestList', () => {
     expect(store.select).toHaveBeenCalledWith('e1');
   });
 
-  it('shows the heading, the event title and a breadcrumb to the event', async () => {
+  it('has no heading, breadcrumb or event lead of its own, the frame of the event brings them', async () => {
     const { element } = await render();
 
-    expect(element.querySelector('h1')?.textContent?.trim()).toBe('Gäste');
-    expect(element.querySelector('.guest-list__event')?.textContent?.trim()).toBe('Sommerfest');
-    const breadcrumb = element.querySelector('nav[aria-label="Navigationspfad"]')!;
-    const links = Array.from(breadcrumb.querySelectorAll('a'), (link) => link.getAttribute('href'));
-    expect(links).toEqual(['/events', '/events/e1']);
-    expect(breadcrumb.querySelector('a[href="/events/e1"]')?.textContent?.trim()).toBe(
-      'Sommerfest',
-    );
-    expect(breadcrumb.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('Gäste');
+    expect(element.querySelector('h1')).toBeNull();
+    expect(element.querySelector('nav[aria-label="Navigationspfad"]')).toBeNull();
+    expect(element.querySelector('.guest-list__event')).toBeNull();
   });
 
-  it('keeps the heading and a generic breadcrumb while loading', async () => {
+  it('has no heading of its own while loading', async () => {
     const { element } = await render({
       event: undefined,
       eventState: loading(),
@@ -180,9 +174,8 @@ describe('GuestList', () => {
       guestsState: loading(),
     });
 
-    expect(element.querySelector('h1')?.textContent?.trim()).toBe('Gäste');
-    expect(element.querySelector('nav a[href="/events/e1"]')?.textContent?.trim()).toBe('Event');
-    expect(element.querySelector('.guest-list__event')).toBeNull();
+    expect(element.querySelector('h1')).toBeNull();
+    expect(element.querySelector('nav')).toBeNull();
     expect(element.querySelector('app-guest-row')).toBeNull();
   });
 

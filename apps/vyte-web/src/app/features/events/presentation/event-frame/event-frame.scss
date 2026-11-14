@@ -1,0 +1,81 @@
+@use 'styles/abstracts' as *;
+
+// Calm workspace frame: title and actions side by side from `sm` on, the tabs as a line below,
+// 2rem from the tabs to the page of the tab.
+
+:host {
+  display: block;
+}
+
+.event-frame__header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.event-frame__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.event-frame__title {
+  display: flex;
+  // Small enough that a phone keeps the actions next to a short title.
+  flex: 1 1 12rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+
+  // A long word in a title must not push the page wider than the phone.
+  h1 {
+    overflow-wrap: anywhere;
+  }
+}
+
+.event-frame__facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.25rem;
+  color: var(--muted-foreground);
+}
+
+.event-frame__fact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.event-frame__place {
+  overflow-wrap: anywhere;
+}
+
+// A quiet state, no chip with an ink border in the workspace.
+.event-frame__past {
+  padding: 0.125rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.event-frame__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  // Level with the first line of the title.
+  margin-top: 0.25rem;
+}
+
+.event-frame__failure {
+  display: block;
+  margin-top: 1.5rem;
+}
+
+.event-frame__page {
+  margin-top: 2rem;
+}

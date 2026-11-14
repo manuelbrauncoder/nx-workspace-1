@@ -23,7 +23,6 @@ import { AsyncContent } from '@shared/async-content/async-content';
 import { FailureAlert } from '@shared/failure-alert/failure-alert';
 import { FormText } from '@shared/form-controls/form-text/form-text';
 import { UiAlert } from '@shared/ui/alert/alert';
-import { UiBreadcrumb, UiBreadcrumbItem } from '@shared/ui/breadcrumb/breadcrumb';
 import { UiButton } from '@shared/ui/button/button';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
 import { UiDialogService } from '@shared/ui/dialog/dialog.service';
@@ -70,7 +69,6 @@ import { HostAnswerDialog, HostAnswerDialogData } from '../host-answer-dialog/ho
     FailureAlert,
     FormText,
     UiAlert,
-    UiBreadcrumb,
     UiButton,
     UiEmpty,
     UiIcon,
@@ -143,17 +141,6 @@ export class GuestList {
   ]);
 
   private readonly _exportUrl = computed(() => this._store.exportUrl(this._i18n.language()));
-
-  private readonly _breadcrumb = computed((): UiBreadcrumbItem[] => {
-    const event = this._store.event();
-    return [
-      { labelKey: 'events.breadcrumb', path: '/events' },
-      event
-        ? { label: event.title, path: `/events/${this.id()}` }
-        : { labelKey: 'guestList.event', path: `/events/${this.id()}` },
-      { labelKey: 'guestList.heading' },
-    ];
-  });
 
   constructor() {
     effect(() => this._store.select(this.id()));

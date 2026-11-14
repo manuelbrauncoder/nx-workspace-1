@@ -60,6 +60,18 @@
     },
     "counts": {
       "summary": "Coming: {{ coming }} · Open: {{ pending }}"
+    },
+    "frame": {
+      "title": "Event",
+      "tabs": "Sections of the event",
+      "overview": "Overview",
+      "guests": "Guests",
+      "team": "Team",
+      "photos": "Photos",
+      "past": "Over",
+      "more": "More actions: {{ title }}",
+      "print": "Print",
+      "deleteFailed": "The event could not be deleted"
     }
   }
 }

@@ -1,0 +1,92 @@
+@let event = _store.selected();
+<header class="event-frame__header">
+  <div class="event-frame__top">
+    <div class="event-frame__title">
+      <!-- Outside of the loaded event, so the page has its heading while loading and after a failure. -->
+      <h1 appUiText="page">{{ event?.title ?? ('events.frame.title' | t) }}</h1>
+      @if (event) {
+        <ul class="event-frame__facts">
+          <li class="event-frame__fact">
+            <app-ui-icon name="calendar" />
+            <app-event-when [event]="event" />
+          </li>
+          @if (event.locationName) {
+            <li class="event-frame__fact">
+              <app-ui-icon name="mapPin" />
+              <span class="event-frame__place">{{ event.locationName }}</span>
+            </li>
+          }
+          @if (event.past) {
+            <li class="event-frame__past" appUiText="small">{{ 'events.frame.past' | t }}</li>
+          }
+        </ul>
+      }
+    </div>
+
+    @if (event) {
+      <div class="event-frame__actions">
+        @if (!event.past) {
+          <a
+            [routerLink]="['/events', event.id, 'edit']"
+            [attr.aria-label]="'events.editNamed' | t: { title: event.title }"
+            appUiButton
+            variant="outline"
+            size="sm"
+          >
+            <app-ui-icon name="pencil" />
+            {{ 'events.edit' | t }}
+          </a>
+        }
+        <button
+          [appUiMenuTrigger]="more"
+          [attr.aria-label]="'events.frame.more' | t: { title: event.title }"
+          appUiButton
+          variant="outline"
+          size="icon-sm"
+          type="button"
+          align="end"
+        >
+          <app-ui-icon name="ellipsis" />
+        </button>
+        <ng-template #more>
+          <app-ui-menu class="w-56">
+            <app-ui-menu-group>
+              <button (triggered)="_print()" appUiMenuItem type="button">
+                <app-ui-icon name="printer" />
+                {{ 'events.frame.print' | t }}
+              </button>
+              @if (event.role === 'owner') {
+                <button
+                  (triggered)="_remove(event.title)"
+                  appUiMenuItem
+                  variant="destructive"
+                  type="button"
+                >
+                  <app-ui-icon name="trash" />
+                  {{ 'events.delete.label' | t }}
+                </button>
+              }
+            </app-ui-menu-group>
+          </app-ui-menu>
+        </ng-template>
+      </div>
+    }
+  </div>
+
+  <!-- Not for an event that does not exist: its tabs would lead nowhere. -->
+  @if (_store.detailState().loadingState !== 'failure') {
+    <app-ui-tab-nav class="event-frame__tabs" [items]="_tabs()" [label]="'events.frame.tabs' | t" />
+  }
+</header>
+
+@if (_store.mutationState().failure; as failure) {
+  <app-failure-alert
+    class="event-frame__failure"
+    [failure]="failure"
+    [heading]="'events.frame.deleteFailed' | t"
+  />
+}
+
+<div class="event-frame__page">
+  <router-outlet />
+</div>

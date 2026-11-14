@@ -1,29 +1,14 @@
 @use 'styles/abstracts' as *;
 
-// Spacing as on the event pages: 1rem from the breadcrumb to the heading, 2rem from the heading
-// to the content, 1rem from a section heading to its content.
+// A tab below the frame of the event, which brings title and spacing above. 1rem from a section
+// heading to its content.
 
 :host {
   display: block;
 }
 
-.photo-list__heading {
-  margin-top: 1rem;
-
-  // A long word in a title must not push the page wider than the phone.
-  h1,
-  .photo-list__event {
-    overflow-wrap: anywhere;
-  }
-}
-
-.photo-list__event {
-  margin-top: 0.25rem;
-}
-
 .photo-list {
   display: block;
-  margin-top: 2rem;
 }
 
 .photo-list__failure,

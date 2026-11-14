@@ -1,15 +1,12 @@
-import { signal, WritableSignal } from '@angular/core';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { AppConfigService } from '@core/config/app-config';
 import { Failure } from '@core/failure/failure';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
 import { AsyncState, failed, idle, loading, success } from '@core/state/async-state';
-import { UiToastService } from '@shared/ui/toast/toast.service';
 import { EventsStore } from '../../application/events.store';
 import { VyteEvent } from '../../domain/event';
-import { EventDeleteButton } from '../event-delete-button/event-delete-button';
 import { EventDetail } from './event-detail';
 import { eventDetailI18n } from './event-detail.i18n';
 
@@ -44,8 +41,6 @@ const EVENT = {
 
 describe('EventDetail', () => {
   const select = vi.fn();
-  const remove = vi.fn();
-  const toast = { success: vi.fn() };
 
   beforeEach(() => vi.resetAllMocks());
 
@@ -57,7 +52,6 @@ describe('EventDetail', () => {
           provide: EventsStore,
           useValue: {
             select,
-            remove,
             selected: signal(event),
             detailState: signal(state),
             mutationState: signal(idle()),
@@ -66,144 +60,136 @@ describe('EventDetail', () => {
           },
         },
         { provide: AppConfigService, useValue: { siteUrl: 'https://vyte.example.com' } },
-        { provide: UiToastService, useValue: toast },
       ],
     });
     await loadI18nScopes(eventDetailI18n);
     const fixture = TestBed.createComponent(EventDetail);
-    fixture.componentRef.setInput('id', 'e1');
     await fixture.whenStable();
-    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    const mutationState = TestBed.inject(EventsStore)
-      .mutationState as unknown as WritableSignal<AsyncState>;
-    return { fixture, element: fixture.nativeElement as HTMLElement, navigate, mutationState };
+    return fixture.nativeElement as HTMLElement;
   }
 
-  it('selects the event of the route', async () => {
+  it('leaves selecting the event to the frame', async () => {
     await render(loading());
 
-    expect(select).toHaveBeenCalledWith('e1');
+    expect(select).not.toHaveBeenCalled();
   });
 
-  it('shows when and where in the zone of the event, with a link to the map', async () => {
-    const { element } = await render(success(), EVENT);
+  it('has no heading, breadcrumb or actions of its own', async () => {
+    const element = await render(success(), EVENT);
 
-    expect(element.querySelector('h1')?.textContent).toBe('Sommerfest');
-    expect(element.textContent).toContain('So., 14. März 2027, 19:00 Uhr');
+    expect(element.querySelector('h1')).toBeNull();
+    expect(element.querySelector('nav')).toBeNull();
+    expect(element.querySelector('a[href="/events/e1/edit"]')).toBeNull();
+    expect(element.querySelector('a[href="/events/e1/print"]')).toBeNull();
+  });
+
+  it('shows address with a link to the map and the deadline in the zone of the event', async () => {
+    const element = await render(success(), EVENT);
+
+    expect(element.querySelector('h2#event-detail-details')?.textContent?.trim()).toBe('Details');
     expect(element.textContent).toContain('Mo., 1. März 2027');
-    const map = element.querySelector('a[target="_blank"]');
+    const map = element.querySelector('.event-detail__map');
     expect(map?.getAttribute('href')).toBe(
       'https://www.openstreetmap.org/search?query=M%C3%BChlweg%201%0A12345%20Musterstadt',
     );
     expect(map?.getAttribute('rel')).toBe('noopener noreferrer');
   });
 
-  it('names the event in the breadcrumb', async () => {
-    const { element } = await render(success(), EVENT);
+  it('shows no details section without address and deadline', async () => {
+    const element = await render(success(), { ...EVENT, address: null, rsvpDeadline: null });
 
-    const breadcrumb = element.querySelector('nav[aria-label="Navigationspfad"]');
-    expect(breadcrumb?.querySelector('a')?.getAttribute('href')).toBe('/events');
-    expect(breadcrumb?.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe(
-      'Sommerfest',
-    );
+    expect(element.querySelector('#event-detail-details')).toBeNull();
+    expect(element.querySelector('dl.event-detail__facts')).toBeNull();
   });
 
-  it('shows the counts of the guests', async () => {
-    const { element } = await render(success(), EVENT);
+  it('shows only the deadline when there is no address', async () => {
+    const element = await render(success(), { ...EVENT, address: null });
 
+    expect(element.querySelector('#event-detail-details')).not.toBeNull();
+    expect(element.querySelector('.event-detail__map')).toBeNull();
+    expect(element.querySelector('time')).not.toBeNull();
+  });
+
+  it('shows only the address when there is no deadline', async () => {
+    const element = await render(success(), { ...EVENT, rsvpDeadline: null });
+
+    expect(element.querySelector('.event-detail__map')).not.toBeNull();
+    expect(element.querySelector('time')).toBeNull();
+  });
+
+  it('shows the counts of the guests with a link to the guest list', async () => {
+    const element = await render(success(), EVENT);
+
+    expect(element.querySelector('#event-detail-guests')?.textContent?.trim()).toBe('Gäste');
     const counts = Array.from(element.querySelectorAll('.event-detail__count dd'), (dd) =>
       dd.textContent?.trim(),
     );
     expect(counts).toEqual(['3', '4', '1', '1', '6']);
+    const link = element.querySelector('a[href="/events/e1/guests"]');
+    expect(link?.textContent?.trim()).toBe('Zur Gästeliste');
   });
 
-  it('offers editing and deleting to the owner of an upcoming event', async () => {
-    const { element } = await render(success(), EVENT);
+  it('shows the description as rich text', async () => {
+    const element = await render(success(), EVENT);
 
-    expect(element.querySelector('a[href="/events/e1/edit"]')).not.toBeNull();
-    expect(element.querySelector('app-event-delete-button')).not.toBeNull();
-  });
-
-  it('links to the print page, also for an editor and after the event', async () => {
-    for (const event of [EVENT, { ...EVENT, role: 'editor' as const }, { ...EVENT, past: true }]) {
-      TestBed.resetTestingModule();
-      const { element } = await render(success(), event);
-
-      const link = element.querySelector('a[href="/events/e1/print"]');
-      expect(link?.textContent).toContain('Drucken');
-      expect(link?.getAttribute('aria-label')).toBe('Drucken: Sommerfest');
-    }
-  });
-
-  it('lets an editor edit but not delete', async () => {
-    const { element } = await render(success(), { ...EVENT, role: 'editor' });
-
-    expect(element.querySelector('a[href="/events/e1/edit"]')).not.toBeNull();
-    expect(element.querySelector('app-event-delete-button')).toBeNull();
-  });
-
-  it('marks a past event and offers no editing', async () => {
-    const { element } = await render(success(), { ...EVENT, past: true });
-
-    expect(element.textContent).toContain('Vorbei');
-    expect(element.querySelector('a[href="/events/e1/edit"]')).toBeNull();
-  });
-
-  it('goes back to the list after deleting', async () => {
-    remove.mockResolvedValue(true);
-    const { fixture, navigate } = await render(success(), EVENT);
-
-    fixture.debugElement.query(By.directive(EventDeleteButton)).componentInstance.confirmed.emit();
-    await fixture.whenStable();
-
-    expect(remove).toHaveBeenCalledWith('e1');
-    expect(toast.success).toHaveBeenCalledWith('Event gelöscht');
-    expect(navigate).toHaveBeenCalledWith(['/events']);
-  });
-
-  it('stays on the page and shows the failure when deleting fails', async () => {
-    remove.mockResolvedValue(false);
-    const { fixture, element, navigate, mutationState } = await render(success(), EVENT);
-
-    fixture.debugElement.query(By.directive(EventDeleteButton)).componentInstance.confirmed.emit();
-    mutationState.set(failed(new Failure('conflict', 'Over')));
-    await fixture.whenStable();
-
-    expect(navigate).not.toHaveBeenCalled();
-    expect(toast.success).not.toHaveBeenCalled();
-    expect(element.querySelector('[role="alert"]')?.textContent).toContain(
-      'Das Event konnte nicht gelöscht werden',
+    expect(element.querySelector('#event-detail-description')?.textContent?.trim()).toBe(
+      'Beschreibung',
     );
-    expect(element.querySelector('h1')?.textContent).toBe('Sommerfest');
+    expect(element.querySelector('app-ui-rich-text')?.textContent).toContain('Kommt vorbei');
   });
 
-  it('shows the save the date section with its panel', async () => {
-    const { element } = await render(success(), EVENT);
+  it('says so when there is no description', async () => {
+    const element = await render(success(), { ...EVENT, description: '' });
 
-    const heading = element.querySelector('#event-detail-save-the-date');
-    expect(heading?.textContent?.trim()).toBe('Save the date');
+    expect(element.querySelector('app-ui-rich-text')).toBeNull();
+    expect(element.textContent).toContain('Keine Beschreibung');
+  });
+
+  it('shows the images section only with images', async () => {
+    const withImages = await render(success(), EVENT);
+    expect(withImages.querySelector('#event-detail-images')).not.toBeNull();
+    expect(withImages.querySelectorAll('app-ui-attachment')).toHaveLength(1);
+
+    TestBed.resetTestingModule();
+    const without = await render(success(), { ...EVENT, images: [] });
+    expect(without.querySelector('#event-detail-images')).toBeNull();
+  });
+
+  it('shows the share section with the panels under their headings', async () => {
+    const element = await render(success(), EVENT);
+
+    expect(element.querySelector('h2#event-detail-share')?.textContent?.trim()).toBe('Teilen');
+    const saveTheDate = element.querySelector('h3#event-detail-save-the-date');
+    const photoStand = element.querySelector('h3#event-detail-photo-stand');
+    expect(saveTheDate?.textContent?.trim()).toBe('Save the date');
+    expect(saveTheDate?.getAttribute('tabindex')).toBe('-1');
+    expect(photoStand?.textContent?.trim()).toBe('Fotostation');
+    expect(photoStand?.getAttribute('tabindex')).toBe('-1');
     expect(element.querySelector('app-save-the-date-panel')).not.toBeNull();
+    expect(element.querySelector('app-photo-stand-panel')).not.toBeNull();
+  });
+
+  it('shows the failure when the event cannot be loaded', async () => {
+    const element = await render(failed(new Failure('not-found', 'Nope')));
+
+    expect(element.querySelector('[role="alert"]')).not.toBeNull();
+    expect(element.querySelector('#event-detail-guests')).toBeNull();
   });
 
   it('has no accessibility violations', async () => {
-    const { element } = await render(success(), EVENT);
+    const element = await render(success(), EVENT);
 
     await expect(element).toBeAccessible();
   });
 
-  it('keeps its heading when the event cannot be loaded', async () => {
-    const { element } = await render(failed(new Failure('not-found', 'Nope')));
-
-    expect(element.querySelector('h1')?.textContent?.trim()).toBe('Event');
-    await expect(element).toBeAccessible();
-  });
-
-  it('has no accessibility violations for a past event without a place', async () => {
-    const { element } = await render(success(), {
+  it('has no accessibility violations without place, deadline, description and images', async () => {
+    const element = await render(success(), {
       ...EVENT,
       past: true,
       locationName: null,
       address: null,
+      rsvpDeadline: null,
+      description: '',
       images: [],
     });
 

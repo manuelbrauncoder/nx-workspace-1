@@ -1,58 +1,52 @@
 @use 'styles/abstracts' as *;
 
-// Spacing of the page: 1rem from the breadcrumb to the heading, 2rem from the heading to the
-// content, 2.5rem between the sections, 1rem from a section heading to its content.
+// The overview below the frame of the event: the content on the left, the public links in a
+// column on the right from `lg` on, below each other on a phone. 2.5rem between the sections,
+// 1rem from a section heading to its content.
 
 .event-detail {
   display: block;
-  max-width: 48rem;
 }
 
-.event-detail__heading {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-  max-width: 48rem;
-  margin-top: 1rem;
+.event-detail__columns {
+  display: grid;
+  gap: 2.5rem;
 
-  // A long word in a title must not push the page wider than the phone.
-  h1 {
-    min-width: 0;
-    overflow-wrap: anywhere;
+  @include up(lg) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+    align-items: start;
+    gap: 3rem;
   }
 }
 
-// A Konfetti chip.
-.event-detail__badge {
-  padding: 0.25rem 0.75rem;
-  border: var(--chip-border);
-  border-radius: 999px;
-  background: var(--background);
+.event-detail__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  min-width: 0;
 }
 
 .event-detail__facts {
   display: grid;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-.event-detail__fact dt {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
+.event-detail__fact {
+  dt {
+    color: var(--muted-foreground);
+  }
 
-.event-detail__fact dd {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin-top: 0.25rem;
-}
-
-.event-detail__place {
-  font-weight: 500;
-  overflow-wrap: anywhere;
+  dd {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+  }
 }
 
 // Line breaks of the address are kept, as typed.
@@ -61,7 +55,8 @@
   overflow-wrap: anywhere;
 }
 
-.event-detail__map {
+.event-detail__map,
+.event-detail__link {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
@@ -76,8 +71,39 @@
   }
 }
 
+// One line of labelled numbers in a quiet frame, as on the guest list.
+.event-detail__counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.event-detail__count {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+
+  dt {
+    color: var(--muted-foreground);
+  }
+
+  dd {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.event-detail__note {
+  margin-top: 0.5rem;
+}
+
 .event-detail__description {
-  margin-top: 2.5rem;
+  display: block;
+  margin-top: 1rem;
 }
 
 .event-detail__description--empty {
@@ -85,66 +111,30 @@
   font-style: italic;
 }
 
-.event-detail__section {
-  margin-top: 2.5rem;
-}
-
-.event-detail__section-lead {
-  margin-top: 0.25rem;
-}
-
-.event-detail__counts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin-top: 1rem;
-
-  @include up(sm) {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-}
-
-// Each count is a small Konfetti card.
-.event-detail__count {
-  padding: 0.75rem 1rem;
-  border: var(--card-border);
-  border-radius: var(--card-radius);
-  box-shadow: var(--card-shadow);
-
-  // Five counts in two columns: the last one takes the whole row instead of standing alone.
-  &:last-child {
-    grid-column: 1 / -1;
-
-    @include up(sm) {
-      grid-column: auto;
-    }
-  }
-
-  dt {
-    overflow-wrap: anywhere;
-  }
-
-  dd {
-    margin-top: 0.25rem;
-  }
-}
-
-.event-detail__guests-link {
-  margin-top: 1rem;
-}
-
 .event-detail__images {
   margin-top: 1rem;
 }
 
-.event-detail__failure {
-  display: block;
-  margin-top: 2.5rem;
+.event-detail__share {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
 }
 
-.event-detail__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 2.5rem;
+// Each public link in a quiet panel.
+.event-detail__panel {
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.event-detail__panel h3 {
+  // A part of the workspace: the body font, the heading font stays with the page title.
+  font-family: var(--font-sans);
+}
+
+.event-detail__panel-lead {
+  margin-top: 0.25rem;
 }

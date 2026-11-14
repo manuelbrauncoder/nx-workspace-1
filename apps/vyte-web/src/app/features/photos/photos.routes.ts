@@ -5,8 +5,8 @@ import { PhotosStore } from './application/photos.store';
 import { PhotosUseCase } from './domain/photos.usecase';
 import { photoListI18n } from './presentation/photo-list/photo-list.i18n';
 
-// Mounted at `events/:id/photos` with `authGuard` in `app.routes.ts`. The empty paths below
-// inherit the `id` of that route.
+// Mounted at `photos` below the frame of an event (`events/:id`, with `authGuard`) in
+// `app.routes.ts`. The routes below inherit its `id` (`paramsInheritanceStrategy: 'always'`).
 export const photosRoutes: Routes = [
   {
     path: '',

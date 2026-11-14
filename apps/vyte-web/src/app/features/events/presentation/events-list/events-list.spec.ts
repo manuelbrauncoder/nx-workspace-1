@@ -29,6 +29,7 @@ const event = (id: string, title: string, past = false): VyteEvent =>
 
 describe('EventsList', () => {
   const reload = vi.fn();
+  const loadList = vi.fn();
 
   async function render(state: AsyncState, events: VyteEvent[] = []) {
     const all = signal(events);
@@ -43,6 +44,7 @@ describe('EventsList', () => {
             upcoming: computed(() => all().filter((existing) => !existing.past)),
             past: computed(() => all().filter((existing) => existing.past)),
             reload,
+            loadList,
           },
         },
       ],
@@ -53,7 +55,16 @@ describe('EventsList', () => {
     return fixture.nativeElement as HTMLElement;
   }
 
-  beforeEach(() => reload.mockClear());
+  beforeEach(() => {
+    reload.mockClear();
+    loadList.mockClear();
+  });
+
+  it('asks the store to load the list', async () => {
+    await render(loading());
+
+    expect(loadList).toHaveBeenCalledTimes(1);
+  });
 
   it('shows a skeleton while loading', async () => {
     const element = await render(loading());

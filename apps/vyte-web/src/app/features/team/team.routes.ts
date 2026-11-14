@@ -5,8 +5,8 @@ import { TeamStore } from './application/team.store';
 import { TeamUseCase } from './domain/team.usecase';
 import { teamPageI18n } from './presentation/team-page/team-page.i18n';
 
-// Mounted at `events/:id/team` with `authGuard` in `app.routes.ts`. The empty paths below
-// inherit the `id` of that route.
+// Mounted at `team` below the frame of an event (`events/:id`, with `authGuard`) in
+// `app.routes.ts`. The routes below inherit its `id` (`paramsInheritanceStrategy: 'always'`).
 export const teamRoutes: Routes = [
   {
     path: '',

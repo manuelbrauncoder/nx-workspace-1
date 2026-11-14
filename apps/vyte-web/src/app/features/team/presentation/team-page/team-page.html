@@ -1,13 +1,3 @@
-<app-ui-breadcrumb [items]="_breadcrumb()" />
-
-<!-- Outside of the loaded content, so the page has its heading while loading and after a failure. -->
-<div class="team-page__heading">
-  <h1 appUiText="page">{{ 'teamPage.heading' | t }}</h1>
-  @if (_store.event(); as event) {
-    <p class="team-page__event" appUiText="lead">{{ event.title }}</p>
-  }
-</div>
-
 <app-async-content
   class="team-page"
   [state]="_store.eventState()"

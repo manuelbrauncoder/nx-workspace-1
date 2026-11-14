@@ -53,26 +53,45 @@ export const routes: Routes = [
         loadChildren: () => import('./features/home/home.routes').then((m) => m.homeRoutes),
       },
       {
-        // Its own feature, before `events`, so that one does not take the path.
-        path: 'events/:id/guests',
-        canActivate: [authGuard],
-        loadChildren: () => import('./features/guests/guests.routes').then((m) => m.guestsRoutes),
-      },
-      {
-        path: 'events/:id/photos',
-        canActivate: [authGuard],
-        loadChildren: () => import('./features/photos/photos.routes').then((m) => m.photosRoutes),
-      },
-      {
-        path: 'events/:id/team',
-        canActivate: [authGuard],
-        loadChildren: () => import('./features/team/team.routes').then((m) => m.teamRoutes),
-      },
-      {
+        // The list, `new` and `:id/edit`. A path it does not know falls through to the frame.
         path: 'events',
         // The backend only hands out the events the signed-in user is a member of.
         canActivate: [authGuard],
         loadChildren: () => import('./features/events/events.routes').then((m) => m.eventsRoutes),
+      },
+      {
+        // One event: its frame with title, actions and tabs, the tab pages below it. Guests,
+        // team and photos are features of their own, the frame only links to them.
+        path: 'events/:id',
+        canActivate: [authGuard],
+        // Events are private.
+        data: routeSeo({ index: false }),
+        loadComponent: () =>
+          import('./features/events/presentation/event-frame/event-frame').then(
+            (m) => m.EventFrame,
+          ),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadChildren: () =>
+              import('./features/events/events.routes').then((m) => m.eventOverviewRoutes),
+          },
+          {
+            path: 'guests',
+            loadChildren: () =>
+              import('./features/guests/guests.routes').then((m) => m.guestsRoutes),
+          },
+          {
+            path: 'team',
+            loadChildren: () => import('./features/team/team.routes').then((m) => m.teamRoutes),
+          },
+          {
+            path: 'photos',
+            loadChildren: () =>
+              import('./features/photos/photos.routes').then((m) => m.photosRoutes),
+          },
+        ],
       },
       {
         // Accounts and account links, `/admin/users`.

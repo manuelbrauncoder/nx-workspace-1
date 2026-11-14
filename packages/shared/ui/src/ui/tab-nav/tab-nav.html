@@ -1,0 +1,17 @@
+<nav class="ui-tab-nav" [attr.aria-label]="label()">
+  <ul class="ui-tab-nav__list">
+    @for (item of items(); track item.path) {
+      <li>
+        <a
+          class="ui-tab-nav__link"
+          [routerLink]="item.path"
+          [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+          routerLinkActive="ui-tab-nav__link--current"
+          ariaCurrentWhenActive="page"
+        >
+          {{ item.labelKey | t }}
+        </a>
+      </li>
+    }
+  </ul>
+</nav>

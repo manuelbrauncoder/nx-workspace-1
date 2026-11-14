@@ -1,13 +1,3 @@
-<app-ui-breadcrumb [items]="_breadcrumb()" />
-
-<!-- Outside of the loaded content, so the page has its heading while loading and after a failure. -->
-<div class="guest-list__heading">
-  <h1 appUiText="page">{{ 'guestList.heading' | t }}</h1>
-  @if (_store.event(); as event) {
-    <p class="guest-list__event" appUiText="lead">{{ event.title }}</p>
-  }
-</div>
-
 <app-async-content
   class="guest-list"
   [state]="_store.eventState()"

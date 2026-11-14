@@ -21,7 +21,11 @@ export function sortEvents(events: VyteEvent[]): VyteEvent[] {
 export class EventsStore {
   private readonly _useCase = inject(EventsUseCase);
 
+  // Only the list page wants the list. The frame of an event provides this store as well and
+  // must not load every event for it.
+  private readonly _listWanted = signal(false);
   private readonly _list = rxResource({
+    params: () => this._listWanted() || undefined,
     stream: () => this._useCase.getAll(),
     defaultValue: [] as VyteEvent[],
   });
@@ -66,6 +70,11 @@ export class EventsStore {
     this._imageMutation.reset();
     this._saveTheDateMutation.reset();
     this._photoStandMutation.reset();
+  }
+
+  /** Starts loading the list of events, once. */
+  loadList(): void {
+    this._listWanted.set(true);
   }
 
   reload(): void {

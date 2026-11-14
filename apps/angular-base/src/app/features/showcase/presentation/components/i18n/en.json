@@ -131,5 +131,9 @@
     "description": "app-ui-pagination pages through a query parameter (page), the page reads it through input binding. Hidden while there is only one page.",
     "label": "Pages of the example",
     "current": "Page {{ page }} of {{ count }}"
+  },
+  "tabNav": {
+    "description": "app-ui-tab-nav: tabs as links between the pages of one thing, the current one with an ink line and aria-current. Scrolls sideways on a phone.",
+    "label": "Sections of the example"
   }
 }

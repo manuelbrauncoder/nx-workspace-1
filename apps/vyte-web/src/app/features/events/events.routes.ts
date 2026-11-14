@@ -7,6 +7,8 @@ import { eventDetailI18n } from './presentation/event-detail/event-detail.i18n';
 import { eventEditorI18n } from './presentation/event-editor/event-editor.i18n';
 import { eventsListI18n } from './presentation/events-list/events-list.i18n';
 
+// `/events`, `/events/new` and `/events/:id/edit`. An event itself opens in `EventFrame`, see
+// `app.routes.ts`.
 export const eventsRoutes: Routes = [
   {
     path: '',
@@ -31,14 +33,6 @@ export const eventsRoutes: Routes = [
           import('./presentation/event-editor/event-editor').then((m) => m.EventEditor),
       },
       {
-        path: ':id',
-        title: 'eventDetail.title',
-        // The title of the loaded event replaces this one, see `EventDetail`.
-        canActivate: [loadI18nScope(eventDetailI18n)],
-        loadComponent: () =>
-          import('./presentation/event-detail/event-detail').then((m) => m.EventDetail),
-      },
-      {
         path: ':id/edit',
         title: 'eventEditor.titleEdit',
         canActivate: [loadI18nScope(eventEditorI18n)],
@@ -46,5 +40,20 @@ export const eventsRoutes: Routes = [
           import('./presentation/event-editor/event-editor').then((m) => m.EventEditor),
       },
     ],
+  },
+];
+
+/**
+ * The overview of one event, the first tab below `EventFrame` on `/events/:id`. Use case and
+ * store come from the frame, which loads the event once for both.
+ */
+export const eventOverviewRoutes: Routes = [
+  {
+    path: '',
+    title: 'eventDetail.title',
+    // The title of the loaded event replaces this one, see `EventDetail`.
+    canActivate: [loadI18nScope(eventDetailI18n)],
+    loadComponent: () =>
+      import('./presentation/event-detail/event-detail').then((m) => m.EventDetail),
   },
 ];

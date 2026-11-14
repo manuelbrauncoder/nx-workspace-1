@@ -131,5 +131,9 @@
     "description": "app-ui-pagination blättert per Query-Parameter (page), die Seite liest ihn über Input-Binding. Bei nur einer Seite unsichtbar.",
     "label": "Seiten des Beispiels",
     "current": "Seite {{ page }} von {{ count }}"
+  },
+  "tabNav": {
+    "description": "app-ui-tab-nav: Tabs als Links zwischen den Seiten einer Sache, der aktuelle mit Tintenlinie und aria-current. Scrollt auf dem Handy seitlich.",
+    "label": "Bereiche des Beispiels"
   }
 }

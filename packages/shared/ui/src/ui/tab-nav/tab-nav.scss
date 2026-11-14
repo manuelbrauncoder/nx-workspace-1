@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+// A line under the row, the current tab draws its own thicker one on top of it.
+.ui-tab-nav {
+  border-bottom: 1px solid var(--border);
+}
+
+.ui-tab-nav__list {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: -1px;
+  overflow-x: auto;
+  // Thin but visible, so a tab that does not fit any more shows that the row scrolls.
+  scrollbar-width: thin;
+}
+
+.ui-tab-nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border-bottom: 3px solid transparent;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--foreground);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: -3px;
+    border-radius: calc(var(--radius) - 4px);
+  }
+}
+
+// The current tab in ink: bold text and a line that keeps 3:1 against white and the page.
+.ui-tab-nav__link--current {
+  border-bottom-color: var(--foreground);
+  color: var(--foreground);
+  font-weight: 600;
+}

@@ -38,4 +38,42 @@ describe('routes', () => {
     expect(emptyPath[0]!.component).toBe(AppShell);
     expect(emptyPath[0]!.children?.[0]).toMatchObject({ path: '', pathMatch: 'full' });
   });
+
+  describe('events', () => {
+    const shellChildren = routes.find((route) => route.component === AppShell)!.children!;
+    const paths = shellChildren.map((route) => route.path);
+    const frame = shellChildren.find((route) => route.path === 'events/:id')!;
+
+    it('puts the events routes before the frame of one event', () => {
+      expect(paths.indexOf('events')).toBeGreaterThan(-1);
+      expect(paths.indexOf('events')).toBeLessThan(paths.indexOf('events/:id'));
+    });
+
+    it('guards both and keeps events out of search results', () => {
+      expect(shellChildren.find((route) => route.path === 'events')!.canActivate).toHaveLength(1);
+      expect(frame.canActivate).toHaveLength(1);
+      expect(frame.data?.['seo']).toMatchObject({ index: false });
+    });
+
+    it('loads the frame lazily and hangs the tabs below it', () => {
+      expect(frame.loadComponent).toBeTypeOf('function');
+      expect(frame.children!.map((route) => route.path)).toEqual(['', 'guests', 'team', 'photos']);
+      for (const child of frame.children!) {
+        expect(child.loadChildren).toBeTypeOf('function');
+      }
+      expect(frame.children![0]!.pathMatch).toBe('full');
+    });
+
+    it('keeps the print sheets outside every shell', () => {
+      expect(routes[0]!.path).toBe('events/:id/print');
+    });
+
+    it('resolves the overview routes of the frame without an :id of their own', async () => {
+      const { eventOverviewRoutes, eventsRoutes } = await import('./features/events/events.routes');
+
+      expect(eventOverviewRoutes.map((route) => route.path)).toEqual(['']);
+      const listChildren = eventsRoutes[0]!.children!.map((route) => route.path);
+      expect(listChildren).toEqual(['', 'new', ':id/edit']);
+    });
+  });
 });
