@@ -1,7 +1,7 @@
 <h1 appUiText="page">{{ 'userList.heading' | t }}</h1>
 <p class="user-list__lead" appUiText="lead">{{ 'userList.lead' | t }}</p>
 
-<section class="user-list__section" aria-labelledby="user-list-create">
+<section class="user-list__section user-list__panel" aria-labelledby="user-list-create">
   <h2 id="user-list-create" appUiText="heading">{{ 'userList.create.heading' | t }}</h2>
   <p class="user-list__section-lead" appUiText="muted">{{ 'userList.create.description' | t }}</p>
   <form class="user-list__create" [formRoot]="_createForm">
@@ -55,9 +55,9 @@
       @if (_store.invites().length === 0) {
         <p appUiText="muted">{{ 'userList.invites.empty' | t }}</p>
       } @else {
-        <ul class="user-list__grid">
+        <ul appUiList>
           @for (invite of _store.invites(); track invite.id) {
-            <li>
+            <li appUiListItem>
               <app-account-invite-item
                 [invite]="invite"
                 [url]="_url(invite)"
@@ -97,10 +97,10 @@
     retryable
   >
     <ng-template>
-      <ul class="user-list__grid">
+      <ul appUiList>
         @for (user of _store.users(); track user.id) {
-          <li>
-            <app-user-card
+          <li appUiListItem>
+            <app-user-row
               [user]="user"
               [isMe]="user.id === _auth.me()?.id"
               (toggleRole)="_toggleRole(user)"

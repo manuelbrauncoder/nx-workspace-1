@@ -70,7 +70,7 @@ describe('EventsList', () => {
     const element = await render(loading());
 
     expect(element.querySelector('[appUiSkeleton]')).not.toBeNull();
-    expect(element.querySelector('app-event-card')).toBeNull();
+    expect(element.querySelector('app-event-row')).toBeNull();
   });
 
   it('shows the failure and loads again on retry', async () => {
@@ -97,7 +97,13 @@ describe('EventsList', () => {
     expect(link?.textContent?.trim()).toBe('Sommerfest');
     expect(link?.getAttribute('href')).toBe('/events/e1');
     expect(sections[0].textContent).toContain('So., 14. März 2027, 19:00 Uhr');
-    expect(sections[0].textContent).toContain('Kommen: 4 · Offen: 1');
+    expect(sections[0].textContent).toContain('Kommen: 4');
+    expect(sections[0].textContent).toContain('Ohne Antwort: 1');
+    expect(
+      sections[0].querySelectorAll('ul[appUiList] > li[appUiListItem] app-event-row'),
+    ).toHaveLength(1);
+    expect(sections[1].querySelector('.event-row--past')).not.toBeNull();
+    expect(sections[0].querySelector('.event-row--past')).toBeNull();
   });
 
   it('leaves out a section without events', async () => {

@@ -82,6 +82,7 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 | `UiListImports`          | `ul[appUiList]`, `li[appUiListItem]`          | `@shared/ui/list/list`                             |
 | `UiPagination`           | `app-ui-pagination`                           | `@shared/ui/pagination/pagination`                 |
 | `UiTabNav`               | `app-ui-tab-nav`                              | `@shared/ui/tab-nav/tab-nav`                       |
+| `UiBadge`                | `span[appUiBadge]`                            | `@shared/ui/badge/badge`                           |
 | `UiDialogService`        | `open()`                                      | `@shared/ui/dialog/dialog.service`                 |
 | `UiConfirmDialogService` | `confirm()`                                   | `@shared/ui/confirm-dialog/confirm-dialog.service` |
 | `UiToastService`         | `success()`, `info()`, `warning()`, `error()` | `@shared/ui/toast/toast.service`                   |
@@ -532,6 +533,18 @@ Pages of a long list as links. The page lives in a query parameter of the curren
 - `label` names the navigation, so two on one page stay apart
 - The first and last page, the current one and its neighbours are links, the rest a gap, at most seven entries so it fits a phone
 - A filter that changes the list sets the page back to 1 by removing the parameter, `queryParamsHandling: 'merge'` keeps the other parameters
+
+### Badge
+
+A short label next to a name: a role, a state, a count. Text, not a control.
+
+```html
+<span appUiBadge>Mitplaner</span>
+<span appUiBadge variant="secondary"><app-ui-icon name="shieldCheck" /> Admin</span>
+```
+
+- `outline` (default) is a thin border, `secondary` the soft secondary ground of the theme
+- The Spartan badge has no variant this quiet, so the wrapper sets its own classes from theme tokens
 
 ### Tab nav
 

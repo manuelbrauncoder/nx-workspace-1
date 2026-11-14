@@ -41,10 +41,10 @@
         retryable
       >
         <ng-template>
-          <ul class="team-page__grid">
+          <ul appUiList>
             @for (member of _store.members(); track member.userId) {
-              <li>
-                <app-member-card
+              <li appUiListItem>
+                <app-member-row
                   [member]="member"
                   [isMe]="member.userId === _store.me()?.userId"
                   [manageable]="_manages() && member.role === 'editor'"
@@ -100,9 +100,9 @@
             @if (_store.invites().length === 0) {
               <p appUiText="muted">{{ 'teamPage.invites.empty' | t }}</p>
             } @else {
-              <ul class="team-page__grid">
+              <ul appUiList>
                 @for (invite of _store.invites(); track invite.id) {
-                  <li>
+                  <li appUiListItem>
                     <app-editor-invite-item
                       [invite]="invite"
                       [url]="_url(invite)"

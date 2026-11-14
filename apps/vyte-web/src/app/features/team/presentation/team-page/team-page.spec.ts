@@ -113,15 +113,15 @@ describe('TeamPage', () => {
     Array.from(element.querySelectorAll<HTMLButtonElement>('button')).find((candidate) =>
       candidate.textContent?.includes(text),
     );
-  const cardOf = (element: HTMLElement, name: string) =>
-    Array.from(element.querySelectorAll<HTMLElement>('app-member-card')).find((card) =>
+  const rowOf = (element: HTMLElement, name: string) =>
+    Array.from(element.querySelectorAll<HTMLElement>('app-member-row')).find((card) =>
       card.querySelector('h3')?.textContent?.includes(name),
     )!;
   const menus = (element: HTMLElement) =>
-    element.querySelectorAll('app-member-card button[aria-label^="Aktionen für"]');
+    element.querySelectorAll('app-member-row button[aria-label^="Aktionen für"]');
 
   async function pick(element: HTMLElement, name: string, item: string): Promise<void> {
-    cardOf(element, name)
+    rowOf(element, name)
       .querySelector<HTMLButtonElement>(`button[aria-label="Aktionen für ${name}"]`)!
       .click();
     await settle();
@@ -150,7 +150,7 @@ describe('TeamPage', () => {
 
     expect(element.querySelector('h1')).toBeNull();
     expect(element.querySelector('nav')).toBeNull();
-    expect(element.querySelector('app-member-card')).toBeNull();
+    expect(element.querySelector('app-member-row')).toBeNull();
   });
 
   it('shows the failure and retries', async () => {
@@ -176,21 +176,21 @@ describe('TeamPage', () => {
     });
 
     expect(element.textContent).toContain('Die Mitglieder konnten nicht geladen werden');
-    expect(element.querySelector('app-member-card')).toBeNull();
+    expect(element.querySelector('app-member-row')).toBeNull();
   });
 
   describe('as owner', () => {
     it('lists every member with the signed-in user marked', async () => {
       const { element } = await render();
 
-      const cards = Array.from(element.querySelectorAll('app-member-card'));
+      const cards = Array.from(element.querySelectorAll('app-member-row'));
       expect(cards.map((card) => card.querySelector('h3')?.textContent?.trim())).toEqual([
         'Olga Owner',
         'Ada Lovelace',
         'u3@example.com',
       ]);
-      expect(cardOf(element, 'Olga Owner').textContent).toContain('Du');
-      expect(cardOf(element, 'Ada Lovelace').textContent).not.toContain('Du');
+      expect(rowOf(element, 'Olga Owner').textContent).toContain('Du');
+      expect(rowOf(element, 'Ada Lovelace').textContent).not.toContain('Du');
     });
 
     it('offers the menu on editors only', async () => {
@@ -198,7 +198,7 @@ describe('TeamPage', () => {
 
       expect(menus(element)).toHaveLength(2);
       expect(
-        cardOf(element, 'Olga Owner').querySelector('button[aria-label^="Aktionen für"]'),
+        rowOf(element, 'Olga Owner').querySelector('button[aria-label^="Aktionen für"]'),
       ).toBeNull();
     });
 
@@ -207,6 +207,17 @@ describe('TeamPage', () => {
 
       expect(headings(element)).toEqual(['Mitglieder', 'Einladungslinks']);
       expect(buttonWith(element, 'Event verlassen')).toBeUndefined();
+    });
+
+    it('lists members and invites as rows of calm lists', async () => {
+      const { element } = await render();
+
+      expect(
+        element.querySelectorAll('ul[appUiList] > li[appUiListItem] app-member-row'),
+      ).toHaveLength(3);
+      expect(
+        element.querySelectorAll('ul[appUiList] > li[appUiListItem] app-editor-invite-item'),
+      ).toHaveLength(2);
     });
 
     it('lists the invite links with their address', async () => {
@@ -233,7 +244,7 @@ describe('TeamPage', () => {
       });
 
       expect(element.textContent).toContain('Die Links konnten nicht geladen werden');
-      expect(element.querySelector('app-member-card')).not.toBeNull();
+      expect(element.querySelector('app-member-row')).not.toBeNull();
       buttonWith(element, 'Erneut versuchen')!.click();
       expect(store.reloadInvites).toHaveBeenCalledTimes(1);
     });
@@ -528,8 +539,8 @@ describe('TeamPage', () => {
     it('marks the signed-in editor', async () => {
       const { element } = await render(options);
 
-      expect(cardOf(element, 'Ada Lovelace').textContent).toContain('Du');
-      expect(cardOf(element, 'Olga Owner').textContent).not.toContain('Du');
+      expect(rowOf(element, 'Ada Lovelace').textContent).toContain('Du');
+      expect(rowOf(element, 'Olga Owner').textContent).not.toContain('Du');
     });
 
     it('leaves only after confirmation, then says so and opens the events', async () => {

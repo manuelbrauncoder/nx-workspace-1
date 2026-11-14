@@ -1,22 +1,24 @@
 @let item = invite();
-<article class="account-invite" [attr.data-invite]="item.id" appUiCard>
-  <div appUiCardHeader>
-    <h3 appUiCardTitle>{{ item.name }}</h3>
-    <p appUiCardDescription>
+<div class="invite-row" [attr.data-invite]="item.id">
+  <div class="invite-row__info">
+    <h3 class="invite-row__title" appUiText="item">{{ item.name }}</h3>
+    <p class="invite-row__meta">
       {{
         'userList.invites.expires' | t: { date: item.expiresAt | localDate: 'dateTime' : _timeZone }
       }}
     </p>
+    <p class="invite-row__url">
+      <span class="sr-only">{{ 'userList.invites.address' | t: { name: item.name } }}: </span>
+      <code appUiText="code">{{ url() }}</code>
+    </p>
   </div>
-  <p class="account-invite__url" appUiCardContent>
-    <span class="sr-only">{{ 'userList.invites.address' | t: { name: item.name } }}: </span>
-    <code appUiText="code">{{ url() }}</code>
-  </p>
-  <div class="account-invite__actions" appUiCardFooter>
+  <div class="invite-row__actions">
     <button
       [attr.aria-label]="'userList.invites.copyNamed' | t: { name: item.name }"
       (click)="copyLink.emit()"
       appUiButton
+      variant="outline"
+      size="sm"
       type="button"
     >
       <app-ui-icon name="link" />
@@ -26,10 +28,11 @@
       [attr.aria-label]="'userList.invites.revokeNamed' | t: { name: item.name }"
       (click)="revoke.emit()"
       appUiButton
-      variant="outline"
+      variant="ghost"
+      size="sm"
       type="button"
     >
       {{ 'userList.invites.revoke' | t }}
     </button>
   </div>
-</article>
+</div>

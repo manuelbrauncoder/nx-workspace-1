@@ -3,21 +3,19 @@
   height: 100%;
 }
 
-// A Konfetti card with the photo on top.
+// No frame: the photo with rounded corners, the facts in small type below it.
 .photo-card {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
-  border: var(--card-border);
-  border-radius: var(--card-radius);
-  background: var(--card);
-  box-shadow: var(--card-shadow);
 }
 
 .photo-card__open {
   position: relative;
   display: block;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--muted);
   cursor: zoom-in;
 
   img {
@@ -28,8 +26,8 @@
     object-fit: cover;
   }
 
-  // An ink ring inside a white one, visible on a dark photo too. Inside the button, because the
-  // card clips everything outside.
+  // An ink ring inside a white one, visible on a dark photo too. Inside the button, because it
+  // clips everything outside for its round corners.
   &:focus-visible {
     outline: none;
 
@@ -38,6 +36,7 @@
       position: absolute;
       inset: 0;
       border: 3px solid var(--foreground);
+      border-radius: inherit;
       box-shadow: inset 0 0 0 6px var(--card);
       pointer-events: none;
     }
@@ -51,41 +50,31 @@
 
 .photo-card__body {
   display: flex;
-  flex: 1 1 auto;
   flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 0.5rem;
+}
+
+.photo-card__head {
+  display: flex;
+  align-items: center;
+  min-height: 2.25rem;
+  justify-content: space-between;
   gap: 0.5rem;
-  padding: 1rem 1.25rem 1.25rem;
 }
 
 .photo-card__name {
+  min-width: 0;
   overflow-wrap: anywhere;
 }
 
-.photo-card__chips {
+.photo-card__meta {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.photo-card__badges {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-}
-
-// A Konfetti chip.
-.photo-card__chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
-  border: var(--chip-border);
-  border-radius: 999px;
-  background: var(--background);
-}
-
-.photo-card__chip--hidden {
-  background: var(--muted);
-}
-
-.photo-card__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: auto;
-  padding-top: 0.5rem;
 }

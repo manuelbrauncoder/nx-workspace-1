@@ -26,12 +26,10 @@
     "hidden": "Verborgen",
     "openNamed": "Foto {{ number }} von {{ name }} groß ansehen",
     "hide": "Verbergen",
-    "hideNamed": "Verbergen: Foto {{ number }} von {{ name }}",
     "show": "Wieder zeigen",
-    "showNamed": "Wieder zeigen: Foto {{ number }} von {{ name }}",
     "remove": "Löschen",
-    "removeNamed": "Löschen: Foto {{ number }} von {{ name }}",
-    "saving": "Wird gespeichert"
+    "saving": "Wird gespeichert",
+    "actions": "Aktionen für Foto {{ number }} von {{ name }}"
   },
   "dialog": {
     "heading": "Foto von {{ name }}",

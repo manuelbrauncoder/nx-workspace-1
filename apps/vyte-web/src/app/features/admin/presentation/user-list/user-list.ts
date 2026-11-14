@@ -18,13 +18,14 @@ import { FailureAlert } from '@shared/failure-alert/failure-alert';
 import { FormText } from '@shared/form-controls/form-text/form-text';
 import { UiButton } from '@shared/ui/button/button';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
+import { UiListImports } from '@shared/ui/list/list';
 import { UiText } from '@shared/ui/text/text';
 import { UiToastService } from '@shared/ui/toast/toast.service';
 import { AdminStore } from '../../application/admin.store';
 import { accountLinkUrl } from '../../domain/account-link';
 import { ACCOUNT_INVITE_NAME_MAX_LENGTH, AccountInvite, User } from '../../domain/admin';
 import { AccountInviteItem } from '../account-invite-item/account-invite-item';
-import { UserCard } from '../user-card/user-card';
+import { UserRow } from '../user-row/user-row';
 
 /**
  * `/admin/users`: creates account links, lists the open ones and every account. Sign-up is
@@ -40,9 +41,10 @@ import { UserCard } from '../user-card/user-card';
     FailureAlert,
     FormText,
     UiButton,
+    UiListImports,
     UiText,
     AccountInviteItem,
-    UserCard,
+    UserRow,
   ],
   styleUrl: './user-list.scss',
   templateUrl: './user-list.html',

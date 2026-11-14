@@ -31,9 +31,6 @@
 
 .guest-row__name {
   grid-area: name;
-  // A row, not a section: the body font, so the names read as a calm column.
-  font-family: var(--font-sans);
-  font-weight: 600;
   overflow-wrap: anywhere;
 }
 

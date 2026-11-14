@@ -205,6 +205,16 @@
     <app-ui-tab-nav [items]="_tabs" [label]="'showcaseComponents.tabNav.label' | t" />
   </app-showcase-section>
 
+  <app-showcase-section [description]="'showcaseComponents.badge.description' | t" heading="Badge">
+    <p class="flex flex-wrap gap-2">
+      <span appUiBadge>{{ 'showcaseComponents.badge.outline' | t }}</span>
+      <span appUiBadge variant="secondary">
+        <app-ui-icon name="shieldCheck" />
+        {{ 'showcaseComponents.badge.secondary' | t }}
+      </span>
+    </p>
+  </app-showcase-section>
+
   <app-showcase-section [description]="'showcaseComponents.list.description' | t" heading="List">
     <ul appUiList>
       <li appUiListItem>{{ 'showcaseComponents.list.item1' | t }}</li>

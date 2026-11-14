@@ -1,23 +1,50 @@
+@use 'styles/abstracts' as *;
+
+// A row of the calm list: what the link is and its address on the left, the actions on the
+// right from `sm` on, below on a phone.
+
 :host {
   display: block;
-  height: 100%;
 }
 
-// The card of the lib in the Konfetti shape, as the account links of the admin.
-.editor-invite {
-  height: 100%;
-  border: var(--card-border);
-  border-radius: var(--card-radius);
-  box-shadow: var(--card-shadow);
+.invite-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  @include up(sm) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+}
+
+.invite-row__info {
+  min-width: 0;
+}
+
+.invite-row__title {
+  overflow-wrap: anywhere;
+}
+
+.invite-row__meta {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
 }
 
 // The address is long and has no spaces, it may break anywhere.
-.editor-invite__url code {
-  word-break: break-all;
+.invite-row__url {
+  margin-top: 0.25rem;
+
+  code {
+    word-break: break-all;
+  }
 }
 
-.editor-invite__actions {
+.invite-row__actions {
   display: flex;
+  flex: none;
   flex-wrap: wrap;
   gap: 0.5rem;
 }

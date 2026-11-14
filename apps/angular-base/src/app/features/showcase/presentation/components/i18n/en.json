@@ -135,5 +135,10 @@
   "tabNav": {
     "description": "app-ui-tab-nav: tabs as links between the pages of one thing, the current one with an ink line and aria-current. Scrolls sideways on a phone.",
     "label": "Sections of the example"
+  },
+  "badge": {
+    "description": "appUiBadge on a span: a short label next to a name, e.g. a role or a state.",
+    "outline": "Editor",
+    "secondary": "Admin"
   }
 }

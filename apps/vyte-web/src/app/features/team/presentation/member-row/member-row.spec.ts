@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
 import { Member } from '../../domain/team';
 import { teamPageI18n } from '../team-page/team-page.i18n';
-import { MemberCard } from './member-card';
+import { MemberRow } from './member-row';
 
 const MEMBER: Member = {
   userId: 'u2',
@@ -12,10 +12,10 @@ const MEMBER: Member = {
   joinedAt: new Date('2026-11-01T09:00:00.000Z'),
 };
 
-describe('MemberCard', () => {
+describe('MemberRow', () => {
   async function render(member: Partial<Member> = {}, inputs: Record<string, unknown> = {}) {
     await loadI18nScopes(teamPageI18n);
-    const fixture = TestBed.createComponent(MemberCard);
+    const fixture = TestBed.createComponent(MemberRow);
     fixture.componentRef.setInput('member', { ...MEMBER, ...member });
     for (const [name, value] of Object.entries(inputs)) {
       fixture.componentRef.setInput(name, value);
@@ -28,13 +28,15 @@ describe('MemberCard', () => {
   const trigger = () =>
     document.querySelector<HTMLButtonElement>('button[aria-label^="Aktionen für"]');
   const chips = (element: HTMLElement) =>
-    Array.from(element.querySelectorAll('.member-card__chip'), (chip) => chip.textContent?.trim());
+    Array.from(element.querySelectorAll('[appUiBadge], [data-slot="badge"]'), (chip) =>
+      chip.textContent?.trim(),
+    );
 
   it('shows the name as a heading and the email below it', async () => {
     const { element } = await render();
 
     expect(element.querySelector('h3')?.textContent?.trim()).toBe('Ada Lovelace');
-    expect(element.querySelector('.member-card__email')?.textContent?.trim()).toBe(
+    expect(element.querySelector('.member-row__email')?.textContent?.trim()).toBe(
       'ada@example.com',
     );
   });
@@ -43,7 +45,7 @@ describe('MemberCard', () => {
     const { element } = await render({ name: null });
 
     expect(element.querySelector('h3')?.textContent?.trim()).toBe('ada@example.com');
-    expect(element.querySelector('.member-card__email')).toBeNull();
+    expect(element.querySelector('.member-row__email')).toBeNull();
     expect(element.textContent?.match(/ada@example\.com/g)).toHaveLength(1);
   });
 
@@ -51,14 +53,15 @@ describe('MemberCard', () => {
     const { element } = await render();
 
     expect(chips(element)).toEqual(['Mitplaner']);
-    expect(element.querySelector('.member-card__chip--owner')).toBeNull();
+    expect(element.querySelector('[data-slot="badge"].bg-secondary')).toBeNull();
+    expect(element.querySelector('app-ui-icon')?.getAttribute('name') ?? 'user').toBe('user');
   });
 
   it('shows the owner as Owner with the owner mark', async () => {
     const { element } = await render({ role: 'owner' });
 
     expect(chips(element)).toEqual(['Owner']);
-    expect(element.querySelector('.member-card__chip--owner')).not.toBeNull();
+    expect(element.querySelector('[data-slot="badge"].bg-secondary')).not.toBeNull();
   });
 
   it('marks the signed-in user with "Du"', async () => {
@@ -70,7 +73,7 @@ describe('MemberCard', () => {
   it('shows since when the member is part of the team', async () => {
     const { element } = await render();
 
-    expect(element.querySelector('.member-card__since')?.textContent?.trim()).toBe(
+    expect(element.querySelector('.member-row__meta')?.textContent).toContain(
       'Dabei seit 01.11.2026',
     );
   });

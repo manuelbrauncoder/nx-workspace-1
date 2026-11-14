@@ -21,13 +21,14 @@ import { UiAlert } from '@shared/ui/alert/alert';
 import { UiButton } from '@shared/ui/button/button';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
 import { UiIcon } from '@shared/ui/icon/icon';
+import { UiListImports } from '@shared/ui/list/list';
 import { UiText } from '@shared/ui/text/text';
 import { UiToastService } from '@shared/ui/toast/toast.service';
 import { TeamStore } from '../../application/team.store';
 import { inviteLinkUrl } from '../../domain/invite-link';
 import { EditorInvite, Member } from '../../domain/team';
 import { EditorInviteItem } from '../editor-invite-item/editor-invite-item';
-import { MemberCard } from '../member-card/member-card';
+import { MemberRow } from '../member-row/member-row';
 
 /**
  * The team of an event on `/events/:id/team`: every member, and for the owner the invite links,
@@ -42,9 +43,10 @@ import { MemberCard } from '../member-card/member-card';
     UiAlert,
     UiButton,
     UiIcon,
+    UiListImports,
     UiText,
     EditorInviteItem,
-    MemberCard,
+    MemberRow,
   ],
   styleUrl: './team-page.scss',
   templateUrl: './team-page.html',

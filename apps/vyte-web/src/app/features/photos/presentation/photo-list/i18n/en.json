@@ -26,12 +26,10 @@
     "hidden": "Hidden",
     "openNamed": "View photo {{ number }} by {{ name }} large",
     "hide": "Hide",
-    "hideNamed": "Hide: photo {{ number }} by {{ name }}",
     "show": "Show again",
-    "showNamed": "Show again: photo {{ number }} by {{ name }}",
     "remove": "Delete",
-    "removeNamed": "Delete: photo {{ number }} by {{ name }}",
-    "saving": "Saving"
+    "saving": "Saving",
+    "actions": "Actions for photo {{ number }} by {{ name }}"
   },
   "dialog": {
     "heading": "Photo by {{ name }}",

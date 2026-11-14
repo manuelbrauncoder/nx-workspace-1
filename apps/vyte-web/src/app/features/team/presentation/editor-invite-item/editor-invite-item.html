@@ -1,17 +1,21 @@
-<article class="editor-invite" appUiCard>
-  <div appUiCardHeader>
-    <h3 appUiCardTitle>{{ 'teamPage.invites.created' | t: { date: _created() } }}</h3>
-    <p appUiCardDescription>{{ 'teamPage.invites.expires' | t: { date: _expires() } }}</p>
+<div class="invite-row">
+  <div class="invite-row__info">
+    <h3 class="invite-row__title" appUiText="item">
+      {{ 'teamPage.invites.created' | t: { date: _created() } }}
+    </h3>
+    <p class="invite-row__meta">{{ 'teamPage.invites.expires' | t: { date: _expires() } }}</p>
+    <p class="invite-row__url">
+      <span class="sr-only">{{ 'teamPage.invites.address' | t }}: </span>
+      <code appUiText="code">{{ url() }}</code>
+    </p>
   </div>
-  <p class="editor-invite__url" appUiCardContent>
-    <span class="sr-only">{{ 'teamPage.invites.address' | t }}: </span>
-    <code appUiText="code">{{ url() }}</code>
-  </p>
-  <div class="editor-invite__actions" appUiCardFooter>
+  <div class="invite-row__actions">
     <button
       [attr.aria-label]="'teamPage.invites.copyNamed' | t: { date: _created() }"
       (click)="copyLink.emit()"
       appUiButton
+      variant="outline"
+      size="sm"
       type="button"
     >
       <app-ui-icon name="copy" />
@@ -23,6 +27,7 @@
         (click)="shareLink.emit()"
         appUiButton
         variant="outline"
+        size="sm"
         type="button"
       >
         <app-ui-icon name="share" />
@@ -33,10 +38,11 @@
       [attr.aria-label]="'teamPage.invites.revokeNamed' | t: { date: _created() }"
       (click)="revoke.emit()"
       appUiButton
-      variant="outline"
+      variant="ghost"
+      size="sm"
       type="button"
     >
       {{ 'teamPage.invites.revoke' | t }}
     </button>
   </div>
-</article>
+</div>

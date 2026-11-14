@@ -38,6 +38,19 @@ describe('PhotoCard', () => {
   const button = (element: HTMLElement, label: string) =>
     element.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`);
 
+  const badges = (element: HTMLElement) =>
+    Array.from(element.querySelectorAll('[data-slot="badge"]'), (b) => b.textContent?.trim());
+  const trigger = (element: HTMLElement) =>
+    element.querySelector<HTMLButtonElement>(
+      'button[aria-label="Aktionen für Foto 1 von Ada Lovelace"]',
+    );
+  const menuItems = () =>
+    Array.from(document.querySelectorAll<HTMLButtonElement>('[role="menuitem"]'));
+  async function openMenu(fixture: { whenStable(): Promise<unknown> }, element: HTMLElement) {
+    trigger(element)!.click();
+    await fixture.whenStable();
+  }
+
   it('shows who took the photo as a heading and the picture', async () => {
     const { element } = await render();
 
@@ -60,7 +73,7 @@ describe('PhotoCard', () => {
   ] as const)('shows the source %s as "%s"', async (source, text) => {
     const { element } = await render({ source });
 
-    expect(element.querySelector('.photo-card__chip')?.textContent?.trim()).toBe(text);
+    expect(badges(element)).toEqual([text]);
   });
 
   it('shows the time of the upload in the time zone of the app', async () => {
@@ -73,51 +86,88 @@ describe('PhotoCard', () => {
   });
 
   describe('visible', () => {
-    it('has no hidden chip and no hidden class', async () => {
+    it('has no hidden badge and no hidden class', async () => {
       const { element } = await render();
 
-      expect(element.querySelector('.photo-card__chip--hidden')).toBeNull();
+      expect(badges(element)).not.toContain('Verborgen');
       expect(element.classList.contains('photo-card--hidden')).toBe(false);
     });
 
-    it('offers hiding', async () => {
-      const { element } = await render();
+    it('offers hiding in the menu', async () => {
+      const { fixture, element } = await render();
 
-      expect(button(element, 'Verbergen: Foto 1 von Ada Lovelace')?.textContent).toContain(
-        'Verbergen',
-      );
-      expect(button(element, 'Wieder zeigen: Foto 1 von Ada Lovelace')).toBeNull();
+      await openMenu(fixture, element);
+
+      expect(menuItems().map((item) => item.textContent?.trim())).toEqual(['Verbergen', 'Löschen']);
     });
   });
 
   describe('hidden', () => {
-    it('shows the hidden chip and the hidden class', async () => {
+    it('shows the hidden badge and the hidden class', async () => {
       const { element } = await render({ hidden: true });
 
-      expect(element.querySelector('.photo-card__chip--hidden')?.textContent).toContain(
-        'Verborgen',
-      );
+      expect(badges(element)).toEqual(['Tischkarte', 'Verborgen']);
       expect(element.classList.contains('photo-card--hidden')).toBe(true);
     });
 
     it('offers showing again instead of hiding', async () => {
-      const { element } = await render({ hidden: true });
+      const { fixture, element } = await render({ hidden: true });
 
-      expect(button(element, 'Wieder zeigen: Foto 1 von Ada Lovelace')?.textContent).toContain(
+      await openMenu(fixture, element);
+
+      expect(menuItems().map((item) => item.textContent?.trim())).toEqual([
         'Wieder zeigen',
-      );
-      expect(button(element, 'Verbergen: Foto 1 von Ada Lovelace')).toBeNull();
+        'Löschen',
+      ]);
     });
   });
 
-  it('emits open, toggleHidden and remove from their buttons', async () => {
-    const { element, outputs } = await render();
+  it('has no visible hide or delete button outside the menu', async () => {
+    const { element } = await render();
+
+    expect(element.querySelector('button[aria-label^="Verbergen"]')).toBeNull();
+    expect(element.querySelector('button[aria-label^="Löschen"]')).toBeNull();
+    expect(trigger(element)).not.toBeNull();
+  });
+
+  it('shows the loading state on the menu trigger while busy', async () => {
+    const { fixture, element } = await render();
+    expect(trigger(element)!.getAttribute('aria-busy')).not.toBe('true');
+
+    fixture.componentRef.setInput('busy', true);
+    await fixture.whenStable();
+
+    expect(trigger(element)!.getAttribute('aria-busy') ?? trigger(element)!.disabled).toBeTruthy();
+  });
+
+  it('disables both menu items while busy', async () => {
+    const { fixture, element } = await render();
+    fixture.componentRef.setInput('busy', true);
+    await fixture.whenStable();
+
+    await openMenu(fixture, element);
+
+    const items = menuItems();
+    expect(items).toHaveLength(2);
+    items.forEach((item) =>
+      expect(item.disabled || item.getAttribute('aria-disabled') === 'true').toBe(true),
+    );
+  });
+
+  it('emits open from the picture and toggleHidden and remove from the menu', async () => {
+    const { fixture, element, outputs } = await render();
 
     button(element, 'Foto 1 von Ada Lovelace groß ansehen')!.click();
     expect(outputs.open).toHaveBeenCalledTimes(1);
-    button(element, 'Verbergen: Foto 1 von Ada Lovelace')!.click();
+
+    await openMenu(fixture, element);
+    menuItems()[0].click();
+    await fixture.whenStable();
     expect(outputs.toggleHidden).toHaveBeenCalledTimes(1);
-    button(element, 'Löschen: Foto 1 von Ada Lovelace')!.click();
+
+    await openMenu(fixture, element);
+    menuItems()[1].click();
+    await fixture.whenStable();
     expect(outputs.remove).toHaveBeenCalledTimes(1);
     expect(outputs.open).toHaveBeenCalledTimes(1);
   });

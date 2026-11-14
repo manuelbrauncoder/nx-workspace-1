@@ -1,0 +1,57 @@
+@use 'styles/abstracts' as *;
+
+// A row of the calm list: name and email on the left, role on the right, the menu at the end.
+// On a phone the role moves below the name.
+
+:host {
+  display: block;
+}
+
+.member-row {
+  display: grid;
+  grid-template-areas:
+    'identity actions'
+    'badges badges';
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem 1rem;
+  align-items: start;
+
+  @include up(sm) {
+    grid-template-areas: 'identity badges actions';
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+  }
+}
+
+.member-row__identity {
+  grid-area: identity;
+  min-width: 0;
+}
+
+.member-row__name {
+  overflow-wrap: anywhere;
+}
+
+.member-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+// Long addresses must not push the menu out of the row.
+.member-row__email {
+  overflow-wrap: anywhere;
+}
+
+.member-row__badges {
+  display: flex;
+  flex-wrap: wrap;
+  grid-area: badges;
+  gap: 0.5rem;
+}
+
+.member-row__actions {
+  grid-area: actions;
+}
