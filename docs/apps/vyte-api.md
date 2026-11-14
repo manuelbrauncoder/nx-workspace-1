@@ -31,7 +31,7 @@ Then, every time:
 pnpm nx serve vyte-api
 ```
 
-The targets are those of [express-api-base](express-api-base.md#running-it). The first start creates the admin from `admin` in [config/development.json](../../apps/vyte-api/config/development.json). The admin creates further accounts through account links.
+The targets are those of [express-api-base](express-api-base.md#running-it). The first start creates the admin from `admin` in [config/development.json](../../apps/vyte-api/config/development.json). The admin creates further accounts through account links. Every start also creates the legal pages that do not exist yet from [seed/legal](../../apps/vyte-api/seed/legal), see [Legal pages](#legal-pages).
 
 ## Endpoints
 
@@ -53,6 +53,7 @@ All under `/api/v1`, only `/health` and `/docs` are at the root.
 | `/photos/:token…`                            | `vyte-api`    | The photo link of a guest (place card): upload and see or delete own photos, see [Photos](#photos)      |
 | `/stand/:token…`                             | `vyte-api`    | The photo stand (shared QR code): device cookie, upload and own photos, see [Photos](#photos)           |
 | `/events/:id/photos…`, `/photo-stand…`       | `vyte-api`    | Host gallery with ZIP, and the photo stand turned on, off and renewed, see [Photos](#photos)            |
+| `/legal/…`                                   | `vyte-api`    | The legal pages: public HTML per language, read and saved by admins, see [Legal pages](#legal-pages)    |
 | `/health`                                    | `server-core` | `{ "status": "ok", "version": "…" }` with the version of `package.json`                                 |
 | `/docs`                                      | `server-core` | OpenAPI document and Swagger UI, when `docs.enabled` is set                                             |
 
@@ -225,6 +226,23 @@ Rules in short:
 - **Deleting**: a photo's file goes with the photo, the photos go with their event, and with an owner's events when the owner is deleted (see [Events](#events)).
 - **Caching**: photo files send `private, no-cache`, so a deleted photo or a renewed link takes effect at once. The JSON answers, the ZIP and the device call send `Cache-Control: no-store`.
 
+## Legal pages
+
+Code in [src/features/legal](../../apps/vyte-api/src/features/legal): `legal.table.ts` (table `legal_pages`, one row per page with `html` as `{ de, en }`), `legal.routes.ts` (mounted at `/legal`), `legal.service.ts`, `legal.seed.ts`, `legal.openapi.ts`. The schemas are in [vyte-contracts](../libs/vyte-contracts.md#contents). The start content is in [seed/legal](../../apps/vyte-api/seed/legal): `<page>.<de|en>.html` for each of the four pages.
+
+| Method and path       | Who    | Content                                                                                                                                                                |
+| --------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /legal/{page}`   | public | the HTML fragment of `imprint`, `privacy`, `accessibility` or `cookies`, in `?lang=de` (default) or `en`; `Content-Language` is set; 404 while the page does not exist |
+| `GET /legal`          | admin  | `{ imprint, privacy, accessibility, cookies }`, each `{ de, en, updatedAt }` or `null` while not created                                                               |
+| `PATCH /legal/{page}` | admin  | `{ de?, en? }`, answers `{ [page] }`; with both languages the page is created or replaced, with one only that language changes                                         |
+
+Rules in short:
+
+- **Pages**: the four keys of `legalPageKeys` in [vyte-contracts](../libs/vyte-contracts.md#contents) and no others. The HTML is sanitized with `sanitizeRichText(html, 'page')` on every write, so internal paths and `tel:` links stay, as in the web app's `profile="page"`. A language is at most 100 000 characters.
+- **Seed at start**: `seedLegalOnStart('seed')` in [src/index.ts](../../apps/vyte-api/src/index.ts) runs after `seedAdmin()` on every start. It creates only the pages that do not exist yet (`onConflictDoNothing`), so a page an admin has saved is never overwritten. A broken seed file is logged and the start goes on; the missing page answers 404 until an admin creates it. The Dockerfile copies `seed/` into the image. Unlike [portfolio-api](portfolio-api.md) there is no `db:seed` target, the seed runs with the app.
+- **Creating**: a page that does not exist yet is created by a `PATCH` with both languages. With one language only, the page has to exist (404 otherwise).
+- **Access**: the public reads need no session and have no rate limit, because the web app renders the pages on the server. `GET /legal` and `PATCH` use `requireAdmin`, which reads the role from the database on every request.
+
 ## Calendar files
 
 Code in [src/features/events/events.calendar.ts](../../apps/vyte-api/src/features/events/events.calendar.ts): `calendarFile()` builds the file, `fullLocation()` joins place name and address. The guest link ([Guest links](#guest-links)) and the save the date ([Save the date](#save-the-date)) use it. The file is served as `event.ics` with `text/calendar; charset=utf-8` and `no-store`.
@@ -243,5 +261,6 @@ Code in [src/features/events/events.calendar.ts](../../apps/vyte-api/src/feature
 - **Docs off in production**: `docs.enabled` is `false` in [production.example.json](../../apps/vyte-api/config/production.example.json), so `/docs` is not mounted there
 - **Port**: 3300 locally, 3000 in the container, so all products run side by side
 - **Uploads**: the events and the guest photos store their files in the `uploads` folder of the base config, the Dockerfile and the stack provide it
+- **Legal pages**: not built into the web app as in `angular-base`. The texts are rows of `legal_pages`, edited by admins, the seed in [seed/legal](../../apps/vyte-api/seed/legal) only supplies the start content, see [Legal pages](#legal-pages)
 - **Cookie**: the photo stand sets its own cookie `vyte_stand_device`, see [Photos](#photos). It is not the session
 - **Config**: own keys in [src/config/index.ts](../../apps/vyte-api/src/config/index.ts), merged into the shared `rateLimit`: `rateLimit.rsvpWindowMinutes` (default 15) and `rateLimit.rsvpMaxRequests` (default 60); the development and production files set these values, `test.json` uses 1000 for the tests. `rateLimit.uploadWindowMinutes` (default 15) and `rateLimit.uploadMaxRequests` (default 200) have defaults too. Every key of this app's own config has a default, so an older config stays valid. The `photos.*` keys (limits of the guest photos) have defaults too, the values are in [section 3](../vyte/spec.md#3-domain-model) of the spec and in [Photos](#photos)
