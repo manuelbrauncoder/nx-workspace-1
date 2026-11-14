@@ -10,7 +10,7 @@ import { config } from '../config/index.js';
 beforeEach(async () => {
   await resetAuthTables();
   // events hang on no user, only their members do
-  await db.execute(sql`TRUNCATE events CASCADE`);
+  await db.execute(sql`TRUNCATE events, legal_pages CASCADE`);
   await mkdir(config.uploads.dir, { recursive: true });
   for (const file of await readdir(config.uploads.dir)) {
     await rm(path.join(config.uploads.dir, file));

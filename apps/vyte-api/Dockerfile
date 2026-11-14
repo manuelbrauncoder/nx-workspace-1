@@ -33,6 +33,8 @@ COPY --from=build /app/dist/apps/vyte-api/package.json ./
 COPY --from=build /app/dist/apps/vyte-api ./dist
 # SQL migrations, applied by: node dist/scripts/migrate.js
 COPY apps/vyte-api/drizzle ./drizzle
+# Text of the legal pages, created at every start if missing: seedLegalOnStart() in src/index.ts
+COPY apps/vyte-api/seed ./seed
 # Runs as the unprivileged user `node` (uid 1000). The API only writes to uploads/: the folder
 # exists here for a start without a mount, a mounted host folder has to belong to uid 1000.
 RUN mkdir uploads && chown node:node uploads

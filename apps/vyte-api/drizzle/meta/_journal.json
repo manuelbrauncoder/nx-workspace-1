@@ -57,6 +57,13 @@
       "when": 1794420377719,
       "tag": "0007_tricky_phil_sheldon",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794687231710,
+      "tag": "0008_curvy_radioactive_man",
+      "breakpoints": true
     }
   ]
 }

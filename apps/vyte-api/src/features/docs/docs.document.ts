@@ -7,13 +7,15 @@ import { apiPrefix } from '../../shared/api.js';
 import { registerEventsDocs } from '../events/events.openapi.js';
 import { registerGuestsDocs } from '../guests/guests.openapi.js';
 import { registerInvitesDocs } from '../invites/invites.openapi.js';
+import { registerLegalDocs } from '../legal/legal.openapi.js';
 import { registerPhotosDocs } from '../photos/photos.openapi.js';
 import { registerRsvpDocs } from '../rsvp/rsvp.openapi.js';
 import { registerSaveTheDateDocs } from '../save-the-date/save-the-date.openapi.js';
 import { registerTeamDocs } from '../team/team.openapi.js';
 
 const description = `
-The backend of vyte: events, their guest lists and the answers of the guests. All paths are
+The backend of vyte: events, their guest lists and the answers of the guests, and the
+legal pages of the site. All paths are
 under \`/api/v1\`; only \`/health\` is not.
 
 Authentication uses an HTTP-only session cookie, set by sign-in. Browser clients must send
@@ -42,6 +44,7 @@ export function buildDocs(): OpenApiDocument {
       registerInvitesDocs,
       registerSaveTheDateDocs,
       registerPhotosDocs,
+      registerLegalDocs,
     ],
   });
 }

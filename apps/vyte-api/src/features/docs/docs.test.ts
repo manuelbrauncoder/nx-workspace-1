@@ -9,6 +9,7 @@ import { authRouter } from '@server/auth/auth.routes';
 import { db } from '@server/core/db/db';
 import { eventImageSchema, eventSchema, saveTheDateSchema } from '@vyte/contracts/events';
 import { guestSchema, invitationSchema } from '@vyte/contracts/guests';
+import { legalPagesSchema } from '@vyte/contracts/legal';
 import { photoSchema, uploadSchema } from '@vyte/contracts/photos';
 import { editorInviteSchema, memberSchema, publicEditorInviteSchema } from '@vyte/contracts/team';
 import { eq } from 'drizzle-orm';
@@ -23,6 +24,8 @@ import { eventsRouter } from '../events/events.routes.js';
 import { events } from '../events/events.table.js';
 import { guestsRouter } from '../guests/guests.routes.js';
 import { invitesRouter } from '../invites/invites.routes.js';
+import { legalRouter } from '../legal/legal.routes.js';
+import { seedLegal } from '../legal/legal.seed.js';
 import {
   photoLinkRouter,
   photosRouter,
@@ -100,6 +103,7 @@ describe('docs', () => {
       ...routesOf(`${apiPrefix}/events/{id}/photo-stand`, photoStandSettingsRouter),
       ...routesOf(`${apiPrefix}/photos`, photoLinkRouter),
       ...routesOf(`${apiPrefix}/stand`, standRouter),
+      ...routesOf(`${apiPrefix}/legal`, legalRouter),
     ];
 
     expect(documented.sort()).toEqual(implemented.sort());
@@ -410,5 +414,16 @@ describe('docs', () => {
     const off = await agent.delete(`${apiPrefix}/events/${id}/photo-stand`).expect(200);
     expect(eventSchema.strict().safeParse(off.body.event).error).toBeUndefined();
     expect(off.body.event.photoStand).toBeNull();
+  });
+
+  it('documents the legal pages the API really returns', async () => {
+    await seedLegal('seed');
+
+    const admin = await adminAgent();
+    const pages = await admin.get(`${apiPrefix}/legal`).expect(200);
+    expect(legalPagesSchema.strict().safeParse(pages.body).error).toBeUndefined();
+
+    const imprint = await request(app).get(`${apiPrefix}/legal/imprint?lang=en`).expect(200);
+    expect(imprint.type).toBe('text/html');
   });
 });
