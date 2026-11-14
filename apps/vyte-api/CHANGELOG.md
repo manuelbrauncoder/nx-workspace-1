@@ -1,3 +1,9 @@
+## 0.0.2 (2026-11-14)
+
+### 🚀 Features
+
+- **vyte-api:** legal pages the admin edits, with a cookie policy ([c1a75c8](https://github.com/manuelbrauncoder/nx-workspace-1/commit/c1a75c8))
+
 ## 0.0.1 (2026-11-14)
 
 ### 🚀 Features

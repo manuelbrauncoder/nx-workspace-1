@@ -1,3 +1,10 @@
+## 0.0.2 (2026-11-14)
+
+### 🚀 Features
+
+- **vyte-web:** editable legal pages, a cookie policy and events in the account menu ([925f685](https://github.com/manuelbrauncoder/nx-workspace-1/commit/925f685))
+- **vyte-api:** legal pages the admin edits, with a cookie policy ([c1a75c8](https://github.com/manuelbrauncoder/nx-workspace-1/commit/c1a75c8))
+
 ## 0.0.1 (2026-11-14)
 
 ### 🚀 Features
