@@ -1,10 +1,18 @@
 {
+  "admin": {
+    "tabs": {
+      "label": "Areas of the administration",
+      "accounts": "Accounts",
+      "legal": "Legal pages"
+    }
+  },
   "auth": {
     "account": "Account",
     "signIn": "Sign in",
     "signOut": "Sign out",
     "signedOut": "You are signed out",
     "signOutFailed": "Signing out failed",
+    "events": "Events",
     "admin": "Manage accounts"
   },
   "layout": {
@@ -16,17 +24,14 @@
     "footer": {
       "imprint": "Imprint",
       "privacy": "Privacy",
-      "accessibility": "Accessibility"
+      "accessibility": "Accessibility",
+      "cookies": "Cookies"
     },
     "guestFooter": "Made with vyte",
     "nav": {
       "events": "Events",
-      "accounts": "Accounts"
+      "accounts": "Administration"
     }
-  },
-  "legal": {
-    "email": "Email",
-    "phone": "Phone"
   },
   "notFound": {
     "title": "Page not found",
@@ -73,6 +78,16 @@
       "more": "More actions: {{ title }}",
       "print": "Print",
       "deleteFailed": "The event could not be deleted"
+    }
+  },
+  "legalEditor": {
+    "loading": "Loading the legal pages",
+    "loadFailed": "The legal pages could not be loaded",
+    "pages": {
+      "imprint": "Imprint",
+      "privacy": "Privacy policy",
+      "accessibility": "Accessibility statement",
+      "cookies": "Cookie policy"
     }
   }
 }

@@ -36,4 +36,5 @@ export const APP_FOOTER_ITEMS: AppNavItem[] = [
   { path: '/imprint', labelKey: 'layout.footer.imprint' },
   { path: '/privacy', labelKey: 'layout.footer.privacy' },
   { path: '/accessibility', labelKey: 'layout.footer.accessibility' },
+  { path: '/cookies', labelKey: 'layout.footer.cookies' },
 ];

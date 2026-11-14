@@ -94,10 +94,22 @@ export const routes: Routes = [
         ],
       },
       {
-        // Accounts and account links, `/admin/users`.
+        // Accounts and account links on `/admin/users`, the legal pages on `/admin/legal`.
         path: 'admin',
         canActivate: [adminGuard],
-        loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes),
+        children: [
+          {
+            path: 'legal',
+            loadChildren: () =>
+              import('./features/legal-editor/legal-editor.routes').then(
+                (m) => m.legalEditorRoutes,
+              ),
+          },
+          {
+            path: '',
+            loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes),
+          },
+        ],
       },
       {
         // An editor invite: accept it, sign in or create an account.

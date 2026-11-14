@@ -5,3 +5,14 @@
 .legal-page {
   max-width: 44rem;
 }
+
+.legal-page__content {
+  display: block;
+  margin-top: 2.5rem;
+}
+
+// Long German words such as "Datenschutzerklärung" do not fit a phone at the page size.
+.legal-page__heading {
+  hyphens: auto;
+  overflow-wrap: break-word;
+}

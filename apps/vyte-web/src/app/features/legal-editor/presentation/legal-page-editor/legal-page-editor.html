@@ -1,0 +1,52 @@
+<app-ui-breadcrumb [items]="_breadcrumb()" />
+<h1 class="mt-2" appUiText="page">{{ _pageKey() | t }}</h1>
+
+<app-async-content
+  class="legal-page-editor"
+  [state]="_store.state()"
+  [failureHeading]="'legalEditor.loadFailed' | t"
+  [loadingLabel]="'legalEditor.loading' | t"
+  (retry)="_store.reload()"
+  loadingIndicator="skeleton"
+  retryable
+>
+  <ng-template>
+    <p class="legal-page-editor__status" appUiText="lead">
+      {{ (_stored() ? 'legalPageEditor.existing' : 'legalPageEditor.missing') | t }}
+    </p>
+    <form class="legal-page-editor__form" [formRoot]="_pageForm">
+      <app-form-rich-text
+        [formField]="_pageForm.de"
+        [label]="'legalPageEditor.languages.de' | t"
+        [description]="'legalPageEditor.contentDescription' | t"
+        profile="page"
+      />
+      <app-form-rich-text
+        [formField]="_pageForm.en"
+        [label]="'legalPageEditor.languages.en' | t"
+        [description]="'legalPageEditor.contentDescription' | t"
+        profile="page"
+      />
+
+      @if (_store.mutationState().failure; as failure) {
+        <app-failure-alert [failure]="failure" [heading]="'legalPageEditor.saveFailed' | t" />
+      }
+      <div class="legal-page-editor__actions">
+        <button
+          [loading]="_saving()"
+          [loadingLabel]="'legalPageEditor.saving' | t"
+          appUiButton
+          type="submit"
+        >
+          {{ 'legalPageEditor.save' | t }}
+        </button>
+        @if (_stored()) {
+          <a [routerLink]="'/' + page()" appUiButton variant="outline">
+            {{ 'legalPageEditor.view' | t }}
+          </a>
+        }
+        <a appUiButton variant="ghost" routerLink="/admin/legal">{{ 'common.cancel' | t }}</a>
+      </div>
+    </form>
+  </ng-template>
+</app-async-content>

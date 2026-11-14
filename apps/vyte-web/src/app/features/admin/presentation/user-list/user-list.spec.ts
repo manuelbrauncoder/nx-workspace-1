@@ -1,5 +1,6 @@
 import { ApplicationRef, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { AppConfigService } from '@core/config/app-config';
 import { Failure } from '@core/failure/failure';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
@@ -45,6 +46,7 @@ describe('UserList', () => {
     invites.set(options.invites ?? [INVITE]);
     TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         {
           provide: AdminStore,
           useValue: {
@@ -153,6 +155,19 @@ describe('UserList', () => {
     expect(element.querySelector('button[aria-label="Aktionen für Admin"]')).toBeNull();
     expect(element.querySelector('button[aria-label="Aktionen für Ada"]')).not.toBeNull();
     expect(element.textContent).toContain('Das bist du');
+  });
+
+  it('leads to the legal pages through the tabs of the admin area', async () => {
+    const { element } = await render();
+
+    const tabs = Array.from(element.querySelectorAll('nav a')).map((link) => [
+      link.textContent?.trim(),
+      link.getAttribute('href'),
+    ]);
+    expect(tabs).toEqual([
+      ['Konten', '/admin/users'],
+      ['Rechtsseiten', '/admin/legal'],
+    ]);
   });
 
   it('lists users and open links as rows of calm lists, the create form in its panel', async () => {

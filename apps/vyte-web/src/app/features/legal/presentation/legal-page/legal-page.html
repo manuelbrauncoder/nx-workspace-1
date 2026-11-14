@@ -1,4 +1,16 @@
 <article class="legal-page">
-  <h1 appUiText="page">{{ heading() }}</h1>
-  <ng-content />
+  <h1 class="legal-page__heading" appUiText="page">{{ _headingKey() | t }}</h1>
+  <app-async-content
+    class="legal-page__content"
+    [state]="_store.state()"
+    [failureHeading]="'legalPage.loadFailed' | t"
+    [loadingLabel]="'legalPage.loading' | t"
+    (retry)="_store.reload()"
+    loadingIndicator="skeleton"
+    retryable
+  >
+    <ng-template>
+      <app-ui-rich-text [html]="_store.html()" profile="page" />
+    </ng-template>
+  </app-async-content>
 </article>

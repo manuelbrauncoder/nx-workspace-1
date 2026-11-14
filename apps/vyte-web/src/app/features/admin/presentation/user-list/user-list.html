@@ -1,4 +1,5 @@
 <h1 appUiText="page">{{ 'userList.heading' | t }}</h1>
+<app-ui-tab-nav class="user-list__tabs" [items]="_tabs" [label]="'admin.tabs.label' | t" />
 <p class="user-list__lead" appUiText="lead">{{ 'userList.lead' | t }}</p>
 
 <section class="user-list__section user-list__panel" aria-labelledby="user-list-create">

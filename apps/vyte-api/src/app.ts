@@ -13,6 +13,7 @@ import { eventsRouter } from './features/events/events.routes.js';
 import { removeEventsOfUser } from './features/events/events.user-deletion.js';
 import { guestsRouter } from './features/guests/guests.routes.js';
 import { invitesRouter } from './features/invites/invites.routes.js';
+import { legalRouter } from './features/legal/legal.routes.js';
 import {
   photoLinkRouter,
   photosRouter,
@@ -50,6 +51,7 @@ export function createApp() {
       '/save-the-date': saveTheDateRouter,
       '/photos': photoLinkRouter,
       '/stand': standRouter,
+      '/legal': legalRouter,
     },
     docs: buildDocs,
     // Kept up to date by `nx release`, reported by /health.

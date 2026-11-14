@@ -1,6 +1,6 @@
 # vyte: specification
 
-Status: **draft**, still being refined. The API is complete for v1: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the events, the guest list with its CSV export, the guest links, the team (members, hand-over, editor invites), the save the date and the guest photos, see [vyte-api](../apps/vyte-api.md). The web app has its frame: [apps/vyte-web](../../apps/vyte-web) runs with the app shell, the sign-in, the legal pages, the start page, the complete API layer, the event pages (list, form, detail), the guest list of the hosts, the guest page `/rsvp/:token`, the team with editor invites (`/events/:id/team`, `/invite/:token`), the save the date (panel on the event page, `/save-the-date/:token`), the photos (`/events/:id/photos`, the photo stand on the event page, the upload pages `/photos/:token` and `/stand/:token`), the print page with place cards and the stand card (`/events/:id/print`), the accounts of the admin and the page of an account link, see [vyte-web](../apps/vyte-web.md).
+Status: **draft**, still being refined. The API is complete for v1: [apps/vyte-api](../../apps/vyte-api) holds the accounts, the admin, the legal pages (text per language in the database, the start content from a seed), the events, the guest list with its CSV export, the guest links, the team (members, hand-over, editor invites), the save the date and the guest photos, see [vyte-api](../apps/vyte-api.md). The web app has its frame: [apps/vyte-web](../../apps/vyte-web) runs with the app shell, the sign-in, the legal pages `/imprint`, `/privacy`, `/accessibility` and `/cookies` (read from the API, edited by the admin under `/admin/legal`), the start page, the complete API layer, the event pages (list, form, detail), the guest list of the hosts, the guest page `/rsvp/:token`, the team with editor invites (`/events/:id/team`, `/invite/:token`), the save the date (panel on the event page, `/save-the-date/:token`), the photos (`/events/:id/photos`, the photo stand on the event page, the upload pages `/photos/:token` and `/stand/:token`), the print page with place cards and the stand card (`/events/:id/print`), the admin area with the accounts and the legal pages (tabs "Konten | Rechtsseiten"), the page of an account link and the events in the account menu, see [vyte-web](../apps/vyte-web.md).
 
 ## 1. Overview
 
@@ -33,7 +33,7 @@ vyte plans an event and keeps its guest list. The host creates an event, adds th
 
 | Role    | Who                                                                  | Account |
 | ------- | -------------------------------------------------------------------- | ------- |
-| Admin   | Role `admin` of `server-auth`, creates accounts                      | yes     |
+| Admin   | Role `admin` of `server-auth`, creates accounts, edits legal pages   | yes     |
 | Owner   | Created the event or took it over, exactly one per event             | yes     |
 | Editor  | Joined through an invite link of the owner                           | yes     |
 | Guest   | Is on the guest list, has a personal link and a photo link           | no      |
@@ -64,14 +64,15 @@ A past event is read-only for everyone: hosts can still read it, export the list
 
 Limits become constants in `vyte-contracts` (like `notes-limits`).
 
-| Limit                 | Value                                       |
-| --------------------- | ------------------------------------------- |
-| Guests per event      | 500                                         |
-| Names per pasted list | 100                                         |
-| Editors per event     | 10 (also the open editor invites at a time) |
-| Images per event      | 6                                           |
-| Companions per guest  | 10                                          |
-| Events per user       | none in v1                                  |
+| Limit                   | Value                                       |
+| ----------------------- | ------------------------------------------- |
+| Guests per event        | 500                                         |
+| Names per pasted list   | 100                                         |
+| Editors per event       | 10 (also the open editor invites at a time) |
+| Images per event        | 6                                           |
+| Companions per guest    | 10                                          |
+| Events per user         | none in v1                                  |
+| Legal page per language | 100 000 characters of HTML                  |
 
 The photo limits are config of `vyte-api`, not constants, so they change without a release. The API sends the limit and what is left with every answer of a photo route, the web app never hardcodes them. Each key has a default, so a config without them stays valid. The upload rate limit (`rateLimit.uploadWindowMinutes`, default 15, and `rateLimit.uploadMaxRequests`, default 200, per client IP) is described in section 8.
 
@@ -189,6 +190,18 @@ A couple or family is one guest with an allowance ("Familie Weber", +3): one lin
 
 This is a new part of the shared `server-auth`, not of vyte: closed sign-up with links is useful for every app. Other apps get the table through their migrations but only offer it if they mount the routes.
 
+### LegalPage
+
+One row per page of the legal texts. The four keys are fixed; the rows are created by the seed at the start and edited by the admin.
+
+| Field       | Type      | Rules                                                                                                 |
+| ----------- | --------- | ----------------------------------------------------------------------------------------------------- |
+| `key`       | text      | `imprint`, `privacy`, `accessibility` or `cookies`, primary key                                       |
+| `html`      | json      | `{ de, en }`: an HTML fragment per language, sanitized on every save, at most 100 000 characters each |
+| `updatedAt` | timestamp | set on every save                                                                                     |
+
+A page that is not created yet answers 404 on the public routes. The seed creates only the missing pages at each start, so an edit of an admin is never overwritten.
+
 ## 4. Flows
 
 ### Accounts
@@ -267,6 +280,12 @@ For hosts, `/events/:id/photos` shows all photos as a grid with the name of the 
 - `/events` shows "Kommend" and "Vergangen"
 - A past event opens read-only: no editing, no guest changes, no invites. Hosts can export the list and the owner can delete the event. An editor can still leave. Photos stay manageable, uploads run until the window closes. The save the date can be turned off, but not turned on or renewed
 - Nothing is deleted automatically
+
+### Legal pages
+
+1. The public pages `/imprint`, `/privacy`, `/accessibility` and `/cookies` show the HTML of the API in the language of the page
+2. An admin opens `/admin/legal`, sees when each page changed last, and edits it in German and English in two rich text fields
+3. The cookie policy (`/cookies`) names every cookie and storage entry vyte sets, see section 8
 
 ### Deleting an account
 
@@ -396,30 +415,42 @@ Creating the account reuses `hashPassword()`, `insertUser()` and `startSession()
 
 Schemas live in `vyte-contracts` (the account invites in `contracts`, next to `auth`), the OpenAPI document lists every route (`docs.test.ts`).
 
+### Legal pages (public read, admin write)
+
+| Method and path       | Who    | Content                                                                                                                                                              |
+| --------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /legal/{page}`   | public | the HTML fragment of `imprint`, `privacy`, `accessibility` or `cookies`, `lang` `de` (default) or `en`; `Content-Language` is set; 404 while the page does not exist |
+| `GET /legal`          | admin  | `{ imprint, privacy, accessibility, cookies }` with `{ de, en, updatedAt }` each, `null` for a page not created yet                                                  |
+| `PATCH /legal/{page}` | admin  | `{ de?, en? }`, sanitized; with both languages the page is created or replaced, with one only that language changes (the page must exist); answers `{ [page] }`      |
+
+Schemas live in `vyte-contracts` (`legal.ts`). The start content comes from `apps/vyte-api/seed/legal` and is created at every start, see [vyte-api](../apps/vyte-api.md#legal-pages).
+
 ## 7. Web draft
 
 Built like `angular-base`: SSR, app shell with header and footer, sign-in of the `auth` feature, legal pages. No sign-up page.
 
-| Route                                    | Feature         | Guard        | Content                                                                     |
-| ---------------------------------------- | --------------- | ------------ | --------------------------------------------------------------------------- |
-| `/`                                      | `home`          | –            | What vyte is and sign-in. Signed in: redirect to `/events`                  |
-| `/events`                                | `events`        | `authGuard`  | Own events, upcoming and past, "Neues Event"                                |
-| `/events/new`                            | `events`        | `authGuard`  | Form of a new event                                                         |
-| `/events/:id`                            | `events`        | `authGuard`  | Event details, counts, links to guests and team                             |
-| `/events/:id/edit`                       | `events`        | `authGuard`  | Form of the event, images                                                   |
-| `/events/:id/guests`                     | `guests`        | `authGuard`  | Guest list with filter, add one or a list, edit, record answers, links, CSV |
-| `/events/:id/team`                       | `team`          | `authGuard`  | Members, invite links and handover (owner), leave (editor)                  |
-| `/events/:id/photos`                     | `photos`        | `authGuard`  | All photos, hide, delete, ZIP download                                      |
-| `/events/:id/print`                      | `print`         | `authGuard`  | Place cards and the stand card, print layout without app shell              |
-| `/invite/:token`                         | `invite`        | –            | Accept an invite: sign in or create an account right there                  |
-| `/rsvp/:token`                           | `rsvp`          | –            | The guest page, without app shell, mobile first                             |
-| `/save-the-date/:token`                  | `save-the-date` | –            | Save the date, without app shell                                            |
-| `/photos/:token`                         | `upload`        | –            | Upload page of a guest (place card)                                         |
-| `/stand/:token`                          | `upload`        | –            | Upload page of the photo stand                                              |
-| `/welcome/:token`                        | `auth`          | `guestGuard` | Create an account from an admin link                                        |
-| `/admin/users`                           | `admin`         | `adminGuard` | Accounts, open account links, "Konto anlegen"                               |
-| `/sign-in`                               | `auth`          | `guestGuard` | from `angular-base`                                                         |
-| `/imprint`, `/privacy`, `/accessibility` | `legal`         | –            | from `angular-base`, `SITE_OWNER`                                           |
+| Route                                                | Feature         | Guard        | Content                                                                     |
+| ---------------------------------------------------- | --------------- | ------------ | --------------------------------------------------------------------------- |
+| `/`                                                  | `home`          | –            | What vyte is and sign-in. Signed in: redirect to `/events`                  |
+| `/events`                                            | `events`        | `authGuard`  | Own events, upcoming and past, "Neues Event"                                |
+| `/events/new`                                        | `events`        | `authGuard`  | Form of a new event                                                         |
+| `/events/:id`                                        | `events`        | `authGuard`  | Event details, counts, links to guests and team                             |
+| `/events/:id/edit`                                   | `events`        | `authGuard`  | Form of the event, images                                                   |
+| `/events/:id/guests`                                 | `guests`        | `authGuard`  | Guest list with filter, add one or a list, edit, record answers, links, CSV |
+| `/events/:id/team`                                   | `team`          | `authGuard`  | Members, invite links and handover (owner), leave (editor)                  |
+| `/events/:id/photos`                                 | `photos`        | `authGuard`  | All photos, hide, delete, ZIP download                                      |
+| `/events/:id/print`                                  | `print`         | `authGuard`  | Place cards and the stand card, print layout without app shell              |
+| `/invite/:token`                                     | `invite`        | –            | Accept an invite: sign in or create an account right there                  |
+| `/rsvp/:token`                                       | `rsvp`          | –            | The guest page, without app shell, mobile first                             |
+| `/save-the-date/:token`                              | `save-the-date` | –            | Save the date, without app shell                                            |
+| `/photos/:token`                                     | `upload`        | –            | Upload page of a guest (place card)                                         |
+| `/stand/:token`                                      | `upload`        | –            | Upload page of the photo stand                                              |
+| `/welcome/:token`                                    | `auth`          | `guestGuard` | Create an account from an admin link                                        |
+| `/admin/users`                                       | `admin`         | `adminGuard` | Accounts, open account links, "Konto anlegen", tabs to the legal pages      |
+| `/admin/legal`                                       | `legal-editor`  | `adminGuard` | Legal pages with the time of the last change, edit or create each one       |
+| `/admin/legal/:page`                                 | `legal-editor`  | `adminGuard` | Editor of one legal page: German and English as rich text, save, view       |
+| `/sign-in`                                           | `auth`          | `guestGuard` | from `angular-base`                                                         |
+| `/imprint`, `/privacy`, `/accessibility`, `/cookies` | `legal`         | –            | The legal pages from the API, in the language of the page                   |
 
 - `/` is the only page in the sitemap; every other route has `index: false`
 - Dates through `localDate`, but in the event's `timeZone`, not the one of the browser (needs an option in `LocalDatePipe`); all-day events show dates only
@@ -468,6 +499,7 @@ Direction **Konfetti**: bright, cheerful and clear, a little playful but not lou
 - The save-the-date link may travel through group chats: it shows `locationName` only, no address, no guest names
 - Photo stand: the device cookie is a random id, set once by `POST /stand/{token}/device`, http-only, `SameSite=Lax`, path `/api/v1/stand`, 30 days, `Secure` where the session cookie is. It is needed for the upload limit and to show own photos, so it is strictly necessary and needs no consent banner. Clearing it gets a new allowance, which `photos.maxPerEvent` and the rate limit cap
 - Photos show people: they are personal data, a section in the privacy policy, deleted with the event. `processImage()` drops EXIF and GPS. Hidden photos are not in the ZIP
+- Cookies (`/cookies`, editable like the other legal pages): the session cookie `__Host-sid` (sign-in, seven days), the device cookie `vyte_stand_device` of the photo stand (30 days), the language cookie `lang` (one year, only after a change), and the colour scheme in the local storage of the browser, which never leaves it. No analytics, advertising or third-party cookies, so no banner. The page names these; a change of the cookies changes the page too
 - Storage: 1000 photos of about 0.5 MB as WebP make about 500 MB per event at most, on `/mnt/data/vyte-api`
 
 ## 9. Technical frame
