@@ -217,7 +217,7 @@ describe('InvitePage', () => {
       });
 
       expect(element.querySelector('[role="alert"]')?.textContent).toContain(
-        'Das Team ist voll. Frag beim Owner nach.',
+        'Das Team ist voll. Frag beim Gastgeber nach.',
       );
       expect(element.textContent).not.toContain('gibt es schon ein Konto');
     });

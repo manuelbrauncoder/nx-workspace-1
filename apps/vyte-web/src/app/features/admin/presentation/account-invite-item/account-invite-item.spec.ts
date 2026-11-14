@@ -45,10 +45,10 @@ describe('AccountInviteItem', () => {
     fixture.componentInstance.revoke.subscribe(revoke);
 
     element
-      .querySelector<HTMLButtonElement>('button[aria-label="Kopieren: Link für Grace"]')!
+      .querySelector<HTMLButtonElement>('button[aria-label="Link kopieren für Grace"]')!
       .click();
     element
-      .querySelector<HTMLButtonElement>('button[aria-label="Widerrufen: Link für Grace"]')!
+      .querySelector<HTMLButtonElement>('button[aria-label="Link zurückziehen für Grace"]')!
       .click();
 
     expect(copy).toHaveBeenCalledTimes(1);

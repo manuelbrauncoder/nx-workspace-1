@@ -264,7 +264,9 @@ describe('PhotoList', () => {
           width: 1600,
           height: 900,
           heading: 'Foto von Ada',
-          description: expect.stringMatching(/^Tischkarte · \d{2}\.\d{2}\.\d{4}, \d{2}:\d{2}$/),
+          description: expect.stringMatching(
+            /^Hochgeladen am \d{2}\.\d{2}\.\d{4}, \d{2}:\d{2} \(Tischkarte\)$/,
+          ),
         },
       });
     });

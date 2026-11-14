@@ -22,17 +22,17 @@
     "empty": "Keine offenen Links.",
     "expires": "Gültig bis {{ date }}",
     "address": "Link für {{ name }}",
-    "copy": "Kopieren",
-    "copyNamed": "Kopieren: Link für {{ name }}",
+    "copy": "Link kopieren",
+    "copyNamed": "Link kopieren für {{ name }}",
     "copied": "Link kopiert",
     "copyFailed": "Der Link konnte nicht kopiert werden",
-    "revoke": "Widerrufen",
-    "revokeNamed": "Widerrufen: Link für {{ name }}",
-    "revokeHeading": "Link für {{ name }} widerrufen?",
+    "revoke": "Link zurückziehen",
+    "revokeNamed": "Link zurückziehen für {{ name }}",
+    "revokeHeading": "Link für {{ name }} zurückziehen?",
     "revokeDescription": "Der Link funktioniert danach nicht mehr. Du kannst jederzeit einen neuen anlegen.",
-    "revokeConfirm": "Widerrufen",
-    "revoked": "Link für {{ name }} widerrufen",
-    "revokeFailed": "Der Link konnte nicht widerrufen werden"
+    "revokeConfirm": "Zurückziehen",
+    "revoked": "Link für {{ name }} zurückgezogen",
+    "revokeFailed": "Der Link konnte nicht zurückgezogen werden"
   },
   "users": {
     "heading": "Alle Konten",
@@ -41,8 +41,7 @@
     "actionFailed": "Die Aktion ist fehlgeschlagen",
     "conflict": "Das eigene Konto lässt sich hier nicht ändern oder löschen.",
     "roles": {
-      "admin": "Admin",
-      "user": "Gastgeber"
+      "admin": "Admin"
     },
     "me": "Das bist du",
     "since": "Konto seit {{ date }}",
@@ -58,7 +57,7 @@
     "revoked": "{{ name }} ist überall abgemeldet",
     "delete": "Konto löschen",
     "deleteHeading": "Konto von {{ name }} löschen?",
-    "deleteDescription": "Das Konto wird dauerhaft gelöscht, mit allen Events, die ihm gehören, samt Gästen und Fotos. Events, in denen es nur Editor ist, bleiben. Das lässt sich nicht rückgängig machen.",
+    "deleteDescription": "Das Konto wird dauerhaft gelöscht, mit allen Events, die ihm gehören, samt Gästen und Fotos. Events, in denen es nur Mitplaner ist, bleiben. Das lässt sich nicht rückgängig machen.",
     "deleteConfirm": "Löschen",
     "deleted": "Konto von {{ name }} gelöscht"
   }

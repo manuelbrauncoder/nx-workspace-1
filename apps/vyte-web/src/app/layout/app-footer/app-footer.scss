@@ -32,3 +32,10 @@
     outline-offset: 2px;
   }
 }
+
+// Copyright and version apart by space, not by a middle dot, also when they wrap.
+.app-footer__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+}

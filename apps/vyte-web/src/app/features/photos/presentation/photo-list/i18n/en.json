@@ -33,7 +33,7 @@
   },
   "dialog": {
     "heading": "Photo by {{ name }}",
-    "description": "{{ source }} · {{ date }}"
+    "description": "Uploaded on {{ date }} ({{ source }})"
   },
   "remove": {
     "heading": "Delete the photo by {{ name }}?",

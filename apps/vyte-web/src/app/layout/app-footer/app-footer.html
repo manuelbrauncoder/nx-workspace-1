@@ -1,9 +1,9 @@
 <footer class="app-footer">
   <div class="page-container app-footer__bar">
-    <p>
-      © {{ _year }} {{ _appName }}
+    <p class="app-footer__meta">
+      <span>© {{ _year }} {{ _appName }}</span>
       @if (_version) {
-        <span class="app-footer__version">· {{ 'common.version' | t: { version: _version } }}</span>
+        <span class="app-footer__version">{{ 'common.version' | t: { version: _version } }}</span>
       }
     </p>
     <nav [attr.aria-label]="'layout.legalNavigation' | t">

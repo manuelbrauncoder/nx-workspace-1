@@ -12,15 +12,20 @@
     </p>
   </div>
 
-  <p class="user-row__badges">
-    <span [variant]="_isAdmin() ? 'secondary' : 'outline'" appUiBadge>
-      <app-ui-icon [name]="_isAdmin() ? 'shieldCheck' : 'user'" />
-      {{ (_isAdmin() ? 'userList.users.roles.admin' : 'userList.users.roles.user') | t }}
-    </span>
-    @if (isMe()) {
-      <span appUiBadge>{{ 'userList.users.me' | t }}</span>
-    }
-  </p>
+  <!-- Every account hosts events, only the admins get a label. -->
+  @if (_isAdmin() || isMe()) {
+    <p class="user-row__badges">
+      @if (_isAdmin()) {
+        <span appUiBadge variant="secondary">
+          <app-ui-icon name="shieldCheck" />
+          {{ 'userList.users.roles.admin' | t }}
+        </span>
+      }
+      @if (isMe()) {
+        <span appUiBadge>{{ 'userList.users.me' | t }}</span>
+      }
+    </p>
+  }
 
   @if (!isMe()) {
     <div class="user-row__actions">

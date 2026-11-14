@@ -156,7 +156,7 @@ The owner can revoke an open invite (delete it); a used one stays as the record 
 | `companions`             | integer                                 | 0–`maxCompanions`, only meaningful when accepted, 0 otherwise                                                                                   |
 | `companionsReduced`      | boolean                                 | `true` when lowering `maxCompanions` cut `companions`; cleared by the next answer, of the host or of the guest. Default `false`                 |
 | `message`                | text                                    | optional, at most 500 characters, written by the guest                                                                                          |
-| `answeredBy`             | `'guest' \| 'host'` or null             | who gave the last answer; `host` shows "vom Host eingetragen" in the list                                                                       |
+| `answeredBy`             | `'guest' \| 'host'` or null             | who gave the last answer; `host` shows "Von euch eingetragen" in the list                                                                       |
 | `respondedAt`            | timestamp                               | time of the last answer                                                                                                                         |
 | `createdAt`, `updatedAt` | timestamp                               |                                                                                                                                                 |
 
@@ -285,7 +285,7 @@ The event page shows the counts, the guest page the list.
 | At most   | everyone who could come: all guests plus all allowances, for planning |
 
 - Filter by answer (all, coming, declined, no answer), search by name
-- One row per guest, 25 to a page: name, answer as a dot and its word (with companions), allowance ("bis +1", "Ohne Begleitung"), "vom Host eingetragen" when a host answered, message of the guest, note of the hosts, time of the answer
+- One row per guest, 25 to a page: name, answer as a dot and its word (with companions), allowance ("bis +1", "Ohne Begleitung"), "Von euch eingetragen" when a host answered, message of the guest, note of the hosts, time of the answer
 - Sorted by name; "newest answers first" as a second order. Page, filter and sort live in the address (`?page=2&filter=accepted&sort=answered`), the search does not
 - CSV export: one row per guest, sorted by name, with name, allowance, answer, companions, people in total, message, note, answered by, time of the answer (`YYYY-MM-DD HH:mm` in the event's time zone). UTF-8 with BOM, `;` as separator and CRLF between rows, so Excel opens it directly. Headings and answers in German, in English with `lang=en` (`?lang=de|en`, German by default). File name `<title>-gaeste.csv` or `<title>-guests.csv`: the title reduced to letters and digits, at most 60 characters
 
@@ -503,7 +503,7 @@ Reference projects: `express-api-base` for the API with auth and images, `angula
 | Companions           | a number only, no names                                                                                                                     |
 | Couples and families | one guest with an allowance, one answer                                                                                                     |
 | Adding guests        | one by one or as a pasted list                                                                                                              |
-| Answers by hosts     | allowed, marked "vom Host eingetragen"                                                                                                      |
+| Answers by hosts     | allowed, marked "Von euch eingetragen"                                                                                                      |
 | Questions to guests  | only the message, with a hint about food wishes                                                                                             |
 | All-day events       | switch `allDay`, dates only                                                                                                                 |
 | Location             | text plus a link to OpenStreetMap, no embedded map                                                                                          |

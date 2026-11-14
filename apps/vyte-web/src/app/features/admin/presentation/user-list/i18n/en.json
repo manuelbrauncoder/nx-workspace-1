@@ -22,12 +22,12 @@
     "empty": "No open links.",
     "expires": "Valid until {{ date }}",
     "address": "Link for {{ name }}",
-    "copy": "Copy",
-    "copyNamed": "Copy: link for {{ name }}",
+    "copy": "Copy link",
+    "copyNamed": "Copy link for {{ name }}",
     "copied": "Link copied",
     "copyFailed": "The link could not be copied",
-    "revoke": "Revoke",
-    "revokeNamed": "Revoke: link for {{ name }}",
+    "revoke": "Revoke link",
+    "revokeNamed": "Revoke link for {{ name }}",
     "revokeHeading": "Revoke the link for {{ name }}?",
     "revokeDescription": "The link stops working. You can create a new one at any time.",
     "revokeConfirm": "Revoke",
@@ -41,8 +41,7 @@
     "actionFailed": "The action failed",
     "conflict": "Your own account cannot be changed or deleted here.",
     "roles": {
-      "admin": "Admin",
-      "user": "Host"
+      "admin": "Admin"
     },
     "me": "This is you",
     "since": "Account since {{ date }}",
@@ -58,7 +57,7 @@
     "revoked": "{{ name }} is signed out everywhere",
     "delete": "Delete account",
     "deleteHeading": "Delete the account of {{ name }}?",
-    "deleteDescription": "The account is deleted for good, with every event it owns, their guests and photos. Events where it is only an editor stay. This cannot be undone.",
+    "deleteDescription": "The account is deleted for good, with every event it owns, their guests and photos. Events where it is only a co-host stay. This cannot be undone.",
     "deleteConfirm": "Delete",
     "deleted": "Account of {{ name }} deleted"
   }

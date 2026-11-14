@@ -52,12 +52,12 @@ describe('EditorInviteItem', () => {
   it('names copy and revoke after the time the link was made', async () => {
     const { element } = await render();
 
-    expect(button(element, 'Kopieren: Link vom 01.11.2026, 10:00')?.textContent).toContain(
-      'Kopieren',
+    expect(button(element, 'Link kopieren, erstellt am 01.11.2026, 10:00')?.textContent).toContain(
+      'Link kopieren',
     );
-    expect(button(element, 'Zurückziehen: Link vom 01.11.2026, 10:00')?.textContent).toContain(
-      'Zurückziehen',
-    );
+    expect(
+      button(element, 'Link zurückziehen, erstellt am 01.11.2026, 10:00')?.textContent,
+    ).toContain('Link zurückziehen');
   });
 
   it('offers sharing only when the device can share', async () => {
@@ -78,9 +78,9 @@ describe('EditorInviteItem', () => {
     fixture.componentInstance.shareLink.subscribe(share);
     fixture.componentInstance.revoke.subscribe(revoke);
 
-    button(element, 'Kopieren: Link vom 01.11.2026, 10:00')!.click();
+    button(element, 'Link kopieren, erstellt am 01.11.2026, 10:00')!.click();
     button(element, 'Teilen: Link vom 01.11.2026, 10:00')!.click();
-    button(element, 'Zurückziehen: Link vom 01.11.2026, 10:00')!.click();
+    button(element, 'Link zurückziehen, erstellt am 01.11.2026, 10:00')!.click();
 
     expect(copy).toHaveBeenCalledTimes(1);
     expect(share).toHaveBeenCalledTimes(1);

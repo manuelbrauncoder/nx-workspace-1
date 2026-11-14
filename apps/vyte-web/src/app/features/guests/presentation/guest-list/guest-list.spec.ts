@@ -425,7 +425,7 @@ describe('GuestList', () => {
       const { element } = await render();
 
       cardOf(element, 'Ben Müller')
-        .querySelector<HTMLButtonElement>('button[aria-label="Link kopieren: Ben Müller"]')!
+        .querySelector<HTMLButtonElement>('button[aria-label="Link kopieren für Ben Müller"]')!
         .click();
       await settle();
 
@@ -439,7 +439,7 @@ describe('GuestList', () => {
       const { element } = await render();
 
       cardOf(element, 'Ben Müller')
-        .querySelector<HTMLButtonElement>('button[aria-label="Link kopieren: Ben Müller"]')!
+        .querySelector<HTMLButtonElement>('button[aria-label="Link kopieren für Ben Müller"]')!
         .click();
       await settle();
 

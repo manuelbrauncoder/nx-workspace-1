@@ -12,7 +12,7 @@
   "accepting": "Accepting",
   "joined": "You are now planning {{ title }}",
   "failed": "That did not work",
-  "teamFull": "The team is full. Ask the owner.",
+  "teamFull": "The team is full. Ask the host.",
   "emailTaken": "There is an account for this email address already. Sign in with it.",
   "signIn": {
     "heading": "Have an account?",
