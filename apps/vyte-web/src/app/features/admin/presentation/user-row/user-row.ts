@@ -1,8 +1,8 @@
 import { booleanAttribute, Component, computed, input, output } from '@angular/core';
 import { LocalDatePipe } from '@core/i18n/local-date.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { UiBadge } from '@shared/ui/badge/badge';
 import { UiButton } from '@shared/ui/button/button';
-import { UiCardImports } from '@shared/ui/card/card';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiMenuImports } from '@shared/ui/menu/menu';
 import { UiText } from '@shared/ui/text/text';
@@ -14,12 +14,12 @@ import { User } from '../../domain/admin';
  * menu. The own account has none, the backend refuses to change or delete it.
  */
 @Component({
-  selector: 'app-user-card',
-  imports: [LocalDatePipe, TranslatePipe, UiButton, UiCardImports, UiIcon, UiMenuImports, UiText],
-  styleUrl: './user-card.scss',
-  templateUrl: './user-card.html',
+  selector: 'app-user-row',
+  imports: [LocalDatePipe, TranslatePipe, UiButton, UiIcon, UiMenuImports, UiBadge, UiText],
+  styleUrl: './user-row.scss',
+  templateUrl: './user-row.html',
 })
-export class UserCard {
+export class UserRow {
   readonly user = input.required<User>();
   /** The signed-in admin, who cannot change their own account here. */
   readonly isMe = input(false, { transform: booleanAttribute });

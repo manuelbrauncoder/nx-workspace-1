@@ -21,6 +21,7 @@ export type UiTextVariant =
   | 'title'
   | 'page'
   | 'heading'
+  | 'item'
   | 'h1'
   | 'h2'
   | 'h3'
@@ -49,6 +50,8 @@ const TITLE =
 const PAGE =
   'font-heading font-extrabold tracking-[-0.02em] text-[1.875rem] leading-tight sm:text-[2.25rem]';
 const HEADING = 'font-sans text-xl font-semibold tracking-tight';
+// The title of one entry in a list or panel of a work page, e.g. a guest or an account.
+const ITEM = 'font-sans text-base font-semibold leading-snug';
 
 const VARIANT_CLASSES: Record<UiTextVariant, string> = {
   display: DISPLAY,
@@ -56,6 +59,7 @@ const VARIANT_CLASSES: Record<UiTextVariant, string> = {
   title: TITLE,
   page: PAGE,
   heading: HEADING,
+  item: ITEM,
   h1: hlmH1,
   h2: hlmH2,
   h3: hlmH3,

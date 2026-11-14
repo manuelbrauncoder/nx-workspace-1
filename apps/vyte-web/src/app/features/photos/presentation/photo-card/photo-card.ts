@@ -3,19 +3,30 @@ import { booleanAttribute, Component, computed, inject, input, output } from '@a
 import { I18nService } from '@core/i18n/i18n.service';
 import { LocalDatePipe } from '@core/i18n/local-date.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { UiBadge } from '@shared/ui/badge/badge';
 import { UiButton } from '@shared/ui/button/button';
 import { UiIcon } from '@shared/ui/icon/icon';
+import { UiMenuImports } from '@shared/ui/menu/menu';
 import { UiText } from '@shared/ui/text/text';
 import { APP_TIME_ZONE } from '../../../../time-zone';
 import { Photo } from '../../domain/photo';
 
 /**
  * One photo for the hosts: the picture (a click opens it large), who took it, how it came in and
- * when, and the buttons to hide, show or delete it.
+ * when, and a menu to hide, show or delete it.
  */
 @Component({
   selector: 'app-photo-card',
-  imports: [NgOptimizedImage, LocalDatePipe, TranslatePipe, UiButton, UiIcon, UiText],
+  imports: [
+    NgOptimizedImage,
+    LocalDatePipe,
+    TranslatePipe,
+    UiBadge,
+    UiButton,
+    UiIcon,
+    UiMenuImports,
+    UiText,
+  ],
   styleUrl: './photo-card.scss',
   templateUrl: './photo-card.html',
   host: {

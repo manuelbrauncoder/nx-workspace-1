@@ -135,5 +135,10 @@
   "tabNav": {
     "description": "app-ui-tab-nav: Tabs als Links zwischen den Seiten einer Sache, der aktuelle mit Tintenlinie und aria-current. Scrollt auf dem Handy seitlich.",
     "label": "Bereiche des Beispiels"
+  },
+  "badge": {
+    "description": "appUiBadge auf einem span: kurzes Etikett neben einem Namen, z. B. eine Rolle oder ein Zustand.",
+    "outline": "Mitplaner",
+    "secondary": "Admin"
   }
 }

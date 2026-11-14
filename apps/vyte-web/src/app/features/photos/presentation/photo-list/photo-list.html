@@ -53,7 +53,8 @@
                 </a>
               }
             </div>
-            <ul class="photo-list__grid">
+            <!-- `role`: Safari drops the list role of a list without bullets. -->
+            <ul class="photo-list__grid" role="list">
               @for (photo of _store.photos(); track photo.id; let index = $index) {
                 <li>
                   <app-photo-card

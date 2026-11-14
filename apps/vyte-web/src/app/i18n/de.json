@@ -59,7 +59,8 @@
       "days": "{{ start }} bis {{ end }}"
     },
     "counts": {
-      "summary": "Kommen: {{ coming }} · Offen: {{ pending }}"
+      "coming": "Kommen: {{ count }}",
+      "pending": "Ohne Antwort: {{ count }}"
     },
     "frame": {
       "title": "Event",

@@ -1,0 +1,29 @@
+@let item = event();
+<div class="event-row" [class.event-row--past]="item.past">
+  <span class="event-row__date" aria-hidden="true">
+    <span class="event-row__day">{{ item.startsAt | localDate: 'day' : item.timeZone }}</span>
+    <span class="event-row__month">{{
+      item.startsAt | localDate: 'monthShort' : item.timeZone
+    }}</span>
+  </span>
+
+  <div class="event-row__main">
+    <h3 class="event-row__title" appUiText="item">
+      <a class="event-row__link" [routerLink]="['/events', item.id]">{{ item.title }}</a>
+    </h3>
+    <p class="event-row__facts">
+      <span><app-event-when [event]="item" /></span>
+      @if (item.locationName; as place) {
+        <span class="event-row__place">
+          <app-ui-icon name="mapPin" />
+          {{ place }}
+        </span>
+      }
+    </p>
+  </div>
+
+  <p class="event-row__counts">
+    <span appUiBadge>{{ 'events.counts.coming' | t: { count: item.counts.coming } }}</span>
+    <span appUiBadge>{{ 'events.counts.pending' | t: { count: item.counts.pending } }}</span>
+  </p>
+</div>

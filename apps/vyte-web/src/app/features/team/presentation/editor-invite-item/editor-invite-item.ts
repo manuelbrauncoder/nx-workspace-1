@@ -3,19 +3,18 @@ import { I18nService } from '@core/i18n/i18n.service';
 import { formatLocalDate } from '@core/i18n/local-date';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { UiButton } from '@shared/ui/button/button';
-import { UiCardImports } from '@shared/ui/card/card';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiText } from '@shared/ui/text/text';
 import { APP_TIME_ZONE } from '../../../../time-zone';
 import { EditorInvite } from '../../domain/team';
 
 /**
- * An open editor invite: when it was made, until when it works, the address, and buttons to
+ * An open editor invite as a row of the list: when it was made, until when it works, the address, and buttons to
  * copy, share or revoke it. An invite has no name, the time it was made tells them apart.
  */
 @Component({
   selector: 'app-editor-invite-item',
-  imports: [TranslatePipe, UiButton, UiCardImports, UiIcon, UiText],
+  imports: [TranslatePipe, UiButton, UiIcon, UiText],
   styleUrl: './editor-invite-item.scss',
   templateUrl: './editor-invite-item.html',
   host: {

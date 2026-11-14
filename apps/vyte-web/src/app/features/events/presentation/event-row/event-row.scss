@@ -1,0 +1,103 @@
+@use 'styles/abstracts' as *;
+
+// A row of the calm list: the date block, title and facts, the counts on the right from `sm`
+// on and below the facts on a phone. The whole row is no link, only the title: the counts can
+// be read without following it.
+
+:host {
+  display: block;
+}
+
+.event-row {
+  display: grid;
+  grid-template-areas:
+    'date main'
+    'date counts';
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.5rem 1rem;
+  align-items: center;
+
+  @include up(sm) {
+    grid-template-areas: 'date main counts';
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+}
+
+// The one decorative element of the workspace: day and month in the heading font.
+.event-row__date {
+  display: flex;
+  flex-direction: column;
+  grid-area: date;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--brand);
+  color: var(--brand-foreground);
+  line-height: 1;
+
+  .event-row--past & {
+    background: var(--muted);
+    color: var(--muted-foreground);
+  }
+}
+
+.event-row__day {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.event-row__month {
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.event-row__main {
+  grid-area: main;
+  min-width: 0;
+}
+
+.event-row__title {
+  overflow-wrap: anywhere;
+}
+
+.event-row__link {
+  border-radius: calc(var(--radius) - 4px);
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+.event-row__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  margin-top: 0.125rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.event-row__place {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  overflow-wrap: anywhere;
+}
+
+.event-row__counts {
+  display: flex;
+  flex-wrap: wrap;
+  grid-area: counts;
+  gap: 0.5rem;
+}

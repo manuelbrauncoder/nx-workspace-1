@@ -28,9 +28,9 @@
       @if (_store.upcoming().length > 0) {
         <section class="events-section" aria-labelledby="events-upcoming">
           <h2 id="events-upcoming" appUiText="heading">{{ 'eventsList.upcoming' | t }}</h2>
-          <ul class="events-grid">
+          <ul class="events-list" appUiList>
             @for (event of _store.upcoming(); track event.id) {
-              <li><app-event-card [event]="event" /></li>
+              <li appUiListItem><app-event-row [event]="event" /></li>
             }
           </ul>
         </section>
@@ -38,9 +38,9 @@
       @if (_store.past().length > 0) {
         <section class="events-section" aria-labelledby="events-past">
           <h2 id="events-past" appUiText="heading">{{ 'eventsList.past' | t }}</h2>
-          <ul class="events-grid">
+          <ul class="events-list" appUiList>
             @for (event of _store.past(); track event.id) {
-              <li><app-event-card [event]="event" /></li>
+              <li appUiListItem><app-event-row [event]="event" /></li>
             }
           </ul>
         </section>

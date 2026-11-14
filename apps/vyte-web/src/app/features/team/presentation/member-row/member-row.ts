@@ -1,8 +1,8 @@
 import { booleanAttribute, Component, computed, input, output } from '@angular/core';
 import { LocalDatePipe } from '@core/i18n/local-date.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { UiBadge } from '@shared/ui/badge/badge';
 import { UiButton } from '@shared/ui/button/button';
-import { UiCardImports } from '@shared/ui/card/card';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiMenuImports } from '@shared/ui/menu/menu';
 import { UiText } from '@shared/ui/text/text';
@@ -10,16 +10,16 @@ import { APP_TIME_ZONE } from '../../../../time-zone';
 import { Member } from '../../domain/team';
 
 /**
- * One member of the team: name, email, role and since when. The owner manages an editor through
+ * One member of the team as a row of the list: name, email, role and since when. The owner manages an editor through
  * the menu: hand the event over or remove them.
  */
 @Component({
-  selector: 'app-member-card',
-  imports: [LocalDatePipe, TranslatePipe, UiButton, UiCardImports, UiIcon, UiMenuImports, UiText],
-  styleUrl: './member-card.scss',
-  templateUrl: './member-card.html',
+  selector: 'app-member-row',
+  imports: [LocalDatePipe, TranslatePipe, UiBadge, UiButton, UiIcon, UiMenuImports, UiText],
+  styleUrl: './member-row.scss',
+  templateUrl: './member-row.html',
 })
-export class MemberCard {
+export class MemberRow {
   readonly member = input.required<Member>();
   /** The signed-in user. */
   readonly isMe = input(false, { transform: booleanAttribute });

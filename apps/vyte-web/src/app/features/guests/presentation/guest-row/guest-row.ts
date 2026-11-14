@@ -4,6 +4,7 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { UiButton } from '@shared/ui/button/button';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiMenuImports } from '@shared/ui/menu/menu';
+import { UiText } from '@shared/ui/text/text';
 import { Guest } from '../../domain/guest';
 
 /**
@@ -13,7 +14,7 @@ import { Guest } from '../../domain/guest';
  */
 @Component({
   selector: 'app-guest-row',
-  imports: [LocalDatePipe, TranslatePipe, UiButton, UiIcon, UiMenuImports],
+  imports: [LocalDatePipe, TranslatePipe, UiButton, UiIcon, UiMenuImports, UiText],
   styleUrl: './guest-row.scss',
   templateUrl: './guest-row.html',
   host: {

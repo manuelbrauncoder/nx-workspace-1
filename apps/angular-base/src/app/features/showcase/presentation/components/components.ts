@@ -6,6 +6,7 @@ import { TranslationKey, TranslationParams } from '@core/i18n/translation-key';
 import { LanguageToggle } from '@shared/language-toggle/language-toggle';
 import { UiAlert, UiAlertAction } from '@shared/ui/alert/alert';
 import { UiAttachmentImports } from '@shared/ui/attachment/attachment';
+import { UiBadge } from '@shared/ui/badge/badge';
 import { UiBreadcrumb, UiBreadcrumbItem } from '@shared/ui/breadcrumb/breadcrumb';
 import { UiButton, UiButtonSize, UiButtonVariant } from '@shared/ui/button/button';
 import { UiCardImports } from '@shared/ui/card/card';
@@ -48,6 +49,7 @@ interface Message {
     UiAlert,
     UiAlertAction,
     UiAttachmentImports,
+    UiBadge,
     UiBreadcrumb,
     UiButton,
     UiCardImports,

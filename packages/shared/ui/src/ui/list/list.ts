@@ -14,7 +14,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
  */
 @Component({
   selector: 'ul[appUiList], ol[appUiList]',
-  template: '<ng-content />',
+  templateUrl: './list.html',
   styleUrl: './list.scss',
   // The rows are projected, so the styles have to reach them. The class names are the scope.
   encapsulation: ViewEncapsulation.None,
@@ -26,7 +26,7 @@ export class UiList {}
 /** One row of an `appUiList`. */
 @Component({
   selector: 'li[appUiListItem]',
-  template: '<ng-content />',
+  templateUrl: './list.html',
   host: { class: 'ui-list__item' },
 })
 export class UiListItem {}

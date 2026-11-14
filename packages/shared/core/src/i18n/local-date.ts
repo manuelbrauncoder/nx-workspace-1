@@ -10,6 +10,10 @@ export const LOCAL_DATE_FORMATS = {
   weekdayDate: { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' },
   /** `19:00` */
   time: TIME,
+  /** Day of the month alone: `14` */
+  day: { day: 'numeric' },
+  /** Month as a short word, e.g. `Nov` or `Mär` for `de-DE` (the exact form comes from ICU) */
+  monthShort: { month: 'short' },
 } as const satisfies Record<string, Intl.DateTimeFormatOptions>;
 
 export type LocalDateFormat = keyof typeof LOCAL_DATE_FORMATS;

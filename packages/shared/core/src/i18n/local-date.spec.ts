@@ -30,4 +30,22 @@ describe('formatLocalDate', () => {
       formatLocalDate(new Date('2027-03-14T23:30:00.000Z'), 'de-DE', 'date', 'Europe/Berlin'),
     ).toBe('15.03.2027');
   });
+
+  it('formats the day and the short month on their own', () => {
+    expect(formatLocalDate(date, 'de-DE', 'day')).toBe('12');
+    expect(formatLocalDate(new Date(2026, 10, 14), 'de-DE', 'monthShort')).toBe('Nov');
+    expect(formatLocalDate(new Date(2027, 2, 14), 'de-DE', 'monthShort')).toBe('Mär');
+    expect(formatLocalDate(new Date(2027, 2, 14), 'en-GB', 'monthShort')).toBe('Mar');
+  });
+
+  it('takes day and month from the time zone, not from UTC', () => {
+    const late = new Date('2027-03-14T23:30:00.000Z');
+
+    expect(formatLocalDate(late, 'de-DE', 'day', 'UTC')).toBe('14');
+    expect(formatLocalDate(late, 'de-DE', 'day', 'Europe/Berlin')).toBe('15');
+    expect(formatLocalDate(late, 'en-GB', 'day', 'Pacific/Auckland')).toBe('15');
+    const newYear = new Date('2026-12-31T23:30:00.000Z');
+    expect(formatLocalDate(newYear, 'de-DE', 'monthShort', 'Europe/Berlin')).toBe('Jan');
+    expect(formatLocalDate(newYear, 'de-DE', 'monthShort', 'UTC')).toBe('Dez');
+  });
 });

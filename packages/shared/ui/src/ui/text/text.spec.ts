@@ -43,6 +43,7 @@ describe('UiText', () => {
   it.each([
     ['page', 'font-heading', 'font-extrabold'],
     ['heading', 'font-sans', 'font-semibold'],
+    ['item', 'font-sans', 'font-semibold'],
   ] as const)('styles the work page variant %s', async (variant, family, weight) => {
     const { fixture, text } = await render();
 

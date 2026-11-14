@@ -1,0 +1,55 @@
+@let item = member();
+<div class="member-row">
+  <div class="member-row__identity">
+    <h3 class="member-row__name" appUiText="item">{{ _displayName() }}</h3>
+    <p class="member-row__meta">
+      @if (item.name) {
+        <span class="member-row__email">{{ item.email }}</span>
+      }
+      <span>
+        {{ 'teamPage.members.since' | t: { date: item.joinedAt | localDate: 'date' : _timeZone } }}
+      </span>
+    </p>
+  </div>
+
+  <p class="member-row__badges">
+    <span [variant]="_isOwner() ? 'secondary' : 'outline'" appUiBadge>
+      <app-ui-icon [name]="_isOwner() ? 'shieldCheck' : 'user'" />
+      {{ (_isOwner() ? 'teamPage.members.owner' : 'teamPage.members.editor') | t }}
+    </span>
+    @if (isMe()) {
+      <span appUiBadge>{{ 'teamPage.members.me' | t }}</span>
+    }
+  </p>
+
+  @if (manageable()) {
+    <div class="member-row__actions">
+      <button
+        [appUiMenuTrigger]="actions"
+        [attr.aria-label]="'teamPage.members.actions' | t: { name: _displayName() }"
+        appUiButton
+        variant="ghost"
+        size="icon-sm"
+        type="button"
+        align="end"
+      >
+        <app-ui-icon name="ellipsis" />
+      </button>
+    </div>
+  }
+</div>
+
+<ng-template #actions>
+  <app-ui-menu class="w-60">
+    <app-ui-menu-group>
+      <button (triggered)="handOver.emit()" appUiMenuItem type="button">
+        <app-ui-icon name="shieldCheck" />
+        {{ 'teamPage.members.handOver' | t }}
+      </button>
+      <button (triggered)="remove.emit()" appUiMenuItem variant="destructive" type="button">
+        <app-ui-icon name="trash" />
+        {{ 'teamPage.members.remove' | t }}
+      </button>
+    </app-ui-menu-group>
+  </app-ui-menu>
+</ng-template>

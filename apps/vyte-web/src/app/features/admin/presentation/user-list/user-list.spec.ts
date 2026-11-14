@@ -155,6 +155,18 @@ describe('UserList', () => {
     expect(element.textContent).toContain('Das bist du');
   });
 
+  it('lists users and open links as rows of calm lists, the create form in its panel', async () => {
+    const { element } = await render();
+
+    expect(element.querySelectorAll('ul[appUiList] > li[appUiListItem] app-user-row')).toHaveLength(
+      2,
+    );
+    expect(
+      element.querySelectorAll('ul[appUiList] > li[appUiListItem] app-account-invite-item'),
+    ).toHaveLength(1);
+    expect(element.querySelector('.user-list__panel form')).not.toBeNull();
+  });
+
   it('explains a refused change of the own account', async () => {
     const { element } = await render({ userFailure: new Failure('conflict', 'Own account') });
 

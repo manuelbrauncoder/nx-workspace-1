@@ -99,6 +99,20 @@ describe('PhotoList', () => {
     Array.from(element.querySelectorAll<HTMLElement>('app-photo-card')).find((card) =>
       card.textContent?.includes(name),
     )!;
+  /** Opens the action menu of a card and picks an item, the items live in an overlay. */
+  async function pick(
+    fixture: { whenStable(): Promise<unknown> },
+    card: HTMLElement,
+    trigger: string,
+    item: string,
+  ) {
+    card.querySelector<HTMLButtonElement>(`button[aria-label="${trigger}"]`)!.click();
+    await fixture.whenStable();
+    Array.from(document.querySelectorAll<HTMLButtonElement>('[role="menuitem"]'))
+      .find((candidate) => candidate.textContent?.trim() === item)!
+      .click();
+    await fixture.whenStable();
+  }
   const click = (card: HTMLElement, label: string) =>
     card.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!.click();
   const summary = (element: HTMLElement) =>
@@ -209,9 +223,9 @@ describe('PhotoList', () => {
   describe('card actions', () => {
     it('hides a visible photo and toasts it', async () => {
       store.setHidden.mockResolvedValue(photo('p1', { hidden: true }));
-      const { element } = await render();
+      const { element, fixture } = await render();
 
-      click(cardOf(element, 'Ada'), 'Verbergen: Foto 1 von Ada');
+      await pick(fixture, cardOf(element, 'Ada'), 'Aktionen für Foto 1 von Ada', 'Verbergen');
 
       await vi.waitFor(() => expect(toast.success).toHaveBeenCalledWith('Foto verborgen'));
       expect(store.setHidden).toHaveBeenCalledWith('p1', true);
@@ -219,9 +233,9 @@ describe('PhotoList', () => {
 
     it('shows a hidden photo again and toasts it', async () => {
       store.setHidden.mockResolvedValue(photo('p3', { hidden: false }));
-      const { element } = await render();
+      const { element, fixture } = await render();
 
-      click(cardOf(element, 'Ben'), 'Wieder zeigen: Foto 3 von Ben');
+      await pick(fixture, cardOf(element, 'Ben'), 'Aktionen für Foto 3 von Ben', 'Wieder zeigen');
 
       await vi.waitFor(() =>
         expect(toast.success).toHaveBeenCalledWith('Foto wird wieder gezeigt'),
@@ -233,7 +247,7 @@ describe('PhotoList', () => {
       store.setHidden.mockResolvedValue(undefined);
       const { element, fixture } = await render();
 
-      click(cardOf(element, 'Ada'), 'Verbergen: Foto 1 von Ada');
+      await pick(fixture, cardOf(element, 'Ada'), 'Aktionen für Foto 1 von Ada', 'Verbergen');
       await fixture.whenStable();
 
       expect(toast.success).not.toHaveBeenCalled();
@@ -268,7 +282,7 @@ describe('PhotoList', () => {
       const { element, fixture } = await render();
 
       confirm.mockResolvedValue(false);
-      click(cardOf(element, 'Ada'), 'Löschen: Foto 1 von Ada');
+      await pick(fixture, cardOf(element, 'Ada'), 'Aktionen für Foto 1 von Ada', 'Löschen');
       await fixture.whenStable();
       expect(store.remove).not.toHaveBeenCalled();
       expect(confirm).toHaveBeenCalledWith(
@@ -281,7 +295,7 @@ describe('PhotoList', () => {
       expect(toast.success).not.toHaveBeenCalled();
 
       confirm.mockResolvedValue(true);
-      click(cardOf(element, 'Ada'), 'Löschen: Foto 1 von Ada');
+      await pick(fixture, cardOf(element, 'Ada'), 'Aktionen für Foto 1 von Ada', 'Löschen');
       await vi.waitFor(() => expect(toast.success).toHaveBeenCalledWith('Foto gelöscht'));
 
       expect(store.remove).toHaveBeenCalledWith('p1');
@@ -293,7 +307,7 @@ describe('PhotoList', () => {
       confirm.mockResolvedValue(true);
       const { element, fixture } = await render();
 
-      click(cardOf(element, 'Ada'), 'Löschen: Foto 1 von Ada');
+      await pick(fixture, cardOf(element, 'Ada'), 'Aktionen für Foto 1 von Ada', 'Löschen');
       await vi.waitFor(() => expect(store.remove).toHaveBeenCalled());
       await fixture.whenStable();
 
