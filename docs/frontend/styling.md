@@ -208,6 +208,8 @@ Components do not need to know about any of this. A component that uses tokens i
   }
   ```
 
+- Form controls need nothing of their own: `FormControlShell` outlines the focused control in `--ring`, also when it is invalid ([forms.md](forms.md#focus-outline))
+
 ### Touch targets and spacing
 
 - Every interactive element of a product page is at least **44 × 44 CSS pixels** (WCAG 2.5.5, AAA, used as the bar for all apps). Below that, the element gets padding that makes up the difference inside the tap area, not a bigger visual control
