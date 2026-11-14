@@ -7,10 +7,12 @@
   border-radius: var(--radius);
   background: var(--input-background);
 
+  // Same outline as the other controls (`form-control-shell.scss`). The selector is more specific
+  // than the invalid one below, so focus also shows on an invalid editor.
   &:has(.form-rich-text__content:focus-visible) {
     border-color: var(--ring);
     outline: 2px solid var(--ring);
-    outline-offset: 1px;
+    outline-offset: 2px;
   }
 
   &:has([aria-invalid='true']) {

@@ -17,6 +17,14 @@
 .ui-toggle-group__item {
   height: var(--ui-toggle-group-item-height, auto);
   font-weight: 600;
+
+  // Spartan shows focus only through a half transparent ring (about 2:1 in angular-base) that
+  // forced-colors mode drops. Same outline as the form controls (`form-control-shell.scss`); the
+  // helm `focus-visible:z-10` keeps it above the neighbouring items.
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
 }
 
 :host([data-variant='brand']) .ui-toggle-group__item[data-state='on'] {

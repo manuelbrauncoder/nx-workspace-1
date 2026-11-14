@@ -30,7 +30,7 @@
   &:has(.form-files__input:focus-visible) {
     border-color: var(--ring);
     outline: 2px solid var(--ring);
-    outline-offset: 1px;
+    outline-offset: 2px;
   }
 
   &[data-invalid] {

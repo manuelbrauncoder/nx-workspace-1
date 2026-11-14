@@ -364,6 +364,17 @@ Because the shell owns the invalid state, controls do not bind `aria-invalid` or
 
 Controls whose Spartan component takes `aria-describedby` as an input (checkbox, switch) read it from the shell: `[aria-describedby]="shell.describedBy()"`.
 
+#### Focus outline
+
+The shell also draws the focus of the projected control: a `2px` outline in `--ring` with `2px` offset on `:focus-visible`, for input, textarea, select trigger, date trigger, checkbox and switch ([form-control-shell.scss](../../packages/shared/ui/src/form-controls/form-control-shell/form-control-shell.scss)). Controls whose focusable element is hidden or is no helm control draw the same outline on their visible wrapper themselves: `FormRichText` around the editor, `FormFiles` around the drop zone, `FormRadioGroup` with `layout="cards"` around the tile. `UiToggleGroup` (and with it `FormToggleGroup`) draws it on its items.
+
+Why: the helm controls set `outline-none` and show focus only through a half transparent ring. Once a field is invalid, their `data-[matches-spartan-invalid=true]` classes come later in the Tailwind order than `focus-visible:` and paint the pale error ring instead. A focused invalid field then looks exactly like an unfocused one (WCAG 2.4.7). The outline sits on top of border and ring, so it shows in every state, and also in forced-colors mode, which drops box shadows.
+
+- The rule lives in the shell, not in the generated helm code, which the Spartan CLI overwrites
+- Component styles are unlayered and win over the `outline-none` utility in `@layer utilities` without `!important`. `::ng-deep` reaches the element in the template of a helm component, `:host` keeps it inside the shell
+- `--ring` keeps at least 3:1 against every surface token in each app and theme (lowest: angular-base light on `--accent`, 4.1:1). A new theme checks that too
+- A new control whose focusable element is not in the list gets its `data-slot` added there and a row in [form-control-shell.spec.ts](../../packages/shared/ui/src/form-controls/form-control-shell/form-control-shell.spec.ts). The spec loads the stylesheet into jsdom, so the rule stays plain CSS without nesting
+
 `FormControlShell` is internal to `shared/form-controls`. Features use the controls, not the shell.
 
 ## Adding a control
@@ -383,3 +394,4 @@ Controls whose Spartan component takes `aria-describedby` as an input (checkbox,
 - One control per field, bound with `[formField]`. No hand-written labels or error markup in features
 - Validation and field state are declared in the schema, with a message for every validator
 - Label, description and errors are rendered by `FormControlShell` only
+- The focus outline of a control is `2px` in `--ring` with `2px` offset. It comes from `FormControlShell`, a control draws it itself only on a visible wrapper of a hidden or non-helm element. Apps add no focus styling to controls

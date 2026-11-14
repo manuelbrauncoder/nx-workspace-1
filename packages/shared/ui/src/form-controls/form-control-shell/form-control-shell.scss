@@ -10,3 +10,28 @@
   color: var(--destructive);
   font-size: 0.875rem;
 }
+
+// Focus of the projected control, the same in every app (WCAG 2.4.7). The helm controls show focus
+// only through a half transparent ring. In the invalid state their
+// `data-[matches-spartan-invalid=true]` classes come later in the Tailwind order and replace it with
+// the pale error ring, so a focused invalid field looked exactly like an unfocused one. A solid
+// outline in `--ring` is drawn on top of ring and border: it shows in every state and also in
+// forced-colors mode, which drops the box-shadow ring.
+// Not in the generated helm code, the Spartan CLI overwrites it. Component styles are unlayered, so
+// this beats the `outline-none` of the helm classes in `@layer utilities` without `!important`.
+// `::ng-deep` because the focused element sits in a projected control or in the template of a helm
+// component, `:host` keeps the rule inside the shell. Plain CSS without nesting:
+// `form-control-shell.spec.ts` loads this file into jsdom.
+:host
+  ::ng-deep
+  :is(
+    [data-slot='input'],
+    [data-slot='textarea'],
+    [data-slot='select-trigger'],
+    [data-slot='date-picker-trigger'] > button,
+    [data-slot='checkbox'] [role='checkbox'],
+    [data-slot='switch'] [role='switch']
+  ):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
