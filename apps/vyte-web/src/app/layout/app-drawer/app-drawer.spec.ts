@@ -50,7 +50,7 @@ describe('AppDrawer', () => {
     const root = await render('admin');
 
     expect(links(root)).toEqual(expect.arrayContaining(['/events', '/admin']));
-    expect(root.textContent).toContain('Konten');
+    expect(root.textContent).toContain('Verwaltung');
   });
 
   it('has no accessibility violations while open for an admin', async () => {

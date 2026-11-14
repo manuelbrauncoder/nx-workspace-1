@@ -1,10 +1,18 @@
 {
+  "admin": {
+    "tabs": {
+      "label": "Bereiche der Verwaltung",
+      "accounts": "Konten",
+      "legal": "Rechtsseiten"
+    }
+  },
   "auth": {
     "account": "Konto",
     "signIn": "Anmelden",
     "signOut": "Abmelden",
     "signedOut": "Du bist abgemeldet",
     "signOutFailed": "Abmelden fehlgeschlagen",
+    "events": "Events",
     "admin": "Konten verwalten"
   },
   "layout": {
@@ -16,17 +24,14 @@
     "footer": {
       "imprint": "Impressum",
       "privacy": "Datenschutz",
-      "accessibility": "Barrierefreiheit"
+      "accessibility": "Barrierefreiheit",
+      "cookies": "Cookies"
     },
     "guestFooter": "Erstellt mit vyte",
     "nav": {
       "events": "Events",
-      "accounts": "Konten"
+      "accounts": "Verwaltung"
     }
-  },
-  "legal": {
-    "email": "E-Mail",
-    "phone": "Telefon"
   },
   "notFound": {
     "title": "Seite nicht gefunden",
@@ -73,6 +78,16 @@
       "more": "Weitere Aktionen: {{ title }}",
       "print": "Drucken",
       "deleteFailed": "Das Event konnte nicht gelöscht werden"
+    }
+  },
+  "legalEditor": {
+    "loading": "Rechtsseiten werden geladen",
+    "loadFailed": "Die Rechtsseiten konnten nicht geladen werden",
+    "pages": {
+      "imprint": "Impressum",
+      "privacy": "Datenschutzerklärung",
+      "accessibility": "Barrierefreiheit",
+      "cookies": "Cookie-Richtlinie"
     }
   }
 }

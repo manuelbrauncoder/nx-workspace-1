@@ -56,11 +56,13 @@ describe('GuestShell', () => {
       '/imprint',
       '/privacy',
       '/accessibility',
+      '/cookies',
     ]);
     expect(Array.from(nav!.querySelectorAll('a'), (link) => link.textContent?.trim())).toEqual([
       'Impressum',
       'Datenschutz',
       'Barrierefreiheit',
+      'Cookies',
     ]);
     expect(element.querySelector('footer')?.textContent).toContain('Erstellt mit vyte');
   });

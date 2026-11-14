@@ -14,6 +14,11 @@ const ME: Me = {
   createdAt: new Date('2026-01-12T09:00:00.000Z'),
 };
 
+/** The last entry of the menu. */
+function signOutItem(menu: HTMLElement): HTMLButtonElement {
+  return Array.from(menu.querySelectorAll<HTMLButtonElement>('button[role="menuitem"]')).at(-1)!;
+}
+
 describe('AccountMenu', () => {
   const signOut = vi.fn();
   const toast = { success: vi.fn(), error: vi.fn() };
@@ -70,7 +75,7 @@ describe('AccountMenu', () => {
     const { fixture, menu } = await openMenu(ME);
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
 
-    menu.querySelector<HTMLButtonElement>('button[role="menuitem"]')!.click();
+    signOutItem(menu).click();
     await fixture.whenStable();
 
     expect(signOut).toHaveBeenCalledOnce();
@@ -83,7 +88,7 @@ describe('AccountMenu', () => {
     const { fixture, menu } = await openMenu(ME);
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl');
 
-    menu.querySelector<HTMLButtonElement>('button[role="menuitem"]')!.click();
+    signOutItem(menu).click();
     await fixture.whenStable();
 
     expect(toast.error).toHaveBeenCalledWith('Abmelden fehlgeschlagen');
@@ -100,6 +105,28 @@ describe('AccountMenu', () => {
     const { element } = await render(ME);
 
     await expect(element).toBeAccessible();
+  });
+
+  it('leads every signed-in user to the events', async () => {
+    const { menu, fixture } = await openMenu(ME);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+
+    const entry = Array.from(menu.querySelectorAll('button')).find(
+      (button) => button.textContent?.trim() === 'Events',
+    );
+    entry!.click();
+    await fixture.whenStable();
+
+    expect(navigate).toHaveBeenCalledWith('/events');
+  });
+
+  it('shows the events to an admin above the accounts', async () => {
+    const { menu } = await openMenu({ ...ME, role: 'admin' });
+
+    const labels = Array.from(menu.querySelectorAll('[role="menuitem"]')).map((item) =>
+      item.textContent?.trim(),
+    );
+    expect(labels).toEqual(['Events', 'Konten verwalten', 'Abmelden']);
   });
 
   it('leads an admin to the accounts', async () => {

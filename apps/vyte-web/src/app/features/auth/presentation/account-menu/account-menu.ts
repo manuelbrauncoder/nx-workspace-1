@@ -10,8 +10,8 @@ import { AuthStore } from '../../application/auth.store';
 import { SIGN_IN_PATH } from '../../application/return-url';
 
 /**
- * The account in the header: a link to the sign-in page, or a menu with the signed-in user and
- * "sign out". Its texts are in the shared scope, because it is on every page.
+ * The account in the header: a link to the sign-in page, or a menu with the signed-in user, the
+ * events, the accounts for admins and "sign out". Its texts are in the shared scope, because it is on every page.
  */
 @Component({
   selector: 'app-account-menu',
@@ -26,6 +26,10 @@ export class AccountMenu {
   private readonly _i18n = inject(I18nService);
 
   private readonly _signInPath = SIGN_IN_PATH;
+
+  private async _openEvents(): Promise<void> {
+    await this._router.navigateByUrl('/events');
+  }
 
   private async _openAdmin(): Promise<void> {
     await this._router.navigateByUrl('/admin/users');

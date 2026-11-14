@@ -1,0 +1,16 @@
+{
+  "titles": {
+    "imprint": "Impressum",
+    "privacy": "Datenschutz",
+    "accessibility": "Barrierefreiheit",
+    "cookies": "Cookies"
+  },
+  "headings": {
+    "imprint": "Impressum",
+    "privacy": "Datenschutzerklärung",
+    "accessibility": "Erklärung zur Barrierefreiheit",
+    "cookies": "Cookie-Richtlinie"
+  },
+  "loading": "Seite wird geladen",
+  "loadFailed": "Die Seite konnte nicht geladen werden"
+}

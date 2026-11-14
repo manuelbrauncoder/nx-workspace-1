@@ -56,6 +56,7 @@ describe('AppShell', () => {
       '/imprint',
       '/privacy',
       '/accessibility',
+      '/cookies',
     ]);
   });
 

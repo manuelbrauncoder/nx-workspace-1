@@ -19,6 +19,7 @@ import { FormText } from '@shared/form-controls/form-text/form-text';
 import { UiButton } from '@shared/ui/button/button';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
 import { UiListImports } from '@shared/ui/list/list';
+import { UiTabNav, UiTabNavItem } from '@shared/ui/tab-nav/tab-nav';
 import { UiText } from '@shared/ui/text/text';
 import { UiToastService } from '@shared/ui/toast/toast.service';
 import { AdminStore } from '../../application/admin.store';
@@ -42,6 +43,7 @@ import { UserRow } from '../user-row/user-row';
     FormText,
     UiButton,
     UiListImports,
+    UiTabNav,
     UiText,
     AccountInviteItem,
     UserRow,
@@ -51,6 +53,12 @@ import { UserRow } from '../user-row/user-row';
 })
 export class UserList {
   private readonly _store = inject(AdminStore);
+
+  /** The same tabs as on the legal pages, which live in another feature. */
+  private readonly _tabs: UiTabNavItem[] = [
+    { labelKey: 'admin.tabs.accounts', path: '/admin/users' },
+    { labelKey: 'admin.tabs.legal', path: '/admin/legal' },
+  ];
   private readonly _auth = inject(AuthStore);
   private readonly _config = inject(AppConfigService);
   private readonly _toast = inject(UiToastService);

@@ -1,0 +1,13 @@
+{
+  "title": "Rechtsseiten bearbeiten",
+  "heading": "Rechtsseiten bearbeiten",
+  "lead": "Impressum, Datenschutz, Barrierefreiheit und Cookie-Richtlinie in beiden Sprachen. Eine Seite, die es noch nicht gibt, zeigt auf der Website „nicht gefunden“.",
+  "updated": "Stand: {{ date }}",
+  "missing": "Noch nicht angelegt",
+  "edit": "Bearbeiten",
+  "create": "Anlegen",
+  "editNamed": "{{ page }} bearbeiten",
+  "createNamed": "{{ page }} anlegen",
+  "view": "Ansehen",
+  "viewNamed": "{{ page }} auf der Website ansehen"
+}

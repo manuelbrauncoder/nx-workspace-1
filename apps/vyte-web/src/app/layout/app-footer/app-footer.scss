@@ -16,10 +16,15 @@
 .app-footer__links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
+  gap: 0 1.5rem;
 }
 
 .app-footer__link {
+  // A full touch target, also when the links wrap on a phone.
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+
   &:hover,
   &[aria-current='page'] {
     color: var(--foreground);

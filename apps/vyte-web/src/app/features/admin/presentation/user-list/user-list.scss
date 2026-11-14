@@ -7,8 +7,13 @@
   display: block;
 }
 
+.user-list__tabs {
+  display: block;
+  margin-top: 1rem;
+}
+
 .user-list__lead {
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
 }
 
 .user-list__lead + .user-list__section {

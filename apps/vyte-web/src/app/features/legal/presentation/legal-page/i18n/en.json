@@ -1,0 +1,16 @@
+{
+  "titles": {
+    "imprint": "Imprint",
+    "privacy": "Privacy",
+    "accessibility": "Accessibility",
+    "cookies": "Cookies"
+  },
+  "headings": {
+    "imprint": "Imprint",
+    "privacy": "Privacy policy",
+    "accessibility": "Accessibility statement",
+    "cookies": "Cookie policy"
+  },
+  "loading": "Loading the page",
+  "loadFailed": "The page could not be loaded"
+}

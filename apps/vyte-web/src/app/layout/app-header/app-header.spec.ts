@@ -56,7 +56,7 @@ describe('AppHeader', () => {
     const root = await render('admin');
 
     expect(links(root)).toEqual(expect.arrayContaining(['/events', '/admin']));
-    expect(root.querySelector('header nav')?.textContent).toContain('Konten');
+    expect(root.querySelector('header nav')?.textContent).toContain('Verwaltung');
   });
 
   it('opens the drawer from the menu button', async () => {

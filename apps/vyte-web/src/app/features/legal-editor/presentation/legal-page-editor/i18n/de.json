@@ -1,0 +1,19 @@
+{
+  "title": "Rechtsseite bearbeiten",
+  "existing": "Änderungen erscheinen nach dem Speichern sofort auf der Website.",
+  "missing": "Diese Seite gibt es noch nicht. Sie wird beim Speichern angelegt.",
+  "languages": {
+    "de": "Deutsch",
+    "en": "Englisch"
+  },
+  "contentDescription": "Die Überschrift setzt die Website selbst, der Text beginnt mit dem ersten Abschnitt. Links dürfen auch auf Seiten dieser Website zeigen, z. B. /privacy.",
+  "save": "Speichern",
+  "saving": "Wird gespeichert",
+  "saved": "Seite gespeichert",
+  "saveFailed": "Speichern fehlgeschlagen",
+  "view": "Seite ansehen",
+  "validation": {
+    "required": "Bitte gib einen Text ein.",
+    "tooLong": "Der Text ist zu lang."
+  }
+}
