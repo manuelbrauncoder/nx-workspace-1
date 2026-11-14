@@ -57,10 +57,10 @@ describe('MemberRow', () => {
     expect(element.querySelector('app-ui-icon')?.getAttribute('name') ?? 'user').toBe('user');
   });
 
-  it('shows the owner as Owner with the owner mark', async () => {
+  it('shows the owner as Gastgeber with the owner mark', async () => {
     const { element } = await render({ role: 'owner' });
 
-    expect(chips(element)).toEqual(['Owner']);
+    expect(chips(element)).toEqual(['Gastgeber']);
     expect(element.querySelector('[data-slot="badge"].bg-secondary')).not.toBeNull();
   });
 

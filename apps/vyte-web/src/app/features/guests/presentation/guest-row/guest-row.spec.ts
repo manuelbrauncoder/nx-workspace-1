@@ -133,14 +133,14 @@ describe('GuestRow', () => {
       companionsReduced: true,
     });
 
-    expect(element.textContent).toContain('Vom Host eingetragen');
+    expect(element.textContent).toContain('Von euch eingetragen');
     expect(element.textContent).toContain('Begleitungen auf das neue Limit gekürzt');
   });
 
   it('shows neither when it does not apply', async () => {
     const { element } = await render({ answeredBy: 'guest', message: 'Hallo' });
 
-    expect(element.textContent).not.toContain('Vom Host eingetragen');
+    expect(element.textContent).not.toContain('Von euch eingetragen');
     expect(element.textContent).not.toContain('gekürzt');
   });
 
@@ -176,9 +176,9 @@ describe('GuestRow', () => {
     const { element } = await render();
 
     expect(button(element, 'Aktionen für Ada Lovelace')).not.toBeNull();
-    expect(button(element, 'Link kopieren: Ada Lovelace')).not.toBeNull();
+    expect(button(element, 'Link kopieren für Ada Lovelace')).not.toBeNull();
     expect(element.querySelector('.guest-row__copy')).toBe(
-      button(element, 'Link kopieren: Ada Lovelace'),
+      button(element, 'Link kopieren für Ada Lovelace'),
     );
   });
 
@@ -225,7 +225,7 @@ describe('GuestRow', () => {
     const copy = vi.fn();
     fixture.componentInstance.copyLink.subscribe(copy);
 
-    button(element, 'Link kopieren: Ada Lovelace')!.click();
+    button(element, 'Link kopieren für Ada Lovelace')!.click();
 
     expect(copy).toHaveBeenCalledTimes(1);
   });

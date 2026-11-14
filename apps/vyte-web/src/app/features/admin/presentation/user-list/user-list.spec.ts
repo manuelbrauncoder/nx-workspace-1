@@ -97,7 +97,7 @@ describe('UserList', () => {
     expect(createInvite).toHaveBeenCalledWith('Linus');
     expect(toast.success).toHaveBeenCalledWith('Link für Linus erstellt');
     expect(element.querySelector<HTMLInputElement>('form input')?.value).toBe('');
-    expect(document.activeElement?.getAttribute('aria-label')).toBe('Kopieren: Link für Linus');
+    expect(document.activeElement?.getAttribute('aria-label')).toBe('Link kopieren für Linus');
   });
 
   it('creates no link without a name', async () => {
@@ -116,7 +116,7 @@ describe('UserList', () => {
 
     expect(element.textContent).toContain('https://vyte.example.com/welcome/tok-1');
     element
-      .querySelector<HTMLButtonElement>('button[aria-label="Kopieren: Link für Grace"]')!
+      .querySelector<HTMLButtonElement>('button[aria-label="Link kopieren für Grace"]')!
       .click();
     await settle();
 
@@ -129,7 +129,7 @@ describe('UserList', () => {
     revokeInvite.mockResolvedValue(true);
     const { element } = await render();
     const button = () =>
-      element.querySelector<HTMLButtonElement>('button[aria-label="Widerrufen: Link für Grace"]')!;
+      element.querySelector<HTMLButtonElement>('button[aria-label="Link zurückziehen für Grace"]')!;
 
     button().click();
     await settle();
@@ -138,7 +138,7 @@ describe('UserList', () => {
     button().click();
     await settle();
     expect(revokeInvite).toHaveBeenCalledWith('i1');
-    expect(toast.success).toHaveBeenCalledWith('Link für Grace widerrufen');
+    expect(toast.success).toHaveBeenCalledWith('Link für Grace zurückgezogen');
   });
 
   it('says when there are no open links', async () => {

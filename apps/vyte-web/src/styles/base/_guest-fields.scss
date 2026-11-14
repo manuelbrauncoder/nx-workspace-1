@@ -1,0 +1,23 @@
+// Text fields on the guest pages in the Konfetti shape of the design (`docs/vyte/design`): a
+// 3px ink border and the radius of the controls. The workspace keeps the thin Spartan fields.
+// Not in a layer on purpose: the border width of the field is a Tailwind utility, and a rule in
+// a layer would lose against it.
+.guest-shell {
+  [data-slot='input'],
+  [data-slot='textarea'] {
+    border-width: 3px;
+    border-radius: var(--radius);
+
+    // The field draws its focus only as a ring, which the invalid state overwrites with a pale
+    // red. An ink outline shows the focus in every state.
+    &:focus-visible {
+      outline: 2px solid var(--foreground);
+      outline-offset: 2px;
+    }
+
+    // The invalid state keeps its red border.
+    &:not([data-matches-spartan-invalid='true']) {
+      border-color: var(--foreground);
+    }
+  }
+}

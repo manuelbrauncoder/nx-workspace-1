@@ -46,17 +46,28 @@ describe('UserRow', () => {
     expect(element.textContent?.match(/ada@example\.com/g)).toHaveLength(1);
   });
 
-  it('shows a user with an outline badge and an admin with a secondary one', async () => {
-    const user = await render();
-    const userBadge = user.element.querySelector('[data-slot="badge"]')!;
-    expect(userBadge.classList.contains('bg-secondary')).toBe(false);
-    expect(userBadge.textContent).toContain(badges(user.element)[0]);
-    TestBed.resetTestingModule();
+  it('shows a secondary Admin badge with the shield for an admin', async () => {
+    const { element } = await render({ role: 'admin' });
 
-    const admin = await render({ role: 'admin' });
-    expect(
-      admin.element.querySelector('[data-slot="badge"]')!.classList.contains('bg-secondary'),
-    ).toBe(true);
+    expect(badges(element)).toEqual(['Admin']);
+    expect(element.querySelector('[data-slot="badge"]')!.classList.contains('bg-secondary')).toBe(
+      true,
+    );
+    expect(element.querySelector('[data-slot="badge"] app-ui-icon')).not.toBeNull();
+  });
+
+  it('shows no role badge and no badge row for a normal account', async () => {
+    const { element } = await render();
+
+    expect(badges(element)).toEqual([]);
+    expect(element.querySelector('.user-row__badges')).toBeNull();
+    expect(element.textContent).not.toContain('Gastgeber');
+  });
+
+  it('shows only "Das bist du" for the signed-in normal account', async () => {
+    const { element } = await render({}, { isMe: true });
+
+    expect(badges(element)).toEqual(['Das bist du']);
   });
 
   it('marks the signed-in admin with "Das bist du" and hides the menu', async () => {
@@ -72,7 +83,7 @@ describe('UserRow', () => {
     expect(
       named.element.querySelector('button[aria-label="Aktionen für Ada Lovelace"]'),
     ).not.toBeNull();
-    expect(badges(named.element)).toHaveLength(1);
+    expect(badges(named.element)).toHaveLength(0);
     TestBed.resetTestingModule();
 
     const unnamed = await render({ name: undefined });

@@ -264,7 +264,7 @@ describe('TeamPage', () => {
       expect(store.createInvite).toHaveBeenCalledTimes(1);
       expect(toast.success).toHaveBeenCalledWith('Einladungslink erstellt');
       const active = document.activeElement as HTMLElement;
-      expect(active.textContent).toContain('Kopieren');
+      expect(active.textContent).toContain('Link kopieren');
       expect(active.closest('[data-invite]')?.getAttribute('data-invite')).toBe('i3');
     });
 
@@ -313,7 +313,7 @@ describe('TeamPage', () => {
         memberMutationState: failed(new Failure('conflict', 'Over')),
       });
 
-      expect(element.textContent).toContain('Das Event ist vorbei oder die Person ist Owner.');
+      expect(element.textContent).toContain('Das Event ist vorbei oder die Person ist Gastgeber.');
     });
 
     it('shows the generic text for other failures of a change', async () => {
@@ -331,7 +331,7 @@ describe('TeamPage', () => {
     describe('copying and sharing', () => {
       const copyButton = (element: HTMLElement) =>
         element.querySelector<HTMLButtonElement>(
-          '[data-invite="i2"] button[aria-label^="Kopieren"]',
+          '[data-invite="i2"] button[aria-label^="Link kopieren"]',
         )!;
 
       it('copies the address and says so', async () => {
@@ -406,7 +406,7 @@ describe('TeamPage', () => {
     describe('revoking', () => {
       const revokeButton = (element: HTMLElement) =>
         element.querySelector<HTMLButtonElement>(
-          '[data-invite="i2"] button[aria-label^="Zurückziehen"]',
+          '[data-invite="i2"] button[aria-label^="Link zurückziehen"]',
         )!;
 
       it('revokes a link only after confirmation and focuses the heading of the links', async () => {
@@ -494,7 +494,7 @@ describe('TeamPage', () => {
           expect.objectContaining({ heading: 'Event an Ada Lovelace übergeben?' }),
         );
         expect(store.handOver).toHaveBeenCalledWith('u2');
-        expect(toast.success).toHaveBeenCalledWith('Ada Lovelace ist jetzt Owner');
+        expect(toast.success).toHaveBeenCalledWith('Ada Lovelace ist jetzt Gastgeber');
         expect(document.activeElement?.id).toBe('team-page-members');
       });
 
@@ -587,7 +587,7 @@ describe('TeamPage', () => {
         'team-page-leave',
       );
       expect(alerts[0]!.textContent).toContain('Das Event konnte nicht verlassen werden');
-      expect(element.textContent).not.toContain('die Person ist Owner');
+      expect(element.textContent).not.toContain('die Person ist Gastgeber');
     });
   });
 
