@@ -1,5 +1,6 @@
 {
   "title": "Event",
+  "glance": "At a glance",
   "facts": {
     "deadline": "Answers until",
     "address": "Address"
@@ -8,7 +9,6 @@
   "mapNamed": "Open in map: {{ address }}, opens OpenStreetMap in a new tab",
   "noDescription": "No description",
   "guests": {
-    "heading": "Guests",
     "description": "Coming and at most count people, companions included.",
     "invited": "Invited",
     "coming": "Coming",
@@ -96,6 +96,5 @@
     "printCard": "Print card"
   },
   "share": "Share",
-  "description": "Description",
-  "details": "Details"
+  "description": "Description"
 }

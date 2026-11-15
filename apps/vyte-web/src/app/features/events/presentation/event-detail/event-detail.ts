@@ -8,15 +8,17 @@ import { AsyncContent } from '@shared/async-content/async-content';
 import { UiAttachmentImports } from '@shared/ui/attachment/attachment';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiRichText } from '@shared/ui/rich-text/rich-text';
+import { UiSeparator } from '@shared/ui/separator/separator';
 import { UiText } from '@shared/ui/text/text';
 import { EventsStore } from '../../application/events.store';
 import { PhotoStandPanel } from '../photo-stand-panel/photo-stand-panel';
 import { SaveTheDatePanel } from '../save-the-date-panel/save-the-date-panel';
 
 /**
- * The overview of one event, the first tab below `EventFrame` on `/events/:id`: address and
- * deadline, the counts, description and images, and the public links (save the date, photo
- * stand). Title, date and the actions stand in the frame.
+ * The overview of one event, the first tab below `EventFrame` on `/events/:id`. On top a quiet
+ * panel "at a glance" with the counts, address and deadline, then description and images with a
+ * line between them, and the public links (save the date, photo stand) in their own column.
+ * Title, date and the actions stand in the frame.
  */
 @Component({
   selector: 'app-event-detail',
@@ -28,6 +30,7 @@ import { SaveTheDatePanel } from '../save-the-date-panel/save-the-date-panel';
     UiAttachmentImports,
     UiIcon,
     UiRichText,
+    UiSeparator,
     UiText,
     PhotoStandPanel,
     SaveTheDatePanel,

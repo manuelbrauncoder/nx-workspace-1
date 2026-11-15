@@ -86,7 +86,9 @@ describe('EventDetail', () => {
   it('shows address with a link to the map and the deadline in the zone of the event', async () => {
     const element = await render(success(), EVENT);
 
-    expect(element.querySelector('h2#event-detail-details')?.textContent?.trim()).toBe('Details');
+    const glance = element.querySelector('#event-detail-glance')!.closest('section')!;
+    expect(glance.querySelector('dl.event-detail__facts')).not.toBeNull();
+    expect(glance.querySelector('[appUiSeparator]')).not.toBeNull();
     expect(element.textContent).toContain('Mo., 1. März 2027');
     const map = element.querySelector('.event-detail__map');
     expect(map?.getAttribute('href')).toBe(
@@ -95,17 +97,17 @@ describe('EventDetail', () => {
     expect(map?.getAttribute('rel')).toBe('noopener noreferrer');
   });
 
-  it('shows no details section without address and deadline', async () => {
+  it('shows no facts and no line without address and deadline', async () => {
     const element = await render(success(), { ...EVENT, address: null, rsvpDeadline: null });
 
-    expect(element.querySelector('#event-detail-details')).toBeNull();
     expect(element.querySelector('dl.event-detail__facts')).toBeNull();
+    expect(element.querySelector('.event-detail__glance [appUiSeparator]')).toBeNull();
   });
 
   it('shows only the deadline when there is no address', async () => {
     const element = await render(success(), { ...EVENT, address: null });
 
-    expect(element.querySelector('#event-detail-details')).not.toBeNull();
+    expect(element.querySelector('dl.event-detail__facts')).not.toBeNull();
     expect(element.querySelector('.event-detail__map')).toBeNull();
     expect(element.querySelector('time')).not.toBeNull();
   });
@@ -117,10 +119,12 @@ describe('EventDetail', () => {
     expect(element.querySelector('time')).toBeNull();
   });
 
-  it('shows the counts of the guests with a link to the guest list', async () => {
+  it('shows the counts at a glance with a link to the guest list', async () => {
     const element = await render(success(), EVENT);
 
-    expect(element.querySelector('#event-detail-guests')?.textContent?.trim()).toBe('Gäste');
+    expect(element.querySelector('h2#event-detail-glance')?.textContent?.trim()).toBe(
+      'Auf einen Blick',
+    );
     const counts = Array.from(element.querySelectorAll('.event-detail__count dd'), (dd) =>
       dd.textContent?.trim(),
     );
@@ -145,14 +149,16 @@ describe('EventDetail', () => {
     expect(element.textContent).toContain('Keine Beschreibung');
   });
 
-  it('shows the images section only with images', async () => {
+  it('shows the images section only with images, behind a line', async () => {
     const withImages = await render(success(), EVENT);
     expect(withImages.querySelector('#event-detail-images')).not.toBeNull();
     expect(withImages.querySelectorAll('app-ui-attachment')).toHaveLength(1);
+    expect(withImages.querySelectorAll('.event-detail__main > [appUiSeparator]')).toHaveLength(1);
 
     TestBed.resetTestingModule();
     const without = await render(success(), { ...EVENT, images: [] });
     expect(without.querySelector('#event-detail-images')).toBeNull();
+    expect(without.querySelector('.event-detail__main > [appUiSeparator]')).toBeNull();
   });
 
   it('shows the share section with the panels under their headings', async () => {
@@ -173,7 +179,7 @@ describe('EventDetail', () => {
     const element = await render(failed(new Failure('not-found', 'Nope')));
 
     expect(element.querySelector('[role="alert"]')).not.toBeNull();
-    expect(element.querySelector('#event-detail-guests')).toBeNull();
+    expect(element.querySelector('#event-detail-glance')).toBeNull();
   });
 
   it('has no accessibility violations', async () => {
