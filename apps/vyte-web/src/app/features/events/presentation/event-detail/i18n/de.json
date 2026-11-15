@@ -1,5 +1,6 @@
 {
   "title": "Event",
+  "glance": "Auf einen Blick",
   "facts": {
     "deadline": "Antworten bis",
     "address": "Adresse"
@@ -8,7 +9,6 @@
   "mapNamed": "In Karte öffnen: {{ address }}, öffnet OpenStreetMap in einem neuen Tab",
   "noDescription": "Keine Beschreibung",
   "guests": {
-    "heading": "Gäste",
     "description": "Kommen und Höchstens zählen Personen samt Begleitung.",
     "invited": "Eingeladen",
     "coming": "Kommen",
@@ -96,6 +96,5 @@
     "printCard": "Karte drucken"
   },
   "share": "Teilen",
-  "description": "Beschreibung",
-  "details": "Details"
+  "description": "Beschreibung"
 }

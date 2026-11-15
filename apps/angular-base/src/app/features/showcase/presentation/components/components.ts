@@ -21,6 +21,7 @@ import { UiNavMenu, UiNavMenuItem } from '@shared/ui/nav-menu/nav-menu';
 import { UiPagination } from '@shared/ui/pagination/pagination';
 import { UiQrCode } from '@shared/ui/qr-code/qr-code';
 import { UiRichText } from '@shared/ui/rich-text/rich-text';
+import { UiSeparator } from '@shared/ui/separator/separator';
 import { UiSheet } from '@shared/ui/sheet/sheet';
 import { UiSkeleton } from '@shared/ui/skeleton/skeleton';
 import { UiSpinner } from '@shared/ui/spinner/spinner';
@@ -50,6 +51,7 @@ interface Message {
     UiAlertAction,
     UiAttachmentImports,
     UiBadge,
+    UiSeparator,
     UiBreadcrumb,
     UiButton,
     UiCardImports,

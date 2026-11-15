@@ -215,6 +215,17 @@
     </p>
   </app-showcase-section>
 
+  <app-showcase-section
+    [description]="'showcaseComponents.separator.description' | t"
+    heading="Separator"
+  >
+    <div class="demo-stack">
+      <p>{{ 'showcaseComponents.separator.above' | t }}</p>
+      <div appUiSeparator></div>
+      <p>{{ 'showcaseComponents.separator.below' | t }}</p>
+    </div>
+  </app-showcase-section>
+
   <app-showcase-section [description]="'showcaseComponents.list.description' | t" heading="List">
     <ul appUiList>
       <li appUiListItem>{{ 'showcaseComponents.list.item1' | t }}</li>

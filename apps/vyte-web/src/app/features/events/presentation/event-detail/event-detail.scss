@@ -1,8 +1,9 @@
 @use 'styles/abstracts' as *;
 
 // The overview below the frame of the event: the content on the left, the public links in a
-// column on the right from `lg` on, below each other on a phone. 2.5rem between the sections,
-// 1rem from a section heading to its content.
+// column on the right from `lg` on, below each other on a phone. 2.5rem between the parts of
+// the main column (a line between description and images), 1rem from a section heading to its
+// content.
 
 .event-detail {
   display: block;
@@ -26,10 +27,52 @@
   min-width: 0;
 }
 
+.event-detail__glance-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+// The numbers large above their label, as many side by side as fit. A display number, not
+// running text, hence its own size instead of an `appUiText` variant.
+.event-detail__counts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.event-detail__count {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.125rem;
+
+  dt {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+  }
+
+  dd {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.event-detail__note {
+  margin-top: 0.75rem;
+}
+
+.event-detail__glance-separator {
+  margin: 1.25rem 0;
+}
+
 .event-detail__facts {
   display: grid;
   gap: 1rem;
-  margin-top: 1rem;
 
   @include up(sm) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -39,6 +82,7 @@
 .event-detail__fact {
   dt {
     color: var(--muted-foreground);
+    font-size: 0.875rem;
   }
 
   dd {
@@ -55,12 +99,14 @@
   overflow-wrap: anywhere;
 }
 
+// Links as tall as a touch target, the text stays in its line.
 .event-detail__map,
 .event-detail__link {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
   align-self: flex-start;
+  min-height: 2.75rem;
   border-radius: calc(var(--radius) - 4px);
   color: var(--primary);
   text-decoration: underline;
@@ -69,36 +115,6 @@
     outline: 2px solid var(--primary);
     outline-offset: 2px;
   }
-}
-
-// One line of labelled numbers in a quiet frame, as on the guest list.
-.event-detail__counts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 2rem;
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
-
-.event-detail__count {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-
-  dt {
-    color: var(--muted-foreground);
-  }
-
-  dd {
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
-}
-
-.event-detail__note {
-  margin-top: 0.5rem;
 }
 
 .event-detail__description {
@@ -122,7 +138,8 @@
   min-width: 0;
 }
 
-// Each public link in a quiet panel.
+// "At a glance" in the main column and each public link on the right share one quiet frame.
+.event-detail__glance,
 .event-detail__panel {
   padding: 1.25rem;
   border: 1px solid var(--border);

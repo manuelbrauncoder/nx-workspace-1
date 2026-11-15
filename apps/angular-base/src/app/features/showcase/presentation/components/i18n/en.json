@@ -121,6 +121,11 @@
     "description": "app-ui-qr-code draws a QR code as an SVG, sharp in print and the same on server and browser. As large as its container, needs a label.",
     "label": "QR code of an example address"
   },
+  "separator": {
+    "description": "appUiSeparator: a thin line between two parts of a page, with orientation=\"vertical\" also between items side by side. Decorative only.",
+    "above": "Description of the event",
+    "below": "Images of the event"
+  },
   "list": {
     "description": "appUiList on ul or ol, appUiListItem on li: rows with dividers in a calm frame, for lists on work pages.",
     "item1": "Ada Lovelace",
