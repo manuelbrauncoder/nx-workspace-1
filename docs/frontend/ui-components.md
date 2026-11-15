@@ -83,6 +83,7 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 | `UiPagination`           | `app-ui-pagination`                           | `@shared/ui/pagination/pagination`                 |
 | `UiTabNav`               | `app-ui-tab-nav`                              | `@shared/ui/tab-nav/tab-nav`                       |
 | `UiBadge`                | `span[appUiBadge]`                            | `@shared/ui/badge/badge`                           |
+| `UiSeparator`            | `[appUiSeparator]`                            | `@shared/ui/separator/separator`                   |
 | `UiDialogService`        | `open()`                                      | `@shared/ui/dialog/dialog.service`                 |
 | `UiConfirmDialogService` | `confirm()`                                   | `@shared/ui/confirm-dialog/confirm-dialog.service` |
 | `UiToastService`         | `success()`, `info()`, `warning()`, `error()` | `@shared/ui/toast/toast.service`                   |
@@ -545,6 +546,19 @@ A short label next to a name: a role, a state, a count. Text, not a control.
 
 - `outline` (default) is a thin border, `secondary` the soft secondary ground of the theme
 - The Spartan badge has no variant this quiet, so the wrapper sets its own classes from theme tokens
+
+### Separator
+
+A thin line between two parts of a page, or between items side by side.
+
+```html
+<div appUiSeparator></div>
+<span appUiSeparator orientation="vertical"></span>
+```
+
+- Decorative (`role="none"`): the headings carry the structure, screen readers skip the line
+- It brings no margin, the page sets the spacing around it
+- Built from `BrnSeparator` and `hlmSeparatorClass`, because `HlmSeparator` does not pass `orientation` on to a host
 
 ### Tab nav
 
