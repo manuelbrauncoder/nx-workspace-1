@@ -3,6 +3,7 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { I18nService } from '@core/i18n/i18n.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { FailureAlert } from '@shared/failure-alert/failure-alert';
+import { UiBreadcrumb, UiBreadcrumbItem } from '@shared/ui/breadcrumb/breadcrumb';
 import { UiButton } from '@shared/ui/button/button';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
 import { UiIcon } from '@shared/ui/icon/icon';
@@ -26,6 +27,7 @@ import { EventWhen } from '../event-when/event-when';
     RouterOutlet,
     TranslatePipe,
     FailureAlert,
+    UiBreadcrumb,
     UiButton,
     UiIcon,
     UiMenuImports,
@@ -46,6 +48,13 @@ export class EventFrame {
   private readonly _toast = inject(UiToastService);
   private readonly _confirmDialog = inject(UiConfirmDialogService);
   private readonly _i18n = inject(I18nService);
+
+  private readonly _breadcrumb = computed((): UiBreadcrumbItem[] => {
+    const events: UiBreadcrumbItem = { labelKey: 'events.breadcrumb', path: '/events' };
+    // The title is missing while the event loads, the trail is shorter until then.
+    const title = this._store.selected()?.title;
+    return title ? [events, { label: title }] : [events];
+  });
 
   private readonly _tabs = computed((): UiTabNavItem[] => {
     const base = `/events/${this.id()}`;

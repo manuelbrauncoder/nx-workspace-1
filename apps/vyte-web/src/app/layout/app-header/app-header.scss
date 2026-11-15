@@ -18,13 +18,17 @@
 }
 
 // Below `md` the links move into the drawer, opened by the menu button.
-.app-header__nav {
+.app-header__nav,
+.app-header__lang-toggle,
+.app-header__theme-toggle {
   display: none;
 
   @include up(md) {
     display: block;
   }
 }
+
+
 
 .app-header__menu-button {
   @include up(md) {

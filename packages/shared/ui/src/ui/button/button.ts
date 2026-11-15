@@ -16,6 +16,19 @@ export type UiButtonSize =
   'default' | 'xs' | 'sm' | 'lg' | 'icon' | 'icon-xs' | 'icon-sm' | 'icon-lg';
 
 /**
+ * Taller than the Spartan sizes, so a default button and an icon button reach the 44px touch
+ * target. Merged over the helm classes, which `hlm` resolves in favor of these.
+ */
+const SIZE_CLASSES: Partial<Record<UiButtonSize, string>> = {
+  default: 'h-11 px-4 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3',
+  sm: 'h-10 px-3',
+  lg: 'h-12 px-5',
+  icon: 'size-11',
+  'icon-sm': 'size-10',
+  'icon-lg': 'size-12',
+};
+
+/**
  * Button look and behavior for a native `button` or `a`, so `type`, `routerLink` and ARIA
  * attributes keep working as usual. While `loading` it shows a spinner and cannot be activated.
  * An icon-only button needs an `aria-label`.
@@ -65,10 +78,12 @@ export class UiButton {
   constructor() {
     classes(() => {
       const variant = this.variant();
+      const size = this.size();
+      const sizeClasses = SIZE_CLASSES[size];
       // `hlm` merges the colors of the default variant away, so only the brand colors stay.
       return variant === 'brand'
-        ? hlm(buttonVariants({ variant: 'default', size: this.size() }), BRAND_CLASSES)
-        : buttonVariants({ variant, size: this.size() });
+        ? hlm(buttonVariants({ variant: 'default', size }), BRAND_CLASSES, sizeClasses)
+        : hlm(buttonVariants({ variant, size }), sizeClasses);
     });
   }
 

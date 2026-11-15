@@ -14,7 +14,7 @@
               <h2 id="event-detail-glance" appUiText="heading">
                 {{ 'eventDetail.glance' | t }}
               </h2>
-              <a class="event-detail__link" [routerLink]="['/events', event.id, 'guests']">
+              <a [routerLink]="['/events', event.id, 'guests']" appUiButton variant="outline">
                 {{ 'eventDetail.guests.manage' | t }}
                 <app-ui-icon name="arrowRight" />
               </a>
