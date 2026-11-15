@@ -100,8 +100,7 @@
 }
 
 // Links as tall as a touch target, the text stays in its line.
-.event-detail__map,
-.event-detail__link {
+.event-detail__map {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;

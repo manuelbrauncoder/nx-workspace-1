@@ -6,6 +6,7 @@ import { injectPageSeo } from '@core/seo/inject-page-seo';
 import { toMetaDescription } from '@core/seo/meta-description';
 import { AsyncContent } from '@shared/async-content/async-content';
 import { UiAttachmentImports } from '@shared/ui/attachment/attachment';
+import { UiButton } from '@shared/ui/button/button';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiRichText } from '@shared/ui/rich-text/rich-text';
 import { UiSeparator } from '@shared/ui/separator/separator';
@@ -28,6 +29,7 @@ import { SaveTheDatePanel } from '../save-the-date-panel/save-the-date-panel';
     TranslatePipe,
     AsyncContent,
     UiAttachmentImports,
+    UiButton,
     UiIcon,
     UiRichText,
     UiSeparator,

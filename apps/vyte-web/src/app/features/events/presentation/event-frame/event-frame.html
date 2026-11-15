@@ -1,5 +1,6 @@
 @let event = _store.selected();
 <header class="event-frame__header">
+  <app-ui-breadcrumb [items]="_breadcrumb()" />
   <div class="event-frame__top">
     <div class="event-frame__title">
       <!-- Outside of the loaded event, so the page has its heading while loading and after a failure. -->
