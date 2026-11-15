@@ -1,3 +1,14 @@
+## 0.0.3 (2026-11-15)
+
+### 🚀 Features
+
+- **vyte-web:** taller buttons, icon sizes and a breadcrumb on the event frame ([57fd58d](https://github.com/manuelbrauncoder/nx-workspace-1/commit/57fd58d))
+- **vyte-web:** event overview with an "at a glance" panel ([227e3a6](https://github.com/manuelbrauncoder/nx-workspace-1/commit/227e3a6))
+
+### 🩹 Fixes
+
+- **vyte-web:** format app-header ([9d4b0cc](https://github.com/manuelbrauncoder/nx-workspace-1/commit/9d4b0cc))
+
 ## 0.0.2 (2026-11-14)
 
 ### 🚀 Features
