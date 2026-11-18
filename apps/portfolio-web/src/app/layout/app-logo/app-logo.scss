@@ -7,6 +7,8 @@
 .app-logo {
   display: inline-flex;
   align-items: center;
+  // 44px touch target, also when only the sign shows (between `md` and `lg` in the header)
+  min-height: 2.75rem;
   gap: 0.625rem;
   border-radius: calc(var(--radius) - 2px);
   color: var(--foreground);
@@ -22,7 +24,8 @@
   }
 }
 
-// An arrow-shaped trail sign. All sizes in em, so the sign scales with its font size.
+// An arrow-shaped trail sign, drawn as an outline so it does not compete with the filled
+// yellow buttons of the page. All sizes in em, so the sign scales with its font size.
 .app-logo__sign {
   position: relative;
   display: inline-flex;
@@ -31,14 +34,36 @@
   box-sizing: border-box;
   height: 1.6em;
   padding: 0.12em 1.25em 0 0.45em;
-  border-radius: 0.1em 0 0 0.1em;
-  background-color: var(--trail);
-  color: var(--trail-foreground);
+  color: var(--trail-ink);
   font-size: 1.25rem;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.04em;
-  clip-path: polygon(0 0, calc(100% - 0.72em) 0, 100% 50%, calc(100% - 0.72em) 100%, 0 100%);
+
+  // The outline: a ring in the shape of the arrow. A border cannot follow the slanted tip, so
+  // the outer and the inner arrow are cut out with `evenodd`. The inner one sits 0.09em inside,
+  // along the slants too (0.04em and 0.121em are that inset measured horizontally).
+  &::before {
+    position: absolute;
+    inset: 0;
+    background-color: currentColor;
+    clip-path: polygon(
+      evenodd,
+      0 0,
+      calc(100% - 0.72em) 0,
+      100% 50%,
+      calc(100% - 0.72em) 100%,
+      0 100%,
+      0 0,
+      0.09em 0.09em,
+      0.09em calc(100% - 0.09em),
+      calc(100% - 0.76em) calc(100% - 0.09em),
+      calc(100% - 0.121em) 50%,
+      calc(100% - 0.76em) 0.09em,
+      0.09em 0.09em
+    );
+    content: '';
+  }
 
   @include up(md) {
     font-size: 1.375rem;
@@ -78,5 +103,12 @@
 
   @include up(md) {
     font-size: 0.8125rem;
+  }
+}
+
+// Between `md` and `lg` the header needs the room for its links.
+:host(.app-logo--sign-on-tablet) .app-logo__text {
+  @include between(md, lg) {
+    display: none;
   }
 }

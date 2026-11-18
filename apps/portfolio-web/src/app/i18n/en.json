@@ -39,7 +39,8 @@
       "showcaseColors": "Colors",
       "showcaseForms": "Forms",
       "showcaseComponents": "Components"
-    }
+    },
+    "settings": "Settings"
   },
   "notFound": {
     "title": "Page not found",

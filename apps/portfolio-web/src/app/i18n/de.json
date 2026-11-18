@@ -39,7 +39,8 @@
       "showcaseColors": "Farben",
       "showcaseForms": "Formulare",
       "showcaseComponents": "Komponenten"
-    }
+    },
+    "settings": "Einstellungen"
   },
   "notFound": {
     "title": "Seite nicht gefunden",

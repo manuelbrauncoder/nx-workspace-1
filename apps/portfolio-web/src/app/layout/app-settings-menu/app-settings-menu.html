@@ -1,0 +1,69 @@
+<button
+  [appUiMenuTrigger]="menu"
+  [attr.aria-label]="'layout.settings' | t"
+  appUiButton
+  variant="ghost"
+  size="icon-lg"
+  type="button"
+  align="end"
+>
+  <app-ui-icon name="settings" size="lg" />
+</button>
+
+<ng-template #menu>
+  <app-ui-menu class="w-60" [label]="'layout.settings' | t">
+    @if (_auth.me(); as me) {
+      <div class="app-settings-menu__identity" id="app-settings-menu-identity">
+        <span class="app-settings-menu__name">{{ me.name ?? me.email }}</span>
+        @if (me.name) {
+          <span class="app-settings-menu__email">{{ me.email }}</span>
+        }
+      </div>
+      <!-- The arrow keys only reach the items, so the group points to who is signed in. -->
+      <app-ui-menu-group [label]="'auth.account' | t" aria-describedby="app-settings-menu-identity">
+        @if (_auth.isAdmin()) {
+          <button (triggered)="_account.openAdmin()" appUiMenuItem type="button">
+            <app-ui-icon name="shield" />
+            {{ 'auth.admin' | t }}
+          </button>
+        }
+        <button (triggered)="_account.signOut()" appUiMenuItem type="button">
+          <app-ui-icon name="logOut" />
+          {{ 'auth.signOut' | t }}
+        </button>
+      </app-ui-menu-group>
+      <app-ui-menu-separator />
+    }
+
+    <app-ui-menu-group [label]="'language.heading' | t">
+      <app-ui-menu-label>{{ 'language.heading' | t }}</app-ui-menu-label>
+      @for (option of _languages; track option.language) {
+        <button
+          [attr.lang]="option.language"
+          [checked]="_i18n.language() === option.language"
+          (triggered)="_i18n.setLanguage(option.language)"
+          appUiMenuRadio
+          type="button"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </app-ui-menu-group>
+
+    <app-ui-menu-separator />
+
+    <app-ui-menu-group [label]="'theme.heading' | t">
+      <app-ui-menu-label>{{ 'theme.heading' | t }}</app-ui-menu-label>
+      @for (option of _themes; track option.mode) {
+        <button
+          [checked]="_theme.mode() === option.mode"
+          (triggered)="_theme.setMode(option.mode)"
+          appUiMenuRadio
+          type="button"
+        >
+          {{ option.labelKey | t }}
+        </button>
+      }
+    </app-ui-menu-group>
+  </app-ui-menu>
+</ng-template>

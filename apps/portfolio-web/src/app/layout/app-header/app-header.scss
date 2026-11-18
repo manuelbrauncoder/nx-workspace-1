@@ -13,11 +13,11 @@
   background-color: var(--background);
 }
 
-// Logo and menu button at the edges up to `lg`. From `lg` three columns: the logo on the left,
-// the links in the middle of the bar, toggles and account on the right. The two outer columns
+// Logo and menu button at the edges on a phone. From `md` three columns: the logo on the left,
+// the links in the middle of the bar, the settings menu on the right. The two outer columns
 // share the rest evenly, so the links stay centered whatever the logo and the actions measure.
-// Below `lg` logo, links and actions do not fit side by side, a tablet held upright gets the
-// drawer as a phone does. The height is 73px from `md` on, the hero subtracts it.
+// Up to `lg` the logo shows only its sign, otherwise the three would not fit side by side.
+// The header is 73px high at every size, the hero subtracts it.
 .app-header__bar {
   display: flex;
   align-items: center;
@@ -27,12 +27,9 @@
   padding-block: 0.75rem;
 
   @include up(md) {
-    min-height: 4.5rem;
-  }
-
-  @include up(lg) {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
+    min-height: 4.5rem;
   }
 }
 
@@ -47,20 +44,19 @@
   gap: 0.5rem;
 }
 
-// Below `lg` the links, the toggles and the account move into the drawer, opened by the menu
-// button.
+// Below `md` the links and the settings (account, language, theme) move into the drawer, opened
+// by the menu button.
 .app-header__nav,
-.app-header__toggle,
-.app-header__account {
+.app-header__settings {
   display: none;
 
-  @include up(lg) {
+  @include up(md) {
     display: block;
   }
 }
 
 .app-header__menu-button {
-  @include up(lg) {
+  @include up(md) {
     display: none;
   }
 }
