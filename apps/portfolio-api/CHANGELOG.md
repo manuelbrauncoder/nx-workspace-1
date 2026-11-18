@@ -1,3 +1,20 @@
+# 3.0.0 (2026-11-18)
+
+### 🚀 Features
+
+- ⚠️  **portfolio-api:** several sortable images and a rich-text description per project ([5796b27](https://github.com/manuelbrauncoder/nx-workspace-1/commit/5796b27))
+- **server-auth:** account links for closed sign-up ([cdddc2b](https://github.com/manuelbrauncoder/nx-workspace-1/commit/cdddc2b))
+
+### 🩹 Fixes
+
+- **server-core:** sanitize rich text in one place with the contract's link rules ([1135c17](https://github.com/manuelbrauncoder/nx-workspace-1/commit/1135c17))
+
+### ⚠️  Breaking Changes
+
+- **portfolio-api:** several sortable images and a rich-text description per project  ([5796b27](https://github.com/manuelbrauncoder/nx-workspace-1/commit/5796b27))
+  `projects.items[].image` is replaced by `images`, and
+  `projects.items[].description` is HTML. Release together with the portfolio-web update.
+
 # 2.0.0 (2026-11-07)
 
 ### 🩹 Fixes
