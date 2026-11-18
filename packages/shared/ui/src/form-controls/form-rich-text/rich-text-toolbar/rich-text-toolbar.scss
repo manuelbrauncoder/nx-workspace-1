@@ -6,7 +6,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem 0.5rem;
-  border-bottom: 1px solid var(--border);
+  // The color of the frame around the editor, so the toolbar reads as part of the field.
+  border-bottom: 1px solid var(--input);
   padding: 0.25rem;
 }
 
@@ -15,7 +16,7 @@
   gap: 0.125rem;
 
   & + & {
-    border-left: 1px solid var(--border);
+    border-left: 1px solid var(--input);
     padding-left: 0.5rem;
   }
 }

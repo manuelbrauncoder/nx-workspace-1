@@ -39,6 +39,8 @@
   --surface: #15241c;
   --trail: #f2c230;
   --trail-foreground: #142a20;
+  // The trail yellow as a line or text on the page, e.g. the outlined logo sign.
+  --trail-ink: var(--trail);
   // Main action of a page (`variant="brand"`): the trail-marker yellow.
   --brand: var(--trail);
   --brand-foreground: var(--trail-foreground);

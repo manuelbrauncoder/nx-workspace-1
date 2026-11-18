@@ -5,27 +5,56 @@
   flex-direction: column;
 }
 
-// Arrow-shaped sign, the same shape as the logo.
+// Arrow-shaped sign as an outline, the same style as the logo, so the filled yellow stays with
+// the buttons of the page.
 .skill-signpost__sign {
+  // Width of the arrow tip and of the line.
+  --tip: 22px;
+  --line: 2px;
+
+  position: relative;
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
   min-height: 3rem;
   margin: 0;
   padding: 0 2.75rem 0 1.125rem;
-  border-radius: 4px 0 0 4px;
-  background-color: var(--trail);
-  color: var(--trail-foreground);
+  color: var(--trail-ink);
   font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.01em;
-  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 50%, calc(100% - 22px) 100%, 0 100%);
+
+  // A ring in the shape of the arrow: the outer arrow minus one `--line` smaller, cut out with
+  // `evenodd`, because a border cannot follow the slanted tip. Along the slants the inset
+  // measures 1px more at the corners and 2.7px at the tip, horizontally.
+  &::before {
+    position: absolute;
+    inset: 0;
+    background-color: currentColor;
+    clip-path: polygon(
+      evenodd,
+      0 0,
+      calc(100% - var(--tip)) 0,
+      100% 50%,
+      calc(100% - var(--tip)) 100%,
+      0 100%,
+      0 0,
+      var(--line) var(--line),
+      var(--line) calc(100% - var(--line)),
+      calc(100% - var(--tip) - 1px) calc(100% - var(--line)),
+      calc(100% - 2.7px) 50%,
+      calc(100% - var(--tip) - 1px) var(--line),
+      var(--line) var(--line)
+    );
+    content: '';
+  }
 
   @include up(md) {
+    --tip: 24px;
+
     min-height: 3.375rem;
     padding: 0 3rem 0 1.375rem;
     font-size: 1.375rem;
-    clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 50%, calc(100% - 24px) 100%, 0 100%);
   }
 }
 

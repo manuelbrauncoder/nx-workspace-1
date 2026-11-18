@@ -6,6 +6,16 @@ import { UiButton } from '../ui/button/button';
 import { UiIcon } from '../ui/icon/icon';
 import { UiMenuImports } from '../ui/menu/menu';
 
+/**
+ * The languages for a menu. The labels are the names of the languages in the language itself, so
+ * they are not translated. A menu with more than the languages (e.g. a settings menu) renders
+ * them as `appUiMenuRadio` items in its own template, the CDK menu only finds items there.
+ */
+export const LANGUAGE_MENU_OPTIONS = APP_LANGUAGE_CODES.map((language) => ({
+  language,
+  label: APP_LANGUAGES[language].label,
+}));
+
 @Component({
   selector: 'app-language-toggle',
   imports: [UiButton, UiIcon, UiMenuImports, TranslatePipe],
@@ -18,9 +28,5 @@ export class LanguageToggle {
 
   private readonly _i18n = inject(I18nService);
 
-  /** The labels are the names of the languages in the language itself, so they are not translated. */
-  private readonly _options = APP_LANGUAGE_CODES.map((language) => ({
-    language,
-    label: APP_LANGUAGES[language].label,
-  }));
+  private readonly _options = LANGUAGE_MENU_OPTIONS;
 }

@@ -6,6 +6,17 @@ import { UiButton } from '../ui/button/button';
 import { UiIcon } from '../ui/icon/icon';
 import { UiMenuImports } from '../ui/menu/menu';
 
+/**
+ * The theme modes for a menu, with the keys of their labels. A menu with more than the themes
+ * (e.g. a settings menu) renders them as `appUiMenuRadio` items in its own template, the CDK menu
+ * only finds items there.
+ */
+export const THEME_MENU_OPTIONS: readonly { mode: ThemeMode; labelKey: TranslationKey }[] = [
+  { mode: 'light', labelKey: 'theme.light' },
+  { mode: 'dark', labelKey: 'theme.dark' },
+  { mode: 'system', labelKey: 'theme.system' },
+];
+
 @Component({
   selector: 'app-theme-toggle',
   imports: [TranslatePipe, UiButton, UiIcon, UiMenuImports],
@@ -18,9 +29,5 @@ export class ThemeToggle {
 
   private readonly _theme = inject(ThemeService);
 
-  private readonly _options: { mode: ThemeMode; labelKey: TranslationKey }[] = [
-    { mode: 'light', labelKey: 'theme.light' },
-    { mode: 'dark', labelKey: 'theme.dark' },
-    { mode: 'system', labelKey: 'theme.system' },
-  ];
+  private readonly _options = THEME_MENU_OPTIONS;
 }

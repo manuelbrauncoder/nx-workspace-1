@@ -44,6 +44,10 @@
   // Trail-marker yellow: the logo sign, markers and the main call to action.
   --trail: #f2c230;
   --trail-foreground: #142a20;
+  // The trail yellow as a line or text on the page, e.g. the outlined logo sign. Plain yellow
+  // fades on the light ground (1.5:1), this ochre keeps 4.4:1 on the background and 4.8:1 on
+  // the surface.
+  --trail-ink: #8a6a00;
   // Main action of a page (`variant="brand"`): the trail-marker yellow.
   --brand: var(--trail);
   --brand-foreground: var(--trail-foreground);

@@ -122,7 +122,8 @@
     </button>
     <ng-template #menu>
       <app-ui-menu class="w-48">
-        <app-ui-menu-group>
+        <app-ui-menu-group [label]="'showcaseComponents.menu.density' | t">
+          <app-ui-menu-label>{{ 'showcaseComponents.menu.density' | t }}</app-ui-menu-label>
           @for (option of _densities; track option.value) {
             <button
               [checked]="_density() === option.value"
@@ -134,6 +135,7 @@
             </button>
           }
         </app-ui-menu-group>
+        <app-ui-menu-separator />
         <app-ui-menu-group>
           <button (triggered)="_density.set('comfortable')" appUiMenuItem type="button">
             {{ 'showcaseComponents.menu.reset' | t }}

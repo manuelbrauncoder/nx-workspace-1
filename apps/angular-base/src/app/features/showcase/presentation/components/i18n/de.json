@@ -49,12 +49,13 @@
     "label": "Beispiel wird geladen"
   },
   "menu": {
-    "description": "appUiMenuTrigger öffnet ein app-ui-menu.",
+    "description": "appUiMenuTrigger öffnet ein app-ui-menu. Eine Gruppe bekommt mit label einen Namen für Screenreader, app-ui-menu-label zeigt ihn als kleine Überschrift, app-ui-menu-separator trennt Gruppen.",
     "choose": "Dichte wählen",
     "compact": "Kompakt",
     "comfortable": "Komfortabel",
     "reset": "Zurücksetzen",
-    "chosen": "Gewählt: {{ value }}"
+    "chosen": "Gewählt: {{ value }}",
+    "density": "Dichte"
   },
   "navMenu": {
     "description": "app-ui-nav-menu baut die Navigation aus einem Array. Ein Eintrag mit children wird horizontal zum Dropdown, vertikal zum aufklappbaren Abschnitt.",

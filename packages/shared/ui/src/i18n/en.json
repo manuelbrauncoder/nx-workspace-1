@@ -70,12 +70,14 @@
     "required": "required"
   },
   "language": {
-    "choose": "Choose language"
+    "choose": "Choose language",
+    "heading": "Language"
   },
   "theme": {
     "choose": "Choose color scheme",
     "light": "Light",
     "dark": "Dark",
-    "system": "System"
+    "system": "System",
+    "heading": "Theme"
   }
 }

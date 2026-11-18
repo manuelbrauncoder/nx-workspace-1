@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { booleanAttribute, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { SITE_OWNER } from '../../site-owner';
@@ -12,7 +12,14 @@ import { SITE_OWNER } from '../../site-owner';
   imports: [RouterLink, TranslatePipe],
   styleUrl: './app-logo.scss',
   templateUrl: './app-logo.html',
+  host: { '[class.app-logo--sign-on-tablet]': 'signOnTablet()' },
 })
 export class AppLogo {
+  /**
+   * Shows only the sign between `md` and `lg`, where the header needs the room for its links.
+   * The link keeps its name for screen readers.
+   */
+  readonly signOnTablet = input(false, { transform: booleanAttribute });
+
   private readonly _name = SITE_OWNER.name;
 }

@@ -4,10 +4,12 @@ import {
   HlmDropdownMenu,
   HlmDropdownMenuGroup,
   HlmDropdownMenuItem,
+  HlmDropdownMenuLabel,
+  HlmDropdownMenuSeparator,
   HlmDropdownMenuTrigger,
 } from '@spartan-ng/helm/dropdown-menu';
 import { classes } from '@spartan-ng/helm/utils';
-import { UiMenuRadio } from './menu-radio/menu-radio';
+import { UI_MENU_ITEM_CLASSES, UiMenuRadio } from './menu-radio/menu-radio';
 
 export { UiMenuRadio };
 
@@ -47,19 +49,64 @@ export class UiMenuTrigger {
   }
 }
 
-/** Menu panel. Lives inside the `<ng-template>` of an `appUiMenuTrigger`. */
+/**
+ * Menu panel. Lives inside the `<ng-template>` of an `appUiMenuTrigger`. `label` names it for
+ * screen readers, e.g. after the trigger ("Einstellungen").
+ */
 @Directive({
   selector: 'app-ui-menu',
   hostDirectives: [HlmDropdownMenu],
+  host: { '[attr.aria-label]': 'label() ?? null' },
 })
-export class UiMenu {}
+export class UiMenu {
+  readonly label = input<string>();
+}
 
-/** Groups related items of an `app-ui-menu`. Required around `appUiMenuRadio` items. */
+/**
+ * Groups related items of an `app-ui-menu`. Required around `appUiMenuRadio` items. `label`
+ * names the group for screen readers, e.g. a set of radio items.
+ *
+ * @example
+ * <app-ui-menu-group label="Sprache">
+ *   <app-ui-menu-label>Sprache</app-ui-menu-label>
+ *   <button [checked]="true" appUiMenuRadio type="button">Deutsch</button>
+ * </app-ui-menu-group>
+ */
 @Directive({
   selector: 'app-ui-menu-group',
   hostDirectives: [HlmDropdownMenuGroup],
+  host: { '[attr.aria-label]': 'label() ?? null' },
 })
-export class UiMenuGroup {}
+export class UiMenuGroup {
+  readonly label = input<string>();
+}
+
+/**
+ * Small heading above the items of a group. Only for the eye: screen readers get the name from
+ * the `label` of the `app-ui-menu-group`, so it is not read twice.
+ *
+ * @example
+ * <app-ui-menu-label>Farbschema</app-ui-menu-label>
+ */
+@Directive({
+  selector: 'app-ui-menu-label',
+  hostDirectives: [HlmDropdownMenuLabel],
+  host: { 'aria-hidden': 'true' },
+})
+export class UiMenuLabel {}
+
+/**
+ * Thin line between two groups of an `app-ui-menu`.
+ *
+ * @example
+ * <app-ui-menu-separator />
+ */
+@Directive({
+  selector: 'app-ui-menu-separator',
+  hostDirectives: [HlmDropdownMenuSeparator],
+  host: { role: 'separator' },
+})
+export class UiMenuSeparator {}
 
 /**
  * Action inside an `app-ui-menu`. Listen to `(triggered)` instead of `(click)`, so keyboard
@@ -74,13 +121,16 @@ export class UiMenuGroup {}
 })
 export class UiMenuItem {
   constructor() {
-    // The item marks the focus only by a pale background, too faint to see. A solid ring inside
-    // the item shows where the keyboard is.
-    classes(
-      () =>
-        'focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-ring focus-visible:-outline-offset-2',
-    );
+    classes(() => UI_MENU_ITEM_CLASSES);
   }
 }
 
-export const UiMenuImports = [UiMenuTrigger, UiMenu, UiMenuGroup, UiMenuItem, UiMenuRadio] as const;
+export const UiMenuImports = [
+  UiMenuTrigger,
+  UiMenu,
+  UiMenuGroup,
+  UiMenuLabel,
+  UiMenuSeparator,
+  UiMenuItem,
+  UiMenuRadio,
+] as const;

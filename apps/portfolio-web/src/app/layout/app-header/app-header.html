@@ -1,16 +1,14 @@
 <header class="app-header">
   <div class="page-container app-header__bar">
-    <app-logo />
+    <app-logo class="app-header__logo" signOnTablet />
+    <app-ui-nav-menu
+      class="app-header__nav"
+      [items]="_items"
+      [label]="'layout.mainNavigation' | t"
+    />
     <div class="app-header__actions">
-      <app-ui-nav-menu
-        class="app-header__nav"
-        [items]="_items"
-        [label]="'layout.mainNavigation' | t"
-      />
-      <!-- Below `md` both toggles and the account move into the drawer. -->
-      <app-language-toggle class="app-header__toggle" />
-      <app-theme-toggle class="app-header__toggle" />
-      <app-account-menu class="app-header__account" [showSignIn]="false" />
+      <!-- Below `md` the links and the settings move into the drawer. -->
+      <app-settings-menu class="app-header__settings" />
       <button
         class="app-header__menu-button"
         [attr.aria-expanded]="drawerOpen()"

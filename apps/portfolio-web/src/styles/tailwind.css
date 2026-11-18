@@ -25,6 +25,7 @@
   --color-surface: var(--surface);
   --color-trail: var(--trail);
   --color-trail-foreground: var(--trail-foreground);
+  --color-trail-ink: var(--trail-ink);
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-link: var(--link);

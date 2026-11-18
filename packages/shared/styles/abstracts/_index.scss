@@ -15,3 +15,11 @@ $breakpoints: (
     @content;
   }
 }
+
+// From the first breakpoint on, below the second, e.g. `between(md, lg)` for a tablet held
+// upright.
+@mixin between($from, $to) {
+  @media (min-width: map.get($breakpoints, $from)) and (width < map.get($breakpoints, $to)) {
+    @content;
+  }
+}
