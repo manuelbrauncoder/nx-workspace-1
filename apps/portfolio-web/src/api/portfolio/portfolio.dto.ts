@@ -33,11 +33,13 @@ export interface AboutDto {
 
 export interface ProjectDto {
   title: string;
+  /** Sanitized rich-text HTML. */
   description: Localized<string>;
   stack: string[];
   githubUrl?: string;
   testUrl?: string;
-  image: PortfolioImageDto;
+  /** In page order, the first one is the cover. */
+  images: PortfolioImageDto[];
 }
 
 export interface ProjectsSectionDto {
@@ -118,7 +120,7 @@ export interface ProjectWriteDto {
   // A project is replaced as a whole, so an unset link is left out, never `null`.
   githubUrl?: string;
   testUrl?: string;
-  image: PortfolioImageRefDto;
+  images: PortfolioImageRefDto[];
 }
 
 export interface ProjectsSectionWriteDto {

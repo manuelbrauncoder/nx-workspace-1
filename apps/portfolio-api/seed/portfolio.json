@@ -53,8 +53,8 @@
       {
         "title": "Kochwelt",
         "description": {
-          "de": "Kochwelt läuft auf Angular 21 und Node.js mit SSR und einer Postgres-Datenbank. n8n-Agents und OpenAI-Modelle digitalisieren analoge Rezepte oder Screenshots in Sekunden. Ein sicheres Auth-System und Bildspeicher über Firebase runden die Full-Stack-App ab.",
-          "en": "Kochwelt runs on Angular 21 and Node.js with SSR and a Postgres database. n8n agents and OpenAI models digitize analog recipes or screenshots in seconds. Secure auth and Firebase image storage round out the full-stack app."
+          "de": "<p>Kochwelt läuft auf Angular 21 und Node.js mit SSR und einer Postgres-Datenbank. n8n-Agents und OpenAI-Modelle digitalisieren analoge Rezepte oder Screenshots in Sekunden. Ein sicheres Auth-System und Bildspeicher über Firebase runden die Full-Stack-App ab.</p>",
+          "en": "<p>Kochwelt runs on Angular 21 and Node.js with SSR and a Postgres database. n8n agents and OpenAI models digitize analog recipes or screenshots in seconds. Secure auth and Firebase image storage round out the full-stack app.</p>"
         },
         "stack": [
           "Angular",
@@ -71,63 +71,71 @@
           "SCSS"
         ],
         "testUrl": "https://cooking-world.manuel-braun.net/",
-        "image": {
-          "file": "images/kochwelt.webp",
-          "alt": {
-            "de": "Screenshot von Kochwelt",
-            "en": "Screenshot of Kochwelt"
+        "images": [
+          {
+            "file": "images/kochwelt.webp",
+            "alt": {
+              "de": "Screenshot von Kochwelt",
+              "en": "Screenshot of Kochwelt"
+            }
           }
-        }
+        ]
       },
       {
         "title": "DABubble",
         "description": {
-          "de": "Ein Messenger wie Slack. Schreib deinem Team in Channels oder per Direktnachricht. Eine globale Suche findet Nachrichten, Personen und Channels, Bilder und PDFs teilst du direkt im Chat.",
-          "en": "A messenger like Slack. Talk to your team in channels or send private messages. A global search finds messages, people and channels, and you can share images or PDFs right in the chat."
+          "de": "<p>Ein Messenger wie Slack. Schreib deinem Team in Channels oder per Direktnachricht. Eine globale Suche findet Nachrichten, Personen und Channels, Bilder und PDFs teilst du direkt im Chat.</p>",
+          "en": "<p>A messenger like Slack. Talk to your team in channels or send private messages. A global search finds messages, people and channels, and you can share images or PDFs right in the chat.</p>"
         },
         "stack": ["Angular", "TypeScript", "Firebase", "HTML", "SCSS"],
         "githubUrl": "https://github.com/manuelbrauncoder/my-da-bubble",
         "testUrl": "https://da-bubble.manuel-braun.net/login",
-        "image": {
-          "file": "images/dabubble.webp",
-          "alt": {
-            "de": "Screenshot von DABubble",
-            "en": "Screenshot of DABubble"
+        "images": [
+          {
+            "file": "images/dabubble.webp",
+            "alt": {
+              "de": "Screenshot von DABubble",
+              "en": "Screenshot of DABubble"
+            }
           }
-        }
+        ]
       },
       {
         "title": "Join",
         "description": {
-          "de": "Ein Aufgabenmanager nach dem Kanban-Prinzip. Erstelle und organisiere Aufgaben per Drag and Drop und weise Personen und Kategorien zu.",
-          "en": "A task manager inspired by Kanban. Create and organize tasks with drag and drop, then assign people and categories."
+          "de": "<p>Ein Aufgabenmanager nach dem Kanban-Prinzip. Erstelle und organisiere Aufgaben per Drag and Drop und weise Personen und Kategorien zu.</p>",
+          "en": "<p>A task manager inspired by Kanban. Create and organize tasks with drag and drop, then assign people and categories.</p>"
         },
         "stack": ["Angular", "TypeScript", "Firebase", "HTML", "SCSS"],
         "githubUrl": "https://github.com/manuelbrauncoder/Join-2.0",
         "testUrl": "https://join.manuel-braun.net/",
-        "image": {
-          "file": "images/join.webp",
-          "alt": {
-            "de": "Screenshot von Join",
-            "en": "Screenshot of Join"
+        "images": [
+          {
+            "file": "images/join.webp",
+            "alt": {
+              "de": "Screenshot von Join",
+              "en": "Screenshot of Join"
+            }
           }
-        }
+        ]
       },
       {
         "title": "manuel-braun.net",
         "description": {
-          "de": "Meine persönliche Website, auf der ich meine Projekte und Skills zeige. Gebaut mit Angular 22, Server-Side Rendering und Spartan UI.",
-          "en": "My personal website, where I show my projects and skills. Built with Angular 22, server-side rendering and Spartan UI."
+          "de": "<p>Meine persönliche Website, auf der ich meine Projekte und Skills zeige. Gebaut mit Angular 22, Server-Side Rendering und Spartan UI.</p>",
+          "en": "<p>My personal website, where I show my projects and skills. Built with Angular 22, server-side rendering and Spartan UI.</p>"
         },
         "stack": ["Angular", "TypeScript", "Node.js", "SSR", "Spartan UI", "Tailwind", "Docker"],
         "testUrl": "https://manuel-braun.net/",
-        "image": {
-          "file": "images/manuel-braun-net.webp",
-          "alt": {
-            "de": "Screenshot von manuel-braun.net",
-            "en": "Screenshot of manuel-braun.net"
+        "images": [
+          {
+            "file": "images/manuel-braun-net.webp",
+            "alt": {
+              "de": "Screenshot von manuel-braun.net",
+              "en": "Screenshot of manuel-braun.net"
+            }
           }
-        }
+        ]
       }
     ]
   },

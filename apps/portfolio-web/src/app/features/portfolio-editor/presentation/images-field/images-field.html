@@ -1,0 +1,52 @@
+<fieldset class="images-field" [attr.aria-describedby]="_describedBy()">
+  <legend class="images-field__legend">{{ label() }}</legend>
+  @if (description(); as description) {
+    <p class="images-field__description" [id]="_descriptionId">{{ description }}</p>
+  }
+
+  @for (image of field(); track image; let index = $index, first = $first, last = $last) {
+    <div class="images-field__item">
+      <app-list-item-actions
+        class="images-field__actions"
+        [name]="'sectionEditor.images.item' | t: { number: index + 1 }"
+        [first]="first"
+        [last]="last"
+        (moveUp)="_move(index, -1)"
+        (moveDown)="_move(index, 1)"
+        (remove)="_remove(index)"
+      />
+      <app-image-field
+        [field]="image"
+        [label]="
+          first
+            ? ('sectionEditor.images.cover' | t)
+            : ('sectionEditor.images.item' | t: { number: index + 1 })
+        "
+      />
+    </div>
+  } @empty {
+    <p appUiText="muted">{{ 'sectionEditor.images.empty' | t }}</p>
+  }
+
+  @if (_errorMessages().length > 0) {
+    <div class="images-field__errors" [id]="_errorId" role="alert">
+      @for (message of _errorMessages(); track $index) {
+        <p>{{ message }}</p>
+      }
+    </div>
+  }
+
+  <button
+    class="self-start"
+    #addButton
+    [attr.aria-describedby]="_errorMessages().length > 0 ? _errorId : null"
+    [disabled]="_count() >= max()"
+    (click)="_add()"
+    appUiButton
+    variant="outline"
+    type="button"
+  >
+    <app-ui-icon name="plus" />
+    {{ 'sectionEditor.images.add' | t }}
+  </button>
+</fieldset>

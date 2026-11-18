@@ -12,7 +12,10 @@
     "liveTest": "Live testen",
     "liveTestNamed": "{{ name }} live testen",
     "sourceCode": "Code auf GitHub",
-    "sourceCodeNamed": "Code von {{ name }} auf GitHub"
+    "sourceCodeNamed": "Code von {{ name }} auf GitHub",
+    "screenshots": "Screenshots von {{ name }}",
+    "previousScreenshot": "Vorheriger Screenshot",
+    "nextScreenshot": "Nächster Screenshot"
   },
   "contact": {
     "linkedin": "LinkedIn",

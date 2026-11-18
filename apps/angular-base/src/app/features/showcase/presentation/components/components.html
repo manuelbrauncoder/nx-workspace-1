@@ -226,6 +226,21 @@
     </div>
   </app-showcase-section>
 
+  <app-showcase-section
+    [description]="'showcaseComponents.carousel.description' | t"
+    heading="Carousel"
+  >
+    <app-ui-carousel
+      class="demo-carousel"
+      [items]="_carouselSlides"
+      [label]="'showcaseComponents.carousel.label' | t"
+    >
+      <ng-template let-slide>
+        <div class="demo-carousel__slide">{{ slide | t }}</div>
+      </ng-template>
+    </app-ui-carousel>
+  </app-showcase-section>
+
   <app-showcase-section [description]="'showcaseComponents.list.description' | t" heading="List">
     <ul appUiList>
       <li appUiListItem>{{ 'showcaseComponents.list.item1' | t }}</li>

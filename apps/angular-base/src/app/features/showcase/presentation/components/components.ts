@@ -10,6 +10,7 @@ import { UiBadge } from '@shared/ui/badge/badge';
 import { UiBreadcrumb, UiBreadcrumbItem } from '@shared/ui/breadcrumb/breadcrumb';
 import { UiButton, UiButtonSize, UiButtonVariant } from '@shared/ui/button/button';
 import { UiCardImports } from '@shared/ui/card/card';
+import { UiCarousel } from '@shared/ui/carousel/carousel';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
 import { UiDialogService } from '@shared/ui/dialog/dialog.service';
 import { UiEmpty } from '@shared/ui/empty/empty';
@@ -55,6 +56,7 @@ interface Message {
     UiBreadcrumb,
     UiButton,
     UiCardImports,
+    UiCarousel,
     UiEmpty,
     UiIcon,
     UiListImports,
@@ -98,6 +100,11 @@ export class Components {
   ];
   private readonly _sizes: UiButtonSize[] = ['xs', 'sm', 'default', 'lg'];
   private readonly _icons = UI_ICON_NAMES;
+  private readonly _carouselSlides: TranslationKey[] = [
+    'showcaseComponents.carousel.slide1',
+    'showcaseComponents.carousel.slide2',
+    'showcaseComponents.carousel.slide3',
+  ];
   private readonly _breadcrumb: UiBreadcrumbItem[] = [
     { labelKey: 'layout.nav.showcaseOverview', path: '/showcase' },
     { labelKey: 'layout.nav.showcaseComponents' },

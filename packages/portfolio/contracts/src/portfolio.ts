@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { PROJECT_DESCRIPTION_MAX, PROJECT_IMAGES_MAX } from './portfolio-limits';
+
+export { PROJECT_DESCRIPTION_MAX, PROJECT_IMAGES_MAX } from './portfolio-limits';
 
 /** The sections of the start page, in page order. Each one is a singleton. */
 export const sectionKeys = [
@@ -23,6 +26,8 @@ const single: Localize = (schema) => schema;
 const text = (max: number) => z.string().trim().min(1).max(max);
 const short = text(200);
 const long = text(2000);
+// HTML following `@contracts/rich-text` (profile `text`), sanitized by the API before it is stored
+const richText = text(PROJECT_DESCRIPTION_MAX);
 const link = z.httpUrl().max(500);
 const list = (item: z.ZodType, max = 50) => z.array(item).max(max);
 
@@ -33,13 +38,14 @@ const list = (item: z.ZodType, max = 50) => z.array(item).max(max);
 function buildSections(l: Localize, image: z.ZodType) {
   const project = z.object({
     title: short,
-    description: l(long),
+    description: l(richText),
     stack: list(text(50)),
     // without one the code is not public
     githubUrl: link.optional(),
     // without one there is no live demo
     testUrl: link.optional(),
-    image,
+    // in page order, the first one is the cover image
+    images: z.array(image).min(1).max(PROJECT_IMAGES_MAX),
   });
   const skill = z.object({ name: l(short), points: l(list(text(500), 20)) });
   const skillSet = z.object({ title: l(short), skills: list(skill) });

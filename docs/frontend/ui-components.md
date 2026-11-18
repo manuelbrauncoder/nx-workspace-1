@@ -84,6 +84,7 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 | `UiTabNav`               | `app-ui-tab-nav`                              | `@shared/ui/tab-nav/tab-nav`                       |
 | `UiBadge`                | `span[appUiBadge]`                            | `@shared/ui/badge/badge`                           |
 | `UiSeparator`            | `[appUiSeparator]`                            | `@shared/ui/separator/separator`                   |
+| `UiCarousel`             | `app-ui-carousel`                             | `@shared/ui/carousel/carousel`                     |
 | `UiDialogService`        | `open()`                                      | `@shared/ui/dialog/dialog.service`                 |
 | `UiConfirmDialogService` | `confirm()`                                   | `@shared/ui/confirm-dialog/confirm-dialog.service` |
 | `UiToastService`         | `success()`, `info()`, `warning()`, `error()` | `@shared/ui/toast/toast.service`                   |
@@ -305,6 +306,7 @@ This is one of three layers. The backend sanitizes the HTML too when a note is s
 - A focused item gets a solid ring in `--ring`, the pale background of the helm item alone is too faint to see
 - An item may open a dialog: when it closes, the focus goes back to the trigger of the menu, since the item is gone by then (`focusReturnTarget()` in `ui/dialog/focus-return.ts`, used by `UiDialogService` and `UiConfirmDialogService`)
 - `appUiMenuRadio` is a single-choice item with a check mark: `[checked]` marks the current choice. Radio items need an `app-ui-menu-group` around them. The theme toggle uses it, see [theme-toggle.html](../../packages/shared/ui/src/theme-toggle/theme-toggle.html)
+- `app-language-toggle` and `app-theme-toggle` take `size="lg"` for a touch screen, e.g. in a mobile drawer: a 48px button with a 24px icon instead of 44px and the text size
 
 ### Nav menu
 
@@ -328,6 +330,14 @@ private readonly _items: UiNavMenuItem[] = [
 
 <!-- Stacked, e.g. inside an app-ui-sheet -->
 <app-ui-nav-menu [items]="_items" [label]="'layout.mainNavigation' | t" orientation="vertical" />
+
+<!-- Stacked, every item a secondary button, e.g. as large touch targets in a mobile drawer -->
+<app-ui-nav-menu
+  [items]="_items"
+  [label]="'layout.mainNavigation' | t"
+  orientation="vertical"
+  appearance="buttons"
+/>
 ```
 
 - `label` is the accessible name of the `<nav>` landmark
@@ -335,6 +345,7 @@ private readonly _items: UiNavMenuItem[] = [
 - The link of the current page gets `aria-current="page"`. A link matches its path and everything below it, `exact: true` limits it to exactly its path. Use it for an overview above its sub pages
 - Horizontal: a group opens on click, Enter or Space and closes on Escape, on a click outside and after choosing a link. A group that contains the current page is highlighted
 - Vertical: a group is a button that expands its links below it. The group of the current page starts expanded
+- `appearance="buttons"` (vertical only) draws every item as a filled secondary button, 48px high with the label in the middle, the current page with a border in ink. The portfolio drawer uses it. The default `list` keeps plain rows
 - Groups nest one level. A group has no page of its own, put an overview link first instead
 - It is built on Spartan's `navigation-menu`, not on `menubar`. A menubar is an application menu (`role="menubar"`, "File / Edit"), a site navigation is a list of links and disclosure buttons
 - The vertical list uses `collapsible` and not the vertical mode of `navigation-menu`, which opens its panels to the side and does not fit a narrow drawer
@@ -571,6 +582,26 @@ Tabs between the pages of one thing, e.g. overview, guests and team of an event.
 - `items` are `{ labelKey, path, exact? }`, `exact` for a tab whose path is the start of the others (the overview)
 - `label` names the navigation
 - The page below the tabs is the child route of the page that holds them, so the tabs stay while the user switches
+
+### Carousel
+
+Slides one at a time, e.g. the screenshots of a project. Swipe on a touch screen, use the arrow buttons below the slides or the arrow keys once a button has the focus. The slide template is an `ng-template` that the wrapper renders once per item.
+
+```html
+<app-ui-carousel [items]="project.images" label="Screenshots von Kochwelt">
+  <ng-template let-image let-index="index">
+    <img [ngSrc]="image.url" [width]="image.width" [height]="image.height" [alt]="image.alt" />
+  </ng-template>
+</app-ui-carousel>
+```
+
+- `items` is the list. The template gets the item as `$implicit` and its position as `index`, counted from 0
+- `label` is required and names the carousel for screen readers
+- `previousLabel` and `nextLabel` name the arrow buttons. Without them the shared texts of the ui lib apply (`common.carousel.previous`, `common.carousel.next`)
+- It loops: "next" on the last slide goes to the first one, so the buttons never turn disabled and never lose the focus. The counter below the buttons ("2 von 3") is a live region, each slide is announced with its number
+- The arrows sit below the slides, not beside them as in Spartan, so nothing sticks out of a narrow column
+- A single item shows only its slide, without buttons or counter. An empty list renders nothing
+- Built on the Helm carousel (`hlm-carousel`, Embla), which brings the swipe and the arrow keys
 
 ## Adding a wrapper
 

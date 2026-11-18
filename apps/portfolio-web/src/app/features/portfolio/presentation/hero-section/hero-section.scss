@@ -8,12 +8,14 @@
 }
 
 // Above the map, which sits absolutely in the section. Fills the screen below the sticky
-// header at every size. The name sits in the middle, the scroll cue at the bottom.
+// header at every size. The name sits in the middle of the space above the scroll cue, which
+// has a row of its own at the bottom: with `1fr auto 1fr` the empty first row grew as tall as
+// the cue, and on a laptop screen the cue slid below the fold.
 // `min-height`, so a short screen (a phone held sideways) grows the hero instead of cutting it.
 .hero__content {
   position: relative;
   display: grid;
-  grid-template-rows: 1fr auto 1fr;
+  grid-template-rows: 1fr auto 1fr auto;
   min-height: calc(100svh - 4.0625rem);
   // On a phone the pin sits above the name, the space at the top keeps them apart.
   padding-block: 12.25rem 2rem;
@@ -37,6 +39,9 @@
 
 .hero__name {
   margin: 0;
+  // The size of `display`, but at most a fifth of the screen height, so name, actions and
+  // scroll cue fit a laptop screen, e.g. a MacBook Air.
+  font-size: min(clamp(4rem, 11.5vw, 10.5rem), 18svh);
 }
 
 .hero__name-line {
@@ -72,7 +77,7 @@
 }
 
 .hero__scroll-cue {
-  grid-row: 3;
+  grid-row: 4;
   align-self: end;
   justify-self: center;
   margin-top: 2rem;

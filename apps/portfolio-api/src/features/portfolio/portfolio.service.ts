@@ -1,11 +1,13 @@
 import {
   type Language,
+  PROJECT_DESCRIPTION_MAX,
   type SectionContent,
   type SectionKey,
   sectionKeys,
 } from '@portfolio/contracts/portfolio';
 import { db } from '@server/core/db/db';
 import { badRequest, conflict, notFound } from '@server/core/errors';
+import { sanitizeRichText } from '@server/core/rich-text';
 import { eq, sql } from 'drizzle-orm';
 import { type Media, mediaByIds } from '../media/media.service.js';
 import { portfolioSections } from './portfolio.table.js';
@@ -52,6 +54,42 @@ function localize(value: unknown, lang: Language): unknown {
   );
 }
 
+interface ProjectInput {
+  title: string;
+  description: Record<Language, string>;
+}
+
+/** Whether sanitized HTML shows no text, e.g. `<p></p>` or `<p> <br></p>`. */
+const hasNoText = (html: string) => html.replace(/<[^>]*>/g, '').trim() === '';
+
+/**
+ * The rich-text description of a project, reduced to the allowed formats. Sanitizing re-encodes
+ * entities (`&` becomes `&amp;`), so the length is checked again on the stored value.
+ */
+function sanitizeProject(project: ProjectInput): ProjectInput {
+  const description = Object.fromEntries(
+    Object.entries(project.description).map(([lang, html]) => {
+      const clean = sanitizeRichText(html, 'text').trim();
+      if (hasNoText(clean)) {
+        throw badRequest(`The description of project "${project.title}" is empty`);
+      }
+      if (clean.length > PROJECT_DESCRIPTION_MAX) {
+        throw badRequest(
+          `The description of project "${project.title}" is longer than ${PROJECT_DESCRIPTION_MAX} characters`,
+        );
+      }
+      return [lang, clean];
+    }),
+  ) as Record<Language, string>;
+  return { ...project, description };
+}
+
+/** Sanitizes the rich text of a section before it is stored. Only projects have rich text. */
+function sanitizeContent(key: SectionKey, content: SectionContent): SectionContent {
+  if (key !== 'projects' || !Array.isArray(content['items'])) return content;
+  return { ...content, items: (content['items'] as ProjectInput[]).map(sanitizeProject) };
+}
+
 async function resolveImages(content: SectionContent) {
   return withImages(content, await mediaByIds(imageIds(content)));
 }
@@ -84,7 +122,8 @@ export async function sectionExists(key: SectionKey) {
   return row !== undefined;
 }
 
-export async function createSection(key: SectionKey, input: SectionContent) {
+export async function createSection(key: SectionKey, content: SectionContent) {
+  const input = sanitizeContent(key, content);
   await assertImagesExist(input);
 
   const [row] = await db
@@ -101,7 +140,8 @@ export async function createSection(key: SectionKey, input: SectionContent) {
  * Changes only the sent fields; arrays and nested objects are replaced as a whole. The merge
  * runs in the database, so two concurrent changes of different fields both survive.
  */
-export async function updateSection(key: SectionKey, patch: SectionContent) {
+export async function updateSection(key: SectionKey, changes: SectionContent) {
+  const patch = sanitizeContent(key, changes);
   await assertImagesExist(patch);
 
   const [row] = await db

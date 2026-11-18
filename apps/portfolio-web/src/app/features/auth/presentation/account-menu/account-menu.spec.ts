@@ -121,4 +121,57 @@ describe('AccountMenu', () => {
     expect(toast.error).toHaveBeenCalledWith('Abmelden fehlgeschlagen');
     expect(navigate).not.toHaveBeenCalled();
   });
+
+  describe('as a list in the drawer', () => {
+    async function renderList(me: Me | undefined) {
+      const rendered = await render(me);
+      rendered.fixture.componentRef.setInput('layout', 'list');
+      rendered.fixture.componentRef.setInput('showSignIn', false);
+      await rendered.fixture.whenStable();
+      return rendered;
+    }
+
+    it('shows the user and the actions right away, without a menu button', async () => {
+      const { element } = await renderList({ ...ME, role: 'admin' });
+
+      const group = element.querySelector('[role="group"]');
+      expect(group?.getAttribute('aria-label')).toBe('Konto');
+      expect(group?.textContent).toContain('Ada');
+      expect(group?.textContent).toContain('ada@example.com');
+      expect(element.querySelector('button[aria-label="Konto"]')).toBeNull();
+      const admin = element.querySelector('a');
+      expect(admin?.textContent).toContain('Administration');
+      expect(admin?.getAttribute('href')).toBe('/admin');
+    });
+
+    it('offers no admin area to a user without admin rights', async () => {
+      const { element } = await renderList(ME);
+
+      expect(element.textContent).not.toContain('Administration');
+    });
+
+    it('signs out from the list', async () => {
+      signOut.mockResolvedValue(true);
+      const { fixture, element } = await renderList(ME);
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+
+      element.querySelector('button')!.click();
+      await fixture.whenStable();
+
+      expect(signOut).toHaveBeenCalledOnce();
+      expect(navigate).toHaveBeenCalledWith('/sign-in');
+    });
+
+    it('renders nothing while nobody is signed in', async () => {
+      const { element } = await renderList(undefined);
+
+      expect(element.children).toHaveLength(0);
+    });
+
+    it('passes the accessibility check', async () => {
+      const { element } = await renderList({ ...ME, role: 'admin' });
+
+      await expect(element).toBeAccessible();
+    });
+  });
 });

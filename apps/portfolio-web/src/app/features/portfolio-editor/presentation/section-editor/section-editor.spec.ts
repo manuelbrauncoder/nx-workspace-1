@@ -6,7 +6,13 @@ import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog
 import { UiToastService } from '@shared/ui/toast/toast.service';
 import { Observable, of } from 'rxjs';
 import { PortfolioEditorStore } from '../../application/portfolio-editor.store';
-import { About, Portfolio, PortfolioSectionName, PortfolioSections } from '../../domain/portfolio';
+import {
+  About,
+  Portfolio,
+  PortfolioSectionName,
+  PortfolioSections,
+  ProjectsSection,
+} from '../../domain/portfolio';
 import { PortfolioEditorUseCase } from '../../domain/portfolio-editor.usecase';
 import { SectionEditor } from './section-editor';
 import { sectionEditorI18n } from './section-editor.i18n';
@@ -22,6 +28,36 @@ const ABOUT: About = {
     height: 1200,
     alt: { de: 'Porträt', en: 'Portrait' },
   },
+};
+
+const PROJECTS: ProjectsSection = {
+  headline: { de: 'Projekte', en: 'Projects' },
+  description: { de: 'Eine Auswahl.', en: 'A selection.' },
+  items: [
+    {
+      title: 'Kochwelt',
+      description: { de: '<p>Rezepte</p>', en: '<p>Recipes</p>' },
+      stack: ['Angular'],
+      githubUrl: '',
+      testUrl: '',
+      images: [
+        {
+          id: 'm1',
+          url: 'https://api.example.com/media/m1',
+          width: 800,
+          height: 600,
+          alt: { de: 'Start', en: 'Home' },
+        },
+        {
+          id: 'm2',
+          url: 'https://api.example.com/media/m2',
+          width: 800,
+          height: 600,
+          alt: { de: 'Detail', en: 'Detail' },
+        },
+      ],
+    },
+  ],
 };
 
 const EMPTY: Portfolio = {
@@ -197,5 +233,97 @@ describe('SectionEditor', () => {
     expect(element.querySelectorAll('.projects-form__item')).toHaveLength(0);
     // The removed project took the focus with it, so it moves to the button to add one.
     expect(document.activeElement?.textContent?.trim()).toBe('Projekt hinzufügen');
+  });
+
+  describe('projects', () => {
+    const addProject = async (element: HTMLElement) => {
+      element.querySelector<HTMLButtonElement>('.projects-form__items > button')!.click();
+      await settle();
+    };
+
+    it('starts a new project with one empty image', async () => {
+      const element = await render('projects');
+
+      await addProject(element);
+
+      const images = element.querySelectorAll('.projects-form__item app-image-field');
+      expect(images).toHaveLength(1);
+      expect(images[0].textContent).toContain('Screenshot 1 (Titelbild)');
+      expect(images[0].textContent).toContain('Kein Bild');
+    });
+
+    it('shows the images of a stored project in order', async () => {
+      const element = await render('projects', { ...EMPTY, projects: PROJECTS });
+
+      const legends = Array.from(
+        element.querySelectorAll('app-images-field app-image-field > fieldset > legend'),
+        (legend) => legend.textContent?.trim(),
+      );
+
+      expect(legends).toEqual(['Screenshot 1 (Titelbild)', 'Screenshot 2']);
+    });
+
+    it('edits the description of a project with a rich-text editor per language', async () => {
+      const element = await render('projects', { ...EMPTY, projects: PROJECTS });
+
+      const item = element.querySelector('.projects-form__item')!;
+      const description = Array.from(item.querySelectorAll('app-localized-field')).find(
+        (field) =>
+          field.querySelector(':scope > fieldset > legend')?.textContent?.trim() ===
+            'Beschreibung' && field.querySelector('app-form-rich-text'),
+      )!;
+
+      expect(description.querySelectorAll('app-form-rich-text')).toHaveLength(2);
+      expect(description.querySelector('textarea')).toBeNull();
+      // The introduction of the section stays a plain textarea.
+      expect(element.querySelector('app-localized-field app-form-textarea')).not.toBeNull();
+    });
+
+    it('asks for at least one image once the last one is removed and saved', async () => {
+      const element = await render('projects', {
+        ...EMPTY,
+        projects: {
+          ...PROJECTS,
+          items: [{ ...PROJECTS.items[0], images: [PROJECTS.items[0].images[0]] }],
+        },
+      });
+
+      element
+        .querySelector<HTMLButtonElement>('button[aria-label="Screenshot 1 entfernen"]')!
+        .click();
+      await settle();
+      await submit(element);
+
+      expect(updateSection).not.toHaveBeenCalled();
+      expect(element.querySelector('app-images-field')?.textContent).toContain(
+        'Ein Projekt braucht mindestens einen Screenshot.',
+      );
+    });
+
+    it('does not save a new project whose image has no file', async () => {
+      const element = await render('projects');
+      await addProject(element);
+
+      await submit(element);
+
+      expect(createSection).not.toHaveBeenCalled();
+      expect(element.querySelector('app-image-field')?.textContent).toContain(
+        'Bitte lade ein Bild hoch oder wähle eines aus der Mediathek.',
+      );
+    });
+
+    it('saves the images of a project in the order they were moved to', async () => {
+      const element = await render('projects', { ...EMPTY, projects: PROJECTS });
+
+      element
+        .querySelector<HTMLButtonElement>('button[aria-label="Screenshot 2 nach oben"]')!
+        .click();
+      await settle();
+      await submit(element);
+
+      expect(updateSection).toHaveBeenCalledOnce();
+      const saved = updateSection.mock.calls[0][1] as ProjectsSection;
+      expect(saved.items[0].images.map((image) => image.id)).toEqual(['m2', 'm1']);
+    });
   });
 });

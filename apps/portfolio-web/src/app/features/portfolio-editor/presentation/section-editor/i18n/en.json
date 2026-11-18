@@ -26,7 +26,8 @@
     "url": "Please enter a full address starting with https://.",
     "email": "Please enter a valid email address.",
     "imageRequired": "Please upload an image or choose one from the library.",
-    "altRequired": "Please describe the image."
+    "altRequired": "Please describe the image.",
+    "imagesRequired": "A project needs at least one screenshot."
   },
   "image": {
     "none": "No image",
@@ -40,6 +41,12 @@
     "uploadFailed": "The image was not uploaded",
     "alt": "Alternative text",
     "altDescription": "Describes the image for everyone who cannot see it."
+  },
+  "images": {
+    "item": "Screenshot {{ number }}",
+    "cover": "Screenshot 1 (cover)",
+    "add": "Add screenshot",
+    "empty": "No screenshot yet."
   },
   "mediaPicker": {
     "heading": "Image from the library",
@@ -76,10 +83,12 @@
     "stack": "Technologies",
     "testUrl": "Address to try it",
     "githubUrl": "Code on GitHub",
-    "image": "Screenshot",
     "empty": "No projects yet.",
     "add": "Add project",
-    "removeHeading": "Remove project {{ number }}?"
+    "removeHeading": "Remove project {{ number }}?",
+    "images": "Screenshots",
+    "imagesDescription": "They appear in the carousel in this order, the first one is the cover.",
+    "descriptionHint": "Bold, italic, lists and links. No headings, the project name already is one."
   },
   "skills": {
     "heading": "Signposts",

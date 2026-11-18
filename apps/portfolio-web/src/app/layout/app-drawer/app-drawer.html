@@ -14,9 +14,12 @@
     [label]="'layout.mainNavigation' | t"
     (click)="_closeOnLink($event)"
     orientation="vertical"
+    appearance="buttons"
   />
+  <!-- Nothing while signed out: a public site shows no link to the sign-in page. -->
+  <app-account-menu class="app-drawer__account" [showSignIn]="false" layout="list" />
   <div class="app-drawer__settings">
-    <app-language-toggle />
-    <app-theme-toggle />
+    <app-language-toggle size="lg" />
+    <app-theme-toggle size="lg" />
   </div>
 </app-ui-sheet>

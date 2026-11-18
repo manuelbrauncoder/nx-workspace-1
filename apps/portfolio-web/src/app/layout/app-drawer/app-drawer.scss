@@ -7,3 +7,11 @@
   padding-top: 1.25rem;
   border-top: 1px solid var(--border);
 }
+
+// Only takes room when someone is signed in, the empty host collapses.
+.app-drawer__account:not(:empty) {
+  display: block;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}

@@ -15,4 +15,15 @@ describe('LanguageToggle', () => {
 
     expect(button.getAttribute('aria-label')).toBe('Choose language');
   });
+
+  it('is larger with size="lg", e.g. for a touch screen', async () => {
+    const fixture = TestBed.createComponent(LanguageToggle);
+    fixture.componentRef.setInput('size', 'lg');
+    await fixture.whenStable();
+    const button = (fixture.nativeElement as HTMLElement).querySelector('button')!;
+
+    expect(button.className).toContain('size-12');
+    // the icon gets the fixed size `lg` instead of following the text
+    expect(button.innerHTML).toContain('1.5rem');
+  });
 });

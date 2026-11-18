@@ -1,6 +1,7 @@
 import { ViewportScroller } from '@angular/common';
 import { Component, DOCUMENT, inject, model } from '@angular/core';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { AccountMenu } from '@features/auth/public-api';
 import { LanguageToggle } from '@shared/language-toggle/language-toggle';
 import { ThemeToggle } from '@shared/theme-toggle/theme-toggle';
 import { UiNavMenu } from '@shared/ui/nav-menu/nav-menu';
@@ -10,7 +11,7 @@ import { APP_NAV_ITEMS } from '../app-nav-items';
 
 @Component({
   selector: 'app-drawer',
-  imports: [AppLogo, LanguageToggle, ThemeToggle, TranslatePipe, UiNavMenu, UiSheet],
+  imports: [AccountMenu, AppLogo, LanguageToggle, ThemeToggle, TranslatePipe, UiNavMenu, UiSheet],
   styleUrl: './app-drawer.scss',
   templateUrl: './app-drawer.html',
 })

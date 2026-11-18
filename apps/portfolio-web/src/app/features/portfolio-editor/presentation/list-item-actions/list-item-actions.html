@@ -1,10 +1,10 @@
 <button
   [attr.aria-label]="'sectionEditor.list.moveUp' | t: { name: name() }"
   [disabled]="first()"
-  (click)="moveUp.emit()"
+  (click)="_move('up')"
   appUiButton
   variant="ghost"
-  size="icon-sm"
+  size="icon"
   type="button"
 >
   <app-ui-icon name="arrowUp" />
@@ -12,10 +12,10 @@
 <button
   [attr.aria-label]="'sectionEditor.list.moveDown' | t: { name: name() }"
   [disabled]="last()"
-  (click)="moveDown.emit()"
+  (click)="_move('down')"
   appUiButton
   variant="ghost"
-  size="icon-sm"
+  size="icon"
   type="button"
 >
   <app-ui-icon name="arrowDown" />
@@ -25,7 +25,7 @@
   (click)="remove.emit()"
   appUiButton
   variant="ghost"
-  size="icon-sm"
+  size="icon"
   type="button"
 >
   <app-ui-icon name="trash" />

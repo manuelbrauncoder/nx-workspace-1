@@ -29,6 +29,9 @@ export type UiNavMenuItem = UiNavMenuLink | UiNavMenuGroup;
 
 export type UiNavMenuOrientation = 'horizontal' | 'vertical';
 
+/** How the vertical list looks: plain rows, or each item as a secondary button. */
+export type UiNavMenuAppearance = 'list' | 'buttons';
+
 interface LinkEntry {
   kind: 'link';
   link: UiNavMenuLink;
@@ -71,6 +74,15 @@ const NEVER_ACTIVE: Signal<boolean> = signal(false).asReadonly();
  * @example
  * <!-- Stacked, e.g. inside an app-ui-sheet -->
  * <app-ui-nav-menu [items]="_items" label="Hauptnavigation" orientation="vertical" />
+ *
+ * @example
+ * <!-- Stacked, each item a secondary button, e.g. as large touch targets in a mobile drawer -->
+ * <app-ui-nav-menu
+ *   [items]="_items"
+ *   label="Hauptnavigation"
+ *   orientation="vertical"
+ *   appearance="buttons"
+ * />
  */
 @Component({
   selector: 'app-ui-nav-menu',
@@ -84,6 +96,8 @@ export class UiNavMenu {
   readonly label = input.required<string>();
   /** `vertical` stacks the items and shows groups as collapsible sections instead of dropdowns. */
   readonly orientation = input<UiNavMenuOrientation>('horizontal');
+  /** Only for `vertical`: `buttons` draws every item as a secondary button. */
+  readonly appearance = input<UiNavMenuAppearance>('list');
 
   private readonly _router = inject(Router);
 

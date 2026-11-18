@@ -1,5 +1,5 @@
 import { Component, computed, ElementRef, inject, linkedSignal, viewChild } from '@angular/core';
-import { applyEach, form, FormField, FormRoot } from '@angular/forms/signals';
+import { applyEach, form, FormField, FormRoot, validate } from '@angular/forms/signals';
 import { I18nService } from '@core/i18n/i18n.service';
 import { Localized, localizedOf } from '@core/i18n/localized';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -11,8 +11,8 @@ import { UiIcon } from '@shared/ui/icon/icon';
 import { UiText } from '@shared/ui/text/text';
 import { PortfolioEditorStore } from '../../application/portfolio-editor.store';
 import { PORTFOLIO_LIMITS, Project, ProjectsSection } from '../../domain/portfolio';
-import { ImageField } from '../image-field/image-field';
 import { fromImageForm, ImageForm, imageRules, toImageForm } from '../image-field/image-form';
+import { ImagesField } from '../images-field/images-field';
 import { ListItemActions } from '../list-item-actions/list-item-actions';
 import { LocalizedField } from '../localized-field/localized-field';
 import { SectionFormFooter } from '../section-form-footer/section-form-footer';
@@ -26,14 +26,17 @@ import {
 } from '../section-form/section-rules';
 import { injectSectionSave, moveItem } from '../section-form/section-save';
 
-/** The stack is a textarea with one technology per line, an unset link is empty. */
+/**
+ * The stack is a textarea with one technology per line, an unset link is empty. The description
+ * is rich-text HTML, the images are in the order they are shown.
+ */
 interface ProjectFormModel {
   title: string;
   description: Localized<string>;
   stack: string;
   githubUrl: string;
   testUrl: string;
-  image: ImageForm;
+  images: ImageForm[];
 }
 
 interface ProjectsFormModel {
@@ -48,7 +51,8 @@ const toProjectModel = (project: Project | undefined): ProjectFormModel => ({
   stack: fromLines(project?.stack),
   githubUrl: project?.githubUrl ?? '',
   testUrl: project?.testUrl ?? '',
-  image: toImageForm(project?.image),
+  // A new project starts with one empty image, it needs at least one.
+  images: project ? project.images.map(toImageForm) : [toImageForm(undefined)],
 });
 
 const toModel = (projects: ProjectsSection | undefined): ProjectsFormModel => ({
@@ -57,25 +61,18 @@ const toModel = (projects: ProjectsSection | undefined): ProjectsFormModel => ({
   items: (projects?.items ?? []).map(toProjectModel),
 });
 
-/** Only called for a valid form, in which every project has an image. */
+/** Only called for a valid form, in which every image has a file. */
 const fromModel = (model: ProjectsFormModel): ProjectsSection => ({
   headline: model.headline,
   description: model.description,
-  items: model.items.flatMap((item) => {
-    const image = fromImageForm(item.image);
-    return image
-      ? [
-          {
-            title: item.title,
-            description: item.description,
-            stack: toLines(item.stack),
-            githubUrl: item.githubUrl,
-            testUrl: item.testUrl,
-            image,
-          },
-        ]
-      : [];
-  }),
+  items: model.items.map((item) => ({
+    title: item.title,
+    description: item.description,
+    stack: toLines(item.stack),
+    githubUrl: item.githubUrl,
+    testUrl: item.testUrl,
+    images: item.images.flatMap((image) => fromImageForm(image) ?? []),
+  })),
 });
 
 /** The projects section: heading, introduction and the projects in the order they are shown. */
@@ -90,7 +87,7 @@ const fromModel = (model: ProjectsFormModel): ProjectsSection => ({
     UiButton,
     UiIcon,
     UiText,
-    ImageField,
+    ImagesField,
     ListItemActions,
     LocalizedField,
     SectionFormFooter,
@@ -105,6 +102,7 @@ export class ProjectsForm {
   private readonly _save = injectSectionSave('projects');
 
   private readonly _maxProjects = PORTFOLIO_LIMITS.projects;
+  private readonly _maxImages = PORTFOLIO_LIMITS.projectImages;
   // The button carries `UiButton`, so the element has to be asked for.
   private readonly _addButton = viewChild.required('addButton', {
     read: ElementRef<HTMLButtonElement>,
@@ -122,7 +120,7 @@ export class ProjectsForm {
       localizedRules(path.description, this._i18n, { max: PORTFOLIO_LIMITS.description });
       applyEach(path.items, (item) => {
         textRules(item.title, this._i18n, { max: PORTFOLIO_LIMITS.projectTitle });
-        localizedRules(item.description, this._i18n, { max: PORTFOLIO_LIMITS.description });
+        localizedRules(item.description, this._i18n, { max: PORTFOLIO_LIMITS.projectDescription });
         linesRules(item.stack, this._i18n, {
           max: PORTFOLIO_LIMITS.stack,
           maxLength: PORTFOLIO_LIMITS.stackItem,
@@ -130,7 +128,15 @@ export class ProjectsForm {
         });
         urlRules(item.testUrl, this._i18n, { max: PORTFOLIO_LIMITS.url, optional: true });
         urlRules(item.githubUrl, this._i18n, { max: PORTFOLIO_LIMITS.url, optional: true });
-        imageRules(item.image, this._i18n);
+        validate(item.images, ({ value }) =>
+          value().length === 0
+            ? {
+                kind: 'required',
+                message: this._i18n.translate('sectionEditor.validation.imagesRequired'),
+              }
+            : undefined,
+        );
+        applyEach(item.images, (image) => imageRules(image, this._i18n));
       });
     },
     { submission: { action: () => this._save(fromModel(this._model())) } },

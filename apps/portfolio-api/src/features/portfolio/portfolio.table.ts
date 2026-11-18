@@ -3,7 +3,7 @@ import { jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 
 /**
  * One row per section of the start page. The content is stored as sent (validated by the
- * section's schema in portfolio.schemas.ts); images are references `{ id, alt }` to `media`.
+ * section's schema in `@portfolio/contracts/portfolio`); images are references `{ id, alt }` to `media`.
  */
 export const portfolioSections = pgTable('portfolio_sections', {
   key: text({ enum: sectionKeys }).primaryKey(),

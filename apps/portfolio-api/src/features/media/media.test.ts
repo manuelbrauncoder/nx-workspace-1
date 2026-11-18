@@ -100,4 +100,29 @@ describe('media', () => {
     await admin.delete(`/api/v1/media/${first}`).expect(404);
     await (await signedUpAgent('ada@example.com')).delete(`/api/v1/media/${second}`).expect(403);
   });
+
+  it('refuses to delete an image used as a later image of a project', async () => {
+    const admin = await adminAgent();
+    const cover = await uploadedMediaId(admin);
+    const second = await uploadedMediaId(admin);
+    await admin
+      .post('/api/v1/portfolio/projects')
+      .send({
+        headline: { de: 'Projekte', en: 'Projects' },
+        description: { de: 'Arbeit', en: 'Work' },
+        items: [
+          {
+            title: 'Kochwelt',
+            description: { de: '<p>Hallo</p>', en: '<p>Hello</p>' },
+            stack: [],
+            images: [cover, second].map((id) => ({ id, alt: { de: 'Bild', en: 'Image' } })),
+          },
+        ],
+      })
+      .expect(201);
+
+    const refused = await admin.delete(`/api/v1/media/${second}`).expect(409);
+    expect(refused.body.error.message).toContain('projects');
+    await request(app).get(`/api/v1/media/${second}`).expect(200);
+  });
 });

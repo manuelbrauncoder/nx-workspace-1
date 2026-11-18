@@ -1,10 +1,13 @@
-<fieldset class="localized-field">
+<fieldset class="localized-field" [attr.aria-describedby]="description() ? _descriptionId : null">
   <legend class="localized-field__legend">{{ label() }}</legend>
   @if (description(); as description) {
-    <p class="localized-field__description">{{ description }}</p>
+    <p class="localized-field__description" [id]="_descriptionId">{{ description }}</p>
   }
-  <div class="localized-field__languages">
-    @if (multiline()) {
+  <div class="localized-field__languages" [class.localized-field__languages--stacked]="richText()">
+    @if (richText()) {
+      <app-form-rich-text [formField]="field().de" [label]="'sectionEditor.languages.de' | t" />
+      <app-form-rich-text [formField]="field().en" [label]="'sectionEditor.languages.en' | t" />
+    } @else if (multiline()) {
       <app-form-textarea
         [formField]="field().de"
         [label]="'sectionEditor.languages.de' | t"

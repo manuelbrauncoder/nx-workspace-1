@@ -37,7 +37,8 @@
         <app-localized-field
           [field]="item.description"
           [label]="'sectionEditor.fields.description' | t"
-          multiline
+          [description]="'sectionEditor.projects.descriptionHint' | t"
+          richText
         />
         <app-form-textarea
           [formField]="item.stack"
@@ -59,7 +60,12 @@
           type="url"
           autocomplete="off"
         />
-        <app-image-field [field]="item.image" [label]="'sectionEditor.projects.image' | t" />
+        <app-images-field
+          [field]="item.images"
+          [label]="'sectionEditor.projects.images' | t"
+          [description]="'sectionEditor.projects.imagesDescription' | t"
+          [max]="_maxImages"
+        />
       </fieldset>
     } @empty {
       <p appUiText="muted">{{ 'sectionEditor.projects.empty' | t }}</p>

@@ -16,3 +16,25 @@
   color: var(--muted-foreground);
   overflow-wrap: anywhere;
 }
+
+// In the drawer: the user on top, the actions below as rows, aligned and sized like the links of
+// the navigation above.
+.account-menu__list {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.account-menu__identity--list {
+  padding: 0 0.75rem 0.5rem;
+  border-bottom: 0;
+  margin-bottom: 0;
+  color: var(--muted-foreground);
+  font-size: 1rem;
+}
+
+.account-menu__entry {
+  justify-content: flex-start;
+  width: 100%;
+  padding-inline: 0.75rem;
+  font-size: 1rem;
+}
