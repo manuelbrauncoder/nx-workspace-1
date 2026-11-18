@@ -126,6 +126,13 @@
     "above": "Beschreibung des Events",
     "below": "Bilder des Events"
   },
+  "carousel": {
+    "description": "app-ui-carousel zeigt Folien nebeneinander, eine auf einmal: wischen, die Pfeile darunter oder die Pfeiltasten. Der Inhalt einer Folie kommt aus einem ng-template, mit nur einem Eintrag gibt es keine Pfeile. Braucht ein label.",
+    "label": "Beispiel-Folien",
+    "slide1": "Erste Folie",
+    "slide2": "Zweite Folie",
+    "slide3": "Dritte Folie"
+  },
   "list": {
     "description": "appUiList auf ul oder ol, appUiListItem auf li: Zeilen mit Trennlinien in einem ruhigen Rahmen, für Listen auf Arbeitsseiten.",
     "item1": "Ada Lovelace",

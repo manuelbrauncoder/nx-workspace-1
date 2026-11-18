@@ -10,6 +10,20 @@
   gap: 0.75rem;
 }
 
+.demo-carousel {
+  max-width: 28rem;
+}
+
+.demo-carousel__slide {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--muted);
+  font-weight: 600;
+}
+
 .demo-skeleton {
   display: grid;
   gap: 1rem;

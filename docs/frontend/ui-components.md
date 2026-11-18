@@ -84,6 +84,7 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 | `UiTabNav`               | `app-ui-tab-nav`                              | `@shared/ui/tab-nav/tab-nav`                       |
 | `UiBadge`                | `span[appUiBadge]`                            | `@shared/ui/badge/badge`                           |
 | `UiSeparator`            | `[appUiSeparator]`                            | `@shared/ui/separator/separator`                   |
+| `UiCarousel`             | `app-ui-carousel`                             | `@shared/ui/carousel/carousel`                     |
 | `UiDialogService`        | `open()`                                      | `@shared/ui/dialog/dialog.service`                 |
 | `UiConfirmDialogService` | `confirm()`                                   | `@shared/ui/confirm-dialog/confirm-dialog.service` |
 | `UiToastService`         | `success()`, `info()`, `warning()`, `error()` | `@shared/ui/toast/toast.service`                   |
@@ -571,6 +572,26 @@ Tabs between the pages of one thing, e.g. overview, guests and team of an event.
 - `items` are `{ labelKey, path, exact? }`, `exact` for a tab whose path is the start of the others (the overview)
 - `label` names the navigation
 - The page below the tabs is the child route of the page that holds them, so the tabs stay while the user switches
+
+### Carousel
+
+Slides one at a time, e.g. the screenshots of a project. Swipe on a touch screen, use the arrow buttons below the slides or the arrow keys once a button has the focus. The slide template is an `ng-template` that the wrapper renders once per item.
+
+```html
+<app-ui-carousel [items]="project.images" label="Screenshots von Kochwelt">
+  <ng-template let-image let-index="index">
+    <img [ngSrc]="image.url" [width]="image.width" [height]="image.height" [alt]="image.alt" />
+  </ng-template>
+</app-ui-carousel>
+```
+
+- `items` is the list. The template gets the item as `$implicit` and its position as `index`, counted from 0
+- `label` is required and names the carousel for screen readers
+- `previousLabel` and `nextLabel` name the arrow buttons. Without them the shared texts of the ui lib apply (`common.carousel.previous`, `common.carousel.next`)
+- It loops: "next" on the last slide goes to the first one, so the buttons never turn disabled and never lose the focus. The counter below the buttons ("2 von 3") is a live region, each slide is announced with its number
+- The arrows sit below the slides, not beside them as in Spartan, so nothing sticks out of a narrow column
+- A single item shows only its slide, without buttons or counter. An empty list renders nothing
+- Built on the Helm carousel (`hlm-carousel`, Embla), which brings the swipe and the arrow keys
 
 ## Adding a wrapper
 

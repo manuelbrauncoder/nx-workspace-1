@@ -13,6 +13,13 @@
       "nextLabel": "Weiter zur nächsten Seite",
       "page": "Seite {{ page }}",
       "gap": "Weitere Seiten"
+    },
+    "carousel": {
+      "previous": "Vorherige Folie",
+      "next": "Nächste Folie",
+      "slide": "{{ number }} von {{ count }}",
+      "roleDescription": "Karussell",
+      "slideRoleDescription": "Folie"
     }
   },
   "failure": {
