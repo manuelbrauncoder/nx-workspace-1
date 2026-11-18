@@ -19,7 +19,9 @@
     border-color: var(--destructive);
   }
 
-  &:has([aria-disabled='true']) {
+  // Only the editor itself: the toolbar has disabled buttons of its own (undo and redo at the
+  // start), and with `:has([aria-disabled])` they faded the whole editor.
+  &:has(> .form-rich-text__content[aria-disabled='true']) {
     opacity: 0.5;
   }
 }
