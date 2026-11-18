@@ -49,12 +49,13 @@
     "label": "Loading example"
   },
   "menu": {
-    "description": "appUiMenuTrigger opens an app-ui-menu.",
+    "description": "appUiMenuTrigger opens an app-ui-menu. A group gets a name for screen readers with label, app-ui-menu-label shows it as a small heading, app-ui-menu-separator separates groups.",
     "choose": "Choose density",
     "compact": "Compact",
     "comfortable": "Comfortable",
     "reset": "Reset",
-    "chosen": "Chosen: {{ value }}"
+    "chosen": "Chosen: {{ value }}",
+    "density": "Density"
   },
   "navMenu": {
     "description": "app-ui-nav-menu builds the navigation from an array. An item with children becomes a dropdown in the horizontal bar and a collapsible section in the vertical list.",

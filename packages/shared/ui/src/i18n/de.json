@@ -70,12 +70,14 @@
     "required": "Pflichtfeld"
   },
   "language": {
-    "choose": "Sprache wählen"
+    "choose": "Sprache wählen",
+    "heading": "Sprache"
   },
   "theme": {
     "choose": "Farbschema wählen",
     "light": "Hell",
     "dark": "Dunkel",
-    "system": "System"
+    "system": "System",
+    "heading": "Farbschema"
   }
 }

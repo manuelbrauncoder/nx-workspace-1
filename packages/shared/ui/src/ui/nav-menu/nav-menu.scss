@@ -4,11 +4,12 @@
 
 // Horizontal bar. Links and group triggers share one look, Helm styles them differently.
 .nav-menu__list {
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
+// 44px high, the touch target of a product page, also on a tablet.
 .nav-menu__item {
-  height: 2rem;
+  height: 2.75rem;
   padding: 0 0.75rem;
   border-radius: var(--radius);
   background-color: transparent;

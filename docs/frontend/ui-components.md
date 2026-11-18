@@ -303,9 +303,12 @@ This is one of three layers. The backend sanitizes the HTML too when a note is s
 
 - The trigger takes `align` and `side` for the placement of the panel
 - Listen to `(triggered)` on items instead of `(click)`, so keyboard activation is covered
-- A focused item gets a solid ring in `--ring`, the pale background of the helm item alone is too faint to see
+- Every item, radio items included, is 44px high (the touch target, Helm makes them 32px) and gets a solid ring in `--ring` when focused, the pale background of the helm item alone is too faint to see (`UI_MENU_ITEM_CLASSES`)
+- `label` on `app-ui-menu` names the menu for screen readers, e.g. after its trigger
 - An item may open a dialog: when it closes, the focus goes back to the trigger of the menu, since the item is gone by then (`focusReturnTarget()` in `ui/dialog/focus-return.ts`, used by `UiDialogService` and `UiConfirmDialogService`)
 - `appUiMenuRadio` is a single-choice item with a check mark: `[checked]` marks the current choice. Radio items need an `app-ui-menu-group` around them. The theme toggle uses it, see [theme-toggle.html](../../packages/shared/ui/src/theme-toggle/theme-toggle.html)
+- A menu with several groups: `label` on `app-ui-menu-group` names the group for screen readers, `app-ui-menu-label` shows the same text as a small heading (hidden from screen readers, so it is not read twice), `app-ui-menu-separator` draws the line between two groups
+- **Items stay in the template of the menu.** The CDK menu finds its items through `ContentChildren`, which does not reach into child components. An item inside a component of its own is not part of the arrow-key navigation, and the menu may not even open. Share data and logic instead: `LANGUAGE_MENU_OPTIONS` and `THEME_MENU_OPTIONS` (from the two toggles) for a settings menu, as the portfolio header does in [app-settings-menu.html](../../apps/portfolio-web/src/app/layout/app-settings-menu/app-settings-menu.html)
 - `app-language-toggle` and `app-theme-toggle` take `size="lg"` for a touch screen, e.g. in a mobile drawer: a 48px button with a 24px icon instead of 44px and the text size
 
 ### Nav menu
