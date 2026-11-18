@@ -306,6 +306,7 @@ This is one of three layers. The backend sanitizes the HTML too when a note is s
 - A focused item gets a solid ring in `--ring`, the pale background of the helm item alone is too faint to see
 - An item may open a dialog: when it closes, the focus goes back to the trigger of the menu, since the item is gone by then (`focusReturnTarget()` in `ui/dialog/focus-return.ts`, used by `UiDialogService` and `UiConfirmDialogService`)
 - `appUiMenuRadio` is a single-choice item with a check mark: `[checked]` marks the current choice. Radio items need an `app-ui-menu-group` around them. The theme toggle uses it, see [theme-toggle.html](../../packages/shared/ui/src/theme-toggle/theme-toggle.html)
+- `app-language-toggle` and `app-theme-toggle` take `size="lg"` for a touch screen, e.g. in a mobile drawer: a 48px button with a 24px icon instead of 44px and the text size
 
 ### Nav menu
 
@@ -329,6 +330,14 @@ private readonly _items: UiNavMenuItem[] = [
 
 <!-- Stacked, e.g. inside an app-ui-sheet -->
 <app-ui-nav-menu [items]="_items" [label]="'layout.mainNavigation' | t" orientation="vertical" />
+
+<!-- Stacked, every item a secondary button, e.g. as large touch targets in a mobile drawer -->
+<app-ui-nav-menu
+  [items]="_items"
+  [label]="'layout.mainNavigation' | t"
+  orientation="vertical"
+  appearance="buttons"
+/>
 ```
 
 - `label` is the accessible name of the `<nav>` landmark
@@ -336,6 +345,7 @@ private readonly _items: UiNavMenuItem[] = [
 - The link of the current page gets `aria-current="page"`. A link matches its path and everything below it, `exact: true` limits it to exactly its path. Use it for an overview above its sub pages
 - Horizontal: a group opens on click, Enter or Space and closes on Escape, on a click outside and after choosing a link. A group that contains the current page is highlighted
 - Vertical: a group is a button that expands its links below it. The group of the current page starts expanded
+- `appearance="buttons"` (vertical only) draws every item as a filled secondary button, 48px high with the label in the middle, the current page with a border in ink. The portfolio drawer uses it. The default `list` keeps plain rows
 - Groups nest one level. A group has no page of its own, put an overview link first instead
 - It is built on Spartan's `navigation-menu`, not on `menubar`. A menubar is an application menu (`role="menubar"`, "File / Edit"), a site navigation is a list of links and disclosure buttons
 - The vertical list uses `collapsible` and not the vertical mode of `navigation-menu`, which opens its panels to the side and does not fit a narrow drawer

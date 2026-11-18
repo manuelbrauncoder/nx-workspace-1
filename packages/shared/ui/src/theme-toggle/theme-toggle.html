@@ -1,13 +1,16 @@
 <button
   [appUiMenuTrigger]="menu"
   [attr.aria-label]="'theme.choose' | t"
+  [size]="size() === 'lg' ? 'icon-lg' : 'icon'"
   appUiButton
   variant="ghost"
-  size="icon"
   type="button"
   align="end"
 >
-  <app-ui-icon [name]="_theme.resolved() === 'dark' ? 'moon' : 'sun'" />
+  <app-ui-icon
+    [name]="_theme.resolved() === 'dark' ? 'moon' : 'sun'"
+    [size]="size() === 'lg' ? 'lg' : undefined"
+  />
 </button>
 
 <ng-template #menu>

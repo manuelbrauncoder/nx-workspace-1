@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { TranslationKey } from '@core/i18n/translation-key';
 import { ThemeMode, ThemeService } from '@core/theme/theme.service';
@@ -13,6 +13,9 @@ import { UiMenuImports } from '../ui/menu/menu';
   templateUrl: './theme-toggle.html',
 })
 export class ThemeToggle {
+  /** `lg` for a touch screen, e.g. in the mobile drawer: a 48px button with a 24px icon. */
+  readonly size = input<'default' | 'lg'>('default');
+
   private readonly _theme = inject(ThemeService);
 
   private readonly _options: { mode: ThemeMode; labelKey: TranslationKey }[] = [

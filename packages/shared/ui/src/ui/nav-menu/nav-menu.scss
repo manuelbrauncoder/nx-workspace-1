@@ -89,3 +89,34 @@
     }
   }
 }
+
+// Every item as a secondary button: filled, 48px high, the label in the middle. The current page
+// gets a border in ink, as the current page of the pagination does.
+.nav-list--buttons {
+  gap: 0.5rem;
+
+  .nav-list__item {
+    justify-content: center;
+    min-height: 3rem;
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    text-align: center;
+
+    &:hover {
+      background-color: color-mix(in oklch, var(--secondary), var(--foreground) 5%);
+      color: var(--secondary-foreground);
+    }
+
+    &[aria-current='page'] {
+      box-shadow: inset 0 0 0 2px var(--foreground);
+    }
+  }
+
+  .nav-list__trigger {
+    justify-content: space-between;
+  }
+
+  .nav-list--nested {
+    padding-left: 0;
+  }
+}

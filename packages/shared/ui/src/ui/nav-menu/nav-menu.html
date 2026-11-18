@@ -49,7 +49,7 @@
   </nav>
 } @else {
   <nav [attr.aria-label]="label()">
-    <ul class="nav-list">
+    <ul class="nav-list" [class.nav-list--buttons]="appearance() === 'buttons'">
       @for (entry of _entries(); track $index) {
         <li>
           @if (entry.kind === 'link') {

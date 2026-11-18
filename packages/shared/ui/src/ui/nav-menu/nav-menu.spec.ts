@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { defineI18nScope } from '@core/i18n/i18n-scope';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
-import { UiNavMenu, UiNavMenuItem, UiNavMenuOrientation } from './nav-menu';
+import { UiNavMenu, UiNavMenuAppearance, UiNavMenuItem, UiNavMenuOrientation } from './nav-menu';
 
 // The labels come from the app, so the spec brings its own.
 const LABELS = {
@@ -43,12 +43,14 @@ const ITEMS: UiNavMenuItem[] = [
   template: `<app-ui-nav-menu
     [items]="items"
     [orientation]="orientation()"
+    [appearance]="appearance()"
     label="Hauptnavigation"
   />`,
 })
 class Host {
   readonly items = ITEMS;
   readonly orientation = signal<UiNavMenuOrientation>('horizontal');
+  readonly appearance = signal<UiNavMenuAppearance>('list');
 }
 
 describe('UiNavMenu', () => {
@@ -146,6 +148,21 @@ describe('UiNavMenu', () => {
 
       expect(trigger.getAttribute('aria-expanded')).toBe('true');
       expect(nav.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('Formulare');
+    });
+
+    it('draws the items as buttons only with appearance="buttons"', async () => {
+      const { harness, nav } = await render('/notes', 'vertical');
+      const list = nav.querySelector('ul')!;
+
+      expect(list.classList).not.toContain('nav-list--buttons');
+
+      const host = harness.routeDebugElement!.componentInstance as Host;
+      host.appearance.set('buttons');
+      await harness.fixture.whenStable();
+
+      expect(list.classList).toContain('nav-list--buttons');
+      // the same links, only the look changes
+      expect(nav.querySelector('a[aria-current="page"]')?.textContent?.trim()).toBe('Notizen');
     });
   });
 

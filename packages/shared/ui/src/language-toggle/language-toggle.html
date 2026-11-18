@@ -1,13 +1,13 @@
 <button
   [appUiMenuTrigger]="menu"
   [attr.aria-label]="'language.choose' | t"
+  [size]="size() === 'lg' ? 'icon-lg' : 'icon'"
   appUiButton
   variant="ghost"
-  size="icon"
   type="button"
   align="end"
 >
-  <app-ui-icon name="languages" />
+  <app-ui-icon [size]="size() === 'lg' ? 'lg' : undefined" name="languages" />
 </button>
 
 <ng-template #menu>
