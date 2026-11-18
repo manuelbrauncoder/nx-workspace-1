@@ -124,7 +124,7 @@ describe('PortfolioDtoMapper', () => {
             stack: ['Angular', ' '],
             githubUrl: '',
             testUrl: 'https://join.example.com',
-            image: IMAGE,
+            images: [IMAGE, { ...IMAGE, id: 'second' }],
           },
         ],
       },
@@ -134,5 +134,8 @@ describe('PortfolioDtoMapper', () => {
     expect(dto.items[0].githubUrl).toBeUndefined();
     expect(dto.items[0].testUrl).toBe('https://join.example.com');
     expect(dto.items[0].stack).toEqual(['Angular']);
+    // the images stay in their order and go out as references
+    expect(dto.items[0].images.map((image) => image.id)).toEqual([IMAGE.id, 'second']);
+    expect(dto.items[0].images[0]).not.toHaveProperty('url');
   });
 });

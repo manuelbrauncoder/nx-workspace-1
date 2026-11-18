@@ -26,7 +26,8 @@
     "url": "Bitte gib eine vollständige Adresse mit https:// ein.",
     "email": "Bitte gib eine gültige E-Mail-Adresse ein.",
     "imageRequired": "Bitte lade ein Bild hoch oder wähle eines aus der Mediathek.",
-    "altRequired": "Bitte beschreibe das Bild."
+    "altRequired": "Bitte beschreibe das Bild.",
+    "imagesRequired": "Ein Projekt braucht mindestens einen Screenshot."
   },
   "image": {
     "none": "Kein Bild",
@@ -40,6 +41,12 @@
     "uploadFailed": "Das Bild wurde nicht hochgeladen",
     "alt": "Alternativtext",
     "altDescription": "Beschreibt das Bild für alle, die es nicht sehen."
+  },
+  "images": {
+    "item": "Screenshot {{ number }}",
+    "cover": "Screenshot 1 (Titelbild)",
+    "add": "Screenshot hinzufügen",
+    "empty": "Noch kein Screenshot."
   },
   "mediaPicker": {
     "heading": "Bild aus der Mediathek",
@@ -76,10 +83,12 @@
     "stack": "Technologien",
     "testUrl": "Adresse zum Ausprobieren",
     "githubUrl": "Code auf GitHub",
-    "image": "Screenshot",
     "empty": "Noch keine Projekte.",
     "add": "Projekt hinzufügen",
-    "removeHeading": "Projekt {{ number }} entfernen?"
+    "removeHeading": "Projekt {{ number }} entfernen?",
+    "images": "Screenshots",
+    "imagesDescription": "In dieser Reihenfolge erscheinen sie im Karussell, der erste ist das Titelbild.",
+    "descriptionHint": "Fett, kursiv, Listen und Links. Keine Überschriften, der Projektname ist schon eine."
   },
   "skills": {
     "heading": "Wegweiser",

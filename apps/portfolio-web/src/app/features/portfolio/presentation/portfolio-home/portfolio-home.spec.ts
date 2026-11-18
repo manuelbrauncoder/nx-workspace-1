@@ -37,17 +37,20 @@ const PORTFOLIO: Portfolio = {
     items: [
       {
         title: 'Kochwelt',
-        description: { de: 'Rezepte', en: 'Recipes' },
+        description: {
+          de: '<p>Rezepte mit <strong>Biss</strong></p><script>window.hacked = true</script>',
+          en: '<p>Recipes</p>',
+        },
         stack: ['Angular'],
         testUrl: 'https://cooking-world.example.com',
-        image: image('kochwelt'),
+        images: [image('kochwelt'), image('kochwelt-2')],
       },
       {
         title: 'Join',
         description: { de: 'Kanban', en: 'Kanban' },
         stack: ['Angular', 'Firebase'],
         githubUrl: 'https://github.com/manuelbrauncoder/Join-2.0',
-        image: image('join'),
+        images: [image('join')],
       },
     ],
   },
@@ -81,6 +84,16 @@ const PORTFOLIO: Portfolio = {
   },
   seo: undefined,
 };
+
+/** jsdom has none of these, the carousel's embla needs them to start. */
+class IdleObserver {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+  takeRecords(): [] {
+    return [];
+  }
+}
 
 describe('PortfolioHome', () => {
   async function render(portfolio: Portfolio = PORTFOLIO, state: AsyncState = success()) {
@@ -194,5 +207,65 @@ describe('PortfolioHome', () => {
     for (const map of Array.from(element.querySelectorAll('app-topo-map'))) {
       expect(map.getAttribute('aria-hidden')).toBe('true');
     }
+  });
+
+  describe('project card', () => {
+    beforeEach(() => {
+      vi.stubGlobal('IntersectionObserver', IdleObserver);
+      vi.stubGlobal('ResizeObserver', IdleObserver);
+    });
+    afterEach(() => vi.unstubAllGlobals());
+
+    it('shows several screenshots in a carousel named after the project', async () => {
+      const { element } = await render();
+
+      const card = element.querySelectorAll('app-project-card')[0];
+      const region = card.querySelector('app-ui-carousel [role="region"]')!;
+
+      expect(region.getAttribute('aria-label')).toBe('Screenshots von Kochwelt');
+      expect(card.querySelectorAll('app-ui-carousel img')).toHaveLength(2);
+      expect(card.querySelector('app-ui-carousel img')?.getAttribute('alt')).toBe('Bild kochwelt');
+      const buttons = Array.from(card.querySelectorAll('app-ui-carousel button'), (button) =>
+        button.getAttribute('aria-label'),
+      );
+      expect(buttons).toEqual(['Vorheriger Screenshot', 'Nächster Screenshot']);
+    });
+
+    it('shows a single screenshot without carousel controls', async () => {
+      const { element } = await render();
+
+      const card = element.querySelectorAll('app-project-card')[1];
+
+      expect(card.querySelectorAll('app-ui-carousel img')).toHaveLength(1);
+      expect(card.querySelector('app-ui-carousel [role="region"]')).toBeNull();
+      expect(card.querySelector('app-ui-carousel button')).toBeNull();
+    });
+
+    it('renders the description as rich text and drops a script', async () => {
+      const { element } = await render();
+
+      const description = element.querySelector('app-project-card app-ui-rich-text')!;
+
+      expect(description.querySelector('strong')?.textContent).toBe('Biss');
+      expect(description.querySelector('script')).toBeNull();
+      expect((window as { hacked?: boolean }).hacked).toBeUndefined();
+    });
+
+    it('shows the description of the other language after a switch', async () => {
+      const { fixture, element } = await render();
+
+      await TestBed.inject(I18nService).setLanguage('en');
+      await fixture.whenStable();
+
+      expect(element.querySelector('app-project-card app-ui-rich-text')?.textContent).toContain(
+        'Recipes',
+      );
+    });
+
+    it('is accessible', async () => {
+      const { element } = await render();
+
+      await expect(element.querySelector('#projects') as HTMLElement).toBeAccessible();
+    });
   });
 });

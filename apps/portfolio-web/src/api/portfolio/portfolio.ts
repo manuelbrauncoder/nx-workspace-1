@@ -1,4 +1,5 @@
 import { Localized } from '@core/i18n/localized';
+import { PROJECT_DESCRIPTION_MAX, PROJECT_IMAGES_MAX } from '@portfolio/contracts/portfolio-limits';
 
 /** An uploaded image as part of the content, with its alternative text in every language. */
 export interface PortfolioImage {
@@ -30,12 +31,14 @@ export interface About {
 
 export interface Project {
   title: string;
+  /** Rich-text HTML, shown with `app-ui-rich-text`. */
   description: Localized<string>;
   stack: string[];
   githubUrl?: string;
   /** Where visitors can try the project. */
   testUrl?: string;
-  image: PortfolioImage;
+  /** In the order they are shown, the first one is the cover. */
+  images: PortfolioImage[];
 }
 
 export interface ProjectsSection {
@@ -130,6 +133,10 @@ export const PORTFOLIO_LIMITS = {
   mapPlace: 200,
   mapCoordinates: 200,
   projectTitle: 200,
+  /** Rich-text HTML of a project, markup included. */
+  projectDescription: PROJECT_DESCRIPTION_MAX,
+  /** Images of one project, at least one. */
+  projectImages: PROJECT_IMAGES_MAX,
   projects: 50,
   /** One technology of a project. */
   stackItem: 50,

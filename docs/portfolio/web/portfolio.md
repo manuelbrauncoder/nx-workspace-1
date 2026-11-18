@@ -6,15 +6,15 @@ The start page (`/`) shows content an admin writes in the editor (`/admin/portfo
 
 `GET /portfolio` is public and answers with seven sections, each `null` until it has been created:
 
-| Section    | Holds                                                         | Shown in                                   |
-| ---------- | ------------------------------------------------------------- | ------------------------------------------ |
-| `hero`     | Name, introduction, place and coordinates on the map          | `HeroSection`                              |
-| `about`    | Heading, introduction, facts, portrait                        | `AboutSection`                             |
-| `projects` | Heading, introduction, projects with screenshot, stack, links | `ProjectsSection`                          |
-| `skills`   | Heading, introduction, signposts with skills and their points | `SkillsSection`                            |
-| `contact`  | Heading and introduction above the contact form               | `ContactSection`                           |
-| `settings` | Name, email, phone, address, GitHub and LinkedIn profile      | Contact channels                           |
-| `seo`      | Title, description and preview image of the start page        | `<head>`, see [SEO](../../frontend/seo.md) |
+| Section    | Holds                                                          | Shown in                                   |
+| ---------- | -------------------------------------------------------------- | ------------------------------------------ |
+| `hero`     | Name, introduction, place and coordinates on the map           | `HeroSection`                              |
+| `about`    | Heading, introduction, facts, portrait                         | `AboutSection`                             |
+| `projects` | Heading, introduction, projects with screenshots, stack, links | `ProjectsSection`                          |
+| `skills`   | Heading, introduction, signposts with skills and their points  | `SkillsSection`                            |
+| `contact`  | Heading and introduction above the contact form                | `ContactSection`                           |
+| `settings` | Name, email, phone, address, GitHub and LinkedIn profile       | Contact channels                           |
+| `seo`      | Title, description and preview image of the start page         | `<head>`, see [SEO](../../frontend/seo.md) |
 
 The models are in [src/api/portfolio/portfolio.ts](../../../apps/portfolio-web/src/api/portfolio/portfolio.ts), a missing section is `undefined`. The limits of the backend are in `PORTFOLIO_LIMITS`, the forms validate against them.
 
@@ -30,6 +30,7 @@ The models are in [src/api/portfolio/portfolio.ts](../../../apps/portfolio-web/s
 - `PortfolioHome` renders the content through `app-async-content` and leaves out every section that does not exist. Its SEO texts come from the `seo` section through `injectPageSeo()`, the route's own `title` and `description` apply until then
 - Each section component takes its model as a required input. Texts go through `| localized`, UI texts such as button labels stay in the page scope `portfolioHome`
 - Images are served by the backend (`GET /media/{id}`, public). `NgOptimizedImage` takes their `url`, `width` and `height` from the model
+- `ProjectCard` shows the screenshots of a project in `app-ui-carousel`, one at a time, in the order of the editor. The first one is the cover. The description is rich text from the API, shown with `app-ui-rich-text`, so it may hold lists, headings and links as the editor allows them
 
 ## The editor
 
@@ -44,7 +45,7 @@ The models are in [src/api/portfolio/portfolio.ts](../../../apps/portfolio-web/s
 
 - `PortfolioEditorUseCase` combines the portfolio and the media API. `PortfolioEditorStore.save(name, value)` creates a section that does not exist yet (`POST`) and replaces an existing one (`PATCH`), then updates the loaded content with the answer
 - Every section has a form component (`HeroForm`, `AboutForm`, …) with Signal Forms. The form model starts from the stored section through `linkedSignal` and follows it after a save
-- Shared pieces: `LocalizedField` (German and English side by side), `ImageField`, `ListItemActions` (move up, move down, remove) and `SectionFormFooter` (failure, save button). The rules in [section-rules.ts](../../../apps/portfolio-web/src/app/features/portfolio-editor/presentation/section-form/section-rules.ts) cover required texts, lengths, URLs and lists
+- Shared pieces: `LocalizedField` (German and English side by side, with `richText` one rich-text editor per language), `ImageField`, `ImagesField` (a sortable list of images), `ListItemActions` (move up, move down, remove) and `SectionFormFooter` (failure, save button). The rules in [section-rules.ts](../../../apps/portfolio-web/src/app/features/portfolio-editor/presentation/section-form/section-rules.ts) cover required texts, lengths, URLs and lists
 - Lists of plain strings (facts, points of a skill, stack, address) are a textarea with one entry per line. The mapper trims every entry and drops empty ones
 - An optional text in both languages is either empty in both or filled in both. Saving leaves an empty optional field out on `POST` and sends `null` on `PATCH`, which removes it
 
@@ -53,6 +54,16 @@ The models are in [src/api/portfolio/portfolio.ts](../../../apps/portfolio-web/s
 A section points to an uploaded image by `{ id, alt }`. In the editor `ImageField` either uploads a file right away (`POST /media`, field `file`, JPEG/PNG/WebP/AVIF/GIF up to 10 MB) or opens `MediaPickerDialog` with the library (`GET /media`, loaded on first use). The section only points to the image once it is saved. The alt text is required in both languages as soon as an image is chosen.
 
 A dialog does not see the providers of the feature routes, so the picker gets the list and its state as dialog data instead of injecting the store.
+
+### Projects
+
+The projects section is a list of projects in the order of the form, and the form saves it as a whole (`PATCH /portfolio/projects`). Each project has:
+
+- A title, a stack (one technology per line) and the optional GitHub and test links
+- A description per language as rich text (`LocalizedField` with `richText`, one `app-form-rich-text` for German and one for English). It takes the formats of the notes, so links may point to absolute `http`, `https` and `mailto` addresses but not into the site. The limit is `PORTFOLIO_LIMITS.projectDescription` (10,000 characters including the markup)
+- Screenshots in `ImagesField`: 1 to `PORTFOLIO_LIMITS.projectImages` (10) images, each with its own `ImageField` and alt text in both languages. The first one is the cover, the rest follow in the carousel. Each image can move up or down or be removed, a new one starts empty, and the add button turns off at 10. A project without any image is a validation error (`sectionEditor.validation.imagesRequired`)
+
+On save each image becomes a `{ id, alt }` reference, see [Images](#images). The array keeps the order of the list, so the order in the editor is the order on the start page.
 
 ## Rules in short
 

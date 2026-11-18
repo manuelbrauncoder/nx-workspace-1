@@ -1,19 +1,29 @@
 @let item = project();
 <article class="project-card">
-  <img
-    class="project-card__image"
-    [alt]="item.image.alt | localized"
-    [height]="item.image.height"
-    [ngSrc]="item.image.url"
-    [priority]="priority()"
-    [width]="item.image.width"
-  />
+  <app-ui-carousel
+    class="project-card__media"
+    [items]="item.images"
+    [label]="'portfolioHome.projects.screenshots' | t: { name: item.title }"
+    [nextLabel]="'portfolioHome.projects.nextScreenshot' | t"
+    [previousLabel]="'portfolioHome.projects.previousScreenshot' | t"
+  >
+    <ng-template let-image let-index="index">
+      <img
+        class="project-card__image"
+        [alt]="image.alt | localized"
+        [height]="image.height"
+        [ngSrc]="image.url"
+        [priority]="priority() && index === 0"
+        [width]="image.width"
+      />
+    </ng-template>
+  </app-ui-carousel>
   <div class="project-card__body">
     <h3 class="project-card__title" appUiText="title">
       <app-trail-marker />
       {{ item.title }}
     </h3>
-    <p class="project-card__description">{{ item.description | localized }}</p>
+    <app-ui-rich-text class="project-card__description" [html]="item.description | localized" />
     <ul class="project-card__stack" [attr.aria-label]="'portfolioHome.projects.builtWith' | t">
       @for (technology of item.stack; track technology) {
         <li class="project-card__tag">{{ technology }}</li>

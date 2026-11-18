@@ -30,3 +30,10 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+// A rich-text editor needs the width for its toolbar, so the languages stay one below the other.
+.localized-field__languages--stacked {
+  @include up(md) {
+    grid-template-columns: 1fr;
+  }
+}

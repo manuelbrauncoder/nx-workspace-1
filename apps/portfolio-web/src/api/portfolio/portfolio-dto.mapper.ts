@@ -81,7 +81,7 @@ const toProject = (dto: ProjectDto): Project => ({
   stack: [...dto.stack],
   githubUrl: dto.githubUrl,
   testUrl: dto.testUrl,
-  image: toImage(dto.image),
+  images: dto.images.map(toImage),
 });
 
 const READERS: Readers = {
@@ -150,7 +150,7 @@ const WRITERS: Writers = {
       stack: trimList(project.stack),
       githubUrl: project.githubUrl?.trim() || undefined,
       testUrl: project.testUrl?.trim() || undefined,
-      image: toImageRef(project.image),
+      images: project.images.map(toImageRef),
     })),
   }),
   skills: (skills) => ({
