@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { PROJECT_DESCRIPTION_MAX, PROJECT_IMAGES_MAX } from './portfolio-limits';
+
+export { PROJECT_DESCRIPTION_MAX, PROJECT_IMAGES_MAX } from './portfolio-limits';
 
 /** The sections of the start page, in page order. Each one is a singleton. */
 export const sectionKeys = [
@@ -23,12 +26,6 @@ const single: Localize = (schema) => schema;
 const text = (max: number) => z.string().trim().min(1).max(max);
 const short = text(200);
 const long = text(2000);
-/** How many images a project may have. */
-export const PROJECT_IMAGES_MAX = 10;
-
-/** Length of a project description in characters, markup included, before and after sanitizing. */
-export const PROJECT_DESCRIPTION_MAX = 10_000;
-
 // HTML following `@contracts/rich-text` (profile `text`), sanitized by the API before it is stored
 const richText = text(PROJECT_DESCRIPTION_MAX);
 const link = z.httpUrl().max(500);
