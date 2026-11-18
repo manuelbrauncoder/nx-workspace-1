@@ -1,4 +1,8 @@
-import { sectionKeys } from '@portfolio/contracts/portfolio';
+import {
+  PROJECT_DESCRIPTION_MAX,
+  PROJECT_IMAGES_MAX,
+  sectionKeys,
+} from '@portfolio/contracts/portfolio';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { config } from '../../config/index.js';
@@ -25,6 +29,22 @@ const skills = {
     { title: l('Backend', 'Backend'), skills: [] },
   ],
 };
+
+const projectsSection = (items: unknown[]) => ({
+  headline: l('Projekte', 'Projects'),
+  description: l('Meine Arbeit', 'My work'),
+  items,
+});
+
+const project = (imageIds: string[], description = l('<p>Hallo</p>', '<p>Hello</p>')) => ({
+  title: 'Kochwelt',
+  description,
+  stack: ['Angular'],
+  images: imageIds.map((id) => ({
+    id,
+    alt: l(`Bild ${id}`, `Image ${id}`),
+  })),
+});
 
 describe('portfolio', () => {
   it('returns every section as null before it is created', async () => {
@@ -172,5 +192,159 @@ describe('portfolio', () => {
     ]);
     expect(page.body.skills.sets).toHaveLength(4);
     expect(page.body.seo.ogImage.url).toMatch(/\/media\//);
+
+    const first = page.body.projects.items[0];
+    expect(first.images.length).toBeGreaterThanOrEqual(1);
+    expect(first.images[0].url).toMatch(/\/media\//);
+    expect(first.description).toMatch(/^<p>/);
+  });
+});
+
+describe('portfolio projects', () => {
+  const unsafe = l(
+    '<p>Text<script>alert(1)</script><img src="x" onerror="alert(1)"></p>' +
+      '<p><a href="javascript:alert(1)">bad</a> <a href="https://example.com/x">ext</a></p>',
+    '<p>Text<script>alert(1)</script><img src="x"></p>' +
+      '<p><a href="javascript:alert(1)">bad</a> <a href="https://example.com/x">ext</a></p>',
+  );
+
+  const expectSanitized = (html: string) => {
+    expect(html).not.toMatch(/<script|<img|alert\(1\)<|javascript:|onerror/i);
+    expect(html).toContain('<p>Text');
+    expect(html).toMatch(/<a[^>]*>bad<\/a>/);
+    expect(html).not.toMatch(/<a[^>]*href=[^>]*>bad/i);
+    const external = html.match(/<a [^>]*>ext<\/a>/)?.[0] ?? '';
+    expect(external).toContain('href="https://example.com/x"');
+    expect(external).toContain('target="_blank"');
+    expect(external).toContain('rel="noopener noreferrer nofollow"');
+  };
+
+  it('keeps the images in the sent order, resolves them and reorders on PATCH', async () => {
+    const admin = await adminAgent();
+    const ids = [
+      await uploadedMediaId(admin),
+      await uploadedMediaId(admin),
+      await uploadedMediaId(admin),
+    ];
+
+    const created = await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([project(ids)]))
+      .expect(201);
+    const images = created.body.projects.items[0].images;
+    expect(images).toEqual(
+      ids.map((id) => ({
+        id,
+        url: `${config.publicUrl}/api/v1/media/${id}`,
+        width: 200,
+        height: 100,
+        alt: l(`Bild ${id}`, `Image ${id}`),
+      })),
+    );
+
+    const order = [ids[2]!, ids[0]!, ids[1]!];
+    const patched = await admin
+      .patch('/api/v1/portfolio/projects')
+      .send({ items: [project(order)] })
+      .expect(200);
+    expect(patched.body.projects.items[0].images.map((i: { id: string }) => i.id)).toEqual(order);
+
+    const de = await request(app).get('/api/v1/portfolio?lang=de').expect(200);
+    expect(de.body.projects.items[0].images.map((i: { alt: string }) => i.alt)).toEqual(
+      order.map((id) => `Bild ${id}`),
+    );
+    expect(de.body.projects.items[0].description).toBe('<p>Hallo</p>');
+  });
+
+  it('requires between 1 and the maximum number of images', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+
+    await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([project([])]))
+      .expect(400);
+    const tooMany = Array.from({ length: PROJECT_IMAGES_MAX + 1 }, () => id);
+    await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([project(tooMany)]))
+      .expect(400);
+
+    // the maximum itself is fine, the same image may appear more than once
+    await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([project(tooMany.slice(0, PROJECT_IMAGES_MAX))]))
+      .expect(201);
+    await admin
+      .patch('/api/v1/portfolio/projects')
+      .send({ items: [project([])] })
+      .expect(400);
+  });
+
+  it('sanitizes the description on create and on PATCH', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+
+    const created = await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([project([id], unsafe)]))
+      .expect(201);
+    for (const lang of ['de', 'en'] as const) {
+      expectSanitized(created.body.projects.items[0].description[lang]);
+    }
+
+    await admin
+      .patch('/api/v1/portfolio/projects')
+      .send({ items: [project([id], l('<p>Neu</p>', '<p>New</p>'))] })
+      .expect(200);
+    const patched = await admin
+      .patch('/api/v1/portfolio/projects')
+      .send({ items: [project([id], unsafe)] })
+      .expect(200);
+    expectSanitized(patched.body.projects.items[0].description.de);
+
+    const page = await request(app).get('/api/v1/portfolio?lang=en').expect(200);
+    expectSanitized(page.body.projects.items[0].description);
+  });
+
+  it('rejects a description that is empty after sanitizing', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+    const onlyScript = l('<p>Hallo</p>', '<script>alert(1)</script>');
+
+    const res = await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([project([id], onlyScript)]))
+      .expect(400);
+    expect(res.body.error.message).toBe('The description of project "Kochwelt" is empty');
+
+    await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([project([id])]))
+      .expect(201);
+    await admin
+      .patch('/api/v1/portfolio/projects')
+      .send({ items: [project([id], l('<script>alert(1)</script>', '<p>Hello</p>'))] })
+      .expect(400);
+    // tags without text are empty as well
+    await admin
+      .patch('/api/v1/portfolio/projects')
+      .send({ items: [project([id], l('<p> <br></p><p></p>', '<p>Hello</p>'))] })
+      .expect(400);
+  });
+
+  it('rejects a description that grows over the limit when sanitizing', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+    // each `&` is stored as `&amp;`, so the request fits the limit but the stored value would not
+    const ampersands = '&'.repeat(PROJECT_DESCRIPTION_MAX - 10);
+
+    const res = await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([project([id], l(ampersands, '<p>Hello</p>'))]))
+      .expect(400);
+    expect(res.body.error.message).toBe(
+      `The description of project "Kochwelt" is longer than ${PROJECT_DESCRIPTION_MAX} characters`,
+    );
   });
 });

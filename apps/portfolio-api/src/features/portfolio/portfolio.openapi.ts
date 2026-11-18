@@ -40,8 +40,10 @@ export function registerPortfolioDocs(registry: OpenAPIRegistry) {
       summary: `Create the ${key} section`,
       description:
         'Admin only. Both languages are required for every localized value. An image is a ' +
-        'reference `{ id, alt }` to an image uploaded with `POST /media`. 409 if the section ' +
-        'already exists.',
+        'reference `{ id, alt }` to an image uploaded with `POST /media`. A project has 1 to ' +
+        '10 `images` in page order, the first one is the cover; its `description` is HTML in ' +
+        'the formats of the rich-text editor and is sanitized before it is stored. 409 if the ' +
+        'section already exists.',
       request: { body: jsonContent(sectionInputSchemas[key]) },
       responses: {
         201: jsonResponse('Section created', response),
@@ -56,7 +58,8 @@ export function registerPortfolioDocs(registry: OpenAPIRegistry) {
       summary: `Change the ${key} section`,
       description:
         'Admin only. Send only the fields to change, at least one; each one replaces the ' +
-        'stored value as a whole (arrays included). `null` removes an optional field.',
+        'stored value as a whole (arrays included), so reordering the images of a project ' +
+        'means sending its `images` in the new order. `null` removes an optional field.',
       request: { body: jsonContent(sectionUpdateSchemas[key]) },
       responses: {
         200: jsonResponse('The changed section', response),

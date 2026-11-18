@@ -20,7 +20,7 @@ Four features implement it. All endpoint paths in this guide are under `/api/v1`
 
 ## Models
 
-These are the shapes `GET /portfolio` returns. The zod schemas in [`portfolio.schemas.ts`](../../../packages/portfolio/contracts/src/portfolio.ts) are the source of truth, including the length limits.
+These are the shapes `GET /portfolio` returns. The zod schemas in [`portfolio.ts`](../../../packages/portfolio/contracts/src/portfolio.ts) are the source of truth, including the length limits.
 
 ```ts
 type L<T = string> = { de: T; en: T };
@@ -49,11 +49,11 @@ interface About {
 
 interface Project {
   title: string;
-  description: L;
+  description: L; // rich text (HTML), see "Project descriptions"
   stack: string[];
   githubUrl?: string; // without one the code is not public
   testUrl?: string; // without one there is no live demo
-  image: Image;
+  images: Image[]; // 1 to 10, in page order, the first one is the cover
 }
 
 interface Projects {
@@ -140,6 +140,12 @@ The alt text belongs to the place where the image is used, not to the upload. An
 
 So adding a project with a new screenshot takes two calls: upload the file, then `PATCH /portfolio/projects` with the new `items` list that references the returned id.
 
+A project has `images`, one to `PROJECT_IMAGES_MAX` (10, from [`@portfolio/contracts/portfolio`](../../../packages/portfolio/contracts/src/portfolio.ts)) references in page order. The first one is the cover image. Reordering, adding or removing images means sending the project's whole `images` array in the new order with `PATCH /portfolio/projects`, like any array. An empty array or more than 10 images is a 400.
+
+### Project descriptions
+
+The `description` of a project is rich text: HTML in the formats of the rich text editor, the same list as for notes (`RICH_TEXT_TAGS` in [`@contracts/rich-text`](../../../packages/contracts/src/rich-text.ts)). The API accepts up to 10,000 characters including the markup, then sanitizes it with `sanitizeRichText(html, 'text')` before it is stored. The profile `text` is the one of notes: a link keeps its `href` only if it is an absolute `http`, `https` or `mailto` link. Paths of the site (`/privacy`) and `tel:` links are dropped there, they are allowed only in the legal pages. A description that is empty after sanitizing is a 400. The other descriptions of the content (hero, about, projects, skills, contact) stay plain text.
+
 ## Media
 
 | Endpoint             | Access | What it does                                      |
@@ -204,7 +210,7 @@ In the web app (`portfolio-web`, feature `legal`) the page loads the fragment as
 
 ## Seed
 
-The initial content is in [`seed/portfolio.json`](../../../apps/portfolio-api/seed/portfolio.json) with the images in [`seed/images/`](../../../apps/portfolio-api/seed/images), the legal pages in [`seed/legal/`](../../../apps/portfolio-api/seed/legal) as `<page>.<lang>.html`. It was converted once from the web app (`portfolio-home/i18n/de.json`, `en.json`, `projects.ts`, `skill-groups.ts`, `site-owner.ts`, and the `seo.imageAlt` text for the og image). In that file an image is `{ "file": "images/portrait.webp", "alt": { … } }`.
+The initial content is in [`seed/portfolio.json`](../../../apps/portfolio-api/seed/portfolio.json) with the images in [`seed/images/`](../../../apps/portfolio-api/seed/images), the legal pages in [`seed/legal/`](../../../apps/portfolio-api/seed/legal) as `<page>.<lang>.html`. It was converted once from the web app (`portfolio-home/i18n/de.json`, `en.json`, `projects.ts`, `skill-groups.ts`, `site-owner.ts`, and the `seo.imageAlt` text for the og image). In that file an image is `{ "file": "images/portrait.webp", "alt": { … } }`, and a project has a list of them as `images`.
 
 ```bash
 pnpm nx run portfolio-api:db:seed   # locally, after db:migrate
@@ -218,6 +224,7 @@ Taken over as is, to be edited through the API:
 - Each skill has one `points` entry, the former `use` text.
 - The contact description is plain text; the inline LinkedIn and GitHub links went away, the profiles come from `Settings`.
 - The og image is stored as WebP like every upload.
+- Project descriptions are stored as HTML, one `<p>` paragraph per language.
 
 ## Additions beyond the first list
 
@@ -229,6 +236,7 @@ Taken over as is, to be edited through the API:
 - `Skill.points` replaces the single `use` string, so the skill card shows a list.
 - The contact description is plain text.
 - `GET /media` lists the uploads, so the editor can pick and clean them up.
+- Projects take several images (`images`, the first is the cover) and their description is rich text, sanitized by the API like the notes.
 - Legal pages, including a new cookie policy, as editable HTML. The seed carries the former texts of the app plus the postal address; there is no phone number, the contact form is the second way to get in touch that § 5 DDG asks for.
 
 ## Not part of the CMS
@@ -238,3 +246,5 @@ Taken over as is, to be edited through the API:
 ## Storage
 
 Each section is one row in `portfolio_sections` (`key`, `content` as `jsonb`, `updatedAt`). The content is validated by its zod schema on every write and stored with image references, not resolved images. A `PATCH` is merged in the database (`content || patch`, then nulls stripped), so two concurrent changes of different fields both survive.
+
+Migration `0005_project_images_rich_text` converts the stored `projects` section once: each project's `image` becomes `images: [image]`, and its plain-text description becomes escaped HTML in both languages (a blank line starts a new `<p>`, a single line break becomes `<br>`). Projects that already have `images` are left alone, so the migration is safe to run on any database. It only goes forward: the migration does not undo the conversion, going back to an older API image needs the database backup from before the release (see [Database](../../backend/database.md#migrations-in-production)).
