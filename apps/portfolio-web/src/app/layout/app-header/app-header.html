@@ -1,13 +1,13 @@
 <header class="app-header">
   <div class="page-container app-header__bar">
-    <app-logo />
+    <app-logo class="app-header__logo" />
+    <app-ui-nav-menu
+      class="app-header__nav"
+      [items]="_items"
+      [label]="'layout.mainNavigation' | t"
+    />
     <div class="app-header__actions">
-      <app-ui-nav-menu
-        class="app-header__nav"
-        [items]="_items"
-        [label]="'layout.mainNavigation' | t"
-      />
-      <!-- Below `md` both toggles and the account move into the drawer. -->
+      <!-- Below `lg` the links, both toggles and the account move into the drawer. -->
       <app-language-toggle class="app-header__toggle" />
       <app-theme-toggle class="app-header__toggle" />
       <app-account-menu class="app-header__account" [showSignIn]="false" />

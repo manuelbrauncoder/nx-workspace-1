@@ -16,12 +16,12 @@
   position: relative;
   display: grid;
   grid-template-rows: 1fr auto 1fr auto;
-  min-height: calc(100svh - 4.0625rem);
+  // The header is 73px high at every size: its 48px buttons, the padding and the border.
+  min-height: calc(100svh - 4.5625rem);
   // On a phone the pin sits above the name, the space at the top keeps them apart.
   padding-block: 12.25rem 2rem;
 
   @include up(md) {
-    min-height: calc(100svh - 4.8125rem);
     padding-block: 4rem 2.5rem;
   }
 }
