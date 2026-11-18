@@ -32,9 +32,11 @@
   gap: 0.5rem;
 }
 
-// Below `md` the links and the toggles move into the drawer, opened by the menu button.
+// Below `md` the links, the toggles and the account move into the drawer, opened by the menu
+// button.
 .app-header__nav,
-.app-header__toggle {
+.app-header__toggle,
+.app-header__account {
   display: none;
 
   @include up(md) {

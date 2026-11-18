@@ -2,7 +2,9 @@
   <div class="page-container app-footer__bar">
     <div class="app-footer__brand">
       <app-logo />
-      <p class="app-footer__made-with">
+      <!-- English in every language ("Gemacht mit Liebe" reads oddly), hence `lang` and the same
+           text in de.json and en.json. -->
+      <p class="app-footer__made-with" lang="en">
         {{ 'layout.footer.madeWith' | t }}
         <app-ui-icon [label]="'layout.footer.love' | t" name="heart" />
         {{ 'layout.footer.inPlace' | t }}

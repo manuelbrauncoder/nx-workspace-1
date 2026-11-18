@@ -1,6 +1,6 @@
 # Admin area
 
-Everything under `/admin` is for admins only. One `adminGuard` on the parent route in [app.routes.ts](../../../apps/portfolio-web/src/app/app.routes.ts) protects it: signed out it leads to the sign-in page, a user without admin rights lands on the start page. Admins open it through "Administration" in the account menu.
+Everything under `/admin` is for admins only. One `adminGuard` on the parent route in [app.routes.ts](../../../apps/portfolio-web/src/app/app.routes.ts) protects it: signed out it leads to the sign-in page, a user without admin rights lands on the start page. Admins open it through "Administration" in the account menu of the header, below `md` in the drawer, where `AccountMenu` with `layout="list"` shows the user and its actions without a popup.
 
 ```text
 /admin              AdminHub         feature admin

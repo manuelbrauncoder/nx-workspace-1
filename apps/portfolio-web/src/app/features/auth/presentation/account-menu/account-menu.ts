@@ -10,8 +10,10 @@ import { AuthStore } from '../../application/auth.store';
 import { SIGN_IN_PATH } from '../../application/return-url';
 
 /**
- * The account in the header: a link to the sign-in page, or a menu with the signed-in user and
- * "sign out". Its texts are in the shared scope, because it is on every page.
+ * The account: a link to the sign-in page, or the signed-in user with "administration" and
+ * "sign out". In the header a menu, in the mobile drawer a plain list (`layout="list"`), because
+ * a menu inside the drawer would be a popup inside a popup. Its texts are in the shared scope,
+ * because it is on every page.
  */
 @Component({
   selector: 'app-account-menu',
@@ -25,6 +27,8 @@ export class AccountMenu {
    * the sign-in page stays reachable through its URL.
    */
   readonly showSignIn = input(true, { transform: booleanAttribute });
+  /** `menu` opens from an icon button, `list` shows the entries right away. */
+  readonly layout = input<'menu' | 'list'>('menu');
 
   private readonly _store = inject(AuthStore);
   private readonly _router = inject(Router);
