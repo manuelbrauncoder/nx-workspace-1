@@ -26,6 +26,11 @@ COPY --from=build /app/dist/apps/vyte-api/package.json /app/dist/apps/vyte-api/p
 RUN pnpm install --frozen-lockfile --prod
 
 FROM node:24-alpine
+# npm, npx, corepack and yarn are only needed to build. The app starts with `node`, so they are
+# removed and their bundled packages (undici, brace-expansion, ...) no longer show up as
+# vulnerabilities in image scans. The base layer keeps the files, the image does not get smaller.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /opt/yarn-* \
+  /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack /usr/local/bin/yarn /usr/local/bin/yarnpkg
 ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=prod-deps /app/node_modules ./node_modules
