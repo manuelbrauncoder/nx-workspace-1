@@ -49,6 +49,19 @@ The job `checks` runs on a push to `main`, on every pull request and on a releas
 
 After the checks, the job `publish-<app>` of the tagged app builds its Dockerfile from the workspace root and pushes the image. Each job has its own build cache. The workflow passes expressions such as the repository owner to its scripts through `env:`, not inside the script text.
 
+### Dependency updates
+
+[Dependabot](../.github/dependabot.yml) opens pull requests every Monday:
+
+- **GitHub Actions:** one grouped pull request (`ci(deps): …`). Every action in the workflow is pinned to a commit SHA with its version as a comment, `uses: actions/checkout@<sha> # v7.0.1`, so a moved tag cannot change what runs. Dependabot updates the SHA and the comment together. A new action is added the same way, never with a bare tag
+- **npm:** minor and patch updates of the root `package.json` as one grouped pull request (`chore(deps): …` or `chore(deps-dev): …`), majors one by one. Majors of Angular and Nx are left out, they go through `pnpm nx migrate`
+- commitlint accepts these commits: the scopes `deps` and `deps-dev` are known, and commits signed off by Dependabot are not checked further because their body carries the release notes with long lines
+
+Two limits:
+
+- An update only changes the root `package.json` and `pnpm-lock.yaml`, files of no project. It therefore counts for no app (see [Releasing](releasing.md#which-apps-a-commit-counts-for)) and reaches the images only with the next release of each app
+- pnpm 12 writes `pnpm-lock.yaml` as two YAML documents. GitHub's dependency graph does not read that format, so there are no Dependabot alerts or security updates for npm packages, only the weekly version updates. Known vulnerabilities in the running images are reported by the nightly Trivy scan on the server
+
 ## Building an image locally
 
 Every Dockerfile is built from the workspace root, since the image needs the shared libs:

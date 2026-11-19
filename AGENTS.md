@@ -199,6 +199,7 @@ Ausführliche Erklärungen mit Begründung und Beispielen stehen in `docs/` (Ein
 ### CI und Deployment
 
 - Pipeline in `.github/workflows/ci.yml`: Format-Check und `nx affected -t lint typecheck test build` bei Push auf `main` und bei Pull Requests, `nx run-many -p <app>` nur für die App eines Release-Tags, jeweils mit `--parallel=4`. Dieselben Befehle vor dem Push lokal ausführen (`pnpm format:check`, `pnpm nx affected -t lint typecheck test build`)
+- Actions in `.github/workflows/` immer auf den Commit-SHA mit Versionskommentar pinnen (`uses: owner/action@<sha> # vX.Y.Z`), nie auf einen Tag. Dependabot hält Actions und npm-Abhängigkeiten aktuell (`.github/dependabot.yml`, siehe `docs/deployment.md`)
 - Vitest mit Analog prüft keine Typen, deshalb gibt es pro Projekt das Target `typecheck`, das auch die Specs mit `tsc` prüft
 - Der Job `checks` startet einen Postgres-Service für die Tests der API-Projekte
 - Jede App hat ihr eigenes Release-Tag `nx1-<app>-v*` (z. B. `nx1-portfolio-web-v1.2.0`). Es baut `apps/<app>/Dockerfile` aus dem Workspace-Root und schiebt das Image als `ghcr.io/<owner>/nx1-<app>` nach GHCR, getaggt mit der Version ohne Präfix, `latest` und `sha-<kurz>`. Node-Version steht in `.nvmrc`, pnpm-Version in `packageManager`
