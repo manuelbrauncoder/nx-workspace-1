@@ -1,3 +1,14 @@
+## 0.2.1 (2026-11-19)
+
+### 🚀 Features
+
+- **server-auth:** account links for closed sign-up ([cdddc2b](https://github.com/manuelbrauncoder/nx-workspace-1/commit/cdddc2b))
+
+### 🩹 Fixes
+
+- **workspace:** runtime images no longer ship npm, corepack and yarn ([2995ed0](https://github.com/manuelbrauncoder/nx-workspace-1/commit/2995ed0))
+- **server-core:** sanitize rich text in one place with the contract's link rules ([1135c17](https://github.com/manuelbrauncoder/nx-workspace-1/commit/1135c17))
+
 ## 0.2.0 (2026-11-07)
 
 ### 🩹 Fixes

@@ -1,3 +1,9 @@
+## 2.1.1 (2026-11-19)
+
+### 🩹 Fixes
+
+- **workspace:** runtime images no longer ship npm, corepack and yarn ([2995ed0](https://github.com/manuelbrauncoder/nx-workspace-1/commit/2995ed0))
+
 ## 2.1.0 (2026-11-19)
 
 ### 🚀 Features

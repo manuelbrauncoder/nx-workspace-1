@@ -1,3 +1,10 @@
+## 3.0.1 (2026-11-19)
+
+### 🩹 Fixes
+
+- **workspace:** runtime images no longer ship npm, corepack and yarn ([2995ed0](https://github.com/manuelbrauncoder/nx-workspace-1/commit/2995ed0))
+- **portfolio-api:** contact form answers right away, mail over STARTTLS on port 587 ([55d965f](https://github.com/manuelbrauncoder/nx-workspace-1/commit/55d965f))
+
 # 3.0.0 (2026-11-18)
 
 ### 🚀 Features
