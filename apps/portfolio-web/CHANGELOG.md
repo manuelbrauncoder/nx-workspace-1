@@ -1,3 +1,10 @@
+## 2.1.0 (2026-11-19)
+
+### 🚀 Features
+
+- **portfolio-web:** one settings menu in the header, outlined signs ([10f7513](https://github.com/manuelbrauncoder/nx-workspace-1/commit/10f7513))
+- **portfolio-web:** smaller logo and the links in the middle of the header ([6732f35](https://github.com/manuelbrauncoder/nx-workspace-1/commit/6732f35))
+
 # 2.0.0 (2026-11-18)
 
 ### 🚀 Features
