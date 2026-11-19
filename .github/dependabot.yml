@@ -1,0 +1,45 @@
+# Dependabot version updates, see docs/deployment.md ("Dependency updates").
+# Commit messages follow Conventional Commits so commitlint accepts them (scopes deps and deps-dev).
+version: 2
+updates:
+  # Actions in .github/workflows are pinned to commit SHAs with the version as a comment.
+  # Dependabot updates both. One grouped pull request per week.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: ci
+      include: scope
+
+  # Root package.json and pnpm-lock.yaml. Minor and patch updates come as one pull request per week,
+  # majors one by one.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      # Majors of Angular and Nx go through `pnpm nx migrate`, which also migrates the code
+      - dependency-name: '@angular/*'
+        update-types: [version-update:semver-major]
+      - dependency-name: '@angular-devkit/*'
+        update-types: [version-update:semver-major]
+      - dependency-name: '@schematics/angular'
+        update-types: [version-update:semver-major]
+      - dependency-name: 'nx'
+        update-types: [version-update:semver-major]
+      - dependency-name: '@nx/*'
+        update-types: [version-update:semver-major]
+    commit-message:
+      prefix: chore
+      prefix-development: chore
+      include: scope

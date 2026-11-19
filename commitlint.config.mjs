@@ -27,6 +27,7 @@ const scopes = [
   // across the workspace
   'workspace',
   'deps',
+  'deps-dev', // Dependabot uses it for devDependencies
   'ci',
   'docs',
   'release',
@@ -34,6 +35,9 @@ const scopes = [
 
 export default {
   extends: ['@commitlint/config-conventional'],
+  // Dependabot commits carry the release notes of the update in their body, with lines longer than
+  // body-max-line-length allows. Their header already follows the format (.github/dependabot.yml).
+  ignores: [(message) => message.includes('Signed-off-by: dependabot[bot]')],
   rules: {
     // The scope is optional, but if there is one it must be known.
     'scope-enum': [2, 'always', scopes],
