@@ -47,7 +47,7 @@ The job `checks` runs on a push to `main`, on every pull request and on a releas
 - The Node version comes from [.nvmrc](../.nvmrc), the pnpm version from `packageManager` in [package.json](../package.json). A new Node major is changed in `.nvmrc`, in `devEngines` in `package.json` and in the base images of the Dockerfiles
 - A newer commit on the same branch or pull request cancels the running check, a release is never cancelled
 
-After the checks, the job `publish-<app>` of the tagged app builds its Dockerfile from the workspace root and pushes the image. Each job has its own build cache. The workflow passes expressions such as the repository owner to its scripts through `env:`, not inside the script text.
+After the checks, the job `publish` derives the app from the release tag (`nx1-<app>-v<major>.<minor>.<patch>`, the app must have a `Dockerfile`), builds `apps/<app>/Dockerfile` from the workspace root and pushes the image. Each app has its own build cache. The step summary of the run shows the pull command and the notes from `apps/<app>/deploy-notes.md` (port, mounts, variables). The workflow passes expressions such as the repository owner to its scripts through `env:`, not inside the script text. Both jobs stop after 20 minutes, and the checkout leaves no token in `.git/config`.
 
 ### Dependency updates
 

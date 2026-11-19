@@ -34,6 +34,8 @@ While the plan stays as it is, the rule "only merge through a green PR" is a con
 
 ### 2. No automatic dependency updates
 
+**Done:** [.github/dependabot.yml](../.github/dependabot.yml) for GitHub Actions and npm, see [Deployment](deployment.md#dependency-updates). Base images are left out: `node:24-alpine` is a floating tag that each release build pulls fresh. With pnpm 12 there are no Dependabot alerts for npm packages, the nightly Trivy scan on the server covers the running images.
+
 There is no `.github/dependabot.yml` and no Renovate. Outdated npm packages, actions and base images (`node:24-alpine`, `postgres:18`) are only noticed by hand.
 
 **Change:** add Dependabot for three ecosystems. Nx and Angular are updated with `nx migrate`, which also runs the code migrations, so Dependabot leaves them out:
@@ -108,6 +110,8 @@ The push then follows as a second `build-push-action` step, which hits the layer
 ## Medium priority
 
 ### 5. Six copies of the same publish job
+
+**Done:** one job `publish` derives the app from the tag, a single tag pattern `nx1-*-v*`, the summary text per app in `apps/<app>/deploy-notes.md`. Before, eight copies had already drifted apart: the one for `vyte-api` pasted expressions into its scripts and did not check the tag format.
 
 The six `publish-*` jobs differ only in the app name and the text of the step summary, about 320 lines in total. A new app means copying a job and adding a tag pattern under `on.push.tags`, and a fix (for example the Trivy step) has to be made six times.
 
@@ -215,6 +219,8 @@ The comment says "one per core of the runner". The standard `ubuntu-latest` runn
 
 ### 10. No timeouts
 
+**Done:** `timeout-minutes: 20` on both jobs. The checkouts also set `persist-credentials: false`.
+
 No job sets `timeout-minutes`, so the default of 6 hours applies. A hanging test or a stuck Docker build uses up the free minutes of the private repository.
 
 **Change:** `timeout-minutes: 20` on `checks` and `timeout-minutes: 20` on the publish job, about three times the current run time.
@@ -238,6 +244,8 @@ Every image is kept under its version, so going back means deploying an older ta
 `${{ github.event.pull_request.base.sha }}`, `${{ github.ref_type }}` and `${{ github.repository_owner }}` are written directly into shell scripts. All three values are safe today (SHAs, a fixed keyword, a GitHub login), so this is not a vulnerability. The rule of thumb from the skill is still to pass every expression via `env:`, so that a later edit with a branch name or PR title does not open a script injection. Findings 5, 6 and 8 already move most of them.
 
 ### 13. Actions pinned to major tags
+
+**Done:** every action is pinned to the commit SHA with its version as a comment, Dependabot keeps them current.
 
 `actions/checkout@v7`, `pnpm/action-setup@v6`, `nrwl/nx-set-shas@v4` and others follow their major tag. The skill calls that sufficient. Pinning to the commit SHA (with the version as a comment) protects against a hijacked tag of a third-party action and costs nothing once Dependabot keeps the SHAs current (finding 2). Worth it for the third-party actions `pnpm/action-setup`, `nrwl/nx-set-shas` and the Docker actions first.
 
