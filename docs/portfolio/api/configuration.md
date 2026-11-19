@@ -49,7 +49,7 @@ To try settings without committing them, such as `mail.enabled: true` for a real
 | `docs.enabled`                   | boolean           | Serve the API reference under `/docs`                                                |
 | `mail.enabled`                   | boolean           | Send mails. `false` locally and in tests: nothing leaves the process                 |
 | `mail.host`, `mail.port`         | string, number    | SMTP server                                                                          |
-| `mail.secure`                    | boolean           | `true` for TLS from the start (port 465), `false` for STARTTLS (port 587)            |
+| `mail.secure`                    | boolean           | `true` for TLS from the start (port 465), `false` for STARTTLS (port 587, default)   |
 | `mail.user`                      | string            | SMTP login; the password is `SMTP_PASSWORD`                                          |
 | `mail.from`                      | string            | Sender, e.g. `Portfolio <api@example.com>`                                           |
 | `mail.to`                        | string            | Where contact messages are forwarded                                                 |
@@ -71,6 +71,7 @@ Every setting is required; there are no hidden defaults.
 
 ### Settings that must match your deployment
 
+- **`mail`:** use port 587 with `secure: false`. Many hosts block outgoing 465 (Hetzner Cloud does by default), the connection then hangs until it times out and no mail arrives. With `secure: false` the transporter requires STARTTLS (`requireTLS`), so the password never goes out in plain text. Connection and greeting time out after 10 s, the socket after 30 s. Mails share one pooled connection and queue up behind each other, so a burst of messages does not open as many SMTP logins at once. The contact form does not wait for the mail: the message is stored, the visitor gets the answer, and the mail goes out in the background; a failure is logged as "Could not forward contact message"
 - **`trustProxy`:** behind a reverse proxy this must be set, otherwise Express does not know the request was HTTPS and refuses to set the secure cookie. It also makes the rate limit see the real client IP instead of the proxy's.
 - **`cors.origins`:** must contain the exact origin of the frontend (scheme, host and port, no path). Requests from other origins are rejected.
 - **`session.secureCookie`:** must be `true` in production.

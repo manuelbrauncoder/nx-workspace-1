@@ -30,8 +30,8 @@
   "mail": {
     "enabled": true,
     "host": "smtp.example.com",
-    "port": 465,
-    "secure": true,
+    "port": 587,
+    "secure": false,
     "user": "api@example.com",
     "from": "Portfolio <api@example.com>",
     "to": "me@example.com"
