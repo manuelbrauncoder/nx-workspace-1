@@ -17,22 +17,21 @@ const messageColumns = {
 };
 
 /**
- * Stores the message, then forwards it by mail. A failed mail is logged, not reported to the
- * visitor: the message is already in the inbox.
+ * Stores the message, then forwards it by mail in the background: the visitor gets the answer
+ * as soon as the message is in the inbox, not after the SMTP server. A failed mail is logged,
+ * not reported to the visitor.
  */
 export async function receiveMessage(input: SendMessageInput) {
   const [message] = await db.insert(contactMessages).values(input).returning(messageColumns);
 
-  try {
-    await sendMail({
-      to: config.mail.to,
-      replyTo: input.email,
-      subject: `Contact form: ${input.name}`,
-      text: `${input.message}\n\n${input.name} <${input.email}>`,
-    });
-  } catch (error) {
+  void sendMail({
+    to: config.mail.to,
+    replyTo: input.email,
+    subject: `Contact form: ${input.name}`,
+    text: `${input.message}\n\n${input.name} <${input.email}>`,
+  }).catch((error: unknown) => {
     logger.error({ err: error, messageId: message!.id }, 'Could not forward contact message');
-  }
+  });
 }
 
 export function listMessages() {

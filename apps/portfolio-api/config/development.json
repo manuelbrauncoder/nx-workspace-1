@@ -30,8 +30,8 @@
   "mail": {
     "enabled": false,
     "host": "smtp.ionos.de",
-    "port": 465,
-    "secure": true,
+    "port": 587,
+    "secure": false,
     "user": "mail@manuel-braun.net",
     "from": "Portfolio <mail@manuel-braun.net>",
     "to": "mail@manuel-braun.net"

@@ -35,6 +35,19 @@ describe('contact', () => {
     ]);
   });
 
+  it('answers without waiting for the mail', async () => {
+    // an SMTP server that never answers, e.g. behind a blocked port. The cast picks the promise
+    // overload of sendMail, the typings put the callback one first.
+    vi.spyOn(transporter, 'sendMail').mockImplementationOnce(
+      () => new Promise(() => undefined) as never,
+    );
+
+    await request(app).post('/api/v1/contact').send(message).expect(204);
+
+    const admin = await adminAgent();
+    expect((await admin.get('/api/v1/contact/messages')).body.messages).toHaveLength(1);
+  });
+
   it('keeps the message when the mail cannot be sent', async () => {
     vi.spyOn(transporter, 'sendMail').mockRejectedValueOnce(new Error('SMTP down'));
     await request(app).post('/api/v1/contact').send(message).expect(204);
