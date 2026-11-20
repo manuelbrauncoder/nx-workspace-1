@@ -64,6 +64,19 @@
   --glass-tint: rgb(20 21 28 / 0.04);
   --glass-tint-strong: rgb(20 21 28 / 0.09);
   --glass-edge: rgb(20 21 28 / 0.35);
+  // The magnifying glass over the hero headline: a dark glass sphere in both themes.
+  --lens-from: #2b3a8e;
+  --lens-to: #0a0c1c;
+  --lens-ink: #f4f2ee;
+  --lens-shadow:
+    0 24px 70px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(255 255 255 / 0.3),
+    inset 0 0 36px rgb(255 255 255 / 0.14);
+  --lens-shine:
+    radial-gradient(circle at 28% 22%, rgb(255 255 255 / 0.32), transparent 38%),
+    radial-gradient(circle at 70% 85%, rgb(255 170 90 / 0.18), transparent 45%);
+  // Colour fringes of the glass at the edges of the magnified letters.
+  --lens-fringe-start: rgb(255 50 110 / 0.45);
+  --lens-fringe-end: rgb(50 200 255 / 0.45);
   // Gradient backdrop (`app-backdrop`): blob opacity, grain and the shade that keeps text readable.
   // Colour stops of the four blobs: blue, rose, amber, teal.
   --backdrop-blob-1: #2c4fd8, #1a2a7a 55%, transparent 72%;

@@ -126,13 +126,36 @@ describe('PortfolioHome', () => {
     return { fixture, element: fixture.nativeElement as HTMLElement };
   }
 
-  it('shows the name as the only top-level heading', async () => {
+  it('shows the name and the role as the only top-level heading', async () => {
     const { element } = await render();
 
     const headings = element.querySelectorAll('h1');
 
     expect(headings.length).toBe(1);
-    expect(headings[0].textContent?.replace(/\s+/g, ' ').trim()).toBe('Manuel Braun');
+    expect(headings[0].textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      'Manuel Braun Frontend Developer',
+    );
+    expect(headings[0].querySelector('em')?.textContent).toBe('Frontend');
+  });
+
+  it('keeps the magnified copy of the headline away from assistive technology', async () => {
+    const { element } = await render();
+
+    const lens = element.querySelector('app-hero-lens')!;
+    const copy = lens.querySelector('.hero__headline--copy')!;
+
+    expect(lens.getAttribute('aria-hidden')).toBe('true');
+    expect(copy.getAttribute('aria-hidden')).toBe('true');
+    expect(copy.hasAttribute('inert')).toBe(true);
+    expect(copy.textContent?.replace(/\s+/g, ' ').trim()).toBe('Manuel Braun Frontend Developer');
+  });
+
+  it('leaves the hero description out', async () => {
+    const { element } = await render();
+
+    expect(element.querySelector('app-hero-section')?.textContent).not.toContain(
+      'Hey, ich bin Manuel.',
+    );
   });
 
   it('puts the sections in order, each a jump target of the navigation', async () => {
