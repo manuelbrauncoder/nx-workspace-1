@@ -16,7 +16,10 @@
               <code>{{ family.utility }}</code>
             </p>
           </div>
-          <div [style.font-family]="'var(' + family.token + ')'">
+          <div
+            [style.font-family]="'var(' + family.token + ')'"
+            [style.font-style]="family.italic ? 'italic' : null"
+          >
             <p class="text-2xl">{{ 'showcaseTypography.pangram' | t }}</p>
             <p class="mt-2 break-all">
               ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz ÄÖÜäöüß 0123456789

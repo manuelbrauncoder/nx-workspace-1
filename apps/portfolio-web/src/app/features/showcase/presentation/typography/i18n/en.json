@@ -7,12 +7,12 @@
     "heading": "Font families",
     "description": "Self-hosted variable fonts, assigned through --font-* in tailwind.css.",
     "body": "Body text, headings and UI",
-    "headings": "Headings",
+    "accent": "Accent words, always italic",
     "code": "Code"
   },
   "headings": {
     "heading": "Headings",
-    "description": "Variants h1 to h4 of appUiText. Headings use Overpass like the body text, the weights set the hierarchy.",
+    "description": "Variants h1 to h4 of appUiText. Headings use Inter Tight like the body text, light (300) on the start page and bold on work pages. The weights set the hierarchy.",
     "sample": "Design starts with the typeface"
   },
   "body": {

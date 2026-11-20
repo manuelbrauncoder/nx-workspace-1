@@ -2,7 +2,6 @@
   "auth": {
     "account": "Account",
     "signIn": "Sign in",
-    "signUp": "Sign up",
     "signOut": "Sign out",
     "signedOut": "You are signed out",
     "signOutFailed": "Signing out failed",
@@ -31,14 +30,7 @@
       "about": "About me",
       "projects": "Projects",
       "skills": "Skills",
-      "contact": "Contact",
-      "notes": "Notes",
-      "showcase": "Showcase",
-      "showcaseOverview": "Overview",
-      "showcaseTypography": "Typography",
-      "showcaseColors": "Colors",
-      "showcaseForms": "Forms",
-      "showcaseComponents": "Components"
+      "contact": "Contact"
     },
     "settings": "Settings"
   },

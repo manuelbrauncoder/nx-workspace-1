@@ -11,6 +11,8 @@ interface FontFamily {
   utility: string;
   token: string;
   weights: number[];
+  /** The family has only an italic cut. */
+  italic?: boolean;
 }
 
 interface FontSize {
@@ -27,11 +29,19 @@ interface FontSize {
 export class Typography {
   private readonly _families: FontFamily[] = [
     {
-      name: 'Overpass',
+      name: 'Inter Tight',
       roleKey: 'showcaseTypography.families.body',
       utility: 'font-sans',
       token: '--font-sans',
       weights: [300, 400, 500, 600, 700, 800, 900],
+    },
+    {
+      name: 'Instrument Serif',
+      roleKey: 'showcaseTypography.families.accent',
+      utility: 'font-serif',
+      token: '--font-serif',
+      weights: [400],
+      italic: true,
     },
     {
       name: 'JetBrains Mono',

@@ -2,7 +2,6 @@
   "auth": {
     "account": "Konto",
     "signIn": "Anmelden",
-    "signUp": "Registrieren",
     "signOut": "Abmelden",
     "signedOut": "Du bist abgemeldet",
     "signOutFailed": "Abmelden fehlgeschlagen",
@@ -31,14 +30,7 @@
       "about": "Über mich",
       "projects": "Projekte",
       "skills": "Skills",
-      "contact": "Kontakt",
-      "notes": "Notizen",
-      "showcase": "Showcase",
-      "showcaseOverview": "Übersicht",
-      "showcaseTypography": "Typografie",
-      "showcaseColors": "Farben",
-      "showcaseForms": "Formulare",
-      "showcaseComponents": "Komponenten"
+      "contact": "Kontakt"
     },
     "settings": "Einstellungen"
   },
