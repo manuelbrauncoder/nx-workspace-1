@@ -1,3 +1,9 @@
+## 3.1.0 (2026-11-20)
+
+### 🚀 Features
+
+- **portfolio-api:** add a draft state for projects ([4710e75](https://github.com/manuelbrauncoder/nx-workspace-1/commit/4710e75))
+
 ## 3.0.1 (2026-11-19)
 
 ### 🩹 Fixes

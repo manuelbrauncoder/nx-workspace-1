@@ -1,3 +1,9 @@
+## 2.2.0 (2026-11-20)
+
+### 🚀 Features
+
+- **portfolio-web:** save new projects as drafts and publish them in the editor ([12d2e3d](https://github.com/manuelbrauncoder/nx-workspace-1/commit/12d2e3d))
+
 ## 2.1.1 (2026-11-19)
 
 ### 🩹 Fixes
