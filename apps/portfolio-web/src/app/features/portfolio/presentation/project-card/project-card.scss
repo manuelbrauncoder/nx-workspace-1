@@ -30,16 +30,17 @@
   }
 }
 
+// Screenshots come in any format, also inside a phone, tablet or laptop frame: the whole image
+// stays visible in the 16:10 box, centered. A light frame marks the box, so the space beside a
+// narrow image reads as part of it.
 .project-card__image {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 10;
-  object-fit: cover;
-  object-position: top;
-  border: 1.5px solid var(--foreground);
+  object-fit: contain;
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  background-color: var(--surface);
 }
 
 .project-card__body {
