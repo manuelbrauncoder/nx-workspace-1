@@ -88,7 +88,7 @@ git switch main && git pull
    pnpm release:push
    ```
 
-   [tools/scripts/push-release.sh](../tools/scripts/push-release.sh) pushes `main` and then each tag of the release commit in a push of its own. Do not use `git push --follow-tags`: GitHub starts no workflow for tags when more than three are pushed at once, so no image would be built.
+   [tools/scripts/push-release.sh](../tools/scripts/push-release.sh) pushes `main` and then each tag of the release commit in a push of its own. The push to `main` starts a run that skips its checks, only the tags are checked. Do not use `git push --follow-tags`: GitHub starts no workflow for tags when more than three are pushed at once, so no image would be built.
 
    Each new tag starts the pipeline for its app: the checks of that app only (the commit was checked on `main` already), then the publish job in the [pipeline](deployment.md#the-pipeline). The image tag is the version: `nx1-dartomat-web-v1.3.0` becomes `ghcr.io/<owner>/nx1-dartomat-web:v1.3.0`.
 

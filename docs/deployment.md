@@ -33,7 +33,7 @@ New packages on GHCR are private and not linked to the repository. Make them pub
 
 ## The pipeline
 
-The job `checks` runs on a push to `main`, on every pull request and on a release tag:
+The job `checks` runs on a push to `main`, on every pull request and on a release tag. It skips the release commit `chore(release): publish` on `main`: that commit only changes versions and changelogs, and the run of each of its tags checks the released app on the same commit.
 
 | Step                            | Command                                                                                    |
 | ------------------------------- | ------------------------------------------------------------------------------------------ |
