@@ -27,9 +27,9 @@ interface Box {
 }
 
 /**
- * A glass sphere that magnifies the hero headline. It follows a mouse over the headline. Over the
- * header or the buttons it flies back to the nearest point of the headline instead of
- * vanishing. Without a mouse (on a phone) or after a while without movement it wanders across
+ * A clear glass sphere that magnifies the hero headline. It follows a mouse over the headline. As
+ * soon as it would touch the header, or over the buttons, it springs back to the nearest point of
+ * the headline instead of following. Without a mouse (on a phone) or after a while without movement it wanders across
  * the headline by itself. The magnified copy comes in as content with `#copy` and must be hidden
  * from assistive technology (`aria-hidden`), the sphere itself is decorative.
  *
@@ -134,14 +134,15 @@ export class HeroLens {
       const following = pointer.active && now - pointer.movedAt < IDLE_AFTER;
       let [x, y] = following ? [pointer.x, pointer.y] : wander(now / 1000);
       if (following && pointer.outside) {
-        // Over the header, the buttons or the arrow: back to the nearest point of the headline.
+        // Near the header, over the buttons or the arrow: back to the nearest point of the headline.
         x = Math.min(Math.max(x, text.x), text.x + text.width);
         y = Math.min(Math.max(y, text.y + text.height * 0.15), text.y + text.height * 0.85);
       }
       if (!sphere.placed) {
         Object.assign(sphere, { x, y, placed: true });
       }
-      const easing = following ? (pointer.outside ? 0.14 : 0.16) : 0.05;
+      // Back to the headline faster than it follows, so it springs back near the header.
+      const easing = following ? (pointer.outside ? 0.22 : 0.16) : 0.05;
       sphere.x += (x - sphere.x) * easing;
       sphere.y += (y - sphere.y) * easing;
       place(sphere.x, sphere.y);
@@ -154,7 +155,9 @@ export class HeroLens {
       const s = stage.getBoundingClientRect();
       pointer.x = event.clientX - s.left;
       pointer.y = event.clientY - s.top;
-      pointer.outside = pointer.y < 0 || pointer.y > s.height - radius;
+      // Closer to the header than one radius, or down at the buttons: the sphere would leave the
+      // headline, so it goes back to it instead of following.
+      pointer.outside = pointer.y < radius || pointer.y > s.height - radius;
       pointer.active = true;
       pointer.movedAt = view.performance.now();
     };

@@ -64,16 +64,21 @@
   --glass-tint: rgb(20 21 28 / 0.04);
   --glass-tint-strong: rgb(20 21 28 / 0.09);
   --glass-edge: rgb(20 21 28 / 0.35);
-  // The magnifying glass over the hero headline: a dark glass sphere in both themes.
-  --lens-from: #2b3a8e;
-  --lens-to: #0a0c1c;
-  --lens-ink: #f4f2ee;
+  // The magnifying glass over the hero headline: clear glass that blurs the text behind it,
+  // a rim of light and a soft reflection. The magnified copy uses the text colours of the theme.
+  --lens-glass: radial-gradient(
+    circle at 32% 28%,
+    rgb(255 255 255 / 0.55),
+    rgb(255 255 255 / 0.25) 55%,
+    rgb(255 255 255 / 0.4)
+  );
+  --lens-blur: blur(10px) saturate(1.2);
   --lens-shadow:
-    0 24px 70px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(255 255 255 / 0.3),
-    inset 0 0 36px rgb(255 255 255 / 0.14);
+    0 18px 50px rgb(20 21 28 / 0.18), 0 0 0 1px rgb(255 255 255 / 0.8),
+    inset 0 0 28px rgb(255 255 255 / 0.6), inset 0 -12px 30px rgb(20 21 28 / 0.05);
   --lens-shine:
-    radial-gradient(circle at 28% 22%, rgb(255 255 255 / 0.32), transparent 38%),
-    radial-gradient(circle at 70% 85%, rgb(255 170 90 / 0.18), transparent 45%);
+    radial-gradient(circle at 28% 22%, rgb(255 255 255 / 0.8), transparent 30%),
+    radial-gradient(circle at 72% 82%, rgb(255 255 255 / 0.35), transparent 40%);
   // Colour fringes of the glass at the edges of the magnified letters.
   --lens-fringe-start: rgb(255 50 110 / 0.45);
   --lens-fringe-end: rgb(50 200 255 / 0.45);

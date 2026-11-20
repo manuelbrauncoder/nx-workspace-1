@@ -11,8 +11,10 @@
   height: var(--hero-lens-size);
   overflow: hidden;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 25%, var(--lens-from), var(--lens-to) 70%);
+  background: var(--lens-glass);
   box-shadow: var(--lens-shadow);
+  // Blurs the real headline below, so only the magnified copy reads sharp in the glass.
+  backdrop-filter: var(--lens-blur);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s ease;
@@ -37,9 +39,5 @@
   top: 0;
   left: 0;
   transform-origin: 0 0;
-  color: var(--lens-ink);
-
-  // The glass is dark in both themes, so the accent keeps its bright amber in there.
-  --brand: var(--logo-from);
-  --brand-strong: var(--logo-to);
+  color: var(--foreground);
 }
