@@ -10,6 +10,7 @@ import { UiCarousel } from './carousel';
       [label]="label()"
       [previousLabel]="previousLabel()"
       [nextLabel]="nextLabel()"
+      [controls]="controls()"
     >
       <ng-template let-item let-index="index">
         <p class="slide">{{ index }}:{{ item }}</p>
@@ -22,6 +23,7 @@ class Host {
   readonly label = input('Screenshots von Kochwelt');
   readonly previousLabel = input<string>();
   readonly nextLabel = input<string>();
+  readonly controls = input<'below' | 'overlay'>('below');
 }
 
 /** jsdom has none of these, embla needs them to start. They never report, so nothing scrolls. */
@@ -131,5 +133,45 @@ describe('UiCarousel', () => {
     const element = await render({ items: ['a', 'b', 'c'] });
 
     await expect(element).toBeAccessible();
+  });
+
+  describe('with overlay controls', () => {
+    it('puts the arrows over the slides, named by the default texts', async () => {
+      const element = await render({ items: ['a', 'b', 'c'], controls: 'overlay' });
+
+      const labels = Array.from(element.querySelectorAll('.ui-carousel__arrow'), (button) =>
+        button.getAttribute('aria-label'),
+      );
+
+      expect(labels).toEqual(['Vorherige Folie', 'Nächste Folie']);
+      expect(element.querySelector('.ui-carousel__controls')).toBeNull();
+    });
+
+    it('shows a hidden dash per slide and the counter, announced in words', async () => {
+      const element = await render({ items: ['a', 'b', 'c'], controls: 'overlay' });
+
+      const dashes = element.querySelector('.ui-carousel__dashes')!;
+      expect(dashes.getAttribute('aria-hidden')).toBe('true');
+      expect(dashes.querySelectorAll('.ui-carousel__dash')).toHaveLength(3);
+      expect(dashes.querySelector('.ui-carousel__dash--current')).toBe(
+        dashes.querySelector('.ui-carousel__dash'),
+      );
+      const counter = element.querySelector('p[aria-live="polite"]')!;
+      expect(counter.querySelector('[aria-hidden="true"]')?.textContent?.trim()).toBe('1 / 3');
+      expect(counter.querySelector('.sr-only')?.textContent?.trim()).toBe('1 von 3');
+    });
+
+    it('keeps a single item free of controls', async () => {
+      const element = await render({ items: ['a'], controls: 'overlay' });
+
+      expect(element.querySelector('button')).toBeNull();
+      expect(element.querySelector('.ui-carousel__bar')).toBeNull();
+    });
+
+    it('is accessible', async () => {
+      const element = await render({ items: ['a', 'b', 'c'], controls: 'overlay' });
+
+      await expect(element).toBeAccessible();
+    });
   });
 });

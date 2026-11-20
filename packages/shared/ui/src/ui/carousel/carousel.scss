@@ -25,3 +25,81 @@
   font-variant-numeric: tabular-nums;
   text-align: center;
 }
+
+// Overlay controls: the arrows sit over the slides, centred on them. The bar below has a fixed
+// height, so the arrows know where the middle of the slides is.
+.ui-carousel--overlay {
+  --ui-carousel-bar: 1.5rem;
+  --ui-carousel-bar-gap: 0.875rem;
+
+  position: relative;
+  gap: var(--ui-carousel-bar-gap);
+}
+
+.ui-carousel__arrow {
+  position: absolute;
+  top: calc((100% - var(--ui-carousel-bar) - var(--ui-carousel-bar-gap)) / 2);
+  z-index: 1;
+  width: 2.75rem;
+  height: 2.75rem;
+  translate: 0 -50%;
+  border-radius: 999px;
+  background-color: color-mix(in oklab, var(--popover) 85%, transparent);
+  backdrop-filter: blur(10px);
+  transition:
+    opacity 0.25s ease,
+    background-color 0.2s ease;
+}
+
+.ui-carousel__arrow--previous {
+  left: 0.75rem;
+}
+
+.ui-carousel__arrow--next {
+  right: 0.75rem;
+}
+
+// With a mouse the arrows wait until the carousel is hovered or has the focus.
+@media (hover: hover) {
+  .ui-carousel__arrow {
+    opacity: 0;
+  }
+
+  .ui-carousel--overlay:hover .ui-carousel__arrow,
+  .ui-carousel--overlay:focus-within .ui-carousel__arrow {
+    opacity: 1;
+  }
+}
+
+.ui-carousel__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: var(--ui-carousel-bar);
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+}
+
+.ui-carousel__dashes {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.ui-carousel__dash {
+  width: 1.75rem;
+  height: 2px;
+  border-radius: 1px;
+  background-color: var(--border);
+  transition: background-color 0.3s ease;
+}
+
+.ui-carousel__dash--current {
+  background-color: var(--foreground);
+}
+
+.ui-carousel__counter {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}

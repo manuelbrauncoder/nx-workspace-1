@@ -602,7 +602,7 @@ Slides one at a time, e.g. the screenshots of a project. Swipe on a touch screen
 - `label` is required and names the carousel for screen readers
 - `previousLabel` and `nextLabel` name the arrow buttons. Without them the shared texts of the ui lib apply (`common.carousel.previous`, `common.carousel.next`)
 - It loops: "next" on the last slide goes to the first one, so the buttons never turn disabled and never lose the focus. The counter below the buttons ("2 von 3") is a live region, each slide is announced with its number
-- The arrows sit below the slides, not beside them as in Spartan, so nothing sticks out of a narrow column
+- `controls` places the arrows. `below` (default): below the slides, not beside them as in Spartan, so nothing sticks out of a narrow column. `overlay`: round arrows over the slides, left and right, shown on hover and focus and always on a touch screen. Below the slides a dash per slide (decorative, `aria-hidden`) and the counter "2 / 3", which screen readers hear as "2 von 3". `portfolio-web` uses it for the project screenshots
 - A single item shows only its slide, without buttons or counter. An empty list renders nothing
 - Built on the Helm carousel (`hlm-carousel`, Embla), which brings the swipe and the arrow keys
 

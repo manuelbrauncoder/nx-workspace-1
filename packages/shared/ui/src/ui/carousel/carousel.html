@@ -3,6 +3,7 @@
   <hlm-carousel
     class="ui-carousel"
     #carousel
+    [class.ui-carousel--overlay]="controls() === 'overlay'"
     [attr.aria-label]="label()"
     [attr.aria-roledescription]="'common.carousel.roleDescription' | t"
     [options]="_options"
@@ -20,10 +21,10 @@
         </div>
       }
     </div>
-    <div class="ui-carousel__controls">
+    @if (controls() === 'overlay') {
       <button
+        class="ui-carousel__arrow ui-carousel__arrow--previous"
         [attr.aria-label]="previousLabel() ?? ('common.carousel.previous' | t)"
-        [disabled]="!carousel.canScrollPrev()"
         (click)="carousel.scrollPrev()"
         appUiButton
         variant="outline"
@@ -32,15 +33,9 @@
       >
         <app-ui-icon name="arrowLeft" />
       </button>
-      <p class="ui-carousel__position" aria-live="polite">
-        {{
-          'common.carousel.slide'
-            | t: { number: carousel.currentSlide() + 1, count: items().length }
-        }}
-      </p>
       <button
+        class="ui-carousel__arrow ui-carousel__arrow--next"
         [attr.aria-label]="nextLabel() ?? ('common.carousel.next' | t)"
-        [disabled]="!carousel.canScrollNext()"
         (click)="carousel.scrollNext()"
         appUiButton
         variant="outline"
@@ -49,7 +44,56 @@
       >
         <app-ui-icon name="arrowRight" />
       </button>
-    </div>
+      <div class="ui-carousel__bar">
+        <!-- Only shows the position, the arrows, swiping and the arrow keys move. -->
+        <span class="ui-carousel__dashes" aria-hidden="true">
+          @for (item of items(); track $index; let index = $index) {
+            <span
+              class="ui-carousel__dash"
+              [class.ui-carousel__dash--current]="index === carousel.currentSlide()"
+            ></span>
+          }
+        </span>
+        <p class="ui-carousel__counter" aria-live="polite">
+          <span aria-hidden="true">{{ carousel.currentSlide() + 1 }} / {{ items().length }}</span>
+          <span class="sr-only">{{
+            'common.carousel.slide'
+              | t: { number: carousel.currentSlide() + 1, count: items().length }
+          }}</span>
+        </p>
+      </div>
+    } @else {
+      <div class="ui-carousel__controls">
+        <button
+          [attr.aria-label]="previousLabel() ?? ('common.carousel.previous' | t)"
+          [disabled]="!carousel.canScrollPrev()"
+          (click)="carousel.scrollPrev()"
+          appUiButton
+          variant="outline"
+          size="icon"
+          type="button"
+        >
+          <app-ui-icon name="arrowLeft" />
+        </button>
+        <p class="ui-carousel__position" aria-live="polite">
+          {{
+            'common.carousel.slide'
+              | t: { number: carousel.currentSlide() + 1, count: items().length }
+          }}
+        </p>
+        <button
+          [attr.aria-label]="nextLabel() ?? ('common.carousel.next' | t)"
+          [disabled]="!carousel.canScrollNext()"
+          (click)="carousel.scrollNext()"
+          appUiButton
+          variant="outline"
+          size="icon"
+          type="button"
+        >
+          <app-ui-icon name="arrowRight" />
+        </button>
+      </div>
+    }
   </hlm-carousel>
 } @else if (items()[0]; as item) {
   <ng-container *ngTemplateOutlet="_slide(); context: { $implicit: item, index: 0 }" />

@@ -241,6 +241,16 @@
         <div class="demo-carousel__slide">{{ slide | t }}</div>
       </ng-template>
     </app-ui-carousel>
+    <app-ui-carousel
+      class="demo-carousel"
+      [items]="_carouselSlides"
+      [label]="'showcaseComponents.carousel.overlayLabel' | t"
+      controls="overlay"
+    >
+      <ng-template let-slide>
+        <div class="demo-carousel__slide">{{ slide | t }}</div>
+      </ng-template>
+    </app-ui-carousel>
   </app-showcase-section>
 
   <app-showcase-section [description]="'showcaseComponents.list.description' | t" heading="List">
