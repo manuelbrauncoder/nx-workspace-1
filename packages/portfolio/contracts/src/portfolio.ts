@@ -46,6 +46,9 @@ function buildSections(l: Localize, image: z.ZodType) {
     testUrl: link.optional(),
     // in page order, the first one is the cover image
     images: z.array(image).min(1).max(PROJECT_IMAGES_MAX),
+    // false: a draft, only returned to admins. Missing means published, so a client that does
+    // not know drafts yet keeps every project public.
+    published: z.boolean().default(true),
   });
   const skill = z.object({ name: l(short), points: l(list(text(500), 20)) });
   const skillSet = z.object({ title: l(short), skills: list(skill) });

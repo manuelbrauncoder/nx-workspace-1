@@ -90,6 +90,15 @@ function sanitizeContent(key: SectionKey, content: SectionContent): SectionConte
   return { ...content, items: (content['items'] as ProjectInput[]).map(sanitizeProject) };
 }
 
+/** Removes the drafts (`published: false`) from the projects; a project without the key is public. */
+function withoutDrafts(key: SectionKey, content: SectionContent): SectionContent {
+  if (key !== 'projects' || !Array.isArray(content['items'])) return content;
+  const items = (content['items'] as unknown[]).filter(
+    (item) => !isObject(item) || item['published'] !== false,
+  );
+  return { ...content, items };
+}
+
 async function resolveImages(content: SectionContent) {
   return withImages(content, await mediaByIds(imageIds(content)));
 }
@@ -103,10 +112,13 @@ async function assertImagesExist(content: SectionContent) {
 
 /**
  * The whole start page. Sections that were not created yet are null. Without `lang` the
- * editor gets both languages, with it every localized value is reduced to one.
+ * editor gets both languages, with it every localized value is reduced to one. Draft projects
+ * are only included for admins (`includeDrafts`).
  */
-export async function getPage(lang?: Language) {
-  const rows = await db.select().from(portfolioSections);
+export async function getPage(lang?: Language, { includeDrafts = false } = {}) {
+  const rows = (await db.select().from(portfolioSections)).map((row) =>
+    includeDrafts ? row : { ...row, content: withoutDrafts(row.key, row.content) },
+  );
   const media = await mediaByIds(rows.flatMap((row) => imageIds(row.content)));
 
   const page: Record<string, unknown> = Object.fromEntries(sectionKeys.map((key) => [key, null]));

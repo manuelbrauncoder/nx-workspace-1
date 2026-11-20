@@ -54,6 +54,7 @@ interface Project {
   githubUrl?: string; // without one the code is not public
   testUrl?: string; // without one there is no live demo
   images: Image[]; // 1 to 10, in page order, the first one is the cover
+  published: boolean; // false: a draft, only admins get it, see "Drafts"
 }
 
 interface Projects {
@@ -108,6 +109,7 @@ URLs (`githubUrl`, `testUrl`, `profiles.*`) must be `http` or `https`.
 
 - Without a query, every `L` comes in both languages. This is what the editor uses.
 - With `?lang=de` or `?lang=en`, every `L` is resolved to that language: `"headline": "Projekte"` instead of `"headline": { "de": "Projekte", "en": "Projects" }`. Any other value is a 400.
+- A draft project (`published: false`) is only in the answer for an admin session, see [Drafts](#drafts). The answer depends on the session cookie, so it sends `Cache-Control: private, no-cache` and adds `Cookie` to `Vary` (next to the `Origin` of CORS). Only the text of a draft is hidden: its images under `/media/{id}` stay public by URL. The SSR app sends the same headers for its pages (`app.routes.server.ts`), because a page rendered for the admin contains the drafts.
 
 ## Changing a section
 
@@ -141,6 +143,12 @@ The alt text belongs to the place where the image is used, not to the upload. An
 So adding a project with a new screenshot takes two calls: upload the file, then `PATCH /portfolio/projects` with the new `items` list that references the returned id.
 
 A project has `images`, one to `PROJECT_IMAGES_MAX` (10, from [`@portfolio/contracts/portfolio`](../../../packages/portfolio/contracts/src/portfolio.ts)) references in page order. The first one is the cover image. Reordering, adding or removing images means sending the project's whole `images` array in the new order with `PATCH /portfolio/projects`, like any array. An empty array or more than 10 images is a 400.
+
+### Drafts
+
+A project has `published`, `true` by default. A project with `published: false` is a draft: `GET /portfolio` leaves it out unless the request has an admin session, so visitors never see it. A write without the key publishes the project, like the default of the schema. Sections other than projects have no drafts.
+
+Admin check: `GET /portfolio` reads the session with `isAdmin(req)` from [`server-auth`](../../libs/server-auth.md), which reads the role from the database on every request. A guest gets the page without drafts, it does not get an error.
 
 ### Project descriptions
 
@@ -241,10 +249,12 @@ Taken over as is, to be edited through the API:
 
 ## Not part of the CMS
 
-- Drafts and revisions are left for later.
+- Revisions are left for later. Drafts exist only for projects, see [Drafts](#drafts).
 
 ## Storage
 
 Each section is one row in `portfolio_sections` (`key`, `content` as `jsonb`, `updatedAt`). The content is validated by its zod schema on every write and stored with image references, not resolved images. A `PATCH` is merged in the database (`content || patch`, then nulls stripped), so two concurrent changes of different fields both survive.
 
 Migration `0005_project_images_rich_text` converts the stored `projects` section once: each project's `image` becomes `images: [image]`, and its plain-text description becomes escaped HTML in both languages (a blank line starts a new `<p>`, a single line break becomes `<br>`). Projects that already have `images` are left alone, so the migration is safe to run on any database. It only goes forward: the migration does not undo the conversion, going back to an older API image needs the database backup from before the release (see [Database](../../backend/database.md#migrations-in-production)).
+
+Migration `0006_project_published` marks every project of the stored `projects` section as `published: true`, unless it already has the key. Projects that were public until now stay public. The migration can run again without changes. An older API image ignores the key, so no database restore is needed to go back, but it shows drafts to everyone: remove or publish them first.
