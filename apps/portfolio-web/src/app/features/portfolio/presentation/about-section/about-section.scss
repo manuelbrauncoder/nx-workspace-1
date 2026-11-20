@@ -1,8 +1,9 @@
 @use 'styles/abstracts' as *;
 
+// Transparent like every section of the start page, the backdrop runs behind them all.
 .about {
-  border-bottom: 1px solid var(--border);
-  background-color: var(--surface);
+  padding-block: clamp(5rem, 12vw, 10rem);
+  border-top: 1px solid var(--border);
   outline: none;
 }
 
@@ -10,23 +11,25 @@
 .about__layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1.375rem;
-  padding-block: 4rem;
+  gap: 2rem;
 
   @include up(md) {
-    grid-template-columns: minmax(0, 25rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     grid-template-areas:
       'portrait heading'
       'portrait text';
     grid-template-rows: auto 1fr;
-    column-gap: 4.5rem;
-    row-gap: 1.5rem;
-    padding-block: 7.5rem;
+    column-gap: clamp(3rem, 6vw, 6rem);
+    row-gap: 2.5rem;
   }
 }
 
 .about__heading {
   margin: 0;
+  font-size: clamp(2.75rem, 7.5vw, 6.5rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
 
   @include up(md) {
     grid-area: heading;
@@ -35,23 +38,23 @@
 
 .about__portrait {
   width: 100%;
+  max-width: 28rem;
   height: auto;
   aspect-ratio: 4 / 5;
   object-fit: cover;
   object-position: top;
-  border: 1.5px solid var(--foreground);
-  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
 
   @include up(md) {
     grid-area: portrait;
-    aspect-ratio: 2 / 3;
   }
 }
 
 .about__text {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2.5rem;
 
   @include up(md) {
     grid-area: text;
@@ -59,16 +62,16 @@
 }
 
 .about__intro {
-  max-width: 38ch;
+  max-width: 30ch;
   margin: 0;
-  font-size: clamp(1.1875rem, 1.6vw, 1.3125rem);
-  line-height: 1.55;
+  font-size: clamp(1.375rem, 2.4vw, 2rem);
+  font-weight: 300;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
 }
 
-.about__points {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+// Hairlines between the facts, a small amber dot before each.
+.about__facts {
   max-width: 60ch;
   margin: 0;
   padding: 0;
@@ -78,11 +81,23 @@
   line-height: 1.6;
 }
 
-.about__point {
+.about__fact {
   display: flex;
   gap: 1rem;
-}
+  padding-block: 1rem;
+  border-top: 1px solid var(--border);
 
-.about__marker {
-  margin-top: 0.3rem;
+  &:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  &::before {
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: 0.55rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand), var(--brand-strong));
+    content: '';
+  }
 }

@@ -1,7 +1,6 @@
 <section class="contact" id="contact" aria-labelledby="contact-heading" tabindex="-1">
-  <app-topo-map variant="corner" />
   <div class="page-container contact__layout">
-    <div class="contact__intro">
+    <div class="contact__intro" appReveal>
       <h2 class="contact__heading" id="contact-heading" appUiText="section">
         {{ contact().headline | localized }}
       </h2>
@@ -10,27 +9,30 @@
         <ul class="contact__channels" [attr.aria-label]="'portfolioHome.contact.channels' | t">
           <li>
             <a class="contact__channel" [href]="'mailto:' + owner.email">
-              <app-ui-icon name="mail" />
-              {{ owner.email }}
+              <app-ui-icon class="contact__channel-icon" name="mail" />
+              <span class="contact__channel-text">{{ owner.email }}</span>
+              <app-ui-icon class="contact__channel-arrow" name="arrowUpRight" size="sm" />
             </a>
           </li>
           <li>
             <a class="contact__channel" [href]="owner.profiles.github">
-              <app-ui-icon name="github" />
-              {{ 'portfolioHome.contact.github' | t }}
+              <app-ui-icon class="contact__channel-icon" name="github" />
+              <span class="contact__channel-text">{{ 'portfolioHome.contact.github' | t }}</span>
+              <app-ui-icon class="contact__channel-arrow" name="arrowUpRight" size="sm" />
             </a>
           </li>
           <li>
             <a class="contact__channel" [href]="owner.profiles.linkedin">
-              <app-ui-icon name="linkedin" />
-              {{ 'portfolioHome.contact.linkedin' | t }}
+              <app-ui-icon class="contact__channel-icon" name="linkedin" />
+              <span class="contact__channel-text">{{ 'portfolioHome.contact.linkedin' | t }}</span>
+              <app-ui-icon class="contact__channel-arrow" name="arrowUpRight" size="sm" />
             </a>
           </li>
         </ul>
       }
     </div>
 
-    <form class="contact__form" [formRoot]="_contactForm">
+    <form class="contact__form" [formRoot]="_contactForm" [revealDelay]="0.1" appReveal>
       <div class="contact__row">
         <app-form-text
           class="contact__field"

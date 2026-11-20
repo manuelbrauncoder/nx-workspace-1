@@ -8,11 +8,10 @@ import { UiIcon } from '@shared/ui/icon/icon';
 import { UiRichText } from '@shared/ui/rich-text/rich-text';
 import { UiText } from '@shared/ui/text/text';
 import { Project } from '../../domain/portfolio';
-import { TrailMarker } from '../trail-marker/trail-marker';
 
 /**
- * One project: its screenshots, one at a time in a carousel, next to name, description, stack and
- * the links to try it. A draft carries a badge; only the signed-in admin ever gets one.
+ * One project: its screenshots, one at a time in a carousel with the arrows over the image, next
+ * to name, description, stack and the links to try it. A draft carries a badge; only the signed-in admin ever gets one.
  */
 @Component({
   selector: 'app-project-card',
@@ -25,7 +24,6 @@ import { TrailMarker } from '../trail-marker/trail-marker';
     UiIcon,
     UiRichText,
     UiText,
-    TrailMarker,
   ],
   styleUrl: './project-card.scss',
   templateUrl: './project-card.html',

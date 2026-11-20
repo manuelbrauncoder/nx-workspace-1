@@ -196,15 +196,25 @@ describe('PortfolioHome', () => {
     );
   });
 
-  it('shows a signpost per skill set with the points of each skill', async () => {
+  it('shows a card per skill set with the points of each skill', async () => {
     const { element } = await render();
 
-    const signs = Array.from(element.querySelectorAll('app-skill-signpost h3'), (sign) =>
-      sign.textContent?.trim(),
+    const titles = Array.from(element.querySelectorAll('.skills__card h3'), (title) =>
+      title.textContent?.trim(),
     );
 
-    expect(signs).toEqual(['Frontend', 'Infrastruktur']);
-    expect(element.querySelectorAll('.skill-signpost__use').length).toBe(3);
+    expect(titles).toEqual(['Frontend', 'Infrastruktur']);
+    expect(element.querySelectorAll('.skills__points li').length).toBe(3);
+  });
+
+  it('lists the direct ways to get in touch', async () => {
+    const { element } = await render();
+
+    const channels = Array.from(element.querySelectorAll('.contact__channel'), (channel) =>
+      channel.textContent?.trim(),
+    );
+
+    expect(channels).toEqual([PORTFOLIO.settings!.email, 'GitHub', 'LinkedIn']);
   });
 
   it('follows a language switch without loading again', async () => {
@@ -224,14 +234,6 @@ describe('PortfolioHome', () => {
       'Die Startseite konnte nicht geladen werden',
     );
     expect(element.querySelector('section')).toBeNull();
-  });
-
-  it('keeps the contour map away from assistive technology', async () => {
-    const { element } = await render();
-
-    for (const map of Array.from(element.querySelectorAll('app-topo-map'))) {
-      expect(map.getAttribute('aria-hidden')).toBe('true');
-    }
   });
 
   describe('project card', () => {
