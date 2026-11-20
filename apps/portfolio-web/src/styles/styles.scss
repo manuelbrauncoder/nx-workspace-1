@@ -3,6 +3,7 @@
 // Themes and fonts belong to this app, everything under `styles/` comes from packages/shared/styles.
 @use 'themes';
 @use 'base/fonts';
+@use 'base/scroll';
 @use 'styles/base/global';
 @use 'styles/base/typography';
 @use 'styles/base/rich-text';

@@ -1,7 +1,7 @@
 <button
   class="app-settings-menu__trigger"
   [appUiMenuTrigger]="menu"
-  [attr.aria-label]="'layout.settings' | t"
+  [attr.aria-label]="(_compact() ? 'layout.menu' : 'layout.settings') | t"
   appUiButton
   variant="ghost"
   size="icon-lg"

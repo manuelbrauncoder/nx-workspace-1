@@ -6,6 +6,11 @@
 .app-settings-menu__trigger {
   width: 2.75rem;
   height: 2.75rem;
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
 }
 
 // The signed-in user above the account actions, as in the account menu.

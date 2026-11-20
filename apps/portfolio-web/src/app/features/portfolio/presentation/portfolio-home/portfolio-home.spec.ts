@@ -294,5 +294,17 @@ describe('PortfolioHome', () => {
 
       await expect(element.querySelector('#projects') as HTMLElement).toBeAccessible();
     });
+
+    it('passes the accessibility check as a whole page', async () => {
+      const { element } = await render();
+
+      await expect(element).toBeAccessible();
+    });
+
+    it('shows the stack of every project that has one', async () => {
+      const { element } = await render();
+
+      expect(element.querySelectorAll('.project-card__stack').length).toBe(2);
+    });
   });
 });

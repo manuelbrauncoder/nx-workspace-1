@@ -40,21 +40,29 @@ export class Reveal {
         return;
       }
       Object.assign(element.style, HIDDEN);
+      const show = (delay: number): void => {
+        observer.disconnect();
+        element.removeEventListener('focusin', onFocus);
+        element.style.transition = `opacity 0.9s ${EASE} ${delay}s, transform 0.9s ${EASE} ${delay}s`;
+        element.style.opacity = '';
+        element.style.transform = '';
+      };
+      // The keyboard may get there first, e.g. tabbing to a link: then it shows at once.
+      const onFocus = (): void => show(0);
       const observer = new view.IntersectionObserver(
         ([entry]) => {
-          if (!entry.isIntersecting) {
-            return;
+          if (entry.isIntersecting) {
+            show(this.revealDelay());
           }
-          observer.disconnect();
-          const delay = `${this.revealDelay()}s`;
-          element.style.transition = `opacity 0.9s ${EASE} ${delay}, transform 0.9s ${EASE} ${delay}`;
-          element.style.opacity = '';
-          element.style.transform = '';
         },
         { threshold: 0.12, rootMargin: '0px 0px -6% 0px' },
       );
       observer.observe(element);
-      destroyRef.onDestroy(() => observer.disconnect());
+      element.addEventListener('focusin', onFocus);
+      destroyRef.onDestroy(() => {
+        observer.disconnect();
+        element.removeEventListener('focusin', onFocus);
+      });
     });
   }
 }

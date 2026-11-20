@@ -60,4 +60,10 @@ describe('AppHeader', () => {
 
     expect(remove).toHaveBeenCalledWith('scroll', expect.any(Function));
   });
+
+  it('is accessible', async () => {
+    const fixture = await render();
+
+    await expect(fixture.nativeElement as HTMLElement).toBeAccessible();
+  });
 });

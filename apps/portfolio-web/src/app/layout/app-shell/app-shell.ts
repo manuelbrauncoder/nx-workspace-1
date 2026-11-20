@@ -1,6 +1,13 @@
+import { ViewportScroller } from '@angular/common';
 import { Component, DOCUMENT, ElementRef, inject, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import {
+  NavigationEnd,
+  NavigationSkipped,
+  NavigationSkippedCode,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { injectShellLayout } from '@core/layout/shell-layout';
 import { filter, skip } from 'rxjs';
@@ -22,6 +29,7 @@ import { AppHeader } from '../app-header/app-header';
 export class AppShell {
   private readonly _router = inject(Router);
   private readonly _document = inject(DOCUMENT);
+  private readonly _scroller = inject(ViewportScroller);
   private readonly _main = viewChild.required<ElementRef<HTMLElement>>('main');
   private readonly _layout = injectShellLayout();
   private readonly _backdrop = injectBackdrop();
@@ -40,6 +48,25 @@ export class AppShell {
         // or to the section of a fragment link.
         this._focusTarget(this._router.parseUrl(event.urlAfterRedirects).fragment);
       });
+    this._router.events
+      .pipe(
+        filter((event) => event instanceof NavigationSkipped),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) => this._jumpOnSameUrl(event));
+  }
+
+  /**
+   * A link to the section of the page that is already open (`/#about` while on `/#about`) is
+   * skipped by the router, so neither scrolling nor focus would follow. It jumps here instead.
+   */
+  private _jumpOnSameUrl(event: NavigationSkipped): void {
+    const fragment = this._router.parseUrl(event.url).fragment;
+    if (event.code !== NavigationSkippedCode.IgnoredSameUrlNavigation || !fragment) {
+      return;
+    }
+    this._scroller.scrollToAnchor(fragment);
+    this._focusTarget(fragment);
   }
 
   /** A plain `href="#main"` would resolve against the base href and leave the current page. */

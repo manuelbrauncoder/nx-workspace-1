@@ -12,9 +12,9 @@
   "projects": {
     "builtWith": "Built with",
     "liveTest": "Open live test",
-    "liveTestNamed": "Open live test of {{ name }}",
+    "liveTestNamed": "Open live test: {{ name }}",
     "sourceCode": "View code on GitHub",
-    "sourceCodeNamed": "View code of {{ name }} on GitHub",
+    "sourceCodeNamed": "View code on GitHub: {{ name }}",
     "screenshots": "Screenshots of {{ name }}",
     "previousScreenshot": "Previous screenshot",
     "nextScreenshot": "Next screenshot",

@@ -107,6 +107,21 @@ describe('AppShell', () => {
     expect(document.activeElement).toBe(main);
   });
 
+  it('jumps to a section again when its link is used on the same URL', async () => {
+    const { harness, element } = await render();
+    const section = document.createElement('section');
+    section.id = 'about';
+    section.tabIndex = -1;
+    element.querySelector('main')!.append(section);
+    await harness.navigateByUrl('/notes#about');
+
+    (document.activeElement as HTMLElement | null)?.blur();
+    await harness.navigateByUrl('/notes#about');
+    await harness.fixture.whenStable();
+
+    expect(document.activeElement).toBe(section);
+  });
+
   it('offers the settings menu instead of a drawer', async () => {
     const { element } = await render();
 

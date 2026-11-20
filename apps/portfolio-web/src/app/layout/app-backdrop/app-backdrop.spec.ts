@@ -46,7 +46,7 @@ describe('AppBackdrop', () => {
     }
   });
 
-  it('does not follow the pointer with reduced motion', async () => {
+  it('stands still with reduced motion: no scroll drift, no pointer', async () => {
     window.matchMedia = vi.fn(
       (query: string) => ({ matches: true, media: query }) as MediaQueryList,
     );
@@ -54,7 +54,7 @@ describe('AppBackdrop', () => {
     await render();
 
     const added = add.mock.calls.map(([type]) => type);
-    expect(added).toContain('scroll');
+    expect(added).not.toContain('scroll');
     expect(added).not.toContain('pointermove');
   });
 

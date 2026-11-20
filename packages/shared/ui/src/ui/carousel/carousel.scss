@@ -51,6 +51,11 @@
     background-color 0.2s ease;
 }
 
+.ui-carousel__arrow:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
 .ui-carousel__arrow--previous {
   left: 0.75rem;
 }

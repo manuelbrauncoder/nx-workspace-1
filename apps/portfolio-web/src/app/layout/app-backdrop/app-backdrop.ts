@@ -18,7 +18,7 @@ const PARALLAX_Y = 28;
  * The animated gradient behind the public pages: four blurred colour blobs, a grain and a shade
  * that keeps text readable. The blobs drift slowly, wander across the page while it scrolls and
  * lean away from the pointer. Purely decorative. The server renders it still, motion starts in
- * the browser, and with `prefers-reduced-motion` only the scroll position moves the blobs.
+ * the browser, and with `prefers-reduced-motion` the blobs stand still.
  *
  * @example
  * <app-backdrop />
@@ -49,6 +49,9 @@ export class AppBackdrop {
     const root = this._document.documentElement;
     const host = this._host.nativeElement;
     const reduced = view.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    if (reduced) {
+      return () => undefined;
+    }
     const progress = (): number => {
       const scrollable = root.scrollHeight - view.innerHeight;
       return scrollable > 0 ? Math.min(1, Math.max(0, view.scrollY / scrollable)) : 0;
@@ -72,9 +75,7 @@ export class AppBackdrop {
       setScroll(current);
     };
     const onScroll = (): void => {
-      if (reduced) {
-        setScroll(progress());
-      } else if (!frame) {
+      if (!frame) {
         frame = view.requestAnimationFrame(step);
       }
     };
@@ -86,9 +87,7 @@ export class AppBackdrop {
 
     view.addEventListener('scroll', onScroll, { passive: true });
     view.addEventListener('resize', onScroll, { passive: true });
-    if (!reduced) {
-      view.addEventListener('pointermove', onPointerMove, { passive: true });
-    }
+    view.addEventListener('pointermove', onPointerMove, { passive: true });
     return () => {
       view.removeEventListener('scroll', onScroll);
       view.removeEventListener('resize', onScroll);

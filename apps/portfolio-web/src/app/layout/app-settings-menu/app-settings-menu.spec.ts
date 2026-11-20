@@ -97,6 +97,13 @@ describe('AppSettingsMenu', () => {
     expect(navigate).toHaveBeenCalledWith(['/'], { fragment: 'about' });
   });
 
+  it('names the button after the menu on a phone, where it holds the links', async () => {
+    stubPhoneWidth();
+    const { trigger } = await openMenu(undefined);
+
+    expect(trigger.getAttribute('aria-label')).toBe('Menü');
+  });
+
   it('passes the accessibility check with the links on a phone', async () => {
     stubPhoneWidth();
     const { menu } = await openMenu(USER);

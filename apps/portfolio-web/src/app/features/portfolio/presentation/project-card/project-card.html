@@ -30,11 +30,13 @@
       </p>
     }
     <app-ui-rich-text class="project-card__description" [html]="item.description | localized" />
-    <ul class="project-card__stack" [attr.aria-label]="'portfolioHome.projects.builtWith' | t">
-      @for (technology of item.stack; track technology) {
-        <li class="project-card__tag">{{ technology }}</li>
-      }
-    </ul>
+    @if (item.stack.length) {
+      <ul class="project-card__stack" [attr.aria-label]="'portfolioHome.projects.builtWith' | t">
+        @for (technology of item.stack; track technology) {
+          <li class="project-card__tag">{{ technology }}</li>
+        }
+      </ul>
+    }
     @if (item.testUrl || item.githubUrl) {
       <div class="project-card__links">
         @if (item.testUrl; as testUrl) {
