@@ -48,8 +48,10 @@ describe('FormCheckbox', () => {
 
     const alert = element.querySelector('[role="alert"]')!;
     expect(alert.textContent).toContain('Bitte bestätigen.');
-    // Spartan puts the invalid state on the wrapper element, not on the button itself.
-    expect(element.querySelector('brn-checkbox')?.getAttribute('aria-invalid')).toBe('true');
+    // Since Spartan 1.9 the invalid state sits on the button with role checkbox, where assistive
+    // technology reads it, and no longer on the wrapper element.
+    expect(button.getAttribute('aria-invalid')).toBe('true');
+    expect(element.querySelector('brn-checkbox')?.hasAttribute('aria-invalid')).toBe(false);
     expect(button.getAttribute('aria-describedby')).toBe(
       `${element.querySelector('p')!.id} ${alert.id}`,
     );
