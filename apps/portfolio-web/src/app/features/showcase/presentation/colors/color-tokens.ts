@@ -28,9 +28,15 @@ export const COLOR_GROUPS: ColorGroup[] = [
     ],
   },
   {
-    titleKey: 'showcaseColors.groups.trail.title',
-    descriptionKey: 'showcaseColors.groups.trail.description',
-    tokens: [pair('trail'), { name: 'link' }, { name: 'topo-line' }, { name: 'topo-line-major' }],
+    titleKey: 'showcaseColors.groups.brand.title',
+    descriptionKey: 'showcaseColors.groups.brand.description',
+    tokens: [
+      pair('brand'),
+      { name: 'brand-strong' },
+      { name: 'link' },
+      { name: 'glass' },
+      { name: 'glass-strong' },
+    ],
   },
   {
     titleKey: 'showcaseColors.groups.actions.title',

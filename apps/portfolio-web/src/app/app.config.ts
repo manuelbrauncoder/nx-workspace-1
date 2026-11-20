@@ -12,6 +12,7 @@ import { provideI18n } from '@core/i18n/provide-i18n';
 import { AppErrorHandler } from '@core/log/app-error-handler';
 import { provideDeveloperGreeting } from '@core/log/provide-developer-greeting';
 import { provideSeo } from '@core/seo/provide-seo';
+import { DEFAULT_THEME_MODE } from '@core/theme/theme.service';
 import { provideAuth, sessionExpiredInterceptor } from '@features/auth/public-api';
 import { uiI18n } from '@shared/i18n/ui.i18n';
 import packageJson from '../../package.json';
@@ -25,6 +26,8 @@ export const appConfig: ApplicationConfig = {
     // Kept up to date by `nx release`.
     { provide: APP_VERSION, useValue: packageJson.version },
     { provide: ErrorHandler, useClass: AppErrorHandler },
+    // Designed dark first, light stays selectable. Mirrored by the inline script in index.html.
+    { provide: DEFAULT_THEME_MODE, useValue: 'dark' },
     provideRouter(
       routes,
       withComponentInputBinding(),

@@ -7,9 +7,9 @@
       "title": "Flächen",
       "description": "Hintergründe für Seite, Karten und Overlays mit ihrer Textfarbe."
     },
-    "trail": {
-      "title": "Trail",
-      "description": "Wegmarken-Gelb für Logo, Marker und Hauptaktion, Linkfarbe und die Höhenlinien der Karte."
+    "brand": {
+      "title": "Akzent",
+      "description": "Amber bis Orange für Logo, Punkte, Fokus und Hauptaktion, die Linkfarbe und die Glasflächen über dem Verlauf."
     },
     "actions": {
       "title": "Aktionen und Zustände",

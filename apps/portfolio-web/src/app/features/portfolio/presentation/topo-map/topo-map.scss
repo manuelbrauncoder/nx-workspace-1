@@ -32,20 +32,20 @@
 
 .topo-map__ring {
   fill: none;
-  stroke: var(--topo-line);
+  stroke: var(--border);
   stroke-width: 1.2px;
   // The rings are scaled, the line keeps its width anyway.
   vector-effect: non-scaling-stroke;
 }
 
 .topo-map__ring--major {
-  stroke: var(--topo-line-major);
+  stroke: var(--input);
   stroke-width: 1.6px;
 }
 
 .topo-map__pin {
-  fill: var(--trail);
-  stroke: var(--trail-foreground);
+  fill: var(--brand);
+  stroke: var(--brand-foreground);
   stroke-width: 2.5px;
 }
 

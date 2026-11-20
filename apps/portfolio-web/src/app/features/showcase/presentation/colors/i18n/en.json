@@ -7,9 +7,9 @@
       "title": "Surfaces",
       "description": "Backgrounds for page, cards and overlays with their text color."
     },
-    "trail": {
-      "title": "Trail",
-      "description": "Trail-marker yellow for the logo, markers and the main action, the link color and the contour lines of the map."
+    "brand": {
+      "title": "Accent",
+      "description": "Amber to orange for the logo, dots, focus and the main action, the link colour and the frosted panels over the gradient."
     },
     "actions": {
       "title": "Actions and states",

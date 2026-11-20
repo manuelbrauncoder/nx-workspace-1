@@ -9,7 +9,7 @@
   overflow-wrap: anywhere;
 }
 
-// Unread messages carry a trail marker and a bolder name.
+// Unread messages carry an amber dot and a bolder name.
 :host(.message-card--unread) .message-card__sender {
   font-weight: 800;
 }
@@ -19,7 +19,7 @@
   width: 0.625rem;
   height: 0.625rem;
   border-radius: 999px;
-  background-color: var(--trail);
+  background-color: var(--brand);
   box-shadow: 0 0 0 1px var(--foreground);
 }
 

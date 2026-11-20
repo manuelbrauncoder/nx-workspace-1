@@ -1,50 +1,64 @@
-// "Trail" palette at night: mist text on deep forest green, the trail-marker yellow stays.
+// Night palette, the default theme: warm white on near black, amber to orange as the accent. The
+// gradient backdrop of the public pages shines through, so text colours keep AA contrast over
+// its brightest spots too (checked with the shade of `app-backdrop` on top).
 :root.dark {
   color-scheme: dark;
 
-  --chart-1: #8fd3a8;
-  --chart-2: #f2c230;
-  --chart-3: #93a89a;
-  --chart-4: #7fc8a9;
-  --chart-5: #f08a3c;
-  --background: #0e1a14;
-  --foreground: #e6ede4;
-  --foreground-soft: #b7c7bc;
-  --card: #15241c;
-  --card-foreground: #e6ede4;
-  --popover: #15241c;
-  --popover-foreground: #e6ede4;
-  --primary: #f2c230;
-  --primary-foreground: #142a20;
-  --secondary: #22382b;
-  --secondary-foreground: #e6ede4;
-  --muted: #1c2e24;
-  --muted-foreground: #93a89a;
-  --accent: #22382b;
-  --accent-foreground: #e6ede4;
-  --destructive: #f97066;
-  --border: #22382b;
-  --input: #5f7668;
+  --chart-1: #f6c76b;
+  --chart-2: #ff9a5c;
+  --chart-3: #7d95f0;
+  --chart-4: #e0457b;
+  --chart-5: #1fb5a8;
+  --background: #07080d;
+  --foreground: #f4f2ee;
+  --foreground-soft: #bdbbb8;
+  --card: #0e0f18;
+  --card-foreground: #f4f2ee;
+  --popover: #0e0f18;
+  --popover-foreground: #f4f2ee;
+  --primary: #f4f2ee;
+  --primary-foreground: #0a0b10;
+  --secondary: #1a1b23;
+  --secondary-foreground: #f4f2ee;
+  --muted: #15161e;
+  --muted-foreground: #b3b1ae;
+  --accent: #1f2029;
+  --accent-foreground: #f4f2ee;
+  --destructive: #ff9f9a;
+  --border: #2a2b31;
+  --input: #6e6f76;
   --input-background: color-mix(in oklab, var(--input) 30%, transparent);
-  --ring: #f2c230;
-  --sidebar: #15241c;
-  --sidebar-foreground: #e6ede4;
-  --sidebar-primary: #f2c230;
-  --sidebar-primary-foreground: #142a20;
-  --sidebar-accent: #22382b;
-  --sidebar-accent-foreground: #e6ede4;
-  --sidebar-border: #22382b;
-  --sidebar-ring: #f2c230;
+  --ring: #f6c76b;
+  --sidebar: #0e0f18;
+  --sidebar-foreground: #f4f2ee;
+  --sidebar-primary: #f6c76b;
+  --sidebar-primary-foreground: #14151c;
+  --sidebar-accent: #1f2029;
+  --sidebar-accent-foreground: #f4f2ee;
+  --sidebar-border: #2a2b31;
+  --sidebar-ring: #f6c76b;
 
-  --surface: #15241c;
-  --trail: #f2c230;
-  --trail-foreground: #142a20;
-  // The trail yellow as a line or text on the page, e.g. the outlined logo sign.
-  --trail-ink: var(--trail);
-  // Main action of a page (`variant="brand"`): the trail-marker yellow.
-  --brand: var(--trail);
-  --brand-foreground: var(--trail-foreground);
-  --link: #8fd3a8;
-  --topo-line: #1f3428;
-  --topo-line-major: #2f4b3b;
+  --surface: #0e0f18;
+  // Amber, the accent: the logo tile, dots, focus and the main call to action.
+  --brand: #f6c76b;
+  --brand-foreground: #14151c;
+  // End of the accent gradient (`--brand` → `--brand-strong`), e.g. "Frontend" in the hero.
+  --brand-strong: #ff9a5c;
+  --link: #f6c76b;
+  // Frosted panels over the backdrop: cards, the contact form, the header once scrolled.
+  --glass: rgb(10 11 20 / 0.42);
+  --glass-strong: rgb(7 8 13 / 0.6);
+  --glass-tint: rgb(255 255 255 / 0.05);
+  --glass-tint-strong: rgb(255 255 255 / 0.12);
+  --glass-edge: rgb(255 255 255 / 0.4);
+  // Gradient backdrop (`app-backdrop`): blob opacity, grain and the shade that keeps text readable.
+  --backdrop-blob-opacity: 1;
+  --backdrop-grain-blend: overlay;
+  --backdrop-grain-opacity: 0.5;
+  --backdrop-shade: linear-gradient(
+    180deg,
+    rgb(7 8 13 / 0.4),
+    rgb(7 8 13 / 0.38) 35%,
+    rgb(7 8 13 / 0.6)
+  );
 }
