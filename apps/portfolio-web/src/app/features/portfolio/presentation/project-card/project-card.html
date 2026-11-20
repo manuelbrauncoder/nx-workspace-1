@@ -23,6 +23,14 @@
       <app-trail-marker />
       {{ item.title }}
     </h3>
+    <!-- After the heading, so it belongs to this project when moving through the headings. -->
+    @if (!item.published) {
+      <p class="project-card__draft">
+        <span appUiBadge variant="secondary">{{ 'portfolioHome.projects.draft' | t }}</span>
+        <span class="sr-only">: </span>
+        <span appUiText="muted">{{ 'portfolioHome.projects.draftHint' | t }}</span>
+      </p>
+    }
     <app-ui-rich-text class="project-card__description" [html]="item.description | localized" />
     <ul class="project-card__stack" [attr.aria-label]="'portfolioHome.projects.builtWith' | t">
       @for (technology of item.stack; track technology) {

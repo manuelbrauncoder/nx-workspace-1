@@ -20,7 +20,9 @@ export function registerPortfolioDocs(registry: OpenAPIRegistry) {
     description:
       'Public. Without `lang` every localized value is `{ de, en }` (for the editor), with ' +
       '`?lang=de` or `?lang=en` it is the value of that language. A section is `null` until ' +
-      'it has been created.',
+      'it has been created. A project with `published: false` is a draft: it is only ' +
+      'included when the request has an admin session, so the answer varies by cookie. Only ' +
+      'the text of a draft is hidden: its images under `/media/{id}` stay public by URL.',
     request: { query: pageQuerySchema },
     responses: {
       200: jsonResponse('The page', z.union([pageSchema, localizedPageSchema])),
@@ -42,8 +44,9 @@ export function registerPortfolioDocs(registry: OpenAPIRegistry) {
         'Admin only. Both languages are required for every localized value. An image is a ' +
         'reference `{ id, alt }` to an image uploaded with `POST /media`. A project has 1 to ' +
         '10 `images` in page order, the first one is the cover; its `description` is HTML in ' +
-        'the formats of the rich-text editor and is sanitized before it is stored. 409 if the ' +
-        'section already exists.',
+        'the formats of the rich-text editor and is sanitized before it is stored. ' +
+        '`published: false` saves a project as a draft that only admins see; without the ' +
+        'field the project is published. 409 if the section already exists.',
       request: { body: jsonContent(sectionInputSchemas[key]) },
       responses: {
         201: jsonResponse('Section created', response),

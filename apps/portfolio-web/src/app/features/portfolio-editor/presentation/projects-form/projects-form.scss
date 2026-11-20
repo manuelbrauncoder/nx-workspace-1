@@ -22,7 +22,13 @@
 }
 
 .projects-form__legend {
+  display: flex;
   float: left;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  // Stays clear of the actions in the corner (three 44px buttons), the draft badge wraps instead.
+  max-width: calc(100% - 10.5rem);
   padding: 0;
   font-weight: 700;
 }

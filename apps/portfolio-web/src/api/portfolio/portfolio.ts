@@ -39,6 +39,8 @@ export interface Project {
   testUrl?: string;
   /** In the order they are shown, the first one is the cover. */
   images: PortfolioImage[];
+  /** `false`: a draft. The backend only delivers drafts to the admin, who sees them on the site. */
+  published: boolean;
 }
 
 export interface ProjectsSection {

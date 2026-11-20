@@ -82,6 +82,7 @@ const toProject = (dto: ProjectDto): Project => ({
   githubUrl: dto.githubUrl,
   testUrl: dto.testUrl,
   images: dto.images.map(toImage),
+  published: dto.published ?? true,
 });
 
 const READERS: Readers = {
@@ -151,6 +152,7 @@ const WRITERS: Writers = {
       githubUrl: project.githubUrl?.trim() || undefined,
       testUrl: project.testUrl?.trim() || undefined,
       images: project.images.map(toImageRef),
+      published: project.published,
     })),
   }),
   skills: (skills) => ({

@@ -3,11 +3,17 @@ import {
   PROJECT_IMAGES_MAX,
   sectionKeys,
 } from '@portfolio/contracts/portfolio';
+import { users } from '@server/auth/users.table';
+import { db } from '@server/core/db/db';
+import { eq, sql } from 'drizzle-orm';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { config } from '../../config/index.js';
 import { adminAgent, app, signedUpAgent, uploadedMediaId } from '../../test/helpers.js';
 import { seedPortfolio } from './portfolio.seed.js';
+import { portfolioSections } from './portfolio.table.js';
 
 const l = <T>(de: T, en: T) => ({ de, en });
 
@@ -346,5 +352,153 @@ describe('portfolio projects', () => {
     expect(res.body.error.message).toBe(
       `The description of project "Kochwelt" is longer than ${PROJECT_DESCRIPTION_MAX} characters`,
     );
+  });
+});
+
+describe('portfolio drafts', () => {
+  const titles = (body: { projects: { items: { title: string }[] } }) =>
+    body.projects.items.map((item) => item.title);
+
+  /** Three projects in page order, the middle one a draft. */
+  async function createProjects(admin: Awaited<ReturnType<typeof adminAgent>>) {
+    const id = await uploadedMediaId(admin);
+    const items = [
+      { ...project([id]), title: 'Public one' },
+      { ...project([id]), title: 'Draft', published: false },
+      { ...project([id]), title: 'Public two', published: true },
+    ];
+    return admin.post('/api/v1/portfolio/projects').send(projectsSection(items)).expect(201);
+  }
+
+  it('publishes a project without the flag and keeps a draft as sent', async () => {
+    const admin = await adminAgent();
+    const created = await createProjects(admin);
+
+    expect(
+      created.body.projects.items.map((item: { published: boolean }) => item.published),
+    ).toEqual([true, false, true]);
+  });
+
+  it('shows drafts to admins only, in both formats', async () => {
+    const admin = await adminAgent();
+    await createProjects(admin);
+    const user = await signedUpAgent('ada@example.com');
+
+    for (const query of ['', '?lang=de']) {
+      const guest = await request(app).get(`/api/v1/portfolio${query}`).expect(200);
+      expect(titles(guest.body)).toEqual(['Public one', 'Public two']);
+
+      const signedIn = await user.get(`/api/v1/portfolio${query}`).expect(200);
+      expect(titles(signedIn.body)).toEqual(['Public one', 'Public two']);
+
+      const own = await admin.get(`/api/v1/portfolio${query}`).expect(200);
+      expect(titles(own.body)).toEqual(['Public one', 'Draft', 'Public two']);
+      expect(own.body.projects.items[1].published).toBe(false);
+    }
+  });
+
+  it('publishes a draft when the editor sends it with published: true', async () => {
+    const admin = await adminAgent();
+    const created = await createProjects(admin);
+    const items = created.body.projects.items.map(
+      (item: { images: { id: string; alt: unknown }[] }) => ({
+        ...item,
+        images: item.images.map(({ id, alt }) => ({ id, alt })),
+        published: true,
+      }),
+    );
+    await admin.patch('/api/v1/portfolio/projects').send({ items }).expect(200);
+
+    const guest = await request(app).get('/api/v1/portfolio').expect(200);
+    expect(titles(guest.body)).toEqual(['Public one', 'Draft', 'Public two']);
+  });
+
+  it('hides drafts again as soon as the admin role is taken away', async () => {
+    const admin = await adminAgent();
+    await createProjects(admin);
+    await db.update(users).set({ role: 'user' }).where(eq(users.role, 'admin'));
+
+    const res = await admin.get('/api/v1/portfolio').expect(200);
+    expect(titles(res.body)).toEqual(['Public one', 'Public two']);
+  });
+
+  it('publishes every project of a PATCH that leaves the flag out', async () => {
+    const admin = await adminAgent();
+    const created = await createProjects(admin);
+    // a client that does not know drafts yet sends the projects without `published`
+    const items = created.body.projects.items.map(
+      (item: Record<string, unknown> & { images: { id: string; alt: unknown }[] }) => {
+        const body: Record<string, unknown> = {
+          ...item,
+          images: item.images.map(({ id, alt }) => ({ id, alt })),
+        };
+        delete body['published'];
+        return body;
+      },
+    );
+    const patched = await admin.patch('/api/v1/portfolio/projects').send({ items }).expect(200);
+
+    expect(
+      patched.body.projects.items.map((item: { published: boolean }) => item.published),
+    ).toEqual([true, true, true]);
+  });
+
+  it('keeps guests away from a draft even if its image reference is broken', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+    await db.insert(portfolioSections).values({
+      key: 'projects',
+      content: projectsSection([
+        { ...project([id]), title: 'Public' },
+        { ...project(['00000000-0000-4000-8000-000000000000']), title: 'Broken', published: false },
+      ]),
+    });
+
+    const res = await request(app).get('/api/v1/portfolio').expect(200);
+    expect(titles(res.body)).toEqual(['Public']);
+  });
+
+  it('tells caches that the page depends on the session', async () => {
+    const res = await request(app)
+      .get('/api/v1/portfolio')
+      .set('Origin', config.cors.origins[0] ?? 'http://localhost:4200')
+      .expect(200);
+
+    expect(res.headers['vary']).toMatch(/Origin/);
+    expect(res.headers['vary']).toMatch(/Cookie/);
+    expect(res.headers['cache-control']).toBe('private, no-cache');
+  });
+
+  it('keeps projects stored before drafts existed public, and the migration marks them', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+    // stored the way the API saved projects before `published` existed
+    await db.insert(portfolioSections).values({
+      key: 'projects',
+      content: projectsSection([
+        { ...project([id]), title: 'Old one' },
+        { ...project([id]), title: 'Old two' },
+        { ...project([id]), title: 'Hidden', published: false },
+      ]),
+    });
+
+    const before = await request(app).get('/api/v1/portfolio').expect(200);
+    expect(titles(before.body)).toEqual(['Old one', 'Old two']);
+
+    const migration = await readFile(
+      path.join(import.meta.dirname, '../../../drizzle/0006_project_published.sql'),
+      'utf8',
+    );
+    await db.execute(sql.raw(migration));
+    // a second run changes nothing
+    await db.execute(sql.raw(migration));
+
+    const [row] = await db.select().from(portfolioSections);
+    const items = row?.content['items'] as { title: string; published: boolean }[];
+    expect(items.map(({ title, published }) => [title, published])).toEqual([
+      ['Old one', true],
+      ['Old two', true],
+      ['Hidden', false],
+    ]);
   });
 });

@@ -56,6 +56,7 @@ const PROJECTS: ProjectsSection = {
           alt: { de: 'Detail', en: 'Detail' },
         },
       ],
+      published: true,
     },
   ],
 };
@@ -250,6 +251,40 @@ describe('SectionEditor', () => {
       expect(images).toHaveLength(1);
       expect(images[0].textContent).toContain('Screenshot 1 (Titelbild)');
       expect(images[0].textContent).toContain('Kein Bild');
+    });
+
+    const draftBadge = (element: HTMLElement) => element.querySelector('.projects-form__draft');
+    const publishedSwitch = (element: HTMLElement) =>
+      element.querySelector<HTMLElement>('.projects-form__item app-form-switch [role="switch"]')!;
+
+    it('starts a new project unpublished, marked as a draft in its legend', async () => {
+      const element = await render('projects');
+
+      await addProject(element);
+
+      expect(publishedSwitch(element).getAttribute('aria-checked')).toBe('false');
+      expect(draftBadge(element)?.textContent?.trim()).toBe('Entwurf');
+      await expect(element).toBeAccessible();
+    });
+
+    it('shows a stored published project with the switch on and no badge', async () => {
+      const element = await render('projects', { ...EMPTY, projects: PROJECTS });
+
+      expect(publishedSwitch(element).getAttribute('aria-checked')).toBe('true');
+      expect(draftBadge(element)).toBeNull();
+    });
+
+    it('saves the published state after the switch was toggled', async () => {
+      const element = await render('projects', { ...EMPTY, projects: PROJECTS });
+
+      publishedSwitch(element).click();
+      await settle();
+      expect(draftBadge(element)).not.toBeNull();
+      await submit(element);
+
+      expect(updateSection).toHaveBeenCalledOnce();
+      const saved = updateSection.mock.calls[0][1] as ProjectsSection;
+      expect(saved.items[0].published).toBe(false);
     });
 
     it('shows the images of a stored project in order', async () => {

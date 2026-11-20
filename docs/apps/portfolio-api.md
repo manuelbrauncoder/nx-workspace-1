@@ -41,15 +41,15 @@ The targets are those of [express-api-base](express-api-base.md#running-it) plus
 
 All under `/api/v1`, only `/health` and `/docs` are at the root.
 
-| Path           | From          | Content                                                  |
-| -------------- | ------------- | -------------------------------------------------------- |
-| `/auth/…`      | `server-auth` | Sign-in; sign-up is closed in production                 |
-| `/admin/…`     | `server-auth` | Users for admins                                         |
-| `/portfolio/…` | app           | `GET` the start page content, `PATCH` a section as admin |
-| `/media/…`     | app           | Image uploads for the content, served without a session  |
-| `/contact/…`   | app           | `POST` from the contact form, the inbox for admins       |
-| `/legal/…`     | app           | The legal pages as sanitized HTML in both languages      |
-| `/notes/…`     | app           | Taken over from the base                                 |
+| Path           | From          | Content                                                                                   |
+| -------------- | ------------- | ----------------------------------------------------------------------------------------- |
+| `/auth/…`      | `server-auth` | Sign-in; sign-up is closed in production                                                  |
+| `/admin/…`     | `server-auth` | Users for admins                                                                          |
+| `/portfolio/…` | app           | `GET` the start page content (draft projects for admins only), `PATCH` a section as admin |
+| `/media/…`     | app           | Image uploads for the content, served without a session                                   |
+| `/contact/…`   | app           | `POST` from the contact form, the inbox for admins                                        |
+| `/legal/…`     | app           | The legal pages as sanitized HTML in both languages                                       |
+| `/notes/…`     | app           | Taken over from the base                                                                  |
 
 Details: [CMS content](../portfolio/api/cms-content.md).
 

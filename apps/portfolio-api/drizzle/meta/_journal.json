@@ -43,6 +43,13 @@
       "when": 1795007870120,
       "tag": "0005_project_images_rich_text",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795167853112,
+      "tag": "0006_project_published",
+      "breakpoints": true
     }
   ]
 }

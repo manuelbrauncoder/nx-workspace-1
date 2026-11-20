@@ -40,6 +40,11 @@ export interface ProjectDto {
   testUrl?: string;
   /** In page order, the first one is the cover. */
   images: PortfolioImageDto[];
+  /**
+   * `false`: a draft, only delivered to admins. Missing from an API that does not know drafts
+   * yet, which means published.
+   */
+  published?: boolean;
 }
 
 export interface ProjectsSectionDto {
@@ -121,6 +126,7 @@ export interface ProjectWriteDto {
   githubUrl?: string;
   testUrl?: string;
   images: PortfolioImageRefDto[];
+  published: boolean;
 }
 
 export interface ProjectsSectionWriteDto {

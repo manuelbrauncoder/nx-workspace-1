@@ -3,8 +3,10 @@ import { applyEach, form, FormField, FormRoot, validate } from '@angular/forms/s
 import { I18nService } from '@core/i18n/i18n.service';
 import { Localized, localizedOf } from '@core/i18n/localized';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { FormSwitch } from '@shared/form-controls/form-switch/form-switch';
 import { FormText } from '@shared/form-controls/form-text/form-text';
 import { FormTextarea } from '@shared/form-controls/form-textarea/form-textarea';
+import { UiBadge } from '@shared/ui/badge/badge';
 import { UiButton } from '@shared/ui/button/button';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
 import { UiIcon } from '@shared/ui/icon/icon';
@@ -28,7 +30,8 @@ import { injectSectionSave, moveItem } from '../section-form/section-save';
 
 /**
  * The stack is a textarea with one technology per line, an unset link is empty. The description
- * is rich-text HTML, the images are in the order they are shown.
+ * is rich-text HTML, the images are in the order they are shown. An unpublished project is a draft
+ * that only the admin sees on the site.
  */
 interface ProjectFormModel {
   title: string;
@@ -37,6 +40,7 @@ interface ProjectFormModel {
   githubUrl: string;
   testUrl: string;
   images: ImageForm[];
+  published: boolean;
 }
 
 interface ProjectsFormModel {
@@ -53,6 +57,8 @@ const toProjectModel = (project: Project | undefined): ProjectFormModel => ({
   testUrl: project?.testUrl ?? '',
   // A new project starts with one empty image, it needs at least one.
   images: project ? project.images.map(toImageForm) : [toImageForm(undefined)],
+  // A new project is a draft, so it can be checked on the site before everyone sees it.
+  published: project?.published ?? false,
 });
 
 const toModel = (projects: ProjectsSection | undefined): ProjectsFormModel => ({
@@ -72,6 +78,7 @@ const fromModel = (model: ProjectsFormModel): ProjectsSection => ({
     githubUrl: item.githubUrl,
     testUrl: item.testUrl,
     images: item.images.flatMap((image) => fromImageForm(image) ?? []),
+    published: item.published,
   })),
 });
 
@@ -82,8 +89,10 @@ const fromModel = (model: ProjectsFormModel): ProjectsSection => ({
     FormField,
     FormRoot,
     TranslatePipe,
+    FormSwitch,
     FormText,
     FormTextarea,
+    UiBadge,
     UiButton,
     UiIcon,
     UiText,

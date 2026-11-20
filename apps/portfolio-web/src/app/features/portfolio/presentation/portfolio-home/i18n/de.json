@@ -15,7 +15,9 @@
     "sourceCodeNamed": "Code von {{ name }} auf GitHub",
     "screenshots": "Screenshots von {{ name }}",
     "previousScreenshot": "Vorheriger Screenshot",
-    "nextScreenshot": "Nächster Screenshot"
+    "nextScreenshot": "Nächster Screenshot",
+    "draft": "Entwurf",
+    "draftHint": "Nur für dich sichtbar"
   },
   "contact": {
     "linkedin": "LinkedIn",

@@ -125,6 +125,7 @@ describe('PortfolioDtoMapper', () => {
             githubUrl: '',
             testUrl: 'https://join.example.com',
             images: [IMAGE, { ...IMAGE, id: 'second' }],
+            published: true,
           },
         ],
       },
@@ -137,5 +138,40 @@ describe('PortfolioDtoMapper', () => {
     // the images stay in their order and go out as references
     expect(dto.items[0].images.map((image) => image.id)).toEqual([IMAGE.id, 'second']);
     expect(dto.items[0].images[0]).not.toHaveProperty('url');
+  });
+
+  describe('published state of a project', () => {
+    const projectDto = (published?: boolean): PortfolioDto => ({
+      ...DTO,
+      projects: {
+        headline: { de: 'Projekte', en: 'Projects' },
+        description: { de: 'Text', en: 'Text' },
+        items: [
+          {
+            title: 'Join',
+            description: { de: 'Text', en: 'Text' },
+            stack: ['Angular'],
+            images: [IMAGE],
+            ...(published === undefined ? {} : { published }),
+          },
+        ],
+      },
+    });
+
+    it.each([true, false])('reads published = %s from the DTO', (published) => {
+      expect(mapper.toModel(projectDto(published)).projects?.items[0].published).toBe(published);
+    });
+
+    it('treats a project without the field as published', () => {
+      expect(mapper.toModel(projectDto()).projects?.items[0].published).toBe(true);
+    });
+
+    it.each([true, false])('writes published = %s of a project', (published) => {
+      const section = mapper.toModel(projectDto(published)).projects!;
+
+      for (const mode of ['create', 'update'] as const) {
+        expect(mapper.toSectionDto('projects', section, mode).items[0].published).toBe(published);
+      }
+    });
   });
 });

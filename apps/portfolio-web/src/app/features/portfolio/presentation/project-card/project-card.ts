@@ -2,6 +2,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { booleanAttribute, Component, input } from '@angular/core';
 import { LocalizedPipe } from '@core/i18n/localized.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { UiBadge } from '@shared/ui/badge/badge';
 import { UiCarousel } from '@shared/ui/carousel/carousel';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiRichText } from '@shared/ui/rich-text/rich-text';
@@ -11,7 +12,7 @@ import { TrailMarker } from '../trail-marker/trail-marker';
 
 /**
  * One project: its screenshots, one at a time in a carousel, next to name, description, stack and
- * the links to try it.
+ * the links to try it. A draft carries a badge; only the signed-in admin ever gets one.
  */
 @Component({
   selector: 'app-project-card',
@@ -19,6 +20,7 @@ import { TrailMarker } from '../trail-marker/trail-marker';
     NgOptimizedImage,
     LocalizedPipe,
     TranslatePipe,
+    UiBadge,
     UiCarousel,
     UiIcon,
     UiRichText,

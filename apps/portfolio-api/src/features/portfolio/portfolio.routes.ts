@@ -4,7 +4,7 @@ import {
   type SectionKey,
   sectionUpdateSchemas,
 } from '@portfolio/contracts/portfolio';
-import { requireAdmin } from '@server/auth/auth.middleware';
+import { isAdmin, requireAdmin } from '@server/auth/auth.middleware';
 import { parse } from '@server/core/validate';
 import { type Request, type Response, Router } from 'express';
 import { createSection, getPage, updateSection } from './portfolio.service.js';
@@ -23,10 +23,15 @@ async function changeSection(key: SectionKey, req: Request, res: Response) {
   res.json({ [key]: section });
 }
 
-// public: the start page
+// public: the start page; admins also get the draft projects
 portfolioRouter.get('/', async (req, res) => {
   const { lang } = parse(pageQuerySchema, req.query);
-  res.json(await getPage(lang));
+  const page = await getPage(lang, { includeDrafts: await isAdmin(req) });
+  // The answer depends on the session, so no shared cache may keep it and the browser asks again.
+  // `vary` appends, the `Vary: Origin` of CORS stays.
+  res.set('Cache-Control', 'private, no-cache');
+  res.vary('Cookie');
+  res.json(page);
 });
 
 portfolioRouter.post('/hero', requireAdmin, (req, res) => addSection('hero', req, res));

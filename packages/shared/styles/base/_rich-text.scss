@@ -10,6 +10,11 @@
       margin-top: 0.75em;
     }
 
+    // Enter in the editor starts a new paragraph, which should read like a new line, not a section.
+    > p + p {
+      margin-top: 0.15em;
+    }
+
     h2,
     h3 {
       font-weight: 600;
