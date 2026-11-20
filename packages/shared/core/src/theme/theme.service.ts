@@ -27,6 +27,17 @@ export const FORCED_THEME_MODE = new InjectionToken<'light' | 'dark' | null>('FO
   factory: () => null,
 });
 
+/**
+ * The mode before the user has chosen one, e.g. dark for an app designed dark first. The user can
+ * still switch. The inline script in the app's `index.html` must use the same fallback.
+ *
+ * @example
+ * providers: [{ provide: DEFAULT_THEME_MODE, useValue: 'dark' }]
+ */
+export const DEFAULT_THEME_MODE = new InjectionToken<ThemeMode>('DEFAULT_THEME_MODE', {
+  factory: () => 'system',
+});
+
 const isThemeMode = (value: unknown): value is ThemeMode =>
   value === 'light' || value === 'dark' || value === 'system';
 
@@ -35,6 +46,7 @@ export class ThemeService {
   private readonly _document = inject(DOCUMENT);
   private readonly _isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly _forced = inject(FORCED_THEME_MODE);
+  private readonly _default = inject(DEFAULT_THEME_MODE);
 
   readonly mode = signal<ThemeMode>(this._forced ?? this._readStoredMode());
   private readonly _systemDark = signal(false);
@@ -74,13 +86,13 @@ export class ThemeService {
 
   private _readStoredMode(): ThemeMode {
     if (!this._isBrowser) {
-      return 'system';
+      return this._default;
     }
     try {
       const stored = localStorage.getItem(THEME_STORAGE_KEY);
-      return isThemeMode(stored) ? stored : 'system';
+      return isThemeMode(stored) ? stored : this._default;
     } catch {
-      return 'system';
+      return this._default;
     }
   }
 }
