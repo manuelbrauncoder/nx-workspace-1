@@ -25,7 +25,9 @@ describe('FormControlShell', () => {
 
   beforeEach(() => {
     style = document.createElement('style');
-    style.textContent = shellStyles();
+    // `--ring` comes from the theme of the app. jsdom resolves var() like a browser, so without a
+    // value the whole outline declaration would be dropped.
+    style.textContent = `:root { --ring: rgb(1, 2, 3); }\n${shellStyles()}`;
     document.head.append(style);
     // jsdom has no ResizeObserver, the select trigger measures itself with one.
     vi.stubGlobal(
@@ -69,14 +71,15 @@ describe('FormControlShell', () => {
     )!;
 
     expect(element.querySelector('[data-matches-spartan-invalid="true"]')).not.toBeNull();
-    // jsdom keeps the shorthand as written and does not split it into `outline-style` and so on.
-    expect(getComputedStyle(control).getPropertyValue('outline')).toBe('');
+    expect(getComputedStyle(control).outlineStyle).toBe('none');
 
     control.focus();
 
     expect(document.activeElement).toBe(control);
     const focused = getComputedStyle(control);
-    expect(focused.getPropertyValue('outline')).toBe('2px solid var(--ring)');
+    expect(focused.outlineStyle).toBe('solid');
+    expect(focused.outlineWidth).toBe('2px');
+    expect(focused.outlineColor).toBe('rgb(1, 2, 3)');
     expect(focused.outlineOffset).toBe('2px');
   });
 });
