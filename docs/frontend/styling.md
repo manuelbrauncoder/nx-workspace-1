@@ -153,7 +153,7 @@ The same tokens are available as Tailwind utilities (`bg-primary`, `text-muted-f
 
 Besides the colors, a theme can set:
 
-- `--brand` and `--brand-foreground`: the colors of `variant="brand"` on `appUiButton`, the one main action of a page. angular-base uses its primary color, portfolio-web the trail-marker yellow. Both are exposed in `tailwind.css` as `bg-brand` and `text-brand-foreground`
+- `--brand` and `--brand-foreground`: the colors of `variant="brand"` on `appUiButton`, the one main action of a page. angular-base uses its primary color, portfolio-web amber. Both are exposed in `tailwind.css` as `bg-brand` and `text-brand-foreground`
 - `--page-container-max-width`, `--page-container-padding` and `--page-container-padding-md`: width and padding of `.page-container` from the `styles` lib. Without them it is 72rem wide with 1rem padding. portfolio-web sets 81rem and 3rem from `md` up
 
 ### Adding a token

@@ -8,10 +8,10 @@ The start page (`/`) shows content an admin writes in the editor (`/admin/portfo
 
 | Section    | Holds                                                          | Shown in                                   |
 | ---------- | -------------------------------------------------------------- | ------------------------------------------ |
-| `hero`     | Name, introduction, place and coordinates on the map           | `HeroSection`                              |
+| `hero`     | Name; introduction, place and coordinates are no longer shown  | `HeroSection`                              |
 | `about`    | Heading, introduction, facts, portrait                         | `AboutSection`                             |
 | `projects` | Heading, introduction, projects with screenshots, stack, links | `ProjectsSection`                          |
-| `skills`   | Heading, introduction, signposts with skills and their points  | `SkillsSection`                            |
+| `skills`   | Heading, introduction, skill sets with skills and their points | `SkillsSection`                            |
 | `contact`  | Heading and introduction above the contact form                | `ContactSection`                           |
 | `settings` | Name, email, phone, address, GitHub and LinkedIn profile       | Contact channels                           |
 | `seo`      | Title, description and preview image of the start page         | `<head>`, see [SEO](../../frontend/seo.md) |
@@ -30,7 +30,17 @@ The models are in [src/api/portfolio/portfolio.ts](../../../apps/portfolio-web/s
 - `PortfolioHome` renders the content through `app-async-content` and leaves out every section that does not exist. Its SEO texts come from the `seo` section through `injectPageSeo()`, the route's own `title` and `description` apply until then
 - Each section component takes its model as a required input. Texts go through `| localized`, UI texts such as button labels stay in the page scope `portfolioHome`
 - Images are served by the backend (`GET /media/{id}`, public). `NgOptimizedImage` takes their `url`, `width` and `height` from the model
-- `ProjectCard` shows the screenshots of a project in `app-ui-carousel`, one at a time, in the order of the editor. The first one is the cover. The description is rich text from the API, shown with `app-ui-rich-text`, so it may hold lists, headings and links as the editor allows them. A draft (`published: false`) shows a `Draft` badge with the hint "Only visible to you". Visitors never get a draft, so the card does no auth check
+- `ProjectCard` shows the screenshots of a project in `app-ui-carousel` with `controls="overlay"`, one at a time, in the order of the editor, always in the same 16:10 frame with `object-fit: contain`. The first one is the cover. The description is rich text from the API, shown with `app-ui-rich-text`, so it may hold lists, headings and links as the editor allows them. A draft (`published: false`) shows a `Draft` badge with the hint "Only visible to you". Visitors never get a draft, so the card does no auth check
+
+## The look
+
+Dark first: `DEFAULT_THEME_MODE` is `dark` in `app.config.ts`, and the inline script in `index.html` falls back to dark too, so a visitor without a stored choice sees the night palette. Light stays selectable in the settings menu. The palettes are in [themes/](../../../apps/portfolio-web/src/styles/themes): near black `#07080d` or warm paper `#f3f0ea`, the accent runs from `--brand` (amber) to `--brand-strong` (orange). Frosted panels use `--glass`, the header once scrolled `--glass-strong`. Inter Tight sets text and headings (light 300 on the start page), Instrument Serif in italics only single accent words, JetBrains Mono stays for code. The fonts are self-hosted in `public/fonts`.
+
+- **Backdrop.** [app-backdrop](../../../apps/portfolio-web/src/app/layout/app-backdrop) draws four blurred colour blobs with grain and a shade behind the public pages. They drift, wander with the scroll position and lean away from the mouse. A route turns it on with `withBackdrop()` in its `data`, set in `app.routes.ts` for the start page, the legal pages and the 404 page. Admin, notes, sign-in and the showcase stay plain. Motion starts in the browser only. With `prefers-reduced-motion` the blobs only follow the scroll position. The shade (`--backdrop-shade`) keeps text at AA contrast over the brightest spots, so check it when changing colours
+- **Header.** Transparent over the top of the page, frosted with a hairline once it scrolls more than 40px. The logo is an amber tile with `</>`, the same as the favicon. Below `md` there are no links in the header: the settings menu lists the four sections first, then account, language and theme. There is no drawer
+- **Hero.** The name (`hero.name` from the CMS) over "_Frontend_ Developer" (the scope keys `portfolioHome.hero.roleAccent` and `.role`), two pill buttons and the scroll arrow. [HeroLens](../../../apps/portfolio-web/src/app/features/portfolio/presentation/hero-lens) puts a glass sphere over the headline with a copy of it, magnified 1.7 times (1.55 below 640px). The copy is `aria-hidden` and `inert`, the `h1` stays the only heading. The sphere follows the mouse, flies back to the nearest point of the headline over the header and the buttons, and wanders across it by itself after 4.5 seconds without movement and on a touch screen. It runs only while the hero is on screen. With reduced motion it rests on the headline
+- **Sections.** Transparent over the backdrop, separated by hairlines. About lists its facts with amber dots. Projects sit half and half from `md` and alternate sides. Skills are glass cards, one to four in a row. Contact lists its channels as rows with an arrow and puts the form in a glass panel
+- **Motion.** The hero lines come out of a blur on load. Headings, cards and rows further down rise into place the first time they scroll into view: the directive `appReveal` ([reveal.ts](../../../apps/portfolio-web/src/app/features/portfolio/presentation/reveal/reveal.ts)) hides them only in the browser and only below the first screen, so the server renders everything visible. Hover effects only apply under `(hover: hover)`, and with reduced motion nothing moves
 
 ## The editor
 
