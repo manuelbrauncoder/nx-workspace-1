@@ -4,14 +4,19 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { injectShellLayout } from '@core/layout/shell-layout';
 import { filter, skip } from 'rxjs';
+import { AppBackdrop } from '../app-backdrop/app-backdrop';
+import { injectBackdrop } from '../app-backdrop/backdrop-route';
 import { AppDrawer } from '../app-drawer/app-drawer';
 import { AppFooter } from '../app-footer/app-footer';
 import { AppHeader } from '../app-header/app-header';
 
-/** Frame around every page: header, main area with the routed page, footer and mobile drawer. */
+/**
+ * Frame around every page: header, main area with the routed page, footer and mobile drawer. The
+ * public pages get the gradient backdrop behind it, see `withBackdrop()`.
+ */
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, TranslatePipe, AppDrawer, AppFooter, AppHeader],
+  imports: [RouterOutlet, TranslatePipe, AppBackdrop, AppDrawer, AppFooter, AppHeader],
   styleUrl: './app-shell.scss',
   templateUrl: './app-shell.html',
 })
@@ -21,6 +26,7 @@ export class AppShell {
   private readonly _drawerOpen = signal(false);
   private readonly _main = viewChild.required<ElementRef<HTMLElement>>('main');
   private readonly _layout = injectShellLayout();
+  private readonly _backdrop = injectBackdrop();
 
   constructor() {
     // Closes the drawer and moves focus to the new page after each client-side navigation, so

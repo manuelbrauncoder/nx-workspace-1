@@ -1,0 +1,138 @@
+// Fixed behind the page. Colours of the blobs, their strength, the grain and the shade come from
+// the `--backdrop-*` tokens in themes/.
+:host {
+  --scroll: 0;
+
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.backdrop__parallax {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+// The wrapper wanders with the scroll position, the blob inside drifts on its own.
+.backdrop__wrap {
+  --size: 50vw;
+  --dx: 0;
+  --dy: 0;
+
+  position: absolute;
+  width: var(--size);
+  aspect-ratio: 1;
+  opacity: var(--backdrop-blob-opacity);
+  transform: translate3d(calc(var(--scroll) * var(--dx)), calc(var(--scroll) * var(--dy)), 0);
+}
+
+.backdrop__blob {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  filter: blur(90px);
+  background: radial-gradient(circle at 40% 40%, var(--stops));
+  opacity: var(--strength);
+}
+
+// Blue top right, rose bottom left, amber in the middle, teal appears while scrolling down.
+.backdrop__wrap--1 {
+  --size: min(62vw, 900px);
+  --dx: -72vw;
+  --dy: 62vh;
+  --stops: var(--backdrop-blob-1);
+  --strength: 0.9;
+  --drift: drift-1 18s;
+
+  top: -18%;
+  right: -12%;
+}
+
+.backdrop__wrap--2 {
+  --size: min(44vw, 640px);
+  --dx: 78vw;
+  --dy: -78vh;
+  --stops: var(--backdrop-blob-2);
+  --strength: 0.7;
+  --drift: drift-2 22s;
+
+  bottom: -22%;
+  left: -10%;
+}
+
+.backdrop__wrap--3 {
+  --size: min(32vw, 460px);
+  --dx: 30vw;
+  --dy: -40vh;
+  --stops: var(--backdrop-blob-3);
+  --strength: 0.6;
+  --drift: drift-3 16s;
+
+  bottom: -8%;
+  left: 46%;
+}
+
+.backdrop__wrap--4 {
+  --size: min(50vw, 720px);
+  --dx: -6vw;
+  --dy: -30vh;
+  --stops: var(--backdrop-blob-4);
+  --strength: 0.65;
+  --drift: drift-1 20s;
+
+  right: -18%;
+  bottom: -30%;
+  opacity: calc(min(1, var(--scroll) * 1.6) * var(--backdrop-blob-opacity));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .backdrop__blob {
+    animation: var(--drift) ease-in-out infinite alternate;
+  }
+
+  .backdrop__wrap--4 .backdrop__blob {
+    animation-direction: alternate-reverse;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop__parallax {
+    transition: none;
+  }
+}
+
+// Fine noise against banding in the gradients.
+.backdrop__grain {
+  position: absolute;
+  inset: 0;
+  opacity: var(--backdrop-grain-opacity);
+  mix-blend-mode: var(--backdrop-grain-blend);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.backdrop__shade {
+  position: absolute;
+  inset: 0;
+  background: var(--backdrop-shade);
+}
+
+@keyframes drift-1 {
+  to {
+    transform: translate(-6vw, 8vh) scale(1.08);
+  }
+}
+
+@keyframes drift-2 {
+  to {
+    transform: translate(9vw, -7vh) scale(1.12);
+  }
+}
+
+@keyframes drift-3 {
+  to {
+    transform: translate(-12vw, -5vh) scale(0.9);
+  }
+}

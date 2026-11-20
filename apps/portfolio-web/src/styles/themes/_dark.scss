@@ -52,6 +52,11 @@
   --glass-tint-strong: rgb(255 255 255 / 0.12);
   --glass-edge: rgb(255 255 255 / 0.4);
   // Gradient backdrop (`app-backdrop`): blob opacity, grain and the shade that keeps text readable.
+  // Colour stops of the four blobs: blue, rose, amber, teal.
+  --backdrop-blob-1: #2c4fd8, #1a2a7a 55%, transparent 72%;
+  --backdrop-blob-2: #e0457b, #7b2a8c 55%, transparent 72%;
+  --backdrop-blob-3: #f6a94b, #d9622e 55%, transparent 72%;
+  --backdrop-blob-4: #1fb5a8, #126a8f 55%, transparent 72%;
   --backdrop-blob-opacity: 1;
   --backdrop-grain-blend: overlay;
   --backdrop-grain-opacity: 0.5;
