@@ -1,3 +1,9 @@
+## 2.2.1 (2026-11-20)
+
+### 🩹 Fixes
+
+- **portfolio-web:** show project images of any format in full ([b789c58](https://github.com/manuelbrauncoder/nx-workspace-1/commit/b789c58))
+
 ## 2.2.0 (2026-11-20)
 
 ### 🚀 Features
