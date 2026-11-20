@@ -211,10 +211,14 @@ describe('PortfolioHome', () => {
     const { element } = await render();
 
     const channels = Array.from(element.querySelectorAll('.contact__channel'), (channel) =>
-      channel.textContent?.trim(),
+      channel.textContent?.replace(/\s+/g, ' ').trim(),
     );
 
-    expect(channels).toEqual([PORTFOLIO.settings!.email, 'GitHub', 'LinkedIn']);
+    expect(channels).toEqual([
+      PORTFOLIO.settings!.email,
+      'GitHub (öffnet in neuem Tab)',
+      'LinkedIn (öffnet in neuem Tab)',
+    ]);
   });
 
   it('follows a language switch without loading again', async () => {

@@ -22,6 +22,7 @@
     "draftHint": "Only visible to you"
   },
   "contact": {
+    "newTab": "(opens in a new tab)",
     "linkedin": "LinkedIn",
     "github": "GitHub",
     "channels": "Direct ways to reach me",
@@ -33,8 +34,7 @@
       "message": "Message",
       "privacyBefore": "I’ve read the",
       "privacyLink": "privacy policy",
-      "privacyAfter": "and agree to the processing of my data as outlined.",
-      "newTab": "(opens in a new tab)"
+      "privacyAfter": "and agree to the processing of my data as outlined."
     },
     "validation": {
       "nameRequired": "Please enter your name.",

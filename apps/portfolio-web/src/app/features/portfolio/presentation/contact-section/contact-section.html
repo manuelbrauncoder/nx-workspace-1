@@ -15,16 +15,32 @@
             </a>
           </li>
           <li>
-            <a class="contact__channel" [href]="owner.profiles.github">
+            <a
+              class="contact__channel"
+              [href]="owner.profiles.github"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <app-ui-icon class="contact__channel-icon" name="github" />
-              <span class="contact__channel-text">{{ 'portfolioHome.contact.github' | t }}</span>
+              <span class="contact__channel-text"
+                >{{ 'portfolioHome.contact.github' | t
+                }}<span class="sr-only">&ngsp;{{ 'portfolioHome.contact.newTab' | t }}</span></span
+              >
               <app-ui-icon class="contact__channel-arrow" name="arrowUpRight" size="sm" />
             </a>
           </li>
           <li>
-            <a class="contact__channel" [href]="owner.profiles.linkedin">
+            <a
+              class="contact__channel"
+              [href]="owner.profiles.linkedin"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <app-ui-icon class="contact__channel-icon" name="linkedin" />
-              <span class="contact__channel-text">{{ 'portfolioHome.contact.linkedin' | t }}</span>
+              <span class="contact__channel-text"
+                >{{ 'portfolioHome.contact.linkedin' | t
+                }}<span class="sr-only">&ngsp;{{ 'portfolioHome.contact.newTab' | t }}</span></span
+              >
               <app-ui-icon class="contact__channel-arrow" name="arrowUpRight" size="sm" />
             </a>
           </li>
@@ -66,7 +82,7 @@
             target="_blank"
             rel="noopener noreferrer"
             >{{ 'portfolioHome.contact.fields.privacyLink' | t
-            }}<span class="sr-only">&ngsp;{{ 'portfolioHome.contact.fields.newTab' | t }}</span></a
+            }}<span class="sr-only">&ngsp;{{ 'portfolioHome.contact.newTab' | t }}</span></a
           >
           {{ 'portfolioHome.contact.fields.privacyAfter' | t }}
         </ng-template>

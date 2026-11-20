@@ -87,6 +87,21 @@ describe('ContactSection', () => {
     ]);
   });
 
+  it('opens GitHub and LinkedIn in a new tab and says so, the mail link stays', async () => {
+    const { element } = await render();
+
+    const [mail, github, linkedin] = Array.from(
+      element.querySelectorAll<HTMLAnchorElement>('.contact__channels a'),
+    );
+
+    expect(mail.getAttribute('target')).toBeNull();
+    for (const link of [github, linkedin]) {
+      expect(link.getAttribute('target')).toBe('_blank');
+      expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+      expect(link.querySelector('.sr-only')?.textContent?.trim()).toBe('(öffnet in neuem Tab)');
+    }
+  });
+
   it('sends nothing and names every missing field', async () => {
     const { element } = await render();
 
