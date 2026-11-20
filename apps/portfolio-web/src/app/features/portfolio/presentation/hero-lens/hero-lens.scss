@@ -1,0 +1,43 @@
+// Placed by `transform` from the top left of the stage. Above the headline, below nothing that
+// takes clicks: it never catches the pointer.
+:host {
+  --hero-lens-size: 208px;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: var(--hero-lens-size);
+  height: var(--hero-lens-size);
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--lens-glass);
+  box-shadow: var(--lens-shadow);
+  // Blurs the real headline below, so only the magnified copy reads sharp in the glass.
+  backdrop-filter: var(--lens-blur);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+
+  // The light on the glass, above the magnified letters.
+  &::after {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--lens-shine);
+    content: '';
+  }
+}
+
+:host(.hero-lens--on) {
+  opacity: 1;
+}
+
+// As large as the stage, scaled and shifted so the point under the centre is magnified.
+.hero-lens__inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  color: var(--foreground);
+}

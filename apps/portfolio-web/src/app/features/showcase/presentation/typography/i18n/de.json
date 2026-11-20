@@ -7,12 +7,12 @@
     "heading": "Schriftfamilien",
     "description": "Selbst gehostete Variable Fonts, zugewiesen über --font-* in tailwind.css.",
     "body": "Fließtext, Überschriften und UI",
-    "headings": "Überschriften",
+    "accent": "Akzentwörter, immer kursiv",
     "code": "Code"
   },
   "headings": {
     "heading": "Überschriften",
-    "description": "Varianten h1 bis h4 von appUiText. Überschriften nutzen wie der Fließtext Overpass, die Gewichte setzen die Hierarchie.",
+    "description": "Varianten h1 bis h4 von appUiText. Überschriften nutzen wie der Fließtext Inter Tight, auf der Startseite leicht (300), auf Arbeitsseiten kräftig. Die Gewichte setzen die Hierarchie.",
     "sample": "Gestaltung beginnt mit der Schrift"
   },
   "body": {

@@ -2,7 +2,6 @@
   "auth": {
     "account": "Account",
     "signIn": "Sign in",
-    "signUp": "Sign up",
     "signOut": "Sign out",
     "signedOut": "You are signed out",
     "signOutFailed": "Signing out failed",
@@ -10,9 +9,9 @@
   },
   "layout": {
     "legalNavigation": "Legal",
+    "menu": "Menu",
     "mainNavigation": "Main navigation",
     "navigation": "Navigation",
-    "openMenu": "Open menu",
     "skipToContent": "Skip to content",
     "footer": {
       "imprint": "Imprint",
@@ -21,7 +20,8 @@
       "cookies": "Cookies",
       "madeWith": "Made with",
       "love": "love",
-      "inPlace": "in Partenstein"
+      "inPlace": "in Partenstein",
+      "version": "v{{ version }}"
     },
     "logo": {
       "tagline": "Frontend Developer",
@@ -31,14 +31,7 @@
       "about": "About me",
       "projects": "Projects",
       "skills": "Skills",
-      "contact": "Contact",
-      "notes": "Notes",
-      "showcase": "Showcase",
-      "showcaseOverview": "Overview",
-      "showcaseTypography": "Typography",
-      "showcaseColors": "Colors",
-      "showcaseForms": "Forms",
-      "showcaseComponents": "Components"
+      "contact": "Contact"
     },
     "settings": "Settings"
   },

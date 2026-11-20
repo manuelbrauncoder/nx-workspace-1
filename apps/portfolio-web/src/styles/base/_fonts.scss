@@ -1,19 +1,21 @@
 // Self-hosted variable fonts from public/fonts. Assigned via --font-* in tailwind.css.
-// Overpass is licensed under the SIL Open Font License, see public/fonts/Overpass-OFL.txt.
+// Inter Tight and Instrument Serif are licensed under the SIL Open Font License, see
+// public/fonts/InterTight-OFL.txt and public/fonts/InstrumentSerif-OFL.txt.
 @font-face {
-  font-family: 'Overpass';
+  font-family: 'Inter Tight';
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('/fonts/Overpass-VariableFont_wght.ttf') format('truetype');
+  src: url('/fonts/InterTight-VariableFont_wght.ttf') format('truetype');
 }
 
+// Only the italic cut: the serif sets single accent words, e.g. "Frontend" in the hero.
 @font-face {
-  font-family: 'Overpass';
+  font-family: 'Instrument Serif';
   font-style: italic;
-  font-weight: 100 900;
+  font-weight: 400;
   font-display: swap;
-  src: url('/fonts/Overpass-Italic-VariableFont_wght.ttf') format('truetype');
+  src: url('/fonts/InstrumentSerif-Italic.ttf') format('truetype');
 }
 
 @font-face {

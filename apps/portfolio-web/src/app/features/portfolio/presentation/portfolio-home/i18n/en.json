@@ -3,6 +3,8 @@
   "description": "Manuel Braun, frontend developer from Partenstein in the Spessart. Angular projects, skills and contact.",
   "loadFailed": "The start page could not be loaded",
   "hero": {
+    "roleAccent": "Frontend",
+    "role": "Developer",
     "checkWork": "Check my work",
     "contactMe": "Contact me",
     "scrollCue": "Scroll to explore"
@@ -10,9 +12,9 @@
   "projects": {
     "builtWith": "Built with",
     "liveTest": "Open live test",
-    "liveTestNamed": "Open live test of {{ name }}",
+    "liveTestNamed": "Open live test: {{ name }}",
     "sourceCode": "View code on GitHub",
-    "sourceCodeNamed": "View code of {{ name }} on GitHub",
+    "sourceCodeNamed": "View code on GitHub: {{ name }}",
     "screenshots": "Screenshots of {{ name }}",
     "previousScreenshot": "Previous screenshot",
     "nextScreenshot": "Next screenshot",
@@ -20,6 +22,7 @@
     "draftHint": "Only visible to you"
   },
   "contact": {
+    "newTab": "(opens in a new tab)",
     "linkedin": "LinkedIn",
     "github": "GitHub",
     "channels": "Direct ways to reach me",
@@ -29,9 +32,10 @@
       "email": "Email",
       "emailPlaceholder": "name@mail.com",
       "message": "Message",
-      "privacy": "I’ve read the privacy policy and agree to the processing of my data as outlined."
+      "privacyBefore": "I’ve read the",
+      "privacyLink": "privacy policy",
+      "privacyAfter": "and agree to the processing of my data as outlined."
     },
-    "privacyLink": "Read the privacy policy",
     "validation": {
       "nameRequired": "Please enter your name.",
       "emailRequired": "Please enter your email address.",

@@ -15,7 +15,7 @@ import { UiToastService } from '@shared/ui/toast/toast.service';
 import { ContactStore } from '../../application/contact.store';
 import { ContactMessage } from '../../domain/contact-message';
 import { ContactSection as Contact, Settings } from '../../domain/portfolio';
-import { TopoMap } from '../topo-map/topo-map';
+import { Reveal } from '../reveal/reveal';
 
 interface ContactForm extends ContactMessage {
   /** Consent to the processing of the data, see the privacy policy. Not sent to the backend. */
@@ -40,7 +40,7 @@ const EMPTY: ContactForm = { name: '', email: '', message: '', privacy: false };
     UiButton,
     UiIcon,
     UiText,
-    TopoMap,
+    Reveal,
   ],
   styleUrl: './contact-section.scss',
   templateUrl: './contact-section.html',

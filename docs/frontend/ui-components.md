@@ -111,7 +111,7 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 | `loading`      | boolean. Shows a spinner in front of the content and blocks the button     |
 | `loadingLabel` | Announced to screen readers while loading                                  |
 
-- `brand` is for the one main action of a page, e.g. in a hero. Its colors come from the tokens `--brand` and `--brand-foreground` of the app's theme (angular-base: the primary color, portfolio-web: the trail-marker yellow). Spartan has no such variant, the wrapper replaces the colors of `default`
+- `brand` is for the one main action of a page, e.g. in a hero. Its colors come from the tokens `--brand` and `--brand-foreground` of the app's theme (angular-base: the primary color, portfolio-web: amber). Spartan has no such variant, the wrapper replaces the colors of `default`
 - Show the loading state through `[loading]`, not through your own spinner in the content
 - An icon-only button needs an `aria-label`
 - A blocked link gets `aria-disabled` and swallows the click, since `<a>` has no `disabled` attribute
@@ -348,7 +348,7 @@ private readonly _items: UiNavMenuItem[] = [
 - The link of the current page gets `aria-current="page"`. A link matches its path and everything below it, `exact: true` limits it to exactly its path. Use it for an overview above its sub pages
 - Horizontal: a group opens on click, Enter or Space and closes on Escape, on a click outside and after choosing a link. A group that contains the current page is highlighted
 - Vertical: a group is a button that expands its links below it. The group of the current page starts expanded
-- `appearance="buttons"` (vertical only) draws every item as a filled secondary button, 48px high with the label in the middle, the current page with a border in ink. The portfolio drawer uses it. The default `list` keeps plain rows
+- `appearance="buttons"` (vertical only) draws every item as a filled secondary button, 48px high with the label in the middle, the current page with a border in ink. The default `list` keeps plain rows
 - Groups nest one level. A group has no page of its own, put an overview link first instead
 - It is built on Spartan's `navigation-menu`, not on `menubar`. A menubar is an application menu (`role="menubar"`, "File / Edit"), a site navigation is a list of links and disclosure buttons
 - The vertical list uses `collapsible` and not the vertical mode of `navigation-menu`, which opens its panels to the side and does not fit a narrow drawer
@@ -400,7 +400,7 @@ A panel that slides in from an edge of the screen and covers the page as a modal
 
 The mobile navigation uses it, see [app-drawer.html](../../apps/angular-base/src/app/layout/app-drawer/app-drawer.html).
 
-- `(closed)` emits once the panel is gone and the page scrolls again. While it is open the page is locked, so the router cannot scroll to a section. The drawer waits for this before it jumps to the section of a link, see [app-drawer.ts](../../apps/portfolio-web/src/app/layout/app-drawer/app-drawer.ts)
+- `(closed)` emits once the panel is gone and the page scrolls again. While it is open the page is locked, so the router cannot scroll to a section. A drawer with links to sections of a page waits for this before it jumps
 
 ### Dialog
 
@@ -602,7 +602,7 @@ Slides one at a time, e.g. the screenshots of a project. Swipe on a touch screen
 - `label` is required and names the carousel for screen readers
 - `previousLabel` and `nextLabel` name the arrow buttons. Without them the shared texts of the ui lib apply (`common.carousel.previous`, `common.carousel.next`)
 - It loops: "next" on the last slide goes to the first one, so the buttons never turn disabled and never lose the focus. The counter below the buttons ("2 von 3") is a live region, each slide is announced with its number
-- The arrows sit below the slides, not beside them as in Spartan, so nothing sticks out of a narrow column
+- `controls` places the arrows. `below` (default): below the slides, not beside them as in Spartan, so nothing sticks out of a narrow column. `overlay`: round arrows over the slides, left and right, shown on hover and focus and always on a touch screen. Below the slides a dash per slide (decorative, `aria-hidden`) and the counter "2 / 3", which screen readers hear as "2 von 3". `portfolio-web` uses it for the project screenshots
 - A single item shows only its slide, without buttons or counter. An empty list renders nothing
 - Built on the Helm carousel (`hlm-carousel`, Embla), which brings the swipe and the arrow keys
 

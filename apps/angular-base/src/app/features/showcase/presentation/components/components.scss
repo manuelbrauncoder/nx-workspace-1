@@ -12,6 +12,10 @@
 
 .demo-carousel {
   max-width: 28rem;
+
+  & + & {
+    margin-top: 2rem;
+  }
 }
 
 .demo-carousel__slide {

@@ -126,13 +126,36 @@ describe('PortfolioHome', () => {
     return { fixture, element: fixture.nativeElement as HTMLElement };
   }
 
-  it('shows the name as the only top-level heading', async () => {
+  it('shows the name and the role as the only top-level heading', async () => {
     const { element } = await render();
 
     const headings = element.querySelectorAll('h1');
 
     expect(headings.length).toBe(1);
-    expect(headings[0].textContent?.replace(/\s+/g, ' ').trim()).toBe('Manuel Braun');
+    expect(headings[0].textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      'Manuel Braun Frontend Developer',
+    );
+    expect(headings[0].querySelector('em')?.textContent).toBe('Frontend');
+  });
+
+  it('keeps the magnified copy of the headline away from assistive technology', async () => {
+    const { element } = await render();
+
+    const lens = element.querySelector('app-hero-lens')!;
+    const copy = lens.querySelector('.hero__headline--copy')!;
+
+    expect(lens.getAttribute('aria-hidden')).toBe('true');
+    expect(copy.getAttribute('aria-hidden')).toBe('true');
+    expect(copy.hasAttribute('inert')).toBe(true);
+    expect(copy.textContent?.replace(/\s+/g, ' ').trim()).toBe('Manuel Braun Frontend Developer');
+  });
+
+  it('leaves the hero description out', async () => {
+    const { element } = await render();
+
+    expect(element.querySelector('app-hero-section')?.textContent).not.toContain(
+      'Hey, ich bin Manuel.',
+    );
   });
 
   it('puts the sections in order, each a jump target of the navigation', async () => {
@@ -173,15 +196,29 @@ describe('PortfolioHome', () => {
     );
   });
 
-  it('shows a signpost per skill set with the points of each skill', async () => {
+  it('shows a card per skill set with the points of each skill', async () => {
     const { element } = await render();
 
-    const signs = Array.from(element.querySelectorAll('app-skill-signpost h3'), (sign) =>
-      sign.textContent?.trim(),
+    const titles = Array.from(element.querySelectorAll('.skills__card h3'), (title) =>
+      title.textContent?.trim(),
     );
 
-    expect(signs).toEqual(['Frontend', 'Infrastruktur']);
-    expect(element.querySelectorAll('.skill-signpost__use').length).toBe(3);
+    expect(titles).toEqual(['Frontend', 'Infrastruktur']);
+    expect(element.querySelectorAll('.skills__points li').length).toBe(3);
+  });
+
+  it('lists the direct ways to get in touch', async () => {
+    const { element } = await render();
+
+    const channels = Array.from(element.querySelectorAll('.contact__channel'), (channel) =>
+      channel.textContent?.replace(/\s+/g, ' ').trim(),
+    );
+
+    expect(channels).toEqual([
+      PORTFOLIO.settings!.email,
+      'GitHub (öffnet in neuem Tab)',
+      'LinkedIn (öffnet in neuem Tab)',
+    ]);
   });
 
   it('follows a language switch without loading again', async () => {
@@ -201,14 +238,6 @@ describe('PortfolioHome', () => {
       'Die Startseite konnte nicht geladen werden',
     );
     expect(element.querySelector('section')).toBeNull();
-  });
-
-  it('keeps the contour map away from assistive technology', async () => {
-    const { element } = await render();
-
-    for (const map of Array.from(element.querySelectorAll('app-topo-map'))) {
-      expect(map.getAttribute('aria-hidden')).toBe('true');
-    }
   });
 
   describe('project card', () => {
@@ -268,6 +297,18 @@ describe('PortfolioHome', () => {
       const { element } = await render();
 
       await expect(element.querySelector('#projects') as HTMLElement).toBeAccessible();
+    });
+
+    it('passes the accessibility check as a whole page', async () => {
+      const { element } = await render();
+
+      await expect(element).toBeAccessible();
+    });
+
+    it('shows the stack of every project that has one', async () => {
+      const { element } = await render();
+
+      expect(element.querySelectorAll('.project-card__stack').length).toBe(2);
     });
   });
 });

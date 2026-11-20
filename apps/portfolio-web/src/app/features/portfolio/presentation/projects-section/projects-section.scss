@@ -1,64 +1,39 @@
 @use 'styles/abstracts' as *;
 
 .projects {
-  padding-block: 4rem;
-  background-color: var(--background);
+  padding-block: clamp(5rem, 12vw, 10rem);
+  border-top: 1px solid var(--border);
   outline: none;
-
-  @include up(md) {
-    padding-block: 7.5rem;
-  }
 }
 
 // The intro sits right below the heading at every width.
 .projects__header {
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
-  margin-bottom: 2.5rem;
-
-  @include up(md) {
-    gap: 1rem;
-    margin-bottom: 4.5rem;
-  }
+  gap: 1rem;
+  margin-bottom: clamp(3rem, 7vw, 5.5rem);
 }
 
 .projects__heading {
   margin: 0;
+  font-size: clamp(2.75rem, 7.5vw, 6.5rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
 }
 
 .projects__intro {
   max-width: 42ch;
   margin: 0;
-  color: var(--muted-foreground);
-  font-size: 1.0625rem;
+  color: var(--foreground-soft);
+  font-size: 1.125rem;
 }
 
 .projects__list {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: clamp(3.5rem, 8vw, 7rem);
   margin: 0;
   padding: 0;
   list-style: none;
-
-  @include up(md) {
-    gap: 7rem;
-  }
-}
-
-// On a phone a line separates the stacked projects.
-.projects__item {
-  padding-bottom: 2.5rem;
-  border-bottom: 1px solid var(--border);
-
-  &:last-child {
-    padding-bottom: 0;
-    border-bottom: 0;
-  }
-
-  @include up(md) {
-    padding-bottom: 0;
-    border-bottom: 0;
-  }
 }

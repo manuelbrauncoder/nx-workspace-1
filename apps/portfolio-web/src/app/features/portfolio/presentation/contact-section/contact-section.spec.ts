@@ -59,6 +59,20 @@ describe('ContactSection', () => {
     await TestBed.inject(ApplicationRef).whenStable();
   }
 
+  it('puts the link to the privacy policy into the sentence of the checkbox', async () => {
+    const { element } = await render();
+
+    const label = element.querySelector('app-form-checkbox label')!;
+    expect(label.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      'Ich habe die Datenschutzerklärung (öffnet in neuem Tab) gelesen und bin mit der Verarbeitung meiner Daten einverstanden.',
+    );
+    const link = label.querySelector('a')!;
+    expect(link.getAttribute('href')).toBe('/privacy');
+    // In a new tab, so nothing typed into the form gets lost.
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+  });
+
   it('links to the direct ways of contact', async () => {
     const { element } = await render();
 
@@ -71,6 +85,21 @@ describe('ContactSection', () => {
       'https://github.com/manuelbrauncoder',
       'https://www.linkedin.com/in/manuel-braun-developer/',
     ]);
+  });
+
+  it('opens GitHub and LinkedIn in a new tab and says so, the mail link stays', async () => {
+    const { element } = await render();
+
+    const [mail, github, linkedin] = Array.from(
+      element.querySelectorAll<HTMLAnchorElement>('.contact__channels a'),
+    );
+
+    expect(mail.getAttribute('target')).toBeNull();
+    for (const link of [github, linkedin]) {
+      expect(link.getAttribute('target')).toBe('_blank');
+      expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+      expect(link.querySelector('.sr-only')?.textContent?.trim()).toBe('(öffnet in neuem Tab)');
+    }
   });
 
   it('sends nothing and names every missing field', async () => {

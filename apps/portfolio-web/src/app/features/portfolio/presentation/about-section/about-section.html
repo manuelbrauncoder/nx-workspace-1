@@ -2,7 +2,7 @@
 <!-- `tabindex` lets the shell move focus here after a jump from the navigation. -->
 <section class="about" id="about" aria-labelledby="about-heading" tabindex="-1">
   <div class="page-container about__layout">
-    <h2 class="about__heading" id="about-heading" appUiText="section">
+    <h2 class="about__heading" id="about-heading" appReveal appUiText="section">
       {{ item.headline | localized }}
     </h2>
     <img
@@ -11,15 +11,13 @@
       [ngSrc]="item.image.url"
       [width]="item.image.width"
       [height]="item.image.height"
+      appReveal
     />
     <div class="about__text">
-      <p class="about__intro">{{ item.description | localized }}</p>
-      <ul class="about__points">
-        @for (fact of item.facts | localized; track $index) {
-          <li class="about__point">
-            <app-trail-marker class="about__marker" variant="bullet" />
-            {{ fact }}
-          </li>
+      <p class="about__intro" appReveal>{{ item.description | localized }}</p>
+      <ul class="about__facts">
+        @for (fact of item.facts | localized; track $index; let index = $index) {
+          <li class="about__fact" [revealDelay]="index * 0.06" appReveal>{{ fact }}</li>
         }
       </ul>
     </div>

@@ -2,7 +2,6 @@
   "auth": {
     "account": "Konto",
     "signIn": "Anmelden",
-    "signUp": "Registrieren",
     "signOut": "Abmelden",
     "signedOut": "Du bist abgemeldet",
     "signOutFailed": "Abmelden fehlgeschlagen",
@@ -10,9 +9,9 @@
   },
   "layout": {
     "legalNavigation": "Rechtliches",
+    "menu": "Menü",
     "mainNavigation": "Hauptnavigation",
     "navigation": "Navigation",
-    "openMenu": "Menü öffnen",
     "skipToContent": "Zum Inhalt springen",
     "footer": {
       "imprint": "Impressum",
@@ -21,7 +20,8 @@
       "cookies": "Cookies",
       "madeWith": "Made with",
       "love": "love",
-      "inPlace": "in Partenstein"
+      "inPlace": "in Partenstein",
+      "version": "v{{ version }}"
     },
     "logo": {
       "tagline": "Frontend Developer",
@@ -31,14 +31,7 @@
       "about": "Über mich",
       "projects": "Projekte",
       "skills": "Skills",
-      "contact": "Kontakt",
-      "notes": "Notizen",
-      "showcase": "Showcase",
-      "showcaseOverview": "Übersicht",
-      "showcaseTypography": "Typografie",
-      "showcaseColors": "Farben",
-      "showcaseForms": "Formulare",
-      "showcaseComponents": "Komponenten"
+      "contact": "Kontakt"
     },
     "settings": "Einstellungen"
   },

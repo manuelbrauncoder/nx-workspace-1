@@ -128,8 +128,9 @@
     "below": "Images of the event"
   },
   "carousel": {
-    "description": "app-ui-carousel shows slides side by side, one at a time: swipe, use the arrows below or the arrow keys. A slide comes from an ng-template, a single item gets no arrows. Needs a label.",
+    "description": "app-ui-carousel shows slides side by side, one at a time: swipe, use the arrows or the arrow keys. A slide comes from an ng-template, a single item gets no arrows. Needs a label. With controls=\"overlay\" (second example) round arrows sit over the slides, below them dashes and the counter \"2 / 3\".",
     "label": "Example slides",
+    "overlayLabel": "Example slides with arrows over the slides",
     "slide1": "First slide",
     "slide2": "Second slide",
     "slide3": "Third slide"

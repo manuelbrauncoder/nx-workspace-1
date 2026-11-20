@@ -1,7 +1,6 @@
 <section class="contact" id="contact" aria-labelledby="contact-heading" tabindex="-1">
-  <app-topo-map variant="corner" />
   <div class="page-container contact__layout">
-    <div class="contact__intro">
+    <div class="contact__intro" appReveal>
       <h2 class="contact__heading" id="contact-heading" appUiText="section">
         {{ contact().headline | localized }}
       </h2>
@@ -10,27 +9,46 @@
         <ul class="contact__channels" [attr.aria-label]="'portfolioHome.contact.channels' | t">
           <li>
             <a class="contact__channel" [href]="'mailto:' + owner.email">
-              <app-ui-icon name="mail" />
-              {{ owner.email }}
+              <app-ui-icon class="contact__channel-icon" name="mail" />
+              <span class="contact__channel-text">{{ owner.email }}</span>
+              <app-ui-icon class="contact__channel-arrow" name="arrowUpRight" size="sm" />
             </a>
           </li>
           <li>
-            <a class="contact__channel" [href]="owner.profiles.github">
-              <app-ui-icon name="github" />
-              {{ 'portfolioHome.contact.github' | t }}
+            <a
+              class="contact__channel"
+              [href]="owner.profiles.github"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <app-ui-icon class="contact__channel-icon" name="github" />
+              <span class="contact__channel-text"
+                >{{ 'portfolioHome.contact.github' | t
+                }}<span class="sr-only">&ngsp;{{ 'portfolioHome.contact.newTab' | t }}</span></span
+              >
+              <app-ui-icon class="contact__channel-arrow" name="arrowUpRight" size="sm" />
             </a>
           </li>
           <li>
-            <a class="contact__channel" [href]="owner.profiles.linkedin">
-              <app-ui-icon name="linkedin" />
-              {{ 'portfolioHome.contact.linkedin' | t }}
+            <a
+              class="contact__channel"
+              [href]="owner.profiles.linkedin"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <app-ui-icon class="contact__channel-icon" name="linkedin" />
+              <span class="contact__channel-text"
+                >{{ 'portfolioHome.contact.linkedin' | t
+                }}<span class="sr-only">&ngsp;{{ 'portfolioHome.contact.newTab' | t }}</span></span
+              >
+              <app-ui-icon class="contact__channel-arrow" name="arrowUpRight" size="sm" />
             </a>
           </li>
         </ul>
       }
     </div>
 
-    <form class="contact__form" [formRoot]="_contactForm">
+    <form class="contact__form" [formRoot]="_contactForm" [revealDelay]="0.1" appReveal>
       <div class="contact__row">
         <app-form-text
           class="contact__field"
@@ -53,15 +71,22 @@
         [label]="'portfolioHome.contact.fields.message' | t"
         rows="5"
       />
-      <div class="contact__privacy">
-        <app-form-checkbox
-          [formField]="_contactForm.privacy"
-          [label]="'portfolioHome.contact.fields.privacy' | t"
-        />
-        <a class="contact__inline-link contact__privacy-link" routerLink="/privacy">
-          {{ 'portfolioHome.contact.privacyLink' | t }}
-        </a>
-      </div>
+      <!-- The link sits inside the sentence. It opens in a new tab, so nothing typed gets lost, and
+           leaves the box as it is. -->
+      <app-form-checkbox [formField]="_contactForm.privacy">
+        <ng-template>
+          {{ 'portfolioHome.contact.fields.privacyBefore' | t }}
+          <a
+            class="contact__inline-link"
+            routerLink="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            >{{ 'portfolioHome.contact.fields.privacyLink' | t
+            }}<span class="sr-only">&ngsp;{{ 'portfolioHome.contact.newTab' | t }}</span></a
+          >
+          {{ 'portfolioHome.contact.fields.privacyAfter' | t }}
+        </ng-template>
+      </app-form-checkbox>
 
       @if (_store.mutationState().failure; as failure) {
         <app-failure-alert [failure]="failure" [heading]="'portfolioHome.contact.failed' | t" />

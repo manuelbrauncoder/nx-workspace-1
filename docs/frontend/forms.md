@@ -276,6 +276,16 @@ A small whole number with "−" and "+", e.g. how many people someone brings. Th
 
 Both bind a `boolean`. The label sits next to the control instead of above it.
 
+A checkbox label with markup, e.g. a link to the privacy policy inside the sentence, comes as an `ng-template` instead of `label`. `FormControlShell` renders it inside the `<label>`, so the whole sentence still names the checkbox. A click on the link opens it and leaves the box as it is. The contact form of `portfolio-web` works this way:
+
+```html
+<app-form-checkbox [formField]="_contactForm.privacy">
+  <ng-template>
+    Ich habe die <a routerLink="/privacy">Datenschutzerklärung</a> gelesen und bin einverstanden.
+  </ng-template>
+</app-form-checkbox>
+```
+
 ### Disabling a field
 
 Disable through the schema, not through an attribute:

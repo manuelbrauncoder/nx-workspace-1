@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de">
+<html class="dark" lang="de">
   <head>
     <meta charset="utf-8" />
     <title>Manuel Braun</title>
@@ -9,16 +9,21 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <meta name="theme-color" content="#edf0ea" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0e1a14" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f3f0ea" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#07080d" media="(prefers-color-scheme: dark)" />
     <script>
-      // Sets .dark before the first paint (no flicker). Same logic as ThemeService.
+      // Sets .dark before the first paint (no flicker). Same logic as ThemeService with
+      // DEFAULT_THEME_MODE 'dark' (app.config.ts): without a stored choice the page stays dark,
+      // as the class on <html> already says for visitors without JavaScript.
       (function () {
         try {
           var mode = localStorage.getItem('theme');
           var dark =
-            mode === 'dark' ||
-            (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            mode === 'light'
+              ? false
+              : mode === 'system'
+                ? window.matchMedia('(prefers-color-scheme: dark)').matches
+                : true;
           document.documentElement.classList.toggle('dark', dark);
         } catch (e) {}
       })();

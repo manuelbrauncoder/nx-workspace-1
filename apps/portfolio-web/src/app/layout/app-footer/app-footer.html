@@ -6,12 +6,13 @@
            text in de.json and en.json. -->
       <p class="app-footer__made-with" lang="en">
         {{ 'layout.footer.madeWith' | t }}
-        <app-ui-icon [label]="'layout.footer.love' | t" name="heart" />
+        <app-ui-icon class="app-footer__heart" [label]="'layout.footer.love' | t" name="heart" />
         {{ 'layout.footer.inPlace' | t }}
+        @if (_version) {
+          <span aria-hidden="true">·</span>
+          <span>{{ 'layout.footer.version' | t: { version: _version } }}</span>
+        }
       </p>
-      @if (_version) {
-        <p class="app-footer__version">{{ 'common.version' | t: { version: _version } }}</p>
-      }
     </div>
     <nav [attr.aria-label]="'layout.legalNavigation' | t">
       <ul class="app-footer__links">

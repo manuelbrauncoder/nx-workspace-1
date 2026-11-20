@@ -1,0 +1,9 @@
+<div class="backdrop__parallax" #parallax>
+  @for (blob of _blobs; track blob) {
+    <div class="backdrop__wrap" [class]="'backdrop__wrap--' + blob">
+      <div class="backdrop__blob"></div>
+    </div>
+  }
+</div>
+<div class="backdrop__grain"></div>
+<div class="backdrop__shade"></div>

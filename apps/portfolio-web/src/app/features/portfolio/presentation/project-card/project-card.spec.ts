@@ -64,6 +64,41 @@ describe('ProjectCard', () => {
     expect(element.querySelector('.project-card__title')?.textContent).toContain('Join');
   });
 
+  it('uses the overlay controls of the carousel with the screenshot labels', async () => {
+    const element = await render({
+      ...PROJECT,
+      images: [PROJECT.images[0], { ...PROJECT.images[0], id: 'b' }],
+    });
+
+    expect(element.querySelector('.ui-carousel--overlay')).not.toBeNull();
+    const next = element.querySelector('.ui-carousel__arrow--next')!;
+    const previous = element.querySelector('.ui-carousel__arrow--previous')!;
+    expect(next.getAttribute('aria-label')).toBe('Nächster Screenshot');
+    expect(previous.getAttribute('aria-label')).toBe('Vorheriger Screenshot');
+  });
+
+  it('shows the links with the arrowUpRight icon and a label naming the project', async () => {
+    const element = await render({ ...PROJECT, testUrl: 'https://join.example.com' });
+
+    const links = Array.from(element.querySelectorAll<HTMLAnchorElement>('.project-card__link'));
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      'https://join.example.com',
+      PROJECT.githubUrl,
+    ]);
+    for (const link of links) {
+      expect(link.getAttribute('target')).toBe('_blank');
+      expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+      expect(link.getAttribute('aria-label')).toContain('Join');
+      expect(link.querySelector('app-ui-icon')).not.toBeNull();
+    }
+  });
+
+  it('shows no links without urls', async () => {
+    const element = await render({ ...PROJECT, githubUrl: undefined });
+
+    expect(element.querySelector('.project-card__links')).toBeNull();
+  });
+
   it('is accessible as a draft', async () => {
     const element = await render({ ...PROJECT, published: false });
 

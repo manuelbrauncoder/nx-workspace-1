@@ -1,6 +1,10 @@
 <a class="skip-link" (click)="_skipToMain($event)" href="#main">{{ 'layout.skipToContent' | t }}</a>
 
-<app-header [(drawerOpen)]="_drawerOpen" />
+@if (_backdrop()) {
+  <app-backdrop />
+}
+
+<app-header />
 
 <main
   class="app-main"
@@ -14,5 +18,3 @@
 </main>
 
 <app-footer />
-
-<app-drawer [(open)]="_drawerOpen" />

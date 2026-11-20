@@ -153,7 +153,7 @@ The same tokens are available as Tailwind utilities (`bg-primary`, `text-muted-f
 
 Besides the colors, a theme can set:
 
-- `--brand` and `--brand-foreground`: the colors of `variant="brand"` on `appUiButton`, the one main action of a page. angular-base uses its primary color, portfolio-web the trail-marker yellow. Both are exposed in `tailwind.css` as `bg-brand` and `text-brand-foreground`
+- `--brand` and `--brand-foreground`: the colors of `variant="brand"` on `appUiButton`, the one main action of a page. angular-base uses its primary color, portfolio-web amber. Both are exposed in `tailwind.css` as `bg-brand` and `text-brand-foreground`
 - `--page-container-max-width`, `--page-container-padding` and `--page-container-padding-md`: width and padding of `.page-container` from the `styles` lib. Without them it is 72rem wide with 1rem padding. portfolio-web sets 81rem and 3rem from `md` up
 
 ### Adding a token
@@ -187,6 +187,7 @@ setMode(mode: ThemeMode): void
 - `mode` is what the user chose. `system` follows the operating system and reacts when it changes
 - `resolved` is what is actually shown, always `light` or `dark`. Bind to this when a component needs to know the theme, as the toaster in `app.html` does
 - The choice is stored in `localStorage` under the key `theme`
+- Without a stored choice the mode is `system`. An app designed dark first provides `DEFAULT_THEME_MODE` (`@core/theme/theme.service`), e.g. `{ provide: DEFAULT_THEME_MODE, useValue: 'dark' }`, and uses the same fallback in its inline script. The user can still switch. `portfolio-web` works this way
 
 An inline script in [index.html](../../apps/angular-base/src/index.html) sets the class before the first paint, so a dark page does not flash white on load. It duplicates the logic of the service on purpose. If you change the storage key or the logic, change both.
 

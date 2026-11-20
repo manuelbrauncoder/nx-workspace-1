@@ -1,27 +1,37 @@
 @let item = hero();
 <section class="hero">
-  <app-topo-map
-    [place]="item.mapPlace && (item.mapPlace | localized)"
-    [coordinates]="item.mapCoordinates"
-    variant="hero"
-  />
-  <div class="page-container hero__content">
-    <div class="hero__main">
-      <h1 class="hero__name" appUiText="display">
-        <!-- The space keeps the words apart for screen readers, each line is a block of its own. -->
-        @for (line of _nameLines(); track $index; let last = $last) {
-          <span class="hero__name-line">{{ line }}{{ last ? '' : ' ' }}</span>
-        }
-      </h1>
-      <p class="hero__lead">{{ item.description | localized }}</p>
-      <div class="hero__actions">
-        <a appUiButton variant="brand" size="lg" routerLink="/" fragment="projects">
-          {{ 'portfolioHome.hero.checkWork' | t }}
-        </a>
-        <a appUiButton variant="outline" size="lg" routerLink="/" fragment="contact">
-          {{ 'portfolioHome.hero.contactMe' | t }}
-        </a>
+  <div class="page-container hero__stage" #stage>
+    <!-- One set of lines for the headline and its magnified copy in the glass sphere. -->
+    <ng-template #lines>
+      <span class="hero__line"
+        ><span>{{ item.name }}</span
+        >&ngsp;</span
+      >
+      <span class="hero__line"
+        ><em class="hero__accent">{{ 'portfolioHome.hero.roleAccent' | t }}</em
+        >&ngsp;<span>{{ 'portfolioHome.hero.role' | t }}</span></span
+      >
+    </ng-template>
+    <h1 class="hero__headline" #headline appUiText="display">
+      <ng-container *ngTemplateOutlet="lines" />
+    </h1>
+    <app-hero-lens [stage]="stage" [headline]="headline">
+      <div class="hero__headline hero__headline--copy" #copy aria-hidden="true" inert>
+        <ng-container *ngTemplateOutlet="lines" />
       </div>
+    </app-hero-lens>
+  </div>
+
+  <div class="page-container hero__foot">
+    <span class="hero__spacer" aria-hidden="true"></span>
+    <div class="hero__actions">
+      <a class="hero__cta hero__cta--solid" appUiButton routerLink="/" fragment="projects">
+        {{ 'portfolioHome.hero.checkWork' | t }}
+        <app-ui-icon class="hero__cta-arrow" name="arrowRight" />
+      </a>
+      <a class="hero__cta" appUiButton variant="outline" routerLink="/" fragment="contact">
+        {{ 'portfolioHome.hero.contactMe' | t }}
+      </a>
     </div>
     <app-scroll-cue class="hero__scroll-cue" />
   </div>

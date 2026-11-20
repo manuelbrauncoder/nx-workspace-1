@@ -6,22 +6,7 @@
       [items]="_items"
       [label]="'layout.mainNavigation' | t"
     />
-    <div class="app-header__actions">
-      <!-- Below `md` the links and the settings move into the drawer. -->
-      <app-settings-menu class="app-header__settings" />
-      <button
-        class="app-header__menu-button"
-        [attr.aria-expanded]="drawerOpen()"
-        [attr.aria-label]="'layout.openMenu' | t"
-        (click)="drawerOpen.set(true)"
-        appUiButton
-        variant="ghost"
-        size="icon-lg"
-        type="button"
-        aria-haspopup="dialog"
-      >
-        <app-ui-icon name="menu" size="xl" />
-      </button>
-    </div>
+    <!-- Below `md` the settings menu holds the links as well. -->
+    <app-settings-menu class="app-header__settings" />
   </div>
 </header>

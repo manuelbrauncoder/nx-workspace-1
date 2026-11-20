@@ -1,7 +1,8 @@
-<a class="scroll-cue" fragment="about" routerLink="/">
-  <span class="scroll-cue__trail" aria-hidden="true">
-    <span class="scroll-cue__path"></span>
-    <span class="scroll-cue__marker"></span>
-  </span>
-  <span class="scroll-cue__label">{{ 'portfolioHome.hero.scrollCue' | t }}</span>
+<a
+  class="scroll-cue"
+  [attr.aria-label]="'portfolioHome.hero.scrollCue' | t"
+  fragment="about"
+  routerLink="/"
+>
+  <app-ui-icon class="scroll-cue__arrow" name="arrowDown" size="lg" />
 </a>

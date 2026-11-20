@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { shellLayout } from '@core/layout/shell-layout';
 import { AuthStore } from '@features/auth/public-api';
+import { withBackdrop } from '../app-backdrop/backdrop-route';
 import { AppShell } from './app-shell';
 
 @Component({ template: `<h1>Seite</h1>` })
@@ -20,7 +21,11 @@ describe('AppShell', () => {
             children: [
               { path: 'notes', component: Page },
               { path: 'showcase', component: Page },
-              { path: 'home', component: Page, data: shellLayout('full-bleed') },
+              {
+                path: 'home',
+                component: Page,
+                data: { ...shellLayout('full-bleed'), ...withBackdrop() },
+              },
             ],
           },
         ]),
@@ -34,7 +39,6 @@ describe('AppShell', () => {
       harness,
       element,
       main: element.querySelector('main')!,
-      menuButton: element.querySelector<HTMLButtonElement>('button[aria-label="Menü öffnen"]')!,
     };
   }
 
@@ -83,28 +87,46 @@ describe('AppShell', () => {
     expect(main.classList.contains('page-container')).toBe(false);
   });
 
-  it('opens the drawer with the navigation from the menu button', async () => {
-    const { harness, menuButton } = await render();
+  it('shows the gradient backdrop only on the pages that ask for it', async () => {
+    const { harness, element } = await render();
+    expect(element.querySelector('app-backdrop')).toBeNull();
 
-    menuButton.click();
-    await harness.fixture.whenStable();
+    await harness.navigateByUrl('/home');
 
-    const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
-    expect(menuButton.getAttribute('aria-expanded')).toBe('true');
-    expect(dialog.querySelector('a[href="/"]')?.textContent).toContain('Manuel Braun');
-    expect(dialog.querySelector('nav a')?.textContent?.trim()).toBe('Über mich');
+    const backdrop = element.querySelector('app-backdrop');
+    expect(backdrop).not.toBeNull();
+    expect(backdrop?.getAttribute('aria-hidden')).toBe('true');
   });
 
-  it('closes the drawer and focuses the main area after a navigation', async () => {
-    const { harness, main, menuButton } = await render();
-    menuButton.click();
-    await harness.fixture.whenStable();
+  it('focuses the main area after a navigation', async () => {
+    const { harness, main } = await render();
 
     await harness.navigateByUrl('/showcase');
     await harness.fixture.whenStable();
 
-    expect(menuButton.getAttribute('aria-expanded')).toBe('false');
     expect(document.activeElement).toBe(main);
+  });
+
+  it('jumps to a section again when its link is used on the same URL', async () => {
+    const { harness, element } = await render();
+    const section = document.createElement('section');
+    section.id = 'about';
+    section.tabIndex = -1;
+    element.querySelector('main')!.append(section);
+    await harness.navigateByUrl('/notes#about');
+
+    (document.activeElement as HTMLElement | null)?.blur();
+    await harness.navigateByUrl('/notes#about');
+    await harness.fixture.whenStable();
+
+    expect(document.activeElement).toBe(section);
+  });
+
+  it('offers the settings menu instead of a drawer', async () => {
+    const { element } = await render();
+
+    expect(element.querySelector('header button[aria-label="Einstellungen"]')).not.toBeNull();
+    expect(element.querySelector('[aria-label="Menü öffnen"]')).toBeNull();
   });
 
   it('moves focus to the main area from the skip link', async () => {

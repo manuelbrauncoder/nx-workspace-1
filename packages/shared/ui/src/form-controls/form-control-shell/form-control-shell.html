@@ -2,7 +2,13 @@
 
 <ng-template #labelling>
   <label [id]="labelId()" [for]="controlId()" hlmFieldLabel>
-    {{ label() }}
+    @if (labelTemplate(); as labelTemplate) {
+      <!-- One box for the whole sentence: the label is a flex row, text and link would turn into
+           columns of their own. -->
+      <span><ng-container [ngTemplateOutlet]="labelTemplate" /></span>
+    } @else {
+      {{ label() }}
+    }
     @if (required()) {
       <span class="form-control-shell__required" aria-hidden="true">*</span>
       @if (announceRequired()) {

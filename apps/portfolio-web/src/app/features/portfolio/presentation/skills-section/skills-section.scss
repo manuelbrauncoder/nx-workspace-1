@@ -1,49 +1,109 @@
 @use 'styles/abstracts' as *;
 
 .skills {
-  padding-block: 4rem;
-  border-block: 1px solid var(--border);
-  background-color: var(--surface);
+  padding-block: clamp(5rem, 12vw, 10rem);
+  border-top: 1px solid var(--border);
   outline: none;
-
-  @include up(md) {
-    padding-block: 7rem;
-  }
 }
 
 // The intro sits right below the heading at every width.
 .skills__header {
   display: flex;
   flex-direction: column;
-  gap: 0.875rem;
-  margin-bottom: 2.5rem;
-
-  @include up(md) {
-    gap: 1.25rem;
-    margin-bottom: 4rem;
-  }
+  gap: 1rem;
+  margin-bottom: clamp(3rem, 7vw, 5rem);
 }
 
 .skills__heading {
   margin: 0;
+  font-size: clamp(2.75rem, 7.5vw, 6.5rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
 }
 
 .skills__intro {
   max-width: 52ch;
   margin: 0;
   color: var(--foreground-soft);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.6;
 }
 
-// One column on a phone, two by two from `lg`.
-.skills__signposts {
+// One column on a phone, two from `md`, four side by side from 72rem.
+.skills__cards {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 2.5rem;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 
-  @include up(lg) {
+  @include up(md) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 3.5rem 4rem;
+  }
+
+  @media (min-width: 72rem) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+// Frosted glass over the backdrop. On hover the edge lights up a little.
+.skills__card {
+  padding: 2rem 1.75rem 2.25rem;
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  background-color: var(--glass);
+  backdrop-filter: blur(14px);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+@media (hover: hover) {
+  .skills__card:hover {
+    border-color: var(--glass-edge);
+    box-shadow: 0 0 0 1px var(--glass-tint-strong);
+  }
+}
+
+// The serif in italics, large enough for the amber to stay readable on the light paper too.
+.skills__card-title {
+  margin: 0 0 1.25rem;
+  color: var(--brand);
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.skills__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skills__skill {
+  padding-block: 0.65rem;
+  border-top: 1px solid var(--border);
+}
+
+.skills__name {
+  font-weight: 500;
+}
+
+.skills__points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.5rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted-foreground);
+  font-size: 0.9375rem;
+
+  li:not(:last-child)::after {
+    content: ' ·';
   }
 }

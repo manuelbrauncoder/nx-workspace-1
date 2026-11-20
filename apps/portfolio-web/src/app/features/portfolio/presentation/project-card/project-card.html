@@ -6,6 +6,7 @@
     [label]="'portfolioHome.projects.screenshots' | t: { name: item.title }"
     [nextLabel]="'portfolioHome.projects.nextScreenshot' | t"
     [previousLabel]="'portfolioHome.projects.previousScreenshot' | t"
+    controls="overlay"
   >
     <ng-template let-image let-index="index">
       <img
@@ -19,10 +20,7 @@
     </ng-template>
   </app-ui-carousel>
   <div class="project-card__body">
-    <h3 class="project-card__title" appUiText="title">
-      <app-trail-marker />
-      {{ item.title }}
-    </h3>
+    <h3 class="project-card__title" appUiText="title">{{ item.title }}</h3>
     <!-- After the heading, so it belongs to this project when moving through the headings. -->
     @if (!item.published) {
       <p class="project-card__draft">
@@ -32,11 +30,13 @@
       </p>
     }
     <app-ui-rich-text class="project-card__description" [html]="item.description | localized" />
-    <ul class="project-card__stack" [attr.aria-label]="'portfolioHome.projects.builtWith' | t">
-      @for (technology of item.stack; track technology) {
-        <li class="project-card__tag">{{ technology }}</li>
-      }
-    </ul>
+    @if (item.stack.length) {
+      <ul class="project-card__stack" [attr.aria-label]="'portfolioHome.projects.builtWith' | t">
+        @for (technology of item.stack; track technology) {
+          <li class="project-card__tag">{{ technology }}</li>
+        }
+      </ul>
+    }
     @if (item.testUrl || item.githubUrl) {
       <div class="project-card__links">
         @if (item.testUrl; as testUrl) {
@@ -47,8 +47,8 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            {{ 'portfolioHome.projects.liveTest' | t }}
-            <app-ui-icon name="externalLink" />
+            <span class="project-card__link-text">{{ 'portfolioHome.projects.liveTest' | t }}</span>
+            <app-ui-icon class="project-card__link-icon" name="arrowUpRight" />
           </a>
         }
         @if (item.githubUrl; as githubUrl) {
@@ -59,8 +59,10 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            {{ 'portfolioHome.projects.sourceCode' | t }}
-            <app-ui-icon name="externalLink" />
+            <span class="project-card__link-text">{{
+              'portfolioHome.projects.sourceCode' | t
+            }}</span>
+            <app-ui-icon class="project-card__link-icon" name="arrowUpRight" />
           </a>
         }
       </div>

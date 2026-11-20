@@ -1,0 +1,7 @@
+// The header sticks to the top. Whatever the browser scrolls into view, e.g. the element that
+// gets the keyboard focus, stops below it instead of behind it.
+@layer base {
+  html {
+    scroll-padding-top: 5.5rem;
+  }
+}
