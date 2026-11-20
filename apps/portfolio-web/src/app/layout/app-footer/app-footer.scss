@@ -24,7 +24,7 @@
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .app-footer__heart {
@@ -34,7 +34,7 @@
 .app-footer__links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem 1.5rem;
+  gap: 0.5rem 1.5rem;
 }
 
 // In a list of their own the links need no underline. 44px high touch targets.

@@ -2,6 +2,12 @@
   display: block;
 }
 
+// 44px, the only way to the links on a phone.
+.app-settings-menu__trigger {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
 // The signed-in user above the account actions, as in the account menu.
 .app-settings-menu__identity {
   display: grid;

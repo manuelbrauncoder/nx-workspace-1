@@ -79,7 +79,7 @@
 }
 
 .project-card__tag {
-  padding: 0.3rem 0.8rem;
+  padding: 0.25rem 0.75rem;
   border: 1px solid var(--border);
   border-radius: 999px;
   background-color: var(--glass-tint);
@@ -90,7 +90,7 @@
 .project-card__links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0 1.75rem;
+  gap: 0.5rem 1.75rem;
 }
 
 // 44px high. The text is underlined, on hover the link turns amber and the arrow leaves.

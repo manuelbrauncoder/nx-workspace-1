@@ -3,7 +3,7 @@
 :root {
   color-scheme: light;
 
-  --chart-1: #a65307;
+  --chart-1: #9a4a06;
   --chart-2: #c4441a;
   --chart-3: #3550c0;
   --chart-4: #b8325f;
@@ -22,7 +22,7 @@
   --secondary: #e7e3db;
   --secondary-foreground: #14151c;
   --muted: #ebe7df;
-  --muted-foreground: #53545e;
+  --muted-foreground: #4a4b55;
   --accent: #e4dfd5;
   --accent-foreground: #14151c;
   --destructive: #b42318;
@@ -30,7 +30,7 @@
   --input: #7a7873;
   // Fill of a form field. Matches the Spartan inputs (`bg-transparent dark:bg-input/30`).
   --input-background: transparent;
-  --ring: #a65307;
+  --ring: #9a4a06;
   --sidebar: #faf8f3;
   --sidebar-foreground: #14151c;
   --sidebar-primary: #14151c;
@@ -38,19 +38,19 @@
   --sidebar-accent: #e4dfd5;
   --sidebar-accent-foreground: #14151c;
   --sidebar-border: #d6d0c4;
-  --sidebar-ring: #a65307;
+  --sidebar-ring: #9a4a06;
 
   // Panels without glass, e.g. the footer of the work pages.
   --surface: #faf8f3;
   // Amber, the accent: the logo tile, dots, focus and the main call to action. On the paper it
-  // has 4.8:1, over the brightest backdrop spots only 3.4:1, so as text it is large only (the
-  // serif accents). Small amber text uses `--link`.
-  --brand: #a65307;
+  // has 5.5:1, over the brightest backdrop spot 3.7:1, so as text it is large only (the serif
+  // accents). Small amber text uses `--link`.
+  --brand: #9a4a06;
   --brand-foreground: #ffffff;
   // End of the accent gradient (`--brand` → `--brand-strong`), e.g. "Frontend" in the hero.
   --brand-strong: #c4441a;
-  // Inline links and small amber text, 4.5:1 or more over the backdrop.
-  --link: #8a4208;
+  // Inline links and small amber text, 5:1 or more over the brightest backdrop spot.
+  --link: #7a3905;
   // Width of the page container: 75rem of content plus 2 × 3rem padding from `md` up.
   --page-container-max-width: 81rem;
   --page-container-padding-md: 3rem;
@@ -88,8 +88,8 @@
   --backdrop-grain-opacity: 0.55;
   --backdrop-shade: linear-gradient(
     180deg,
-    rgb(243 240 234 / 0.3),
-    rgb(243 240 234 / 0.3) 35%,
-    rgb(243 240 234 / 0.45)
+    rgb(243 240 234 / 0.45),
+    rgb(243 240 234 / 0.45) 35%,
+    rgb(243 240 234 / 0.55)
   );
 }

@@ -1,6 +1,7 @@
 // Night palette, the default theme: warm white on near black, amber to orange as the accent. The
-// gradient backdrop of the public pages shines through, so text colours keep AA contrast over
-// its brightest spots too (checked with the shade of `app-backdrop` on top).
+// gradient backdrop of the public pages shines through. Measured over its brightest spot (with
+// the shade on top) the soft text keeps 5:1 and the muted text 4.9:1, keep that when changing
+// the blobs, the shade or the text colours.
 :root.dark {
   color-scheme: dark;
 
@@ -21,12 +22,12 @@
   --secondary: #1a1b23;
   --secondary-foreground: #f4f2ee;
   --muted: #15161e;
-  --muted-foreground: #b3b1ae;
+  --muted-foreground: #bab8b5;
   --accent: #1f2029;
   --accent-foreground: #f4f2ee;
   --destructive: #ff9f9a;
   --border: #2a2b31;
-  --input: #6e6f76;
+  --input: #83848b;
   --input-background: color-mix(in oklab, var(--input) 30%, transparent);
   --ring: #f6c76b;
   --sidebar: #0e0f18;
@@ -79,8 +80,8 @@
   --backdrop-grain-opacity: 0.5;
   --backdrop-shade: linear-gradient(
     180deg,
-    rgb(7 8 13 / 0.4),
-    rgb(7 8 13 / 0.38) 35%,
-    rgb(7 8 13 / 0.6)
+    rgb(7 8 13 / 0.5),
+    rgb(7 8 13 / 0.5) 35%,
+    rgb(7 8 13 / 0.65)
   );
 }
