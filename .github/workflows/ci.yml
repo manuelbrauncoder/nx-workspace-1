@@ -25,6 +25,11 @@ jobs:
     runs-on: ubuntu-latest
     # About four times a release run. The default would be six hours.
     timeout-minutes: 20
+    # Not for the release commit on main: it only changes versions and changelogs, and the run of
+    # each of its tags checks the released app on the same commit before building the image.
+    if: >-
+      github.event_name != 'push' || github.ref_type == 'tag' ||
+      !startsWith(github.event.head_commit.message, 'chore(release): publish')
 
     # Same credentials as docker-compose.yml, which the Vitest configs of the API projects expect
     # by default. Each of them creates and migrates its own test database.
