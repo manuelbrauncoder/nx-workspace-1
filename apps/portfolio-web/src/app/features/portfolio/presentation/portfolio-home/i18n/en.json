@@ -33,7 +33,8 @@
       "message": "Message",
       "privacyBefore": "I’ve read the",
       "privacyLink": "privacy policy",
-      "privacyAfter": "and agree to the processing of my data as outlined."
+      "privacyAfter": "and agree to the processing of my data as outlined.",
+      "newTab": "(opens in a new tab)"
     },
     "validation": {
       "nameRequired": "Please enter your name.",

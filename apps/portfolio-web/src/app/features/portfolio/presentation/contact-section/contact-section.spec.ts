@@ -64,9 +64,13 @@ describe('ContactSection', () => {
 
     const label = element.querySelector('app-form-checkbox label')!;
     expect(label.textContent?.replace(/\s+/g, ' ').trim()).toBe(
-      'Ich habe die Datenschutzerklärung gelesen und bin mit der Verarbeitung meiner Daten einverstanden.',
+      'Ich habe die Datenschutzerklärung (öffnet in neuem Tab) gelesen und bin mit der Verarbeitung meiner Daten einverstanden.',
     );
-    expect(label.querySelector('a')?.getAttribute('href')).toBe('/privacy');
+    const link = label.querySelector('a')!;
+    expect(link.getAttribute('href')).toBe('/privacy');
+    // In a new tab, so nothing typed into the form gets lost.
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer');
   });
 
   it('links to the direct ways of contact', async () => {

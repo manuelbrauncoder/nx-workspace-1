@@ -33,7 +33,8 @@
       "message": "Nachricht",
       "privacyBefore": "Ich habe die",
       "privacyLink": "Datenschutzerklärung",
-      "privacyAfter": "gelesen und bin mit der Verarbeitung meiner Daten einverstanden."
+      "privacyAfter": "gelesen und bin mit der Verarbeitung meiner Daten einverstanden.",
+      "newTab": "(öffnet in neuem Tab)"
     },
     "validation": {
       "nameRequired": "Bitte gib deinen Namen ein.",

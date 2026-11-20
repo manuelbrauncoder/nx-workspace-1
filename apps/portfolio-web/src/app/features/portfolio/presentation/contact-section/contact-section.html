@@ -55,13 +55,19 @@
         [label]="'portfolioHome.contact.fields.message' | t"
         rows="5"
       />
-      <!-- The link sits inside the sentence. A click on it opens the page and leaves the box. -->
+      <!-- The link sits inside the sentence. It opens in a new tab, so nothing typed gets lost, and
+           leaves the box as it is. -->
       <app-form-checkbox [formField]="_contactForm.privacy">
         <ng-template>
           {{ 'portfolioHome.contact.fields.privacyBefore' | t }}
-          <a class="contact__inline-link" routerLink="/privacy">{{
-            'portfolioHome.contact.fields.privacyLink' | t
-          }}</a>
+          <a
+            class="contact__inline-link"
+            routerLink="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            >{{ 'portfolioHome.contact.fields.privacyLink' | t
+            }}<span class="sr-only">&ngsp;{{ 'portfolioHome.contact.fields.newTab' | t }}</span></a
+          >
           {{ 'portfolioHome.contact.fields.privacyAfter' | t }}
         </ng-template>
       </app-form-checkbox>

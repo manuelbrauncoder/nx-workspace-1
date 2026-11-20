@@ -3,7 +3,9 @@
 <ng-template #labelling>
   <label [id]="labelId()" [for]="controlId()" hlmFieldLabel>
     @if (labelTemplate(); as labelTemplate) {
-      <ng-container [ngTemplateOutlet]="labelTemplate" />
+      <!-- One box for the whole sentence: the label is a flex row, text and link would turn into
+           columns of their own. -->
+      <span><ng-container [ngTemplateOutlet]="labelTemplate" /></span>
     } @else {
       {{ label() }}
     }

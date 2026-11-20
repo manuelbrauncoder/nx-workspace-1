@@ -93,6 +93,16 @@ describe('FormCheckbox', () => {
       expect(label.querySelector('a')?.getAttribute('href')).toBe('/privacy');
     });
 
+    it('keeps the sentence in one box, so it wraps as text and not as columns', async () => {
+      const { label } = await renderTemplate();
+
+      const sentence = Array.from(label.children).find((child) => child.querySelector('a'));
+      expect(sentence?.tagName).toBe('SPAN');
+      expect(sentence?.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+        'Ich habe die Datenschutzerklärung gelesen.',
+      );
+    });
+
     it('still links the label to the checkbox', async () => {
       const { element, label } = await renderTemplate();
 
