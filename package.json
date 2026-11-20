@@ -23,7 +23,7 @@
     "@asteasolutions/zod-to-openapi": "^9.1.0",
     "@jsverse/transloco": "^8.4.0",
     "@ng-icons/core": "^32.2.0",
-    "@ng-icons/lucide": "^32.2.0",
+    "@ng-icons/lucide": "^35.1.0",
     "@spartan-ng/brain": "1.9.0",
     "@tanstack/angular-charts": "0.16.0",
     "@tanstack/charts": "0.16.0",

@@ -203,8 +203,8 @@ importers:
         specifier: ^32.2.0
         version: 32.5.0(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2)
       '@ng-icons/lucide':
-        specifier: ^32.2.0
-        version: 32.5.0
+        specifier: ^35.1.0
+        version: 35.1.0
       '@spartan-ng/brain':
         specifier: 1.9.0
         version: 1.9.0(0cc5a5a34b28cc1a03332903810134f7)
@@ -2853,8 +2853,8 @@ packages:
       '@angular/core': '>=20.0.0'
       rxjs: ^6.5.3 || ^7.4.0
 
-  '@ng-icons/lucide@32.5.0':
-    resolution: {integrity: sha512-oLIkz2tB4ZnO3JoLQ8pS15AaR7kxBpF81s/e3mGALqNXSu2U2u0TgiP88CF/4DQ14ONFD7S/gT4Ej4gIESvbeQ==}
+  '@ng-icons/lucide@35.1.0':
+    resolution: {integrity: sha512-1Zj8qxNmryuXWK/Nq4cWQVVWqVgs7/UT/SEjO/w8/tkYwgPy17kT1wGXl+fvsegGu8TjWsRYhj+kWV7ASDeVzw==}
 
   '@noble/hashes@1.8.0':
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
@@ -10782,7 +10782,7 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.9.1
 
-  '@ng-icons/lucide@32.5.0':
+  '@ng-icons/lucide@35.1.0':
     dependencies:
       tslib: 2.9.1
 
