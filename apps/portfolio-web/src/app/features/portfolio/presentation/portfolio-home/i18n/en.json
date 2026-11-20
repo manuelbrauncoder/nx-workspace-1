@@ -15,7 +15,9 @@
     "sourceCodeNamed": "View code of {{ name }} on GitHub",
     "screenshots": "Screenshots of {{ name }}",
     "previousScreenshot": "Previous screenshot",
-    "nextScreenshot": "Next screenshot"
+    "nextScreenshot": "Next screenshot",
+    "draft": "Draft",
+    "draftHint": "Only visible to you"
   },
   "contact": {
     "linkedin": "LinkedIn",

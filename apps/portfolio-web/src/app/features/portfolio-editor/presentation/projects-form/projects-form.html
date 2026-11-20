@@ -19,6 +19,11 @@
       <fieldset class="projects-form__item">
         <legend class="projects-form__legend">
           {{ 'sectionEditor.projects.item' | t: { number: index + 1 } }}
+          @if (!item.published().value()) {
+            <span class="projects-form__draft" appUiBadge variant="secondary">
+              {{ 'sectionEditor.projects.draft' | t }}
+            </span>
+          }
         </legend>
         <app-list-item-actions
           class="projects-form__actions"
@@ -33,6 +38,11 @@
           [formField]="item.title"
           [label]="'sectionEditor.projects.title' | t"
           autocomplete="off"
+        />
+        <app-form-switch
+          [formField]="item.published"
+          [label]="'sectionEditor.projects.published' | t"
+          [description]="'sectionEditor.projects.publishedDescription' | t"
         />
         <app-localized-field
           [field]="item.description"

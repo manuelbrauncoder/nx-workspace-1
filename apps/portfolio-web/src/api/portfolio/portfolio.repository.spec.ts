@@ -67,4 +67,37 @@ describe('PortfolioRepository', () => {
     expect(request.request.body).toEqual({ ...hero, mapPlace: null, mapCoordinates: null });
     expect((await saved).name).toBe('Ada');
   });
+
+  it('sends the published state of every project with PATCH', async () => {
+    const image = {
+      id: 'm1',
+      url: 'https://api.example.com/media/m1',
+      width: 8,
+      height: 6,
+      alt: { de: 'a', en: 'a' },
+    };
+    const item = {
+      title: 'Join',
+      description: { de: 'T', en: 'T' },
+      stack: ['Angular'],
+      images: [image],
+    };
+    const projects = {
+      headline: { de: 'Projekte', en: 'Projects' },
+      description: { de: 'Text', en: 'Text' },
+      items: [
+        { ...item, published: true },
+        { ...item, title: 'Draft', published: false },
+      ],
+    };
+    const saved = firstValueFrom(repository.update('projects', projects));
+    const request = backend.expectOne('https://api.example.com/portfolio/projects');
+    request.flush({ projects });
+
+    expect(request.request.body.items.map((i: { published: boolean }) => i.published)).toEqual([
+      true,
+      false,
+    ]);
+    expect((await saved).items[1].published).toBe(false);
+  });
 });

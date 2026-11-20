@@ -44,6 +44,7 @@ const PORTFOLIO: Portfolio = {
         stack: ['Angular'],
         testUrl: 'https://cooking-world.example.com',
         images: [image('kochwelt'), image('kochwelt-2')],
+        published: true,
       },
       {
         title: 'Join',
@@ -51,6 +52,7 @@ const PORTFOLIO: Portfolio = {
         stack: ['Angular', 'Firebase'],
         githubUrl: 'https://github.com/manuelbrauncoder/Join-2.0',
         images: [image('join')],
+        published: true,
       },
     ],
   },
