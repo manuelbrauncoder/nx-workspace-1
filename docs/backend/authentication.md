@@ -141,6 +141,8 @@ import { requireAdmin } from '@server/auth/auth.middleware';
 adminRouter.use(requireAdmin); // 401 without a session, 403 without the admin role
 ```
 
+A public route that shows admins more uses `isAdmin(req)` instead. It resolves to `false` for a guest and never rejects. A response that depends on it must not be stored by shared caches (`Cache-Control: private`) and adds `Cookie` to `Vary` with `res.vary('Cookie')`, as `GET /portfolio` does (see [CMS content](../portfolio/api/cms-content.md#reading-the-page)).
+
 ## Frontend integration
 
 - **Send credentials with every request.** In Angular: `withCredentials: true` (for example in an HTTP interceptor). With fetch: `credentials: "include"`.

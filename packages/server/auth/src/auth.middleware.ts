@@ -15,6 +15,17 @@ export const requireAdmin: RequestHandler = async (req, _res, next) => {
   next();
 };
 
+/**
+ * Whether the request comes from a signed-in admin, for public routes that show admins more.
+ * Never throws for a guest; the role is read from the database like in requireAdmin.
+ */
+export async function isAdmin(req: Request): Promise<boolean> {
+  const { userId } = req.session;
+  if (!userId) return false;
+  const user = await getUser(userId);
+  return user?.role === 'admin';
+}
+
 /** The signed-in user's id. Use in handlers behind requireAuth. */
 export function currentUserId(req: Request): string {
   const { userId } = req.session;
