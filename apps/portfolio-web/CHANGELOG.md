@@ -1,3 +1,23 @@
+## 2.3.0 (2026-11-20)
+
+### 🚀 Features
+
+- **portfolio-web:** open GitHub and LinkedIn in a new tab ([3573c15](https://github.com/manuelbrauncoder/nx-workspace-1/commit/3573c15))
+- **portfolio-web:** privacy link inside the consent sentence ([6fb0964](https://github.com/manuelbrauncoder/nx-workspace-1/commit/6fb0964))
+- **portfolio-web:** lens follows only over the headline, weaker zoom ([8eec799](https://github.com/manuelbrauncoder/nx-workspace-1/commit/8eec799))
+- **portfolio-web:** clear glass lens that springs back before the header ([4e593cf](https://github.com/manuelbrauncoder/nx-workspace-1/commit/4e593cf))
+- **portfolio-web:** redesign about, projects, skills and contact ([5ba0be1](https://github.com/manuelbrauncoder/nx-workspace-1/commit/5ba0be1))
+- **portfolio-web:** redesign hero with magnifier lens ([8190339](https://github.com/manuelbrauncoder/nx-workspace-1/commit/8190339))
+- **portfolio-web:** transparent header, new logo and settings menu nav ([6e9ae64](https://github.com/manuelbrauncoder/nx-workspace-1/commit/6e9ae64))
+- **portfolio-web:** animated gradient backdrop on public pages ([175c1e0](https://github.com/manuelbrauncoder/nx-workspace-1/commit/175c1e0))
+- **portfolio-web:** new palette, fonts and dark default ([64e6380](https://github.com/manuelbrauncoder/nx-workspace-1/commit/64e6380))
+
+### 🩹 Fixes
+
+- **portfolio-web:** consent sentence wraps as text, privacy link in a new tab ([0e413eb](https://github.com/manuelbrauncoder/nx-workspace-1/commit/0e413eb))
+- **portfolio-web:** accessibility findings of the redesign ([9752b2b](https://github.com/manuelbrauncoder/nx-workspace-1/commit/9752b2b))
+- **portfolio-web:** contrast over the backdrop and touch targets ([267a8c0](https://github.com/manuelbrauncoder/nx-workspace-1/commit/267a8c0))
+
 ## 2.2.1 (2026-11-20)
 
 ### 🩹 Fixes
