@@ -59,6 +59,16 @@ describe('ContactSection', () => {
     await TestBed.inject(ApplicationRef).whenStable();
   }
 
+  it('puts the link to the privacy policy into the sentence of the checkbox', async () => {
+    const { element } = await render();
+
+    const label = element.querySelector('app-form-checkbox label')!;
+    expect(label.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      'Ich habe die Datenschutzerklärung gelesen und bin mit der Verarbeitung meiner Daten einverstanden.',
+    );
+    expect(label.querySelector('a')?.getAttribute('href')).toBe('/privacy');
+  });
+
   it('links to the direct ways of contact', async () => {
     const { element } = await render();
 

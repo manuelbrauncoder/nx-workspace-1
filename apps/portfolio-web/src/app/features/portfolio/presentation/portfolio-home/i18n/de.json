@@ -31,9 +31,10 @@
       "email": "E-Mail",
       "emailPlaceholder": "name@mail.com",
       "message": "Nachricht",
-      "privacy": "Ich habe die Datenschutzerklärung gelesen und bin mit der Verarbeitung meiner Daten einverstanden."
+      "privacyBefore": "Ich habe die",
+      "privacyLink": "Datenschutzerklärung",
+      "privacyAfter": "gelesen und bin mit der Verarbeitung meiner Daten einverstanden."
     },
-    "privacyLink": "Datenschutzerklärung lesen",
     "validation": {
       "nameRequired": "Bitte gib deinen Namen ein.",
       "emailRequired": "Bitte gib deine E-Mail-Adresse ein.",

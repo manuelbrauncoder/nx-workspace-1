@@ -7,6 +7,7 @@ import {
   inject,
   input,
   Signal,
+  TemplateRef,
 } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -56,6 +57,8 @@ export class FormControlShell {
   /** Id of the focusable element of the projected control. */
   readonly controlId = input.required<string>();
   readonly label = input.required<string>();
+  /** Renders the label instead of `label`, for a label with markup such as a link in it. */
+  readonly labelTemplate = input<TemplateRef<unknown>>();
   readonly description = input<string>();
   /** Messages to show, already reduced to the visible ones. */
   readonly errors = input<readonly string[]>([]);

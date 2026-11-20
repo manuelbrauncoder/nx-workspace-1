@@ -1,5 +1,18 @@
+import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormCheckbox } from './form-checkbox';
+
+@Component({
+  imports: [FormCheckbox],
+  template: `
+    <app-form-checkbox [(checked)]="checked">
+      <ng-template>Ich habe die <a href="/privacy">Datenschutzerklärung</a> gelesen.</ng-template>
+    </app-form-checkbox>
+  `,
+})
+class TemplateLabelHost {
+  readonly checked = signal(false);
+}
 
 describe('FormCheckbox', () => {
   async function render(inputs: Record<string, unknown> = {}) {
@@ -61,5 +74,35 @@ describe('FormCheckbox', () => {
     const { button } = await render({ disabled: true });
 
     expect((button as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  describe('with a label template', () => {
+    async function renderTemplate() {
+      const fixture = TestBed.createComponent(TemplateLabelHost);
+      await fixture.whenStable();
+      const element: HTMLElement = fixture.nativeElement;
+      return { fixture, element, label: element.querySelector('label')! };
+    }
+
+    it('renders the template as the label, link included', async () => {
+      const { label } = await renderTemplate();
+
+      expect(label.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+        'Ich habe die Datenschutzerklärung gelesen.',
+      );
+      expect(label.querySelector('a')?.getAttribute('href')).toBe('/privacy');
+    });
+
+    it('still links the label to the checkbox', async () => {
+      const { element, label } = await renderTemplate();
+
+      expect(label.getAttribute('for')).toBe(element.querySelector('[role="checkbox"]')?.id);
+    });
+
+    it('is accessible', async () => {
+      const { element } = await renderTemplate();
+
+      await expect(element).toBeAccessible();
+    });
   });
 });
