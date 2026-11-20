@@ -12,7 +12,6 @@
     "legalNavigation": "Rechtliches",
     "mainNavigation": "Hauptnavigation",
     "navigation": "Navigation",
-    "openMenu": "Menü öffnen",
     "skipToContent": "Zum Inhalt springen",
     "footer": {
       "imprint": "Impressum",
@@ -21,7 +20,8 @@
       "cookies": "Cookies",
       "madeWith": "Made with",
       "love": "love",
-      "inPlace": "in Partenstein"
+      "inPlace": "in Partenstein",
+      "version": "v{{ version }}"
     },
     "logo": {
       "tagline": "Frontend Developer",

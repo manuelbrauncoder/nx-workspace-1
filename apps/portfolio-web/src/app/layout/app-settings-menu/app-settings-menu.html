@@ -7,11 +7,24 @@
   type="button"
   align="end"
 >
-  <app-ui-icon name="settings" size="lg" />
+  <app-ui-icon name="slidersHorizontal" size="lg" />
 </button>
 
 <ng-template #menu>
   <app-ui-menu class="w-60" [label]="'layout.settings' | t">
+    <!-- Below `md` the header has no room for the links, they open the menu instead. -->
+    @if (_compact()) {
+      <app-ui-menu-group [label]="'layout.mainNavigation' | t">
+        <app-ui-menu-label>{{ 'layout.navigation' | t }}</app-ui-menu-label>
+        @for (item of _navItems; track item.fragment) {
+          <button (triggered)="_open(item)" appUiMenuItem type="button">
+            {{ item.labelKey | t }}
+          </button>
+        }
+      </app-ui-menu-group>
+      <app-ui-menu-separator />
+    }
+
     @if (_auth.me(); as me) {
       <div class="app-settings-menu__identity" id="app-settings-menu-identity">
         <span class="app-settings-menu__name">{{ me.name ?? me.email }}</span>

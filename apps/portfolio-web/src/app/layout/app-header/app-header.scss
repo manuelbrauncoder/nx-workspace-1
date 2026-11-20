@@ -1,6 +1,7 @@
 @use 'styles/abstracts' as *;
 
 // Stays at the top while the long start page scrolls. On the host, its parent is the whole shell.
+// Transparent over the top of the page, so the backdrop runs behind it.
 :host {
   position: sticky;
   top: 0;
@@ -9,15 +10,24 @@
 }
 
 .app-header {
-  border-bottom: 1px solid var(--border);
-  background-color: var(--background);
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    backdrop-filter 0.3s ease;
 }
 
-// Logo and menu button at the edges on a phone. From `md` three columns: the logo on the left,
+// Frosted once the page scrolls, so the content below stays out of the way of the links.
+:host(.app-header--scrolled) .app-header {
+  border-bottom-color: var(--border);
+  background-color: var(--glass-strong);
+  backdrop-filter: blur(14px);
+}
+
+// Logo and settings at the edges on a phone. From `md` three columns: the logo on the left,
 // the links in the middle of the bar, the settings menu on the right. The two outer columns
 // share the rest evenly, so the links stay centered whatever the logo and the actions measure.
-// Up to `lg` the logo shows only its sign, otherwise the three would not fit side by side.
-// The header is 73px high at every size, the hero subtracts it.
+// Up to `lg` the logo shows only its tile, otherwise the three would not fit side by side.
 .app-header__bar {
   display: flex;
   align-items: center;
@@ -37,26 +47,14 @@
   justify-self: start;
 }
 
-.app-header__actions {
-  display: flex;
+.app-header__settings {
   justify-self: end;
-  align-items: center;
-  gap: 0.5rem;
 }
 
-// Below `md` the links and the settings (account, language, theme) move into the drawer, opened
-// by the menu button.
-.app-header__nav,
-.app-header__settings {
+.app-header__nav {
   display: none;
 
   @include up(md) {
     display: block;
-  }
-}
-
-.app-header__menu-button {
-  @include up(md) {
-    display: none;
   }
 }

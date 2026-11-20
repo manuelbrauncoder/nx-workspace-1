@@ -45,6 +45,10 @@
   // End of the accent gradient (`--brand` → `--brand-strong`), e.g. "Frontend" in the hero.
   --brand-strong: #ff9a5c;
   --link: #f6c76b;
+  // The logo tile, the same in both themes: amber to orange with a dark sign.
+  --logo-from: #f6c76b;
+  --logo-to: #ff9a5c;
+  --logo-ink: #14151c;
   // Frosted panels over the backdrop: cards, the contact form, the header once scrolled.
   --glass: rgb(10 11 20 / 0.42);
   --glass-strong: rgb(7 8 13 / 0.6);

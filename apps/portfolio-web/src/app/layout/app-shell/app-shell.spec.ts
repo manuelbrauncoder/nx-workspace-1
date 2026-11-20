@@ -39,7 +39,6 @@ describe('AppShell', () => {
       harness,
       element,
       main: element.querySelector('main')!,
-      menuButton: element.querySelector<HTMLButtonElement>('button[aria-label="Menü öffnen"]')!,
     };
   }
 
@@ -99,28 +98,20 @@ describe('AppShell', () => {
     expect(backdrop?.getAttribute('aria-hidden')).toBe('true');
   });
 
-  it('opens the drawer with the navigation from the menu button', async () => {
-    const { harness, menuButton } = await render();
-
-    menuButton.click();
-    await harness.fixture.whenStable();
-
-    const dialog = document.querySelector<HTMLElement>('[role="dialog"]')!;
-    expect(menuButton.getAttribute('aria-expanded')).toBe('true');
-    expect(dialog.querySelector('a[href="/"]')?.textContent).toContain('Manuel Braun');
-    expect(dialog.querySelector('nav a')?.textContent?.trim()).toBe('Über mich');
-  });
-
-  it('closes the drawer and focuses the main area after a navigation', async () => {
-    const { harness, main, menuButton } = await render();
-    menuButton.click();
-    await harness.fixture.whenStable();
+  it('focuses the main area after a navigation', async () => {
+    const { harness, main } = await render();
 
     await harness.navigateByUrl('/showcase');
     await harness.fixture.whenStable();
 
-    expect(menuButton.getAttribute('aria-expanded')).toBe('false');
     expect(document.activeElement).toBe(main);
+  });
+
+  it('offers the settings menu instead of a drawer', async () => {
+    const { element } = await render();
+
+    expect(element.querySelector('header button[aria-label="Einstellungen"]')).not.toBeNull();
+    expect(element.querySelector('[aria-label="Menü öffnen"]')).toBeNull();
   });
 
   it('moves focus to the main area from the skip link', async () => {

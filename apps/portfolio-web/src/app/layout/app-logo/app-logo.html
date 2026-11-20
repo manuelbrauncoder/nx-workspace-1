@@ -1,9 +1,18 @@
 <!-- The label repeats the visible text, so voice control still finds the link by its name. -->
 <a class="app-logo" [attr.aria-label]="'layout.logo.homeLabel' | t" routerLink="/">
-  <!-- The sign reads `</MB`, the chevron in its tip closes the tag. -->
-  <span class="app-logo__sign" aria-hidden="true"
-    >&lt;/MB<span class="app-logo__chevron"></span
-  ></span>
+  <!-- The tile with a code sign, the same as the favicon. -->
+  <span class="app-logo__tile" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14" />
+    </svg>
+  </span>
   <span class="app-logo__text">
     <span class="app-logo__name">{{ _name }}</span>
     <span class="app-logo__tagline">{{ 'layout.logo.tagline' | t }}</span>

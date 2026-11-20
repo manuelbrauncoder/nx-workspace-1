@@ -54,6 +54,10 @@
   // Width of the page container: 75rem of content plus 2 × 3rem padding from `md` up.
   --page-container-max-width: 81rem;
   --page-container-padding-md: 3rem;
+  // The logo tile, the same in both themes: amber to orange with a dark sign.
+  --logo-from: #f6c76b;
+  --logo-to: #ff9a5c;
+  --logo-ink: #14151c;
   // Frosted panels over the backdrop: cards, the contact form, the header once scrolled.
   --glass: rgb(255 255 255 / 0.6);
   --glass-strong: rgb(243 240 234 / 0.75);
