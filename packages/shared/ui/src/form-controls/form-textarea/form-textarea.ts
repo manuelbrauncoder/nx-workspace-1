@@ -37,7 +37,8 @@ export class FormTextarea implements FormValueControl<string> {
   readonly rows = input(4, { transform: numberAttribute });
   /**
    * Language of the text typed in, when it differs from the page, e.g. the English version of a
-   * text. Sets `lang` on the input only, the label stays in the page language.
+   * text. Sets `lang` on the input only, the label stays in the page language. A `placeholder` is
+   * read in `contentLang` as well, so write it in that language or leave it out.
    */
   readonly contentLang = input<AppLanguage>();
 

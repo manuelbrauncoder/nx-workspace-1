@@ -132,7 +132,7 @@ All of them are shown on `/showcase/forms`.
 
 ### Text in another language
 
-A field whose text is in a language other than the page, such as the English version of a text on a German page, sets `contentLang` (`'de'` or `'en'`, `AppLanguage` from `@core/i18n/languages`). `FormText`, `FormTextarea` and `FormRichText` put it as `lang` on the native input, the textarea or the editable area, not on the host. The label and the toolbar keep the page language, the value is read with the right voice and spell-checked in its own language (WCAG 3.1.2 Language of Parts). Without `contentLang` the control has no `lang` and follows the page.
+A field whose text is in a language other than the page, such as the English version of a text on a German page, sets `contentLang` (`'de'` or `'en'`, `AppLanguage` from `@core/i18n/languages`). `FormText`, `FormTextarea` and `FormRichText` put it as `lang` on the native input, the textarea or the editable area, not on the host. The label and the toolbar keep the page language, the value is read with the right voice and spell-checked in its own language (WCAG 3.1.2 Language of Parts). Without `contentLang` the control has no `lang` and follows the page. A `placeholder` sits on the same element and is read in `contentLang` too, so it is written in that language or left out.
 
 ```html
 <app-form-text [formField]="field().en" label="Englisch" contentLang="en" />

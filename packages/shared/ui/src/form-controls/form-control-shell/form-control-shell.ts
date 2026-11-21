@@ -99,21 +99,17 @@ export class FormControlShell {
   readonly spartanControl = spartanControlState(this._invalid);
 
   constructor() {
-    // Registered first, so Spartan lists them in front of the own description, as `describedBy` does.
+    // One list registered as a whole: Spartan appends each id, so registering the outside ids on
+    // their own would put them behind the own description once they change.
     effect((onCleanup) => {
-      const ids = this.descriptionIds();
+      const ids = [
+        ...this.descriptionIds(),
+        ...(this.description() ? [this._descriptionId()] : []),
+      ];
       for (const id of ids) {
         this._a11y.registerDescription(id);
       }
       onCleanup(() => ids.forEach((id) => this._a11y.unregisterDescription(id)));
-    });
-    effect((onCleanup) => {
-      if (!this.description()) {
-        return;
-      }
-      const id = this._descriptionId();
-      this._a11y.registerDescription(id);
-      onCleanup(() => this._a11y.unregisterDescription(id));
     });
     effect((onCleanup) => {
       if (!this._invalid()) {

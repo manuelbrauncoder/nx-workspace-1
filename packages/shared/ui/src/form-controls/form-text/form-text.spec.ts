@@ -89,14 +89,17 @@ describe('FormText', () => {
     document.body.append(hint);
     try {
       const { fixture, element, input } = await render({
-        descriptionIds: ['group-hint'],
         description: 'Kurz halten.',
         errors,
         touched: true,
       });
-
       const description = element.querySelector('p[id$="-description"]')!;
       const alert = element.querySelector('[role="alert"]')!;
+
+      // Added after the own description, still read first.
+      fixture.componentRef.setInput('descriptionIds', ['group-hint']);
+      await fixture.whenStable();
+
       expect(input.getAttribute('aria-describedby')).toBe(
         `group-hint ${description.id} ${alert.id}`,
       );
