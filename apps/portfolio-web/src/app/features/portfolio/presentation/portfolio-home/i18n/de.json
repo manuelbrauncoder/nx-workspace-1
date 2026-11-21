@@ -3,8 +3,6 @@
   "description": "Manuel Braun, Frontend Developer aus Partenstein im Spessart. Angular-Projekte, Skills und Kontakt.",
   "loadFailed": "Die Startseite konnte nicht geladen werden",
   "hero": {
-    "roleAccent": "Frontend",
-    "role": "Developer",
     "checkWork": "Meine Arbeit ansehen",
     "contactMe": "Kontakt aufnehmen",
     "scrollCue": "Weiter nach unten"

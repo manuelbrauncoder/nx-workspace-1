@@ -12,7 +12,11 @@ const IMAGE: PortfolioImage = {
 };
 
 const DTO: PortfolioDto = {
-  hero: { name: 'Ada Lovelace', description: { de: 'Hallo', en: 'Hello' } },
+  hero: {
+    name: 'Ada Lovelace',
+    roleAccent: { de: 'Frontend', en: 'Frontend' },
+    role: { de: 'Entwicklerin', en: 'Developer' },
+  },
   about: {
     headline: { de: 'Über mich', en: 'About me' },
     description: { de: 'Text', en: 'Text' },
@@ -65,50 +69,45 @@ describe('PortfolioDtoMapper', () => {
     expect(dto.facts).toEqual({ de: ['Eins'], en: ['One'] });
   });
 
-  it('leaves unset optional fields out when creating', () => {
-    const dto = mapper.toSectionDto(
-      'hero',
-      { name: 'Ada', description: { de: 'Hallo', en: 'Hello' }, mapCoordinates: ' ' },
-      'create',
-    );
-
-    expect(dto.mapPlace).toBeUndefined();
-    expect(dto.mapCoordinates).toBeUndefined();
-  });
-
-  it('removes unset optional fields with null when updating', () => {
+  it('trims the hero, its role included', () => {
     expect(
       mapper.toSectionDto(
         'hero',
-        { name: 'Ada', description: { de: 'Hallo', en: 'Hello' }, mapPlace: { de: '', en: '' } },
-        'update',
+        {
+          name: ' Ada ',
+          roleAccent: { de: ' Frontend ', en: 'Frontend' },
+          role: { de: 'Entwicklerin ', en: ' Developer' },
+        },
+        'create',
       ),
     ).toEqual({
       name: 'Ada',
-      description: { de: 'Hallo', en: 'Hello' },
-      mapPlace: null,
-      mapCoordinates: null,
+      roleAccent: { de: 'Frontend', en: 'Frontend' },
+      role: { de: 'Entwicklerin', en: 'Developer' },
     });
+  });
 
-    const settings = mapper.toSectionDto(
-      'settings',
-      {
-        name: 'Ada',
-        email: 'ada@example.com',
-        address: [''],
-        profiles: { github: 'https://github.com/ada', linkedin: 'https://linkedin.com/in/ada' },
-      },
-      'update',
-    );
-    expect(settings.phone).toBeNull();
-    expect(settings.address).toBeNull();
+  it('sends only the email and the profiles of the settings', () => {
     expect(
       mapper.toSectionDto(
-        'seo',
-        { title: DTO.about!.headline, description: DTO.about!.description },
+        'settings',
+        {
+          email: ' ada@example.com ',
+          profiles: { github: 'https://github.com/ada', linkedin: 'https://linkedin.com/in/ada ' },
+        },
         'update',
-      ).ogImage,
-    ).toBeNull();
+      ),
+    ).toEqual({
+      email: 'ada@example.com',
+      profiles: { github: 'https://github.com/ada', linkedin: 'https://linkedin.com/in/ada' },
+    });
+  });
+
+  it('leaves an unset preview image out when creating and removes it with null when updating', () => {
+    const seo = { title: DTO.about!.headline, description: DTO.about!.description };
+
+    expect(mapper.toSectionDto('seo', seo, 'create').ogImage).toBeUndefined();
+    expect(mapper.toSectionDto('seo', seo, 'update').ogImage).toBeNull();
   });
 
   it('never sends null for the links of a project', () => {

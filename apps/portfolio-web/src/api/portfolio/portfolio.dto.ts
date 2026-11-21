@@ -19,9 +19,8 @@ export interface PortfolioImageRefDto {
 
 export interface HeroDto {
   name: string;
-  description: Localized<string>;
-  mapPlace?: Localized<string>;
-  mapCoordinates?: string;
+  roleAccent: Localized<string>;
+  role: Localized<string>;
 }
 
 export interface AboutDto {
@@ -75,10 +74,7 @@ export interface ContactSectionDto {
 }
 
 export interface SettingsDto {
-  name: string;
   email: string;
-  phone?: string;
-  address?: string[];
   profiles: { github: string; linkedin: string };
 }
 
@@ -106,9 +102,8 @@ export type PortfolioDto = { [K in keyof PortfolioSectionDtos]: PortfolioSection
 
 export interface HeroWriteDto {
   name: string;
-  description: Localized<string>;
-  mapPlace?: Localized<string> | null;
-  mapCoordinates?: string | null;
+  roleAccent: Localized<string>;
+  role: Localized<string>;
 }
 
 export interface AboutWriteDto {
@@ -136,10 +131,7 @@ export interface ProjectsSectionWriteDto {
 }
 
 export interface SettingsWriteDto {
-  name: string;
   email: string;
-  phone?: string | null;
-  address?: string[] | null;
   profiles: { github: string; linkedin: string };
 }
 

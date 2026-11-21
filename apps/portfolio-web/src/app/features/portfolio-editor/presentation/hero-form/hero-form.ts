@@ -11,22 +11,19 @@ import { SectionFormFooter } from '../section-form-footer/section-form-footer';
 import { localizedRules, textRules } from '../section-form/section-rules';
 import { injectSectionSave } from '../section-form/section-save';
 
-/** Optional fields are empty in the form, saving leaves them out. */
 interface HeroFormModel {
   name: string;
-  description: Localized<string>;
-  mapPlace: Localized<string>;
-  mapCoordinates: string;
+  roleAccent: Localized<string>;
+  role: Localized<string>;
 }
 
 const toModel = (hero: Hero | undefined): HeroFormModel => ({
   name: hero?.name ?? '',
-  description: hero ? { ...hero.description } : localizedOf(''),
-  mapPlace: hero?.mapPlace ? { ...hero.mapPlace } : localizedOf(''),
-  mapCoordinates: hero?.mapCoordinates ?? '',
+  roleAccent: hero ? { ...hero.roleAccent } : localizedOf(''),
+  role: hero ? { ...hero.role } : localizedOf(''),
 });
 
-/** The first screen: name, introduction and the pin on the map. */
+/** The first screen: the name and the role below it, e.g. "*Frontend* Developer". */
 @Component({
   selector: 'app-hero-form',
   imports: [FormField, FormRoot, TranslatePipe, FormText, LocalizedField, SectionFormFooter],
@@ -47,12 +44,8 @@ export class HeroForm {
     this._model,
     (path) => {
       textRules(path.name, this._i18n, { max: PORTFOLIO_LIMITS.name });
-      localizedRules(path.description, this._i18n, { max: PORTFOLIO_LIMITS.description });
-      localizedRules(path.mapPlace, this._i18n, { max: PORTFOLIO_LIMITS.mapPlace, optional: true });
-      textRules(path.mapCoordinates, this._i18n, {
-        max: PORTFOLIO_LIMITS.mapCoordinates,
-        optional: true,
-      });
+      localizedRules(path.roleAccent, this._i18n, { max: PORTFOLIO_LIMITS.roleAccent });
+      localizedRules(path.role, this._i18n, { max: PORTFOLIO_LIMITS.role });
     },
     { submission: { action: () => this._save({ ...this._model() }) } },
   );

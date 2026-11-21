@@ -3,8 +3,6 @@
   "description": "Manuel Braun, frontend developer from Partenstein in the Spessart. Angular projects, skills and contact.",
   "loadFailed": "The start page could not be loaded",
   "hero": {
-    "roleAccent": "Frontend",
-    "role": "Developer",
     "checkWork": "Check my work",
     "contactMe": "Contact me",
     "scrollCue": "Scroll to explore"

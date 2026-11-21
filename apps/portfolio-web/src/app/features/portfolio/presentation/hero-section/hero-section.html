@@ -8,8 +8,8 @@
         >&ngsp;</span
       >
       <span class="hero__line"
-        ><em class="hero__accent">{{ 'portfolioHome.hero.roleAccent' | t }}</em
-        >&ngsp;<span>{{ 'portfolioHome.hero.role' | t }}</span></span
+        ><em class="hero__accent">{{ item.roleAccent | localized }}</em
+        >&ngsp;<span>{{ item.role | localized }}</span></span
       >
     </ng-template>
     <h1 class="hero__headline" #headline appUiText="display">

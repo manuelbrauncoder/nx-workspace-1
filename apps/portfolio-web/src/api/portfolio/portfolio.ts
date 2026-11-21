@@ -12,14 +12,13 @@ export interface PortfolioImage {
   alt: Localized<string>;
 }
 
-/** First screen of the start page. */
+/** First screen of the start page: the name and the role line below it. */
 export interface Hero {
   name: string;
-  description: Localized<string>;
-  /** Label of the pin on the map, e.g. the home town. */
-  mapPlace?: Localized<string>;
-  /** Coordinates next to the pin, e.g. `50°03′ N  9°31′ E`. */
-  mapCoordinates?: string;
+  /** Start of the role, set apart in the italic serif, e.g. "Frontend". */
+  roleAccent: Localized<string>;
+  /** Rest of the role after the accent, e.g. "Developer". */
+  role: Localized<string>;
 }
 
 export interface About {
@@ -72,12 +71,9 @@ export interface ContactSection {
 }
 
 /** Who runs the site and how to reach them. */
+/** The direct ways of contact in the contact section. */
 export interface Settings {
-  name: string;
   email: string;
-  phone?: string;
-  /** Lines of the postal address. */
-  address?: string[];
   profiles: {
     github: string;
     linkedin: string;
@@ -132,8 +128,10 @@ export const PORTFOLIO_LIMITS = {
   /** One fact of "about me". */
   fact: 2000,
   facts: 20,
-  mapPlace: 200,
-  mapCoordinates: 200,
+  /** Accent word of the role in the hero, e.g. "Frontend". */
+  roleAccent: 40,
+  /** Rest of the role in the hero, e.g. "Developer". */
+  role: 60,
   projectTitle: 200,
   /** Rich-text HTML of a project, markup included. */
   projectDescription: PROJECT_DESCRIPTION_MAX,
@@ -151,9 +149,6 @@ export const PORTFOLIO_LIMITS = {
   /** One point of a skill. */
   point: 500,
   points: 20,
-  phone: 200,
-  addressLine: 200,
-  addressLines: 10,
   seoTitle: 200,
   seoDescription: 300,
   alt: 200,

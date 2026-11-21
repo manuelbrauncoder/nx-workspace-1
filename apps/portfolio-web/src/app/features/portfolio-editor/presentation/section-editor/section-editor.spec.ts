@@ -156,37 +156,47 @@ describe('SectionEditor', () => {
     );
   });
 
-  it('creates a missing section, leaving empty optional fields out', async () => {
+  it('creates the hero with the name and the role in both languages', async () => {
     const element = await render('hero');
     type(control(element, 'Name'), 'Ada Lovelace');
-    const [de, en] = localized(element, 'Einleitung');
-    type(de, 'Hallo');
-    type(en, 'Hello');
+    const [accentDe, accentEn] = localized(element, 'Rolle, hervorgehobenes Wort');
+    type(accentDe, 'Frontend');
+    type(accentEn, 'Frontend');
+    const [roleDe, roleEn] = localized(element, 'Rolle, Rest');
+    type(roleDe, 'Entwicklerin');
+    type(roleEn, 'Developer');
 
     await submit(element);
 
     expect(createSection).toHaveBeenCalledWith('hero', {
       name: 'Ada Lovelace',
-      description: { de: 'Hallo', en: 'Hello' },
-      mapPlace: { de: '', en: '' },
-      mapCoordinates: '',
+      roleAccent: { de: 'Frontend', en: 'Frontend' },
+      role: { de: 'Entwicklerin', en: 'Developer' },
     });
     expect(toast.success).toHaveBeenCalledWith('Abschnitt gespeichert');
     expect(element.textContent).toContain('Änderungen erscheinen nach dem Speichern sofort');
   });
 
-  it('asks for an optional text in both languages once one of them is filled', async () => {
+  it('asks for the role in both languages', async () => {
     const element = await render('hero');
     type(control(element, 'Name'), 'Ada');
-    const [description] = localized(element, 'Einleitung');
-    type(description, 'Hallo');
-    type(localized(element, 'Einleitung')[1], 'Hello');
-    type(localized(element, 'Ort auf der Karte')[0], 'Partenstein');
+    type(localized(element, 'Rolle, hervorgehobenes Wort')[0], 'Frontend');
+    type(localized(element, 'Rolle, Rest')[0], 'Entwicklerin');
 
     await submit(element);
 
     expect(createSection).not.toHaveBeenCalled();
-    expect(element.textContent).toContain('Bitte fülle beide Sprachen aus oder lass beide leer.');
+    expect(element.textContent).toContain('Bitte fülle dieses Feld aus.');
+  });
+
+  it('edits the settings without name, phone and address', async () => {
+    const element = await render('settings');
+
+    const labels = Array.from(element.querySelectorAll('form label'), (label) =>
+      label.textContent?.replace(/\s+/g, ' ').replace('*', '').trim(),
+    );
+
+    expect(labels).toEqual(['E-Mail', 'GitHub-Profil', 'LinkedIn-Profil']);
   });
 
   it('changes an existing section, with one list entry per line', async () => {
