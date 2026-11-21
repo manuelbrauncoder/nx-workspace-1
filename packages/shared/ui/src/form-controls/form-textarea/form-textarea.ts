@@ -11,6 +11,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
+import { AppLanguage } from '@core/i18n/languages';
 import { HlmTextareaImports } from '@spartan-ng/helm/textarea';
 import { FormControlErrors, visibleErrorMessages } from '../form-control-shell/form-control-errors';
 import { FormControlShell } from '../form-control-shell/form-control-shell';
@@ -27,8 +28,19 @@ export class FormTextarea implements FormValueControl<string> {
 
   readonly label = input.required<string>();
   readonly description = input<string>();
+  /**
+   * Ids of descriptions outside the control that also explain it, e.g. the description of the
+   * group the field is part of. Screen readers often skip a group's description on focus.
+   */
+  readonly descriptionIds = input<readonly string[]>([]);
   readonly placeholder = input<string>();
   readonly rows = input(4, { transform: numberAttribute });
+  /**
+   * Language of the text typed in, when it differs from the page, e.g. the English version of a
+   * text. Sets `lang` on the input only, the label stays in the page language. A `placeholder` is
+   * read in `contentLang` as well, so write it in that language or leave it out.
+   */
+  readonly contentLang = input<AppLanguage>();
 
   // Bound by the `FormField` directive.
   readonly errors = input<FormControlErrors>([]);

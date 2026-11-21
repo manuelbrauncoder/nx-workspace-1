@@ -5,22 +5,46 @@
   }
   <div class="localized-field__languages" [class.localized-field__languages--stacked]="richText()">
     @if (richText()) {
-      <app-form-rich-text [formField]="field().de" [label]="'sectionEditor.languages.de' | t" />
-      <app-form-rich-text [formField]="field().en" [label]="'sectionEditor.languages.en' | t" />
+      <app-form-rich-text
+        [formField]="field().de"
+        [label]="'sectionEditor.languages.de' | t"
+        [descriptionIds]="_descriptionIds()"
+        contentLang="de"
+      />
+      <app-form-rich-text
+        [formField]="field().en"
+        [label]="'sectionEditor.languages.en' | t"
+        [descriptionIds]="_descriptionIds()"
+        contentLang="en"
+      />
     } @else if (multiline()) {
       <app-form-textarea
         [formField]="field().de"
         [label]="'sectionEditor.languages.de' | t"
+        [descriptionIds]="_descriptionIds()"
         [rows]="rows()"
+        contentLang="de"
       />
       <app-form-textarea
         [formField]="field().en"
         [label]="'sectionEditor.languages.en' | t"
+        [descriptionIds]="_descriptionIds()"
         [rows]="rows()"
+        contentLang="en"
       />
     } @else {
-      <app-form-text [formField]="field().de" [label]="'sectionEditor.languages.de' | t" />
-      <app-form-text [formField]="field().en" [label]="'sectionEditor.languages.en' | t" />
+      <app-form-text
+        [formField]="field().de"
+        [label]="'sectionEditor.languages.de' | t"
+        [descriptionIds]="_descriptionIds()"
+        contentLang="de"
+      />
+      <app-form-text
+        [formField]="field().en"
+        [label]="'sectionEditor.languages.en' | t"
+        [descriptionIds]="_descriptionIds()"
+        contentLang="en"
+      />
     }
   </div>
 </fieldset>

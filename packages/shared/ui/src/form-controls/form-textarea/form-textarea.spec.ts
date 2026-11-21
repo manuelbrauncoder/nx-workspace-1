@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { FormTextarea } from './form-textarea';
 
 describe('FormTextarea', () => {
+  const errors = [{ kind: 'required', message: 'Bitte gib einen Inhalt ein.' }];
+
   async function render(inputs: Record<string, unknown> = {}) {
     const fixture = TestBed.createComponent(FormTextarea);
     fixture.componentRef.setInput('label', 'Inhalt');
@@ -21,7 +23,6 @@ describe('FormTextarea', () => {
   });
 
   it('shows errors only once touched', async () => {
-    const errors = [{ kind: 'required', message: 'Bitte gib einen Inhalt ein.' }];
     const { fixture, element, textarea } = await render({ errors });
     expect(element.querySelector('[role="alert"]')).toBeNull();
 
@@ -44,5 +45,51 @@ describe('FormTextarea', () => {
 
     expect(fixture.componentInstance.value()).toBe('Milch');
     expect(touched).toHaveBeenCalledOnce();
+  });
+
+  it('marks the language of the text on the textarea, not on the label', async () => {
+    const { element, textarea } = await render({ contentLang: 'de' });
+
+    expect(textarea.getAttribute('lang')).toBe('de');
+    expect(element.querySelector('[lang]')).toBe(textarea);
+    await expect(element).toBeAccessible();
+  });
+
+  it('leaves the language to the page by default', async () => {
+    const { textarea } = await render();
+
+    expect(textarea.hasAttribute('lang')).toBe(false);
+  });
+
+  it('points the textarea at descriptions outside the control, before its own', async () => {
+    const hint = document.createElement('p');
+    hint.id = 'group-hint';
+    hint.textContent = 'Gilt für beide Sprachen.';
+    document.body.append(hint);
+    try {
+      const { fixture, element, textarea } = await render({
+        description: 'Kurz halten.',
+        errors,
+        touched: true,
+      });
+      const description = element.querySelector('p[id$="-description"]')!;
+      const alert = element.querySelector('[role="alert"]')!;
+
+      // Added after the own description, still read first.
+      fixture.componentRef.setInput('descriptionIds', ['group-hint']);
+      await fixture.whenStable();
+
+      expect(textarea.getAttribute('aria-describedby')).toBe(
+        `group-hint ${description.id} ${alert.id}`,
+      );
+      await expect(element).toBeAccessible();
+
+      fixture.componentRef.setInput('descriptionIds', []);
+      await fixture.whenStable();
+
+      expect(textarea.getAttribute('aria-describedby')).toBe(`${description.id} ${alert.id}`);
+    } finally {
+      hint.remove();
+    }
   });
 });

@@ -1,6 +1,7 @@
 <app-form-control-shell
   [controlId]="_id"
   [description]="description()"
+  [descriptionIds]="descriptionIds()"
   [disabled]="disabled()"
   [errors]="_errorMessages()"
   [label]="label()"
@@ -9,6 +10,7 @@
   <textarea
     #control
     [id]="_id"
+    [attr.lang]="contentLang() ?? null"
     [attr.name]="name() || null"
     [attr.placeholder]="placeholder() ?? null"
     [disabled]="disabled()"

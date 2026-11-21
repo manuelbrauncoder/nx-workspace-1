@@ -67,4 +67,50 @@ describe('FormText', () => {
 
     await expect(element).toBeAccessible();
   });
+
+  it('marks the language of the text on the input, not on the label', async () => {
+    const { element, input } = await render({ contentLang: 'en' });
+
+    expect(input.getAttribute('lang')).toBe('en');
+    expect(element.querySelector('[lang]')).toBe(input);
+    await expect(element).toBeAccessible();
+  });
+
+  it('leaves the language to the page by default', async () => {
+    const { input } = await render();
+
+    expect(input.hasAttribute('lang')).toBe(false);
+  });
+
+  it('points the input at descriptions outside the control, before its own', async () => {
+    const hint = document.createElement('p');
+    hint.id = 'group-hint';
+    hint.textContent = 'Gilt für beide Sprachen.';
+    document.body.append(hint);
+    try {
+      const { fixture, element, input } = await render({
+        description: 'Kurz halten.',
+        errors,
+        touched: true,
+      });
+      const description = element.querySelector('p[id$="-description"]')!;
+      const alert = element.querySelector('[role="alert"]')!;
+
+      // Added after the own description, still read first.
+      fixture.componentRef.setInput('descriptionIds', ['group-hint']);
+      await fixture.whenStable();
+
+      expect(input.getAttribute('aria-describedby')).toBe(
+        `group-hint ${description.id} ${alert.id}`,
+      );
+      await expect(element).toBeAccessible();
+
+      fixture.componentRef.setInput('descriptionIds', []);
+      await fixture.whenStable();
+
+      expect(input.getAttribute('aria-describedby')).toBe(`${description.id} ${alert.id}`);
+    } finally {
+      hint.remove();
+    }
+  });
 });

@@ -16,6 +16,7 @@ import {
 } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
 import { RichTextProfile } from '@contracts/rich-text';
+import { AppLanguage } from '@core/i18n/languages';
 import { UiDialogService } from '../../ui/dialog/dialog.service';
 import { FormControlErrors, visibleErrorMessages } from '../form-control-shell/form-control-errors';
 import { FormControlShell } from '../form-control-shell/form-control-shell';
@@ -45,8 +46,18 @@ export class FormRichText implements FormValueControl<string> {
 
   readonly label = input.required<string>();
   readonly description = input<string>();
+  /**
+   * Ids of descriptions outside the control that also explain it, e.g. the description of the
+   * group the field is part of. Screen readers often skip a group's description on focus.
+   */
+  readonly descriptionIds = input<readonly string[]>([]);
   /** `page` for a page of this site: links may also point within the site or to a phone. */
   readonly profile = input<RichTextProfile>('text');
+  /**
+   * Language of the text typed in, when it differs from the page, e.g. the English version of a
+   * text. Sets `lang` on the editable area only, the label stays in the page language.
+   */
+  readonly contentLang = input<AppLanguage>();
 
   // Bound by the `FormField` directive.
   readonly errors = input<FormControlErrors>([]);

@@ -114,21 +114,29 @@ All controls share `label` (required) and `description` (optional). State such a
 
 A required field shows an asterisk, hidden from screen readers, which hear the native `required` instead. `FormDate` is a button, which has no `required`, so its label carries a visually hidden "Pflichtfeld" (`announceRequired` on `FormControlShell`). A new control that is not a native input sets it as well.
 
-| Control           | Selector                | Value type      | Own inputs                            |
-| ----------------- | ----------------------- | --------------- | ------------------------------------- |
-| `FormText`        | `app-form-text`         | `string`        | `type`, `placeholder`, `autocomplete` |
-| `FormTextarea`    | `app-form-textarea`     | `string`        | `placeholder`, `rows` (default 4)     |
-| `FormRichText`    | `app-form-rich-text`    | `string` (HTML) |                                       |
-| `FormFiles`       | `app-form-files`        | `File[]`        | `maxFiles`, `accept`, `maxFileSize`   |
-| `FormDate`        | `app-form-date`         | `Date \| null`  | `placeholder`                         |
-| `FormSelect`      | `app-form-select`       | `T \| null`     | `options` (required), `placeholder`   |
-| `FormToggleGroup` | `app-form-toggle-group` | `T \| null`     | `options` (required)                  |
-| `FormRadioGroup`  | `app-form-radio-group`  | `T \| null`     | `options` (required), `layout`        |
-| `FormStepper`     | `app-form-stepper`      | `number`        | `decreaseLabel`, `increaseLabel`      |
-| `FormCheckbox`    | `app-form-checkbox`     | `boolean`       |                                       |
-| `FormSwitch`      | `app-form-switch`       | `boolean`       |                                       |
+| Control           | Selector                | Value type      | Own inputs                                                             |
+| ----------------- | ----------------------- | --------------- | ---------------------------------------------------------------------- |
+| `FormText`        | `app-form-text`         | `string`        | `type`, `placeholder`, `autocomplete`, `contentLang`, `descriptionIds` |
+| `FormTextarea`    | `app-form-textarea`     | `string`        | `placeholder`, `rows` (default 4), `contentLang`, `descriptionIds`     |
+| `FormRichText`    | `app-form-rich-text`    | `string` (HTML) | `profile`, `contentLang`, `descriptionIds`                             |
+| `FormFiles`       | `app-form-files`        | `File[]`        | `maxFiles`, `accept`, `maxFileSize`                                    |
+| `FormDate`        | `app-form-date`         | `Date \| null`  | `placeholder`                                                          |
+| `FormSelect`      | `app-form-select`       | `T \| null`     | `options` (required), `placeholder`                                    |
+| `FormToggleGroup` | `app-form-toggle-group` | `T \| null`     | `options` (required)                                                   |
+| `FormRadioGroup`  | `app-form-radio-group`  | `T \| null`     | `options` (required), `layout`                                         |
+| `FormStepper`     | `app-form-stepper`      | `number`        | `decreaseLabel`, `increaseLabel`                                       |
+| `FormCheckbox`    | `app-form-checkbox`     | `boolean`       |                                                                        |
+| `FormSwitch`      | `app-form-switch`       | `boolean`       |                                                                        |
 
 All of them are shown on `/showcase/forms`.
+
+### Text in another language
+
+A field whose text is in a language other than the page, such as the English version of a text on a German page, sets `contentLang` (`'de'` or `'en'`, `AppLanguage` from `@core/i18n/languages`). `FormText`, `FormTextarea` and `FormRichText` put it as `lang` on the native input, the textarea or the editable area, not on the host. The label and the toolbar keep the page language, the value is read with the right voice and spell-checked in its own language (WCAG 3.1.2 Language of Parts). Without `contentLang` the control has no `lang` and follows the page. A `placeholder` sits on the same element and is read in `contentLang` too, so it is written in that language or left out.
+
+```html
+<app-form-text [formField]="field().en" label="Englisch" contentLang="en" />
+```
 
 ### `FormText`
 
@@ -294,6 +302,17 @@ Disable through the schema, not through an attribute:
 disabled(path.customerNumber);
 ```
 
+### Descriptions outside the field
+
+A field inside a group with its own description, such as a `<fieldset>` with a hint below the legend, passes the id of that hint as `descriptionIds` (`FormText`, `FormTextarea`, `FormRichText`). Screen readers often skip the description of a group when a field inside it gets focus, so a short label such as "Deutsch" would lose its explanation (WCAG 1.3.1, 3.3.2). The ids go through `FormControlShell` like its own description: `aria-describedby` lists them first, then the own description, then the errors.
+
+```html
+<p [id]="_hintId">Rolle, übrige Wörter</p>
+<app-form-text [formField]="field().de" label="Deutsch" [descriptionIds]="[_hintId]" />
+```
+
+`LocalizedField` in portfolio-web does this for both language fields and keeps `aria-describedby` on the `<fieldset>` as well.
+
 ## How a control is built
 
 The controls are custom controls of Signal Forms. Knowing the contract matters when you add one.
@@ -368,7 +387,7 @@ The shell
 - renders the `<label>` for `controlId`, with an asterisk when the field is required. Its id is available as `shell.labelId()` for a control a `<label for>` cannot name, such as the editable `div` of `FormRichText`
 - renders the description and, once there are visible errors, the error list with `role="alert"`
 - supports `orientation="horizontal"`, which puts the control in front of the label (checkbox, switch)
-- provides the accessibility wiring for the projected Spartan control: `aria-describedby` pointing at description and errors, and the invalid state
+- provides the accessibility wiring for the projected Spartan control: `aria-describedby` pointing at the descriptions from `descriptionIds`, its own description and the errors, and the invalid state
 
 Because the shell owns the invalid state, controls do not bind `aria-invalid` or `forceInvalid` themselves. The shell replaces the `NgControl` Spartan would otherwise find. Without that, Spartan would read the state of the `FormField` directive and flag untouched fields as invalid.
 
