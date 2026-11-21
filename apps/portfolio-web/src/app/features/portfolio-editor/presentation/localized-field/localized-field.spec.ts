@@ -126,9 +126,18 @@ describe('LocalizedField', () => {
     expect(element.querySelector('#plain [aria-describedby]')).toBeNull();
   });
 
-  it('is accessible', async () => {
+  // One field per axe run: the whole host with its rich-text editors is too slow for CI.
+  it.each([
+    'plain',
+    'multi',
+    'rich',
+    'both',
+    'described-plain',
+    'described-multi',
+    'described-rich',
+  ])('is accessible as %s', async (id) => {
     const element = await render();
 
-    await expect(element).toBeAccessible();
+    await expect(element.querySelector<HTMLElement>(`#${id}`)!).toBeAccessible();
   });
 });
