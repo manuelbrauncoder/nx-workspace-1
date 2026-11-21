@@ -1,4 +1,4 @@
-import { booleanAttribute, Component, input, numberAttribute } from '@angular/core';
+import { booleanAttribute, Component, computed, input, numberAttribute } from '@angular/core';
 import { FieldTree, FormField } from '@angular/forms/signals';
 import { Localized } from '@core/i18n/localized';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -29,4 +29,8 @@ export class LocalizedField {
   readonly richText = input(false, { transform: booleanAttribute });
 
   private readonly _descriptionId = `localized-field-description-${nextId++}`;
+  /** Each language field points at the description too: screen readers often skip the group's. */
+  private readonly _descriptionIds = computed(() =>
+    this.description() ? [this._descriptionId] : [],
+  );
 }

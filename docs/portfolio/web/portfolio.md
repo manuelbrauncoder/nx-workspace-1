@@ -55,7 +55,7 @@ Light by default: `DEFAULT_THEME_MODE` is `light` in `app.config.ts`, and the in
 
 - `PortfolioEditorUseCase` combines the portfolio and the media API. `PortfolioEditorStore.save(name, value)` creates a section that does not exist yet (`POST`) and replaces an existing one (`PATCH`), then updates the loaded content with the answer
 - Every section has a form component (`HeroForm`, `AboutForm`, …) with Signal Forms. The form model starts from the stored section through `linkedSignal` and follows it after a save
-- Shared pieces: `LocalizedField` (German and English side by side, with `richText` one rich-text editor per language), `ImageField`, `ImagesField` (a sortable list of images), `ListItemActions` (move up, move down, remove) and `SectionFormFooter` (failure, save button). The rules in [section-rules.ts](../../../apps/portfolio-web/src/app/features/portfolio-editor/presentation/section-form/section-rules.ts) cover required texts, lengths, URLs and lists
+- Shared pieces: `LocalizedField` (German and English side by side, with `richText` one rich-text editor per language; each field carries its language as `lang` and points at the description of the group), `ImageField`, `ImagesField` (a sortable list of images), `ListItemActions` (move up, move down, remove) and `SectionFormFooter` (failure, save button). The rules in [section-rules.ts](../../../apps/portfolio-web/src/app/features/portfolio-editor/presentation/section-form/section-rules.ts) cover required texts, lengths, URLs and lists
 - Lists of plain strings (facts, points of a skill, stack, address) are a textarea with one entry per line. The mapper trims every entry and drops empty ones
 - Saving leaves an empty optional field out on `POST` and sends `null` on `PATCH`, which removes it
 
