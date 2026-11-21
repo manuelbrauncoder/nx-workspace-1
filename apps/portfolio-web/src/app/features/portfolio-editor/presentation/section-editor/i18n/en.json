@@ -67,7 +67,7 @@
     "nameDescription": "Shown large on the start page, the role below it.",
     "roleAccent": "Role, accent word",
     "roleAccentDescription": "Starts the role, in italics and colour, e.g. “Frontend”.",
-    "role": "Role, rest",
+    "role": "Role, remaining words",
     "roleDescription": "Follows the accent word, e.g. “Developer”."
   },
   "about": {

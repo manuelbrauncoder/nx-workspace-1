@@ -67,7 +67,7 @@
     "nameDescription": "Steht groß auf der Startseite, darunter die Rolle.",
     "roleAccent": "Rolle, hervorgehobenes Wort",
     "roleAccentDescription": "Steht am Anfang der Rolle, kursiv und farbig, z. B. „Frontend“.",
-    "role": "Rolle, Rest",
+    "role": "Rolle, übrige Wörter",
     "roleDescription": "Folgt auf das hervorgehobene Wort, z. B. „Developer“."
   },
   "about": {

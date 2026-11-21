@@ -1,5 +1,10 @@
 import { Localized } from '@core/i18n/localized';
-import { PROJECT_DESCRIPTION_MAX, PROJECT_IMAGES_MAX } from '@portfolio/contracts/portfolio-limits';
+import {
+  HERO_ROLE_ACCENT_MAX,
+  HERO_ROLE_MAX,
+  PROJECT_DESCRIPTION_MAX,
+  PROJECT_IMAGES_MAX,
+} from '@portfolio/contracts/portfolio-limits';
 
 /** An uploaded image as part of the content, with its alternative text in every language. */
 export interface PortfolioImage {
@@ -70,7 +75,6 @@ export interface ContactSection {
   description: Localized<string>;
 }
 
-/** Who runs the site and how to reach them. */
 /** The direct ways of contact in the contact section. */
 export interface Settings {
   email: string;
@@ -129,9 +133,9 @@ export const PORTFOLIO_LIMITS = {
   fact: 2000,
   facts: 20,
   /** Accent word of the role in the hero, e.g. "Frontend". */
-  roleAccent: 40,
+  roleAccent: HERO_ROLE_ACCENT_MAX,
   /** Rest of the role in the hero, e.g. "Developer". */
-  role: 60,
+  role: HERO_ROLE_MAX,
   projectTitle: 200,
   /** Rich-text HTML of a project, markup included. */
   projectDescription: PROJECT_DESCRIPTION_MAX,

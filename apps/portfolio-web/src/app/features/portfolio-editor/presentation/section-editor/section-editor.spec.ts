@@ -162,7 +162,7 @@ describe('SectionEditor', () => {
     const [accentDe, accentEn] = localized(element, 'Rolle, hervorgehobenes Wort');
     type(accentDe, 'Frontend');
     type(accentEn, 'Frontend');
-    const [roleDe, roleEn] = localized(element, 'Rolle, Rest');
+    const [roleDe, roleEn] = localized(element, 'Rolle, übrige Wörter');
     type(roleDe, 'Entwicklerin');
     type(roleEn, 'Developer');
 
@@ -181,12 +181,20 @@ describe('SectionEditor', () => {
     const element = await render('hero');
     type(control(element, 'Name'), 'Ada');
     type(localized(element, 'Rolle, hervorgehobenes Wort')[0], 'Frontend');
-    type(localized(element, 'Rolle, Rest')[0], 'Entwicklerin');
+    type(localized(element, 'Rolle, übrige Wörter')[0], 'Entwicklerin');
 
     await submit(element);
 
     expect(createSection).not.toHaveBeenCalled();
     expect(element.textContent).toContain('Bitte fülle dieses Feld aus.');
+  });
+
+  it('passes the accessibility check for the hero', async () => {
+    await expect(await render('hero')).toBeAccessible();
+  });
+
+  it('passes the accessibility check for the settings', async () => {
+    await expect(await render('settings')).toBeAccessible();
   });
 
   it('edits the settings without name, phone and address', async () => {

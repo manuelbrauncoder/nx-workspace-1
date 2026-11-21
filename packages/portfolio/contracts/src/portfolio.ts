@@ -1,7 +1,17 @@
 import { z } from 'zod';
-import { PROJECT_DESCRIPTION_MAX, PROJECT_IMAGES_MAX } from './portfolio-limits';
+import {
+  HERO_ROLE_ACCENT_MAX,
+  HERO_ROLE_MAX,
+  PROJECT_DESCRIPTION_MAX,
+  PROJECT_IMAGES_MAX,
+} from './portfolio-limits';
 
-export { PROJECT_DESCRIPTION_MAX, PROJECT_IMAGES_MAX } from './portfolio-limits';
+export {
+  HERO_ROLE_ACCENT_MAX,
+  HERO_ROLE_MAX,
+  PROJECT_DESCRIPTION_MAX,
+  PROJECT_IMAGES_MAX,
+} from './portfolio-limits';
 
 /** The sections of the start page, in page order. Each one is a singleton. */
 export const sectionKeys = [
@@ -55,7 +65,11 @@ function buildSections(l: Localize, image: z.ZodType) {
 
   return {
     // the name and below it the role, e.g. "*Frontend* Developer": the accent word is set apart
-    hero: z.object({ name: short, roleAccent: l(text(40)), role: l(text(60)) }),
+    hero: z.object({
+      name: short,
+      roleAccent: l(text(HERO_ROLE_ACCENT_MAX)),
+      role: l(text(HERO_ROLE_MAX)),
+    }),
     about: z.object({ headline: l(short), description: l(long), facts: l(list(long, 20)), image }),
     projects: z.object({ headline: l(short), description: l(long), items: list(project) }),
     skills: z.object({ headline: l(short), description: l(long), sets: list(skillSet, 20) }),

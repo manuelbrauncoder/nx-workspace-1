@@ -9,8 +9,8 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
-    <meta name="theme-color" content="#f3f0ea" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#07080d" media="(prefers-color-scheme: dark)" />
+    <!-- The page starts light whatever the system says, so the browser bar does too. -->
+    <meta name="theme-color" content="#f3f0ea" />
     <script>
       // Sets .dark before the first paint (no flicker). Same logic as ThemeService with
       // DEFAULT_THEME_MODE 'light' (app.config.ts): without a stored choice the page stays light,

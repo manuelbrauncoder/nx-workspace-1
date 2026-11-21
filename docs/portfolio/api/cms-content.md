@@ -84,7 +84,6 @@ interface Contact {
   description: L;
 }
 
-/** Replaces `SITE_OWNER`. */
 /** The direct ways of contact in the contact section. */
 interface Settings {
   email: string;
@@ -257,4 +256,4 @@ Migration `0005_project_images_rich_text` converts the stored `projects` section
 
 Migration `0006_project_published` marks every project of the stored `projects` section as `published: true`, unless it already has the key. Projects that were public until now stay public. The migration can run again without changes. An older API image ignores the key, so no database restore is needed to go back, but it shows drafts to everyone: remove or publish them first.
 
-Migration `0007_hero_role_settings_cleanup` follows the redesign of the start page. The stored `hero` gets `roleAccent` and `role` ("Frontend" and "Developer" in both languages, the text the page showed so far) unless it already has them, and loses `description`, `mapPlace` and `mapCoordinates`. The stored `settings` lose `name`, `phone` and `address`, which no page read. Both parts can run again without changes. It only goes forward: an older API image would expect the removed fields, going back needs the database backup from before the release. Release the API and the web app together, an older web app reads the removed fields in its editor.
+Migration `0007_hero_role_settings_cleanup` follows the redesign of the start page. The stored `hero` gets `roleAccent` and `role` ("Frontend" and "Developer" in both languages, the text the page showed so far) unless it already has them, and loses `description`, `mapPlace` and `mapCoordinates`. The stored `settings` lose `name`, `phone` and `address`, which no page read. Both parts can run again without changes. It only goes forward: an older API image would expect the removed fields, going back needs the database backup from before the release. Release the API first, then the web app: the API answers `GET` with the stored content as it is, so a new web app against the old API gets a hero without `roleAccent` and `role` and cannot show the start page. An older web app against the new API still shows the start page, its editor no longer saves a new hero.
