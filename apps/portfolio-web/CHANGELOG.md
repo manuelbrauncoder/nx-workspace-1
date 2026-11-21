@@ -1,3 +1,10 @@
+## 2.6.0 (2026-11-21)
+
+### 🩹 Fixes
+
+- **portfolio-web:** no frame around the project screenshots ([1218e4a](https://github.com/manuelbrauncoder/nx-workspace-1/commit/1218e4a))
+- **portfolio-web:** language and description on bilingual editor fields ([b516d0d](https://github.com/manuelbrauncoder/nx-workspace-1/commit/b516d0d))
+
 ## 2.5.0 (2026-11-21)
 
 ### 🚀 Features
