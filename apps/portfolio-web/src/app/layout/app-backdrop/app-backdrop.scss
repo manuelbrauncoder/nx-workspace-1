@@ -2,23 +2,29 @@
 // the `--backdrop-*` tokens in themes/.
 :host {
   --scroll: 0;
+  // One screen: blobs and shade are laid out on it.
+  --backdrop-screen: 100lvh;
 
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  // As tall as the largest viewport: iOS Safari draws the page under its bars, and a layer with
-  // `bottom: 0` would end above them and leave a bar of the plain background.
-  height: 100vh;
-  height: 100lvh;
+  // Reaches far below the screen. iOS Safari draws the page on under its floating bottom bar,
+  // outside the viewport, where a layer of exactly one screen ends and the plain background
+  // showed as a bar. A fixed layer that overhangs adds no scroll height.
+  height: calc(var(--backdrop-screen) * 1.4);
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
 }
 
+// One screen high, the blobs reach into the overhang below on their own.
 .backdrop__parallax {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--backdrop-screen);
   transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -119,8 +125,19 @@
 
 .backdrop__shade {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--backdrop-screen);
   background: var(--backdrop-shade);
+}
+
+// Below the screen the shade goes on in its last colour.
+.backdrop__shade--overhang {
+  top: var(--backdrop-screen);
+  bottom: 0;
+  height: auto;
+  background: var(--backdrop-shade-end);
 }
 
 @keyframes drift-1 {
