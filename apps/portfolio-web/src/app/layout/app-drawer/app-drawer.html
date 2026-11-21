@@ -12,6 +12,7 @@
   <div class="app-drawer__content">
     <!-- A link to a section of the current page may trigger no navigation either. -->
     <app-ui-nav-menu
+      class="app-drawer__nav"
       [items]="_items"
       [label]="'layout.mainNavigation' | t"
       (click)="_closeOnLink($event)"

@@ -5,6 +5,12 @@
   min-height: 100%;
 }
 
+// Room between the logo in the header of the panel and the links.
+.app-drawer__nav {
+  display: block;
+  margin-top: 2rem;
+}
+
 // Only takes room when someone is signed in, the empty host collapses. Clearly apart from the
 // navigation above it.
 .app-drawer__account:not(:empty) {
