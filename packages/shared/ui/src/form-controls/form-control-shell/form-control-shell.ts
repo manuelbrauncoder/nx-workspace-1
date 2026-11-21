@@ -60,6 +60,11 @@ export class FormControlShell {
   /** Renders the label instead of `label`, for a label with markup such as a link in it. */
   readonly labelTemplate = input<TemplateRef<unknown>>();
   readonly description = input<string>();
+  /**
+   * Ids of descriptions outside the shell that also explain this control, e.g. the description of
+   * the group it is part of. Read before its own description.
+   */
+  readonly descriptionIds = input<readonly string[]>([]);
   /** Messages to show, already reduced to the visible ones. */
   readonly errors = input<readonly string[]>([]);
   readonly required = input(false);
@@ -83,6 +88,7 @@ export class FormControlShell {
   /** For controls that take `aria-describedby` as an input instead of reading it from the field. */
   readonly describedBy = computed(() => {
     const ids = [
+      ...this.descriptionIds(),
       ...(this.description() ? [this._descriptionId()] : []),
       ...(this._invalid() ? [this._errorId()] : []),
     ];
@@ -93,6 +99,14 @@ export class FormControlShell {
   readonly spartanControl = spartanControlState(this._invalid);
 
   constructor() {
+    // Registered first, so Spartan lists them in front of the own description, as `describedBy` does.
+    effect((onCleanup) => {
+      const ids = this.descriptionIds();
+      for (const id of ids) {
+        this._a11y.registerDescription(id);
+      }
+      onCleanup(() => ids.forEach((id) => this._a11y.unregisterDescription(id)));
+    });
     effect((onCleanup) => {
       if (!this.description()) {
         return;

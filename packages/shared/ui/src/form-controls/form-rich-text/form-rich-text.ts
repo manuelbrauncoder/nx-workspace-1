@@ -46,6 +46,11 @@ export class FormRichText implements FormValueControl<string> {
 
   readonly label = input.required<string>();
   readonly description = input<string>();
+  /**
+   * Ids of descriptions outside the control that also explain it, e.g. the description of the
+   * group the field is part of. Screen readers often skip a group's description on focus.
+   */
+  readonly descriptionIds = input<readonly string[]>([]);
   /** `page` for a page of this site: links may also point within the site or to a phone. */
   readonly profile = input<RichTextProfile>('text');
   /**

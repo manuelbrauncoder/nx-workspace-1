@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { FormTextarea } from './form-textarea';
 
 describe('FormTextarea', () => {
+  const errors = [{ kind: 'required', message: 'Bitte gib einen Inhalt ein.' }];
+
   async function render(inputs: Record<string, unknown> = {}) {
     const fixture = TestBed.createComponent(FormTextarea);
     fixture.componentRef.setInput('label', 'Inhalt');
@@ -21,7 +23,6 @@ describe('FormTextarea', () => {
   });
 
   it('shows errors only once touched', async () => {
-    const errors = [{ kind: 'required', message: 'Bitte gib einen Inhalt ein.' }];
     const { fixture, element, textarea } = await render({ errors });
     expect(element.querySelector('[role="alert"]')).toBeNull();
 
@@ -58,5 +59,34 @@ describe('FormTextarea', () => {
     const { textarea } = await render();
 
     expect(textarea.hasAttribute('lang')).toBe(false);
+  });
+
+  it('points the textarea at descriptions outside the control, before its own', async () => {
+    const hint = document.createElement('p');
+    hint.id = 'group-hint';
+    hint.textContent = 'Gilt für beide Sprachen.';
+    document.body.append(hint);
+    try {
+      const { fixture, element, textarea } = await render({
+        descriptionIds: ['group-hint'],
+        description: 'Kurz halten.',
+        errors,
+        touched: true,
+      });
+
+      const description = element.querySelector('p[id$="-description"]')!;
+      const alert = element.querySelector('[role="alert"]')!;
+      expect(textarea.getAttribute('aria-describedby')).toBe(
+        `group-hint ${description.id} ${alert.id}`,
+      );
+      await expect(element).toBeAccessible();
+
+      fixture.componentRef.setInput('descriptionIds', []);
+      await fixture.whenStable();
+
+      expect(textarea.getAttribute('aria-describedby')).toBe(`${description.id} ${alert.id}`);
+    } finally {
+      hint.remove();
+    }
   });
 });

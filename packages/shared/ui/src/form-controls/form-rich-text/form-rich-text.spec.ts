@@ -9,6 +9,8 @@ describe('FormRichText', () => {
     Range.prototype.getBoundingClientRect = () => rect;
   });
 
+  const errors = [{ kind: 'required', message: 'Bitte gib einen Inhalt ein.' }];
+
   async function render(inputs: Record<string, unknown> = {}) {
     const fixture = TestBed.createComponent(FormRichText);
     fixture.componentRef.setInput('label', 'Inhalt');
@@ -36,7 +38,6 @@ describe('FormRichText', () => {
   });
 
   it('shows errors only once touched', async () => {
-    const errors = [{ kind: 'required', message: 'Bitte gib einen Inhalt ein.' }];
     const { fixture, element, editor } = await render({ errors });
     expect(element.querySelector('[role="alert"]')).toBeNull();
     expect(editor.getAttribute('aria-invalid')).toBeNull();
@@ -150,5 +151,34 @@ describe('FormRichText', () => {
     const { editor } = await render();
 
     expect(editor.hasAttribute('lang')).toBe(false);
+  });
+
+  it('points the editor at descriptions outside the control, before its own', async () => {
+    const hint = document.createElement('p');
+    hint.id = 'group-hint';
+    hint.textContent = 'Gilt für beide Sprachen.';
+    document.body.append(hint);
+    try {
+      const { fixture, element, editor } = await render({
+        descriptionIds: ['group-hint'],
+        description: 'Kurz halten.',
+        errors,
+        touched: true,
+      });
+
+      const description = element.querySelector('p[id$="-description"]')!;
+      const alert = element.querySelector('[role="alert"]')!;
+      expect(editor.getAttribute('aria-describedby')).toBe(
+        `group-hint ${description.id} ${alert.id}`,
+      );
+      await expect(element).toBeAccessible();
+
+      fixture.componentRef.setInput('descriptionIds', []);
+      await fixture.whenStable();
+
+      expect(editor.getAttribute('aria-describedby')).toBe(`${description.id} ${alert.id}`);
+    } finally {
+      hint.remove();
+    }
   });
 });

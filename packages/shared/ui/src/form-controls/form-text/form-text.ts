@@ -30,6 +30,11 @@ export class FormText implements FormValueControl<string> {
 
   readonly label = input.required<string>();
   readonly description = input<string>();
+  /**
+   * Ids of descriptions outside the control that also explain it, e.g. the description of the
+   * group the field is part of. Screen readers often skip a group's description on focus.
+   */
+  readonly descriptionIds = input<readonly string[]>([]);
   readonly type = input<FormTextType>('text');
   readonly placeholder = input<string>();
   readonly autocomplete = input<string>();
