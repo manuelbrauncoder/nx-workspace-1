@@ -1,3 +1,9 @@
+## 2.3.1 (2026-11-21)
+
+### 🩹 Fixes
+
+- **portfolio-web:** backdrop under the iOS bars, lighter rendering on phones ([651ef9a](https://github.com/manuelbrauncoder/nx-workspace-1/commit/651ef9a))
+
 ## 2.3.0 (2026-11-20)
 
 ### 🚀 Features
