@@ -1,3 +1,15 @@
+## 2.4.0 (2026-11-21)
+
+### 🚀 Features
+
+- **portfolio-web:** more room above the links in the drawer ([4404f86](https://github.com/manuelbrauncoder/nx-workspace-1/commit/4404f86))
+- **portfolio-web:** language and theme at the bottom of the drawer ([e9eed2c](https://github.com/manuelbrauncoder/nx-workspace-1/commit/e9eed2c))
+- **portfolio-web:** mobile drawer with a menu button again ([783298e](https://github.com/manuelbrauncoder/nx-workspace-1/commit/783298e))
+
+### 🩹 Fixes
+
+- **portfolio-web:** backdrop reaches under the bottom bar of iOS Safari ([ec082e5](https://github.com/manuelbrauncoder/nx-workspace-1/commit/ec082e5))
+
 ## 2.3.1 (2026-11-21)
 
 ### 🩹 Fixes
