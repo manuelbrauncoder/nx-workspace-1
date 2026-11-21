@@ -19,9 +19,13 @@ const l = <T>(de: T, en: T) => ({ de, en });
 
 const hero = {
   name: 'Ada Lovelace',
-  description: l('Hallo', 'Hello'),
-  mapPlace: l('London', 'London'),
-  mapCoordinates: '51°30′ N  0°07′ W',
+  roleAccent: l('Frontend', 'Frontend'),
+  role: l('Entwicklerin', 'Developer'),
+};
+
+const seo = {
+  title: l('Titel', 'Title'),
+  description: l('Beschreibung', 'Description'),
 };
 
 const skills = {
@@ -76,16 +80,22 @@ describe('portfolio', () => {
     const changed = await admin.patch('/api/v1/portfolio/hero').send({ name: ' Ada ' }).expect(200);
     expect(changed.body.hero).toEqual({ ...hero, name: 'Ada' });
 
-    // null removes an optional field
-    const cleared = await admin
-      .patch('/api/v1/portfolio/hero')
-      .send({ mapPlace: null })
-      .expect(200);
-    expect(cleared.body.hero).not.toHaveProperty('mapPlace');
-    expect(cleared.body.hero.mapCoordinates).toBe(hero.mapCoordinates);
-
     const page = await request(app).get('/api/v1/portfolio').expect(200);
-    expect(page.body.hero).toEqual(cleared.body.hero);
+    expect(page.body.hero).toEqual(changed.body.hero);
+  });
+
+  it('removes an optional field with null', async () => {
+    const admin = await adminAgent();
+    const imageId = await uploadedMediaId(admin);
+    await admin
+      .post('/api/v1/portfolio/seo')
+      .send({ ...seo, ogImage: { id: imageId, alt: l('Logo', 'Logo') } })
+      .expect(201);
+
+    const cleared = await admin.patch('/api/v1/portfolio/seo').send({ ogImage: null }).expect(200);
+
+    expect(cleared.body.seo).not.toHaveProperty('ogImage');
+    expect(cleared.body.seo.title).toEqual(seo.title);
   });
 
   it('replaces arrays as a whole and keeps their order', async () => {
@@ -107,7 +117,12 @@ describe('portfolio', () => {
     // both languages are required
     await admin
       .post('/api/v1/portfolio/hero')
-      .send({ ...hero, description: { de: 'Hallo' } })
+      .send({ ...hero, role: { de: 'Entwicklerin' } })
+      .expect(400);
+    // the role is required
+    await admin
+      .post('/api/v1/portfolio/hero')
+      .send({ name: hero.name, role: hero.role })
       .expect(400);
     await admin.patch('/api/v1/portfolio/hero').send({ name: 'Ada' }).expect(404);
 
@@ -119,7 +134,6 @@ describe('portfolio', () => {
     await admin
       .post('/api/v1/portfolio/settings')
       .send({
-        name: 'Ada',
         email: 'ada@example.com',
         profiles: { github: 'javascript:alert(1)', linkedin: 'https://linkedin.com/in/ada' },
       })
@@ -133,8 +147,7 @@ describe('portfolio', () => {
     const res = await admin
       .post('/api/v1/portfolio/seo')
       .send({
-        title: l('Titel', 'Title'),
-        description: l('Beschreibung', 'Description'),
+        ...seo,
         ogImage: { id: '00000000-0000-4000-8000-000000000000', alt: l('Logo', 'Logo') },
       })
       .expect(400);
@@ -172,7 +185,7 @@ describe('portfolio', () => {
       facts: ['One', 'Two'],
       image: { id: imageId, alt: 'Portrait' },
     });
-    expect(en.body.hero).toEqual({ ...hero, description: 'Hello', mapPlace: 'London' });
+    expect(en.body.hero).toEqual({ ...hero, roleAccent: 'Frontend', role: 'Developer' });
 
     await request(app).get(new URL(full.body.about.image.url).pathname).expect(200);
   });
@@ -189,7 +202,12 @@ describe('portfolio', () => {
 
     const page = await request(app).get('/api/v1/portfolio?lang=de').expect(200);
     expect(page.body.contact.headline).toBe('Hallo');
-    expect(page.body.settings.name).toBe('Manuel Braun');
+    expect(page.body.hero).toEqual({
+      name: 'Manuel Braun',
+      roleAccent: 'Frontend',
+      role: 'Developer',
+    });
+    expect(Object.keys(page.body.settings).sort()).toEqual(['email', 'profiles']);
     expect(page.body.projects.items.map((item: { title: string }) => item.title)).toEqual([
       'Kochwelt',
       'DABubble',
@@ -500,5 +518,70 @@ describe('portfolio drafts', () => {
       ['Old two', true],
       ['Hidden', false],
     ]);
+  });
+});
+
+describe('portfolio migration 0007', () => {
+  const runMigration = async () => {
+    const file = await readFile(
+      path.join(import.meta.dirname, '../../../drizzle/0007_hero_role_settings_cleanup.sql'),
+      'utf8',
+    );
+    for (const statement of file.split('--> statement-breakpoint')) {
+      await db.execute(sql.raw(statement));
+    }
+  };
+  const contentOf = async (key: 'hero' | 'settings') => {
+    const [row] = await db.select().from(portfolioSections).where(eq(portfolioSections.key, key));
+    return row?.content;
+  };
+
+  it('gives the stored hero the role and drops the fields the page no longer shows', async () => {
+    // stored the way the API saved the hero before the redesign
+    await db.insert(portfolioSections).values([
+      {
+        key: 'hero',
+        content: {
+          name: 'Ada',
+          description: l('Hallo', 'Hello'),
+          mapPlace: l('London', 'London'),
+          mapCoordinates: '51°30′ N  0°07′ W',
+        },
+      },
+      {
+        key: 'settings',
+        content: {
+          name: 'Ada',
+          email: 'ada@example.com',
+          phone: '+44 20 0000',
+          address: ['1 Street', 'London'],
+          profiles: { github: 'https://github.com/ada', linkedin: 'https://linkedin.com/in/ada' },
+        },
+      },
+    ]);
+
+    await runMigration();
+    // a second run changes nothing
+    await runMigration();
+
+    expect(await contentOf('hero')).toEqual({
+      name: 'Ada',
+      roleAccent: l('Frontend', 'Frontend'),
+      role: l('Developer', 'Developer'),
+    });
+    expect(await contentOf('settings')).toEqual({
+      email: 'ada@example.com',
+      profiles: { github: 'https://github.com/ada', linkedin: 'https://linkedin.com/in/ada' },
+    });
+    const page = await request(app).get('/api/v1/portfolio?lang=en').expect(200);
+    expect(page.body.hero).toEqual({ name: 'Ada', roleAccent: 'Frontend', role: 'Developer' });
+  });
+
+  it('keeps a role that is already stored', async () => {
+    await db.insert(portfolioSections).values({ key: 'hero', content: hero });
+
+    await runMigration();
+
+    expect(await contentOf('hero')).toEqual(hero);
   });
 });

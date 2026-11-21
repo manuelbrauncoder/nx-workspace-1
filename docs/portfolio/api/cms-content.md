@@ -33,11 +33,11 @@ interface Image {
   alt: L; // required, accessibility
 }
 
+/** The name and the role line below it, e.g. "*Frontend* Developer". */
 interface Hero {
   name: string;
-  description: L;
-  mapPlace?: L; // decorative label of the topo map
-  mapCoordinates?: string;
+  roleAccent: L; // up to 40 characters, set apart (italic serif) at the start of the role
+  role: L; // up to 60 characters, the rest of the role
 }
 
 interface About {
@@ -85,11 +85,9 @@ interface Contact {
 }
 
 /** Replaces `SITE_OWNER`. */
+/** The direct ways of contact in the contact section. */
 interface Settings {
-  name: string;
   email: string;
-  phone?: string;
-  address?: string[];
   profiles: { github: string; linkedin: string };
 }
 
@@ -127,7 +125,7 @@ Every section has its own write endpoints. They are admin only (session cookie, 
 
 - **`POST`** creates the section with all required fields. 409 if it already exists.
 - **`PATCH`** changes only the sent top-level fields, at least one. Each sent field replaces the stored value as a whole: an `L`, an array (send the full, reordered or shortened list), or `profiles`. 404 if the section was not created yet.
-- **`null` removes an optional field** in a `PATCH`, for example `{ "mapPlace": null }`. Required fields cannot be `null`.
+- **`null` removes an optional field** in a `PATCH`, for example `{ "ogImage": null }`. Required fields cannot be `null`.
 - Both answer with the section in both languages: `{ "hero": { … } }`.
 
 ### Images in the content
@@ -237,7 +235,7 @@ Taken over as is, to be edited through the API:
 ## Additions beyond the first list
 
 - `Image.alt` per language, so every image stays accessible.
-- `Settings` replaces `SITE_OWNER`. The profile links of the contact section come from it. `Hero.name` stays a field of its own.
+- `Settings` holds the email and the profile links of the contact section. `Hero.name` stays a field of its own.
 - `Seo` makes the title and description of the start page editable, today they are `portfolioHome.title` and `portfolioHome.description`.
 - Contact inbox, because the form already sends messages and nobody can read them yet.
 - `githubUrl` and `testUrl` are optional. The project card hides the button when a URL is missing (today `liveUrl` is required).
@@ -258,3 +256,5 @@ Each section is one row in `portfolio_sections` (`key`, `content` as `jsonb`, `u
 Migration `0005_project_images_rich_text` converts the stored `projects` section once: each project's `image` becomes `images: [image]`, and its plain-text description becomes escaped HTML in both languages (a blank line starts a new `<p>`, a single line break becomes `<br>`). Projects that already have `images` are left alone, so the migration is safe to run on any database. It only goes forward: the migration does not undo the conversion, going back to an older API image needs the database backup from before the release (see [Database](../../backend/database.md#migrations-in-production)).
 
 Migration `0006_project_published` marks every project of the stored `projects` section as `published: true`, unless it already has the key. Projects that were public until now stay public. The migration can run again without changes. An older API image ignores the key, so no database restore is needed to go back, but it shows drafts to everyone: remove or publish them first.
+
+Migration `0007_hero_role_settings_cleanup` follows the redesign of the start page. The stored `hero` gets `roleAccent` and `role` ("Frontend" and "Developer" in both languages, the text the page showed so far) unless it already has them, and loses `description`, `mapPlace` and `mapCoordinates`. The stored `settings` lose `name`, `phone` and `address`, which no page read. Both parts can run again without changes. It only goes forward: an older API image would expect the removed fields, going back needs the database backup from before the release. Release the API and the web app together, an older web app reads the removed fields in its editor.

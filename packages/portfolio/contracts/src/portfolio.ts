@@ -54,23 +54,15 @@ function buildSections(l: Localize, image: z.ZodType) {
   const skillSet = z.object({ title: l(short), skills: list(skill) });
 
   return {
-    hero: z.object({
-      name: short,
-      description: l(long),
-      // decorative label of the topo map
-      mapPlace: l(short).optional(),
-      mapCoordinates: short.optional(),
-    }),
+    // the name and below it the role, e.g. "*Frontend* Developer": the accent word is set apart
+    hero: z.object({ name: short, roleAccent: l(text(40)), role: l(text(60)) }),
     about: z.object({ headline: l(short), description: l(long), facts: l(list(long, 20)), image }),
     projects: z.object({ headline: l(short), description: l(long), items: list(project) }),
     skills: z.object({ headline: l(short), description: l(long), sets: list(skillSet, 20) }),
     contact: z.object({ headline: l(short), description: l(long) }),
-    // the site owner; the legal pages and the contact section take their details from here
+    // the direct ways of contact in the contact section
     settings: z.object({
-      name: short,
       email: z.email(),
-      phone: short.optional(),
-      address: list(short, 10).optional(),
       profiles: z.object({ github: link, linkedin: link }),
     }),
     // title and meta description of the start page

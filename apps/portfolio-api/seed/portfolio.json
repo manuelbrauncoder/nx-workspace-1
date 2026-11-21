@@ -1,15 +1,14 @@
 {
   "hero": {
     "name": "Manuel Braun",
-    "description": {
-      "de": "Hey, ich bin Manuel, Frontend Developer aus dem äußeren Spessart. Intuitive Web-Apps und sorgfältiges Design treiben mich an.",
-      "en": "Hey there, I’m Manuel, a frontend developer from the outer Spessart. Intuitive web apps and careful design are what keep me building."
+    "roleAccent": {
+      "de": "Frontend",
+      "en": "Frontend"
     },
-    "mapPlace": {
-      "de": "Partenstein",
-      "en": "Partenstein"
-    },
-    "mapCoordinates": "50°03′ N  9°31′ E"
+    "role": {
+      "de": "Developer",
+      "en": "Developer"
+    }
   },
   "about": {
     "headline": {
@@ -412,9 +411,7 @@
     }
   },
   "settings": {
-    "name": "Manuel Braun",
     "email": "mail@manuel-braun.net",
-    "address": ["Grafen-von-Rieneck-Str. 18", "97846 Partenstein"],
     "profiles": {
       "github": "https://github.com/manuelbrauncoder",
       "linkedin": "https://www.linkedin.com/in/manuel-braun-developer/"
