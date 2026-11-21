@@ -83,14 +83,28 @@
   --lens-fringe-start: rgb(255 50 110 / 0.45);
   --lens-fringe-end: rgb(50 200 255 / 0.45);
   // Gradient backdrop (`app-backdrop`): blob opacity, grain and the shade that keeps text readable.
-  // Colour stops of the four blobs: blue, rose, amber, teal.
-  --backdrop-blob-1: #2c4fd8, #1a2a7a 55%, transparent 72%;
-  --backdrop-blob-2: #e0457b, #7b2a8c 55%, transparent 72%;
-  --backdrop-blob-3: #f6a94b, #d9622e 55%, transparent 72%;
-  --backdrop-blob-4: #1fb5a8, #126a8f 55%, transparent 72%;
-  --backdrop-blob-opacity: 0.42;
-  --backdrop-grain-blend: soft-light;
-  --backdrop-grain-opacity: 0.55;
+  // Colour stops of the four blobs (blue, rose, amber, teal), soft to the edge without a blur
+  // filter, which costs too much on phones.
+  --backdrop-blob-1:
+    #2c4fd8, color-mix(in srgb, #2c4fd8 50%, rgb(26 42 122)) 26%, rgb(26 42 122 / 0.9) 46%,
+    rgb(26 42 122 / 0.68) 58%, rgb(26 42 122 / 0.44) 69%, rgb(26 42 122 / 0.24) 79%,
+    rgb(26 42 122 / 0.1) 88%, rgb(26 42 122 / 0.03) 95%, transparent;
+  --backdrop-blob-2:
+    #e0457b, color-mix(in srgb, #e0457b 50%, rgb(123 42 140)) 26%, rgb(123 42 140 / 0.9) 46%,
+    rgb(123 42 140 / 0.68) 58%, rgb(123 42 140 / 0.44) 69%, rgb(123 42 140 / 0.24) 79%,
+    rgb(123 42 140 / 0.1) 88%, rgb(123 42 140 / 0.03) 95%, transparent;
+  --backdrop-blob-3:
+    #f6a94b, color-mix(in srgb, #f6a94b 50%, rgb(217 98 46)) 26%, rgb(217 98 46 / 0.9) 46%,
+    rgb(217 98 46 / 0.68) 58%, rgb(217 98 46 / 0.44) 69%, rgb(217 98 46 / 0.24) 79%,
+    rgb(217 98 46 / 0.1) 88%, rgb(217 98 46 / 0.03) 95%, transparent;
+  --backdrop-blob-4:
+    #1fb5a8, color-mix(in srgb, #1fb5a8 50%, rgb(18 106 143)) 26%, rgb(18 106 143 / 0.9) 46%,
+    rgb(18 106 143 / 0.68) 58%, rgb(18 106 143 / 0.44) 69%, rgb(18 106 143 / 0.24) 79%,
+    rgb(18 106 143 / 0.1) 88%, rgb(18 106 143 / 0.03) 95%, transparent;
+  --backdrop-blob-opacity: 0.38;
+  // Noise without a blend mode, a blend over the whole screen is slow in Safari.
+  --backdrop-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --backdrop-grain-opacity: 0.05;
   --backdrop-shade: linear-gradient(
     180deg,
     rgb(243 240 234 / 0.45),

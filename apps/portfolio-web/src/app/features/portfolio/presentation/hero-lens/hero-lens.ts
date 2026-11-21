@@ -18,6 +18,11 @@ const LARGE = { radius: 104, scale: 1.4 };
 const IDLE_AFTER = 4500;
 /** After the pointer leaves the headline, the sphere glides back faster for this long, in ms. */
 const RETURN_FOR = 700;
+/**
+ * Shortest time between two frames, in ms. On a 120 Hz screen (iPhone Pro) the sphere would
+ * otherwise blur what lies behind it 120 times a second and keep Safari too busy to react.
+ */
+const FRAME_MS = 1000 / 60 - 1;
 /** The sphere fades in after the headline has arrived, in ms. */
 const SHOW_AFTER = 1500;
 
@@ -128,12 +133,14 @@ export class HeroLens {
     const sphere = { x: 0, y: 0, placed: false };
     let visible = true;
     let frame = 0;
+    let lastFrame = -Infinity;
 
     const step = (now: number): void => {
       frame = view.requestAnimationFrame(step);
-      if (!visible) {
+      if (!visible || now - lastFrame < FRAME_MS) {
         return;
       }
+      lastFrame = now;
       const following = pointer.over && now - pointer.movedAt < IDLE_AFTER;
       const [x, y] = following ? [pointer.x, pointer.y] : wander(now / 1000);
       if (!sphere.placed) {

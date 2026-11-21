@@ -10,6 +10,8 @@ import {
 
 /** How fast the drift follows the scroll position per frame, between 0 and 1. */
 const SCROLL_EASING = 0.07;
+/** Shortest time between two frames, in ms: 60 per second also on a 120 Hz screen. */
+const FRAME_MS = 1000 / 60 - 1;
 /** Largest shift of the blobs towards the pointer, in px. */
 const PARALLAX_X = 36;
 const PARALLAX_Y = 28;
@@ -63,7 +65,13 @@ export class AppBackdrop {
     setScroll(current);
 
     // Eases towards the scroll position and stops once it got there, so an idle page costs nothing.
-    const step = (): void => {
+    let lastFrame = -Infinity;
+    const step = (now: number): void => {
+      if (now - lastFrame < FRAME_MS) {
+        frame = view.requestAnimationFrame(step);
+        return;
+      }
+      lastFrame = now;
       const target = progress();
       current += (target - current) * SCROLL_EASING;
       if (Math.abs(target - current) < 0.0005) {
