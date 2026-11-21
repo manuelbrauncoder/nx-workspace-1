@@ -24,7 +24,7 @@
   backdrop-filter: blur(14px);
 }
 
-// Logo and settings at the edges on a phone. From `md` three columns: the logo on the left,
+// Logo and menu button at the edges on a phone. From `md` three columns: the logo on the left,
 // the links in the middle of the bar, the settings menu on the right. The two outer columns
 // share the rest evenly, so the links stay centered whatever the logo and the actions measure.
 // Up to `lg` the logo shows only its tile, otherwise the three would not fit side by side.
@@ -47,14 +47,35 @@
   justify-self: start;
 }
 
-.app-header__settings {
+.app-header__actions {
+  display: flex;
   justify-self: end;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.app-header__nav {
+// Below `md` the links and the settings (account, language, theme) move into the drawer, opened
+// by the menu button.
+.app-header__nav,
+.app-header__settings {
   display: none;
 
   @include up(md) {
     display: block;
+  }
+}
+
+// 44px, the only way to the links on a phone.
+.app-header__menu-button {
+  width: 2.75rem;
+  height: 2.75rem;
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  @include up(md) {
+    display: none;
   }
 }

@@ -6,9 +6,12 @@ import {
   DOCUMENT,
   ElementRef,
   inject,
+  model,
   signal,
 } from '@angular/core';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { UiButton } from '@shared/ui/button/button';
+import { UiIcon } from '@shared/ui/icon/icon';
 import { UiNavMenu } from '@shared/ui/nav-menu/nav-menu';
 import { AppLogo } from '../app-logo/app-logo';
 import { APP_NAV_ITEMS } from '../app-nav-items';
@@ -18,17 +21,21 @@ import { AppSettingsMenu } from '../app-settings-menu/app-settings-menu';
 const SCROLLED_AFTER = 40;
 
 /**
- * The bar at the top: logo, the links to the sections of the start page and the settings menu.
- * Transparent over the top of the page, frosted once the page scrolls.
+ * The bar at the top: logo, the links to the sections of the start page and the settings menu,
+ * below `md` a menu button that opens the drawer instead. Transparent over the top of the page,
+ * frosted once the page scrolls.
  */
 @Component({
   selector: 'app-header',
-  imports: [AppLogo, AppSettingsMenu, TranslatePipe, UiNavMenu],
+  imports: [AppLogo, AppSettingsMenu, TranslatePipe, UiButton, UiIcon, UiNavMenu],
   styleUrl: './app-header.scss',
   templateUrl: './app-header.html',
   host: { '[class.app-header--scrolled]': '_scrolled()' },
 })
 export class AppHeader {
+  /** Whether the mobile drawer is open. Set to `true` by the menu button. */
+  readonly drawerOpen = model(false);
+
   private readonly _items = APP_NAV_ITEMS;
   private readonly _scrolled = signal(false);
 

@@ -1,5 +1,5 @@
 import { ViewportScroller } from '@angular/common';
-import { Component, DOCUMENT, ElementRef, inject, viewChild } from '@angular/core';
+import { Component, DOCUMENT, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   NavigationEnd,
@@ -13,16 +13,17 @@ import { injectShellLayout } from '@core/layout/shell-layout';
 import { filter, skip } from 'rxjs';
 import { AppBackdrop } from '../app-backdrop/app-backdrop';
 import { injectBackdrop } from '../app-backdrop/backdrop-route';
+import { AppDrawer } from '../app-drawer/app-drawer';
 import { AppFooter } from '../app-footer/app-footer';
 import { AppHeader } from '../app-header/app-header';
 
 /**
- * Frame around every page: header, main area with the routed page and footer. The
+ * Frame around every page: header, main area with the routed page, footer and mobile drawer. The
  * public pages get the gradient backdrop behind it, see `withBackdrop()`.
  */
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, TranslatePipe, AppBackdrop, AppFooter, AppHeader],
+  imports: [RouterOutlet, TranslatePipe, AppBackdrop, AppDrawer, AppFooter, AppHeader],
   styleUrl: './app-shell.scss',
   templateUrl: './app-shell.html',
 })
@@ -30,12 +31,13 @@ export class AppShell {
   private readonly _router = inject(Router);
   private readonly _document = inject(DOCUMENT);
   private readonly _scroller = inject(ViewportScroller);
+  private readonly _drawerOpen = signal(false);
   private readonly _main = viewChild.required<ElementRef<HTMLElement>>('main');
   private readonly _layout = injectShellLayout();
   private readonly _backdrop = injectBackdrop();
 
   constructor() {
-    // Moves focus to the new page after each client-side navigation, so
+    // Closes the drawer and moves focus to the new page after each client-side navigation, so
     // keyboard and screen reader users start at its content. The initial navigation is skipped.
     this._router.events
       .pipe(
@@ -44,6 +46,7 @@ export class AppShell {
         takeUntilDestroyed(),
       )
       .subscribe((event) => {
+        this._drawerOpen.set(false);
         // The router decides where the new page scrolls to, e.g. back to the restored position
         // or to the section of a fragment link.
         this._focusTarget(this._router.parseUrl(event.urlAfterRedirects).fragment);

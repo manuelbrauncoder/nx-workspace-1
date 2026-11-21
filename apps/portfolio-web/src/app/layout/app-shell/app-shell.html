@@ -4,7 +4,7 @@
   <app-backdrop />
 }
 
-<app-header />
+<app-header [(drawerOpen)]="_drawerOpen" />
 
 <main
   class="app-main"
@@ -18,3 +18,5 @@
 </main>
 
 <app-footer />
+
+<app-drawer [(open)]="_drawerOpen" />

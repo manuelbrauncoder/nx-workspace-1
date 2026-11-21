@@ -9,9 +9,9 @@
   },
   "layout": {
     "legalNavigation": "Legal",
-    "menu": "Menu",
     "mainNavigation": "Main navigation",
     "navigation": "Navigation",
+    "openMenu": "Open menu",
     "skipToContent": "Skip to content",
     "footer": {
       "imprint": "Imprint",

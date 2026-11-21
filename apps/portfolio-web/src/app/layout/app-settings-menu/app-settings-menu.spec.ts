@@ -24,21 +24,6 @@ describe('AppSettingsMenu', () => {
     document.body.replaceChildren();
   });
 
-  afterEach(() => vi.unstubAllGlobals());
-
-  /** Pretends a screen below `md`, where the links move into the menu. */
-  function stubPhoneWidth(): void {
-    vi.stubGlobal(
-      'matchMedia',
-      vi.fn((query: string) => ({
-        matches: query.includes('max-width'),
-        media: query,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-      })),
-    );
-  }
-
   async function openMenu(me: TestMe | undefined) {
     const meSignal = signal(me);
     TestBed.configureTestingModule({
@@ -70,45 +55,6 @@ describe('AppSettingsMenu', () => {
     const { trigger } = await openMenu(undefined);
 
     expect(trigger.getAttribute('aria-label')).toBe('Einstellungen');
-  });
-
-  it('leaves the links to the header on a wide screen', async () => {
-    const { menu } = await openMenu(undefined);
-
-    expect(menu.querySelector('[role="group"][aria-label="Hauptnavigation"]')).toBeNull();
-  });
-
-  it('puts the links to the sections first on a phone and opens a section', async () => {
-    stubPhoneWidth();
-    const { fixture, menu } = await openMenu(undefined);
-    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-
-    const groups = Array.from(menu.querySelectorAll('app-ui-menu-group'));
-    expect(groups.map((group) => group.getAttribute('aria-label'))).toEqual([
-      'Hauptnavigation',
-      'Sprache',
-      'Farbschema',
-    ]);
-    expect(itemTexts(menu).slice(0, 4)).toEqual(['Über mich', 'Projekte', 'Skills', 'Kontakt']);
-
-    menu.querySelector<HTMLElement>('[role="menuitem"]')!.click();
-    await fixture.whenStable();
-
-    expect(navigate).toHaveBeenCalledWith(['/'], { fragment: 'about' });
-  });
-
-  it('names the button after the menu on a phone, where it holds the links', async () => {
-    stubPhoneWidth();
-    const { trigger } = await openMenu(undefined);
-
-    expect(trigger.getAttribute('aria-label')).toBe('Menü');
-  });
-
-  it('passes the accessibility check with the links on a phone', async () => {
-    stubPhoneWidth();
-    const { menu } = await openMenu(USER);
-
-    await expect(menu).toBeAccessible();
   });
 
   it('offers only language and theme when signed out', async () => {
