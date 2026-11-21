@@ -9,9 +9,9 @@
   },
   "layout": {
     "legalNavigation": "Rechtliches",
-    "menu": "Menü",
     "mainNavigation": "Hauptnavigation",
     "navigation": "Navigation",
+    "openMenu": "Menü öffnen",
     "skipToContent": "Zum Inhalt springen",
     "footer": {
       "imprint": "Impressum",

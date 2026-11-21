@@ -1,0 +1,33 @@
+// As tall as the body of the panel, so language and theme can sit at its bottom.
+.app-drawer__content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+// Room between the logo in the header of the panel and the links.
+.app-drawer__nav {
+  display: block;
+  margin-top: 2rem;
+}
+
+// Only takes room when someone is signed in, the empty host collapses. Clearly apart from the
+// navigation above it.
+.app-drawer__account:not(:empty) {
+  display: block;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+// At the bottom of the panel and centred, above the home indicator of a phone.
+.app-drawer__settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 2rem;
+  padding-bottom: env(safe-area-inset-bottom);
+}
