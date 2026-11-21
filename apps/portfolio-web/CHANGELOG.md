@@ -1,3 +1,14 @@
+## 2.5.0 (2026-11-21)
+
+### 🚀 Features
+
+- **portfolio-web:** light theme and English as defaults ([1a1f99a](https://github.com/manuelbrauncoder/nx-workspace-1/commit/1a1f99a))
+- **portfolio-web:** edit the hero role, editor without removed fields ([5d97c16](https://github.com/manuelbrauncoder/nx-workspace-1/commit/5d97c16))
+
+### 🩹 Fixes
+
+- **portfolio-web:** review findings of the CMS change ([70420c4](https://github.com/manuelbrauncoder/nx-workspace-1/commit/70420c4))
+
 ## 2.4.0 (2026-11-21)
 
 ### 🚀 Features

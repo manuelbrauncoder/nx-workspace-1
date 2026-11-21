@@ -1,3 +1,9 @@
+## 3.2.0 (2026-11-21)
+
+### 🚀 Features
+
+- **portfolio-api:** hero role in the CMS, unused hero and settings fields removed ([9a5376e](https://github.com/manuelbrauncoder/nx-workspace-1/commit/9a5376e))
+
 ## 3.1.0 (2026-11-20)
 
 ### 🚀 Features
