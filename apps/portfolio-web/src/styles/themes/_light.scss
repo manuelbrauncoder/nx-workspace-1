@@ -109,6 +109,8 @@
     180deg,
     rgb(243 240 234 / 0.45),
     rgb(243 240 234 / 0.45) 35%,
-    rgb(243 240 234 / 0.55)
+    var(--backdrop-shade-end)
   );
+  // The shade below the bottom edge of the viewport, under the bars of iOS Safari.
+  --backdrop-shade-end: rgb(243 240 234 / 0.55);
 }
