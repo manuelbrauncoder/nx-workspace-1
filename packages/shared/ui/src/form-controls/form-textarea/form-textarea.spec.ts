@@ -45,4 +45,18 @@ describe('FormTextarea', () => {
     expect(fixture.componentInstance.value()).toBe('Milch');
     expect(touched).toHaveBeenCalledOnce();
   });
+
+  it('marks the language of the text on the textarea, not on the label', async () => {
+    const { element, textarea } = await render({ contentLang: 'de' });
+
+    expect(textarea.getAttribute('lang')).toBe('de');
+    expect(element.querySelector('[lang]')).toBe(textarea);
+    await expect(element).toBeAccessible();
+  });
+
+  it('leaves the language to the page by default', async () => {
+    const { textarea } = await render();
+
+    expect(textarea.hasAttribute('lang')).toBe(false);
+  });
 });

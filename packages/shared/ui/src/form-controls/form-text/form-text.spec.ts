@@ -67,4 +67,18 @@ describe('FormText', () => {
 
     await expect(element).toBeAccessible();
   });
+
+  it('marks the language of the text on the input, not on the label', async () => {
+    const { element, input } = await render({ contentLang: 'en' });
+
+    expect(input.getAttribute('lang')).toBe('en');
+    expect(element.querySelector('[lang]')).toBe(input);
+    await expect(element).toBeAccessible();
+  });
+
+  it('leaves the language to the page by default', async () => {
+    const { input } = await render();
+
+    expect(input.hasAttribute('lang')).toBe(false);
+  });
 });

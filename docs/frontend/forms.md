@@ -114,21 +114,29 @@ All controls share `label` (required) and `description` (optional). State such a
 
 A required field shows an asterisk, hidden from screen readers, which hear the native `required` instead. `FormDate` is a button, which has no `required`, so its label carries a visually hidden "Pflichtfeld" (`announceRequired` on `FormControlShell`). A new control that is not a native input sets it as well.
 
-| Control           | Selector                | Value type      | Own inputs                            |
-| ----------------- | ----------------------- | --------------- | ------------------------------------- |
-| `FormText`        | `app-form-text`         | `string`        | `type`, `placeholder`, `autocomplete` |
-| `FormTextarea`    | `app-form-textarea`     | `string`        | `placeholder`, `rows` (default 4)     |
-| `FormRichText`    | `app-form-rich-text`    | `string` (HTML) |                                       |
-| `FormFiles`       | `app-form-files`        | `File[]`        | `maxFiles`, `accept`, `maxFileSize`   |
-| `FormDate`        | `app-form-date`         | `Date \| null`  | `placeholder`                         |
-| `FormSelect`      | `app-form-select`       | `T \| null`     | `options` (required), `placeholder`   |
-| `FormToggleGroup` | `app-form-toggle-group` | `T \| null`     | `options` (required)                  |
-| `FormRadioGroup`  | `app-form-radio-group`  | `T \| null`     | `options` (required), `layout`        |
-| `FormStepper`     | `app-form-stepper`      | `number`        | `decreaseLabel`, `increaseLabel`      |
-| `FormCheckbox`    | `app-form-checkbox`     | `boolean`       |                                       |
-| `FormSwitch`      | `app-form-switch`       | `boolean`       |                                       |
+| Control           | Selector                | Value type      | Own inputs                                           |
+| ----------------- | ----------------------- | --------------- | ---------------------------------------------------- |
+| `FormText`        | `app-form-text`         | `string`        | `type`, `placeholder`, `autocomplete`, `contentLang` |
+| `FormTextarea`    | `app-form-textarea`     | `string`        | `placeholder`, `rows` (default 4), `contentLang`     |
+| `FormRichText`    | `app-form-rich-text`    | `string` (HTML) | `profile`, `contentLang`                             |
+| `FormFiles`       | `app-form-files`        | `File[]`        | `maxFiles`, `accept`, `maxFileSize`                  |
+| `FormDate`        | `app-form-date`         | `Date \| null`  | `placeholder`                                        |
+| `FormSelect`      | `app-form-select`       | `T \| null`     | `options` (required), `placeholder`                  |
+| `FormToggleGroup` | `app-form-toggle-group` | `T \| null`     | `options` (required)                                 |
+| `FormRadioGroup`  | `app-form-radio-group`  | `T \| null`     | `options` (required), `layout`                       |
+| `FormStepper`     | `app-form-stepper`      | `number`        | `decreaseLabel`, `increaseLabel`                     |
+| `FormCheckbox`    | `app-form-checkbox`     | `boolean`       |                                                      |
+| `FormSwitch`      | `app-form-switch`       | `boolean`       |                                                      |
 
 All of them are shown on `/showcase/forms`.
+
+### Text in another language
+
+A field whose text is in a language other than the page, such as the English version of a text on a German page, sets `contentLang` (`'de'` or `'en'`, `AppLanguage` from `@core/i18n/languages`). `FormText`, `FormTextarea` and `FormRichText` put it as `lang` on the native input, the textarea or the editable area, not on the host. The label and the toolbar keep the page language, the value is read with the right voice and spell-checked in its own language (WCAG 3.1.2 Language of Parts). Without `contentLang` the control has no `lang` and follows the page.
+
+```html
+<app-form-text [formField]="field().en" label="Englisch" contentLang="en" />
+```
 
 ### `FormText`
 

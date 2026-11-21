@@ -9,6 +9,7 @@
   <textarea
     #control
     [id]="_id"
+    [attr.lang]="contentLang() ?? null"
     [attr.name]="name() || null"
     [attr.placeholder]="placeholder() ?? null"
     [disabled]="disabled()"

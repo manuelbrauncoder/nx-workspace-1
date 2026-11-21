@@ -137,4 +137,18 @@ describe('FormRichText', () => {
     expect(editor.getAttribute('aria-disabled')).toBe('true');
     expect(button('Fett').disabled).toBe(true);
   });
+
+  it('marks the language of the text on the editor, not on the label or toolbar', async () => {
+    const { element, editor } = await render({ contentLang: 'en' });
+
+    expect(editor.getAttribute('lang')).toBe('en');
+    expect(element.querySelector('[lang]')).toBe(editor);
+    await expect(element).toBeAccessible();
+  });
+
+  it('leaves the language to the page by default', async () => {
+    const { editor } = await render();
+
+    expect(editor.hasAttribute('lang')).toBe(false);
+  });
 });

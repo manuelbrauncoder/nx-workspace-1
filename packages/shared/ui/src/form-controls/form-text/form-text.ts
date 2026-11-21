@@ -10,6 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
+import { AppLanguage } from '@core/i18n/languages';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { FormControlErrors, visibleErrorMessages } from '../form-control-shell/form-control-errors';
 import { FormControlShell } from '../form-control-shell/form-control-shell';
@@ -32,6 +33,11 @@ export class FormText implements FormValueControl<string> {
   readonly type = input<FormTextType>('text');
   readonly placeholder = input<string>();
   readonly autocomplete = input<string>();
+  /**
+   * Language of the text typed in, when it differs from the page, e.g. the English version of a
+   * text. Sets `lang` on the input only, the label stays in the page language.
+   */
+  readonly contentLang = input<AppLanguage>();
 
   // Bound by the `FormField` directive.
   readonly errors = input<FormControlErrors>([]);

@@ -25,6 +25,7 @@
       [attr.aria-labelledby]="shell.labelId()"
       [attr.aria-readonly]="readonly() ? 'true' : null"
       [attr.aria-required]="required() ? 'true' : null"
+      [attr.lang]="contentLang() ?? null"
       aria-multiline="true"
       role="textbox"
     ></div>
