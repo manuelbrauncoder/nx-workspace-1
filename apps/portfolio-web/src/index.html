@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="dark" lang="de">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Manuel Braun</title>
@@ -13,17 +13,14 @@
     <meta name="theme-color" content="#07080d" media="(prefers-color-scheme: dark)" />
     <script>
       // Sets .dark before the first paint (no flicker). Same logic as ThemeService with
-      // DEFAULT_THEME_MODE 'dark' (app.config.ts): without a stored choice the page stays dark,
-      // as the class on <html> already says for visitors without JavaScript.
+      // DEFAULT_THEME_MODE 'light' (app.config.ts): without a stored choice the page stays light,
+      // also on a system in dark mode. Dark only when chosen, or with "system" in dark mode.
       (function () {
         try {
           var mode = localStorage.getItem('theme');
           var dark =
-            mode === 'light'
-              ? false
-              : mode === 'system'
-                ? window.matchMedia('(prefers-color-scheme: dark)').matches
-                : true;
+            mode === 'dark' ||
+            (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
           document.documentElement.classList.toggle('dark', dark);
         } catch (e) {}
       })();

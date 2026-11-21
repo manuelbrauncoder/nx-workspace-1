@@ -187,7 +187,7 @@ setMode(mode: ThemeMode): void
 - `mode` is what the user chose. `system` follows the operating system and reacts when it changes
 - `resolved` is what is actually shown, always `light` or `dark`. Bind to this when a component needs to know the theme, as the toaster in `app.html` does
 - The choice is stored in `localStorage` under the key `theme`
-- Without a stored choice the mode is `system`. An app designed dark first provides `DEFAULT_THEME_MODE` (`@core/theme/theme.service`), e.g. `{ provide: DEFAULT_THEME_MODE, useValue: 'dark' }`, and uses the same fallback in its inline script. The user can still switch. `portfolio-web` works this way
+- Without a stored choice the mode is `system`. An app that should start in one scheme whatever the system says provides `DEFAULT_THEME_MODE` (`@core/theme/theme.service`), e.g. `{ provide: DEFAULT_THEME_MODE, useValue: 'light' }`, and uses the same fallback in its inline script. The user can still switch. `portfolio-web` starts light this way
 
 An inline script in [index.html](../../apps/angular-base/src/index.html) sets the class before the first paint, so a dark page does not flash white on load. It duplicates the logic of the service on purpose. If you change the storage key or the logic, change both.
 
