@@ -75,4 +75,37 @@ describe('UiMenu parts', () => {
 
     await expect(menu).toBeAccessible();
   });
+
+  describe('trigger', () => {
+    async function render() {
+      const fixture = TestBed.createComponent(MenuHost);
+      await fixture.whenStable();
+      const trigger = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
+      return { fixture, trigger };
+    }
+
+    const pressDown = (trigger: HTMLElement): boolean =>
+      trigger.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+
+    it('lets a press on the trigger of a closed menu focus it as usual', async () => {
+      const { trigger } = await render();
+
+      expect(pressDown(trigger)).toBe(true);
+    });
+
+    it('focuses the trigger of an open menu on a press, so the click closes it (Safari)', async () => {
+      const { fixture, trigger } = await render();
+      trigger.click();
+      await fixture.whenStable();
+      expect(document.querySelector('[role="menu"]')).not.toBeNull();
+
+      // false: the default (moving the focus out of the menu) was prevented
+      expect(pressDown(trigger)).toBe(false);
+      trigger.click();
+      await fixture.whenStable();
+
+      expect(document.querySelector('[role="menu"]')).toBeNull();
+      expect(document.activeElement).toBe(trigger);
+    });
+  });
 });

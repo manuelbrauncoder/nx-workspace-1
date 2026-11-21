@@ -1,5 +1,5 @@
 import { CdkMenuTrigger } from '@angular/cdk/menu';
-import { Directive, effect, inject, input, TemplateRef } from '@angular/core';
+import { Directive, effect, ElementRef, inject, input, TemplateRef } from '@angular/core';
 import {
   HlmDropdownMenu,
   HlmDropdownMenuGroup,
@@ -36,16 +36,32 @@ export { UiMenuRadio };
 @Directive({
   selector: '[appUiMenuTrigger]',
   hostDirectives: [{ directive: HlmDropdownMenuTrigger, inputs: ['align', 'side'] }],
+  host: { '(mousedown)': '_focusTriggerOfOpenMenu($event)' },
 })
 export class UiMenuTrigger {
   readonly menu = input.required<TemplateRef<unknown>>({ alias: 'appUiMenuTrigger' });
 
+  private readonly _trigger = inject(CdkMenuTrigger, { self: true });
+  private readonly _host = inject<ElementRef<HTMLElement>>(ElementRef);
+
   constructor() {
     // Helm exposes the template under its own input name, so it is handed to the CDK trigger here.
-    const trigger = inject(CdkMenuTrigger, { self: true });
     effect(() => {
-      trigger.menuTemplateRef = this.menu();
+      this._trigger.menuTemplateRef = this.menu();
     });
+  }
+
+  /**
+   * The CDK closes a menu once focus leaves it and its trigger. Safari does not focus a button on
+   * click, so a press on the trigger of an open menu moved focus to the page, closed the menu, and
+   * the click then opened it again. The trigger takes the focus itself, as in other browsers: the
+   * menu stays open until the click closes it, and focus stays on the trigger.
+   */
+  private _focusTriggerOfOpenMenu(event: MouseEvent): void {
+    if (this._trigger.isOpen()) {
+      event.preventDefault();
+      this._host.nativeElement.focus({ preventScroll: true });
+    }
   }
 }
 
