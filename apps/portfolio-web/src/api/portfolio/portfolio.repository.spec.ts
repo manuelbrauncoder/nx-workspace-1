@@ -58,13 +58,17 @@ describe('PortfolioRepository', () => {
   });
 
   it('changes a section with PATCH', async () => {
-    const hero = { name: 'Ada', description: { de: 'Hallo', en: 'Hello' } };
+    const hero = {
+      name: 'Ada',
+      roleAccent: { de: 'Frontend', en: 'Frontend' },
+      role: { de: 'Entwicklerin', en: 'Developer' },
+    };
     const saved = firstValueFrom(repository.update('hero', hero));
     const request = backend.expectOne('https://api.example.com/portfolio/hero');
     request.flush({ hero });
 
     expect(request.request.method).toBe('PATCH');
-    expect(request.request.body).toEqual({ ...hero, mapPlace: null, mapCoordinates: null });
+    expect(request.request.body).toEqual(hero);
     expect((await saved).name).toBe('Ada');
   });
 

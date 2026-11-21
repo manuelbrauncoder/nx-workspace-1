@@ -9,12 +9,12 @@
   "create": "Create",
   "editNamed": "Edit {{ section }}",
   "descriptions": {
-    "hero": "Name, introduction and the place on the map",
+    "hero": "Name and role",
     "about": "Heading, introduction, facts and portrait",
     "projects": "The projects with screenshot, technologies and links",
     "skills": "The signposts with their skills",
     "contact": "Heading and introduction above the contact form",
-    "settings": "Name, email, address and profiles",
+    "settings": "Email and profiles",
     "seo": "Title, description and preview image for search engines"
   }
 }

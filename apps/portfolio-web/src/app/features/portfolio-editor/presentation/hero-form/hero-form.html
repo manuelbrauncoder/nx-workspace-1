@@ -6,20 +6,14 @@
     autocomplete="off"
   />
   <app-localized-field
-    [field]="_heroForm.description"
-    [label]="'sectionEditor.hero.description' | t"
-    multiline
+    [field]="_heroForm.roleAccent"
+    [label]="'sectionEditor.hero.roleAccent' | t"
+    [description]="'sectionEditor.hero.roleAccentDescription' | t"
   />
   <app-localized-field
-    [field]="_heroForm.mapPlace"
-    [label]="'sectionEditor.hero.mapPlace' | t"
-    [description]="'sectionEditor.hero.mapPlaceDescription' | t"
-  />
-  <app-form-text
-    [formField]="_heroForm.mapCoordinates"
-    [label]="'sectionEditor.hero.mapCoordinates' | t"
-    [description]="'sectionEditor.hero.mapCoordinatesDescription' | t"
-    autocomplete="off"
+    [field]="_heroForm.role"
+    [label]="'sectionEditor.hero.role' | t"
+    [description]="'sectionEditor.hero.roleDescription' | t"
   />
   <app-section-form-footer />
 </form>

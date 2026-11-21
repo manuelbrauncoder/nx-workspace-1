@@ -20,7 +20,6 @@
   "validation": {
     "required": "Please fill in this field.",
     "tooLong": "At most {{ max }} characters.",
-    "bothLanguages": "Please fill in both languages or leave both empty.",
     "tooManyLines": "At most {{ max }} entries.",
     "lineTooLong": "Each entry may be at most {{ max }} characters long.",
     "url": "Please enter a full address starting with https://.",
@@ -65,12 +64,11 @@
   },
   "hero": {
     "name": "Name",
-    "nameDescription": "First and last name each get a line of their own on the start page.",
-    "description": "Introduction",
-    "mapPlace": "Place on the map",
-    "mapPlaceDescription": "Optional. Shown next to the pin.",
-    "mapCoordinates": "Coordinates",
-    "mapCoordinatesDescription": "Optional, e.g. 50°03′ N  9°31′ E."
+    "nameDescription": "Shown large on the start page, the role below it.",
+    "roleAccent": "Role, accent word",
+    "roleAccentDescription": "Starts the role, in italics and colour, e.g. “Frontend”.",
+    "role": "Role, remaining words",
+    "roleDescription": "Follows the accent word, e.g. “Developer”."
   },
   "about": {
     "facts": "What describes me",
@@ -109,11 +107,7 @@
     "removeSkillHeading": "Remove skill {{ number }}?"
   },
   "settings": {
-    "name": "Name",
     "email": "Email",
-    "phone": "Phone",
-    "address": "Postal address",
-    "addressDescription": "Optional. One line of the address per line.",
     "github": "GitHub profile",
     "linkedin": "LinkedIn profile"
   },

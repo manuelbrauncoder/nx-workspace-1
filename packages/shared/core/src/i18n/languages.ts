@@ -1,3 +1,5 @@
+import { InjectionToken } from '@angular/core';
+
 export interface AppLanguageDefinition {
   /** Shown in the language switcher, in the language itself. */
   label: string;
@@ -16,6 +18,14 @@ export type AppLanguage = keyof typeof APP_LANGUAGES;
 export const APP_LANGUAGE_CODES = Object.keys(APP_LANGUAGES) as AppLanguage[];
 
 export const DEFAULT_LANGUAGE: AppLanguage = 'de';
+
+/**
+ * Language of a visitor whose browser asks for none of the app's languages and who has not
+ * chosen one yet. `DEFAULT_LANGUAGE` unless the app sets it through `provideI18n()`.
+ */
+export const DEFAULT_APP_LANGUAGE = new InjectionToken<AppLanguage>('DEFAULT_APP_LANGUAGE', {
+  factory: () => DEFAULT_LANGUAGE,
+});
 
 /** Cookie that holds the chosen language, so the server renders in it as well. */
 export const LANGUAGE_COOKIE = 'lang';

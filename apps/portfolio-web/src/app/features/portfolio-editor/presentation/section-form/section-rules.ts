@@ -61,32 +61,14 @@ export function textRules<K extends PathKind = PathKind.Root>(
   });
 }
 
-/**
- * Both languages of a text. An optional one is either empty in both languages or filled in
- * both, so the start page never misses a text in one of them.
- */
+/** Both languages of a text, both required. */
 export function localizedRules<K extends PathKind = PathKind.Root>(
   path: SchemaPathTree<Localized<string>, K>,
   i18n: I18nService,
-  rule: TextRule,
+  rule: Pick<TextRule, 'max'>,
 ): void {
   textRules(path.de, i18n, rule);
   textRules(path.en, i18n, rule);
-  if (rule.optional) {
-    for (const [own, other] of [
-      [path.de, path.en],
-      [path.en, path.de],
-    ] as const) {
-      validate(own, ({ value, valueOf }) =>
-        value().trim() === '' && valueOf(other).trim() !== ''
-          ? {
-              kind: 'otherLanguage',
-              message: i18n.translate('sectionEditor.validation.bothLanguages'),
-            }
-          : undefined,
-      );
-    }
-  }
 }
 
 export function linesRules<K extends PathKind = PathKind.Root>(

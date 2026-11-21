@@ -10,20 +10,30 @@ import { I18nMissingHandler } from './i18n-missing-handler';
 import type { I18nSharedSource } from './i18n-scope';
 import { I18N_SHARED_SOURCES } from './i18n-shared-sources';
 import { I18nService } from './i18n.service';
-import { APP_LANGUAGE_CODES, DEFAULT_LANGUAGE } from './languages';
+import {
+  APP_LANGUAGE_CODES,
+  AppLanguage,
+  DEFAULT_APP_LANGUAGE,
+  DEFAULT_LANGUAGE,
+} from './languages';
 
 export interface I18nOptions {
   /** Shared texts, usually those of the UI library and those of the app. */
   shared: readonly I18nSharedSource[];
+  /**
+   * Language for a visitor whose browser asks for none of the app's languages and who has not
+   * chosen one. `DEFAULT_LANGUAGE` (German) if left out.
+   */
+  defaultLanguage?: AppLanguage;
 }
 
 /** Transloco setup shared by the app and the tests. The files are loaded by `I18nService`. */
-export function provideI18nLibrary(): EnvironmentProviders {
+export function provideI18nLibrary(defaultLanguage = DEFAULT_LANGUAGE): EnvironmentProviders {
   return makeEnvironmentProviders([
     provideTransloco({
       config: {
         availableLangs: APP_LANGUAGE_CODES,
-        defaultLang: DEFAULT_LANGUAGE,
+        defaultLang: defaultLanguage,
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),
       },
@@ -36,11 +46,13 @@ export function provideI18nLibrary(): EnvironmentProviders {
  * Sets up translations and loads the shared texts before the app starts.
  *
  * @example
- * provideI18n({ shared: [uiI18n, appI18n] })
+ * provideI18n({ shared: [uiI18n, appI18n], defaultLanguage: 'en' })
  */
 export function provideI18n(options: I18nOptions): EnvironmentProviders {
+  const defaultLanguage = options.defaultLanguage ?? DEFAULT_LANGUAGE;
   return makeEnvironmentProviders([
-    provideI18nLibrary(),
+    provideI18nLibrary(defaultLanguage),
+    { provide: DEFAULT_APP_LANGUAGE, useValue: defaultLanguage },
     { provide: I18N_SHARED_SOURCES, useValue: options.shared },
     provideAppInitializer(() => inject(I18nService).init()),
   ]);

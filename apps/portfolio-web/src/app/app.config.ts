@@ -26,8 +26,9 @@ export const appConfig: ApplicationConfig = {
     // Kept up to date by `nx release`.
     { provide: APP_VERSION, useValue: packageJson.version },
     { provide: ErrorHandler, useClass: AppErrorHandler },
-    // Designed dark first, light stays selectable. Mirrored by the inline script in index.html.
-    { provide: DEFAULT_THEME_MODE, useValue: 'dark' },
+    // Light for a new visitor, also with a dark system. Dark stays selectable. Mirrored by the
+    // inline script in index.html.
+    { provide: DEFAULT_THEME_MODE, useValue: 'light' },
     provideRouter(
       routes,
       withComponentInputBinding(),
@@ -47,7 +48,8 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAppConfig(),
     provideAuth(),
-    provideI18n({ shared: [uiI18n, appI18n] }),
+    // English unless the browser asks for German, or the visitor chose a language.
+    provideI18n({ shared: [uiI18n, appI18n], defaultLanguage: 'en' }),
     provideSeo(),
     provideDeveloperGreeting(),
   ],

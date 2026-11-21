@@ -20,7 +20,6 @@
   "validation": {
     "required": "Bitte fülle dieses Feld aus.",
     "tooLong": "Höchstens {{ max }} Zeichen.",
-    "bothLanguages": "Bitte fülle beide Sprachen aus oder lass beide leer.",
     "tooManyLines": "Höchstens {{ max }} Einträge.",
     "lineTooLong": "Jeder Eintrag darf höchstens {{ max }} Zeichen lang sein.",
     "url": "Bitte gib eine vollständige Adresse mit https:// ein.",
@@ -65,12 +64,11 @@
   },
   "hero": {
     "name": "Name",
-    "nameDescription": "Vor- und Nachname stehen auf der Startseite in je einer Zeile.",
-    "description": "Einleitung",
-    "mapPlace": "Ort auf der Karte",
-    "mapPlaceDescription": "Optional. Steht neben der Stecknadel.",
-    "mapCoordinates": "Koordinaten",
-    "mapCoordinatesDescription": "Optional, z. B. 50°03′ N  9°31′ E."
+    "nameDescription": "Steht groß auf der Startseite, darunter die Rolle.",
+    "roleAccent": "Rolle, hervorgehobenes Wort",
+    "roleAccentDescription": "Steht am Anfang der Rolle, kursiv und farbig, z. B. „Frontend“.",
+    "role": "Rolle, übrige Wörter",
+    "roleDescription": "Folgt auf das hervorgehobene Wort, z. B. „Developer“."
   },
   "about": {
     "facts": "Was mich ausmacht",
@@ -109,11 +107,7 @@
     "removeSkillHeading": "Skill {{ number }} entfernen?"
   },
   "settings": {
-    "name": "Name",
     "email": "E-Mail",
-    "phone": "Telefon",
-    "address": "Anschrift",
-    "addressDescription": "Optional. Eine Zeile der Anschrift pro Zeile.",
     "github": "GitHub-Profil",
     "linkedin": "LinkedIn-Profil"
   },

@@ -1,7 +1,17 @@
 import { z } from 'zod';
-import { PROJECT_DESCRIPTION_MAX, PROJECT_IMAGES_MAX } from './portfolio-limits';
+import {
+  HERO_ROLE_ACCENT_MAX,
+  HERO_ROLE_MAX,
+  PROJECT_DESCRIPTION_MAX,
+  PROJECT_IMAGES_MAX,
+} from './portfolio-limits';
 
-export { PROJECT_DESCRIPTION_MAX, PROJECT_IMAGES_MAX } from './portfolio-limits';
+export {
+  HERO_ROLE_ACCENT_MAX,
+  HERO_ROLE_MAX,
+  PROJECT_DESCRIPTION_MAX,
+  PROJECT_IMAGES_MAX,
+} from './portfolio-limits';
 
 /** The sections of the start page, in page order. Each one is a singleton. */
 export const sectionKeys = [
@@ -54,23 +64,19 @@ function buildSections(l: Localize, image: z.ZodType) {
   const skillSet = z.object({ title: l(short), skills: list(skill) });
 
   return {
+    // the name and below it the role, e.g. "*Frontend* Developer": the accent word is set apart
     hero: z.object({
       name: short,
-      description: l(long),
-      // decorative label of the topo map
-      mapPlace: l(short).optional(),
-      mapCoordinates: short.optional(),
+      roleAccent: l(text(HERO_ROLE_ACCENT_MAX)),
+      role: l(text(HERO_ROLE_MAX)),
     }),
     about: z.object({ headline: l(short), description: l(long), facts: l(list(long, 20)), image }),
     projects: z.object({ headline: l(short), description: l(long), items: list(project) }),
     skills: z.object({ headline: l(short), description: l(long), sets: list(skillSet, 20) }),
     contact: z.object({ headline: l(short), description: l(long) }),
-    // the site owner; the legal pages and the contact section take their details from here
+    // the direct ways of contact in the contact section
     settings: z.object({
-      name: short,
       email: z.email(),
-      phone: short.optional(),
-      address: list(short, 10).optional(),
       profiles: z.object({ github: link, linkedin: link }),
     }),
     // title and meta description of the start page

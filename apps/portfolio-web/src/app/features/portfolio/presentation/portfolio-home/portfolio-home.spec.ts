@@ -22,8 +22,8 @@ const image = (id: string): PortfolioImage => ({
 const PORTFOLIO: Portfolio = {
   hero: {
     name: 'Manuel Braun',
-    description: { de: 'Hey, ich bin Manuel.', en: 'Hey there, I’m Manuel.' },
-    mapPlace: { de: 'Partenstein', en: 'Partenstein' },
+    roleAccent: { de: 'Frontend', en: 'Frontend' },
+    role: { de: 'Entwickler', en: 'Developer' },
   },
   about: {
     headline: { de: 'Über mich', en: 'About me' },
@@ -77,7 +77,6 @@ const PORTFOLIO: Portfolio = {
     description: { de: 'Schreib mir.', en: 'Write to me.' },
   },
   settings: {
-    name: 'Manuel Braun',
     email: 'mail@manuel-braun.net',
     profiles: {
       github: 'https://github.com/manuelbrauncoder',
@@ -133,7 +132,7 @@ describe('PortfolioHome', () => {
 
     expect(headings.length).toBe(1);
     expect(headings[0].textContent?.replace(/\s+/g, ' ').trim()).toBe(
-      'Manuel Braun Frontend Developer',
+      'Manuel Braun Frontend Entwickler',
     );
     expect(headings[0].querySelector('em')?.textContent).toBe('Frontend');
   });
@@ -147,15 +146,7 @@ describe('PortfolioHome', () => {
     expect(lens.getAttribute('aria-hidden')).toBe('true');
     expect(copy.getAttribute('aria-hidden')).toBe('true');
     expect(copy.hasAttribute('inert')).toBe(true);
-    expect(copy.textContent?.replace(/\s+/g, ' ').trim()).toBe('Manuel Braun Frontend Developer');
-  });
-
-  it('leaves the hero description out', async () => {
-    const { element } = await render();
-
-    expect(element.querySelector('app-hero-section')?.textContent).not.toContain(
-      'Hey, ich bin Manuel.',
-    );
+    expect(copy.textContent?.replace(/\s+/g, ' ').trim()).toBe('Manuel Braun Frontend Entwickler');
   });
 
   it('puts the sections in order, each a jump target of the navigation', async () => {
@@ -229,6 +220,10 @@ describe('PortfolioHome', () => {
 
     expect(element.querySelector('#about-heading')?.textContent?.trim()).toBe('About me');
     expect(element.querySelector('.about__portrait')?.getAttribute('alt')).toBe('Image portrait');
+    // the role of the hero comes from the CMS in both languages
+    expect(element.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      'Manuel Braun Frontend Developer',
+    );
   });
 
   it('shows why the content could not be loaded', async () => {

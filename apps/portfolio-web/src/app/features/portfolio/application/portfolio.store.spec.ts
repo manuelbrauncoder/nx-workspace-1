@@ -7,7 +7,7 @@ import { PortfolioUseCase } from '../domain/portfolio.usecase';
 import { PortfolioStore } from './portfolio.store';
 
 const portfolio = (name: string): Portfolio => ({
-  hero: { name, description: { de: 'Hallo', en: 'Hello' } },
+  hero: { name, roleAccent: { de: 'Frontend', en: 'Frontend' }, role: { de: 'Dev', en: 'Dev' } },
   about: undefined,
   projects: undefined,
   skills: undefined,

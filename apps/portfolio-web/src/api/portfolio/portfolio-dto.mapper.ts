@@ -57,10 +57,6 @@ const trimLines = (value: Localized<string[]>): Localized<string[]> => ({
 });
 const absent = (mode: PortfolioWriteMode): undefined | null =>
   mode === 'create' ? undefined : null;
-const optionalText = (value: string | undefined, mode: PortfolioWriteMode) =>
-  value?.trim() || absent(mode);
-const optionalLocalized = (value: Localized<string> | undefined, mode: PortfolioWriteMode) =>
-  value && (value.de.trim() || value.en.trim()) ? trim(value) : absent(mode);
 
 const toImage = (dto: PortfolioImageDto): PortfolioImage => ({
   id: dto.id,
@@ -88,9 +84,8 @@ const toProject = (dto: ProjectDto): Project => ({
 const READERS: Readers = {
   hero: (dto: HeroDto): Hero => ({
     name: dto.name,
-    description: copy(dto.description),
-    mapPlace: dto.mapPlace && copy(dto.mapPlace),
-    mapCoordinates: dto.mapCoordinates,
+    roleAccent: copy(dto.roleAccent),
+    role: copy(dto.role),
   }),
   about: (dto: AboutDto): About => ({
     headline: copy(dto.headline),
@@ -116,10 +111,7 @@ const READERS: Readers = {
     description: copy(dto.description),
   }),
   settings: (dto: SettingsDto): Settings => ({
-    name: dto.name,
     email: dto.email,
-    phone: dto.phone,
-    address: dto.address && [...dto.address],
     profiles: { github: dto.profiles.github, linkedin: dto.profiles.linkedin },
   }),
   seo: (dto: SeoDto): Seo => ({
@@ -130,11 +122,10 @@ const READERS: Readers = {
 };
 
 const WRITERS: Writers = {
-  hero: (hero, mode) => ({
+  hero: (hero) => ({
     name: hero.name.trim(),
-    description: trim(hero.description),
-    mapPlace: optionalLocalized(hero.mapPlace, mode),
-    mapCoordinates: optionalText(hero.mapCoordinates, mode),
+    roleAccent: trim(hero.roleAccent),
+    role: trim(hero.role),
   }),
   about: (about) => ({
     headline: trim(about.headline),
@@ -170,19 +161,13 @@ const WRITERS: Writers = {
     headline: trim(contact.headline),
     description: trim(contact.description),
   }),
-  settings: (settings, mode) => {
-    const address = trimList(settings.address ?? []);
-    return {
-      name: settings.name.trim(),
-      email: settings.email.trim(),
-      phone: optionalText(settings.phone, mode),
-      address: address.length > 0 ? address : absent(mode),
-      profiles: {
-        github: settings.profiles.github.trim(),
-        linkedin: settings.profiles.linkedin.trim(),
-      },
-    };
-  },
+  settings: (settings) => ({
+    email: settings.email.trim(),
+    profiles: {
+      github: settings.profiles.github.trim(),
+      linkedin: settings.profiles.linkedin.trim(),
+    },
+  }),
   seo: (seo, mode) => ({
     title: trim(seo.title),
     description: trim(seo.description),
