@@ -24,3 +24,39 @@ pnpm nx g @spartan-ng/cli:ui <name> --angularCli=true --directory=packages/share
 ```
 
 Remove the path the CLI adds to `tsconfig.base.json`, the wildcard covers it, and generate the component in every style lib. Details in [UI components](../frontend/ui-components.md#spartan-styles).
+
+## Updating Spartan
+
+Spartan versions brain and helm together. `@spartan-ng/brain`, `@spartan-ng/cli` and the helm libs therefore always move to the same version in one commit, never one of them alone. Dependabot leaves `@spartan-ng/*` out ([.github/dependabot.yml](../../.github/dependabot.yml)), the update goes through a script:
+
+```bash
+node tools/scripts/update-spartan.mjs            # latest version
+node tools/scripts/update-spartan.mjs 1.10.0     # a given version
+node tools/scripts/update-spartan.mjs --customizations   # only list local changes
+```
+
+Generating the components again would overwrite every local change. [update-spartan.mjs](../../tools/scripts/update-spartan.mjs) does a three-way merge per file instead:
+
+| Side | Content                                                                       |
+| ---- | ----------------------------------------------------------------------------- |
+| base | the components as the CLI version in `spartan.json` of the lib generates them |
+| ours | the components in the lib today, base plus local changes                      |
+| next | the components as the new CLI version generates them                          |
+
+`git merge-file` takes the changes from base to next into ours. Lines only Spartan changed are taken over, lines only changed locally stay, and where both changed the same lines the file gets conflict markers (`<<<<<<< local`, `>>>>>>> spartan`) and the script ends with exit code 1. All three sides are formatted with Prettier first, so formatting never shows up as a change. The script installs the new versions, writes the new version into `spartan.json` and lists per lib what changed, which local changes it kept, conflicts and components Spartan has that the lib does not. It only updates components the lib already has. If it fails, it restores `package.json` and `pnpm-lock.yaml`.
+
+It works in `packages/.spartan-update/` and deletes the folder at the end (`--keep` leaves it). The folder is not in `.gitignore` on purpose: the CLI only writes below `packages/`, and it applies the style only to files git does not ignore.
+
+`spartan.json` names the CLI version that generated the lib, the base of the next merge. Keep it equal to the installed `@spartan-ng/cli`: a new component generated with another CLI version than the one in `spartan.json` gets the wrong base at the next update. [add-helm-style.mjs](../../tools/scripts/add-helm-style.mjs) writes it for a new style lib.
+
+The full process with release notes, conflicts, migrations of the wrappers in `ui` and checks is the skill [update-deps](../../.claude/skills/update-deps/SKILL.md) (`/update-deps` in Claude Code).
+
+## Local changes
+
+Changes belong in the wrappers in `ui`, the helm components stay as generated. If a helm component has to change after all (a bug Spartan has not fixed yet), mark the place with a comment that says why:
+
+```ts
+// custom: focus ring hidden behind the invalid ring, see docs/frontend/ui-components.md
+```
+
+The comment survives the merge with the line, and on a conflict it says what the local change was for.

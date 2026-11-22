@@ -71,6 +71,10 @@ for (const file of ['project.json', 'tsconfig.json', 'tsconfig.lib.json']) {
   writeFileSync(join(lib, file), content.replaceAll('helm-vega', `helm-${style}`));
 }
 
+// The CLI version that generated the lib, the base of the three-way merge in update-spartan.mjs.
+const { version } = JSON.parse(readFileSync('node_modules/@spartan-ng/cli/package.json', 'utf8'));
+writeFileSync(join(lib, 'spartan.json'), JSON.stringify({ cliVersion: version }, null, 2) + '\n');
+
 console.log(`
 Created ${lib}. To use it in an app:
 - repeat the "paths" of tsconfig.base.json in the app's tsconfig.json and point

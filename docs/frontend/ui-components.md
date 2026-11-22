@@ -14,7 +14,7 @@ The wrappers take finished texts and know nothing about translation keys. The sa
 
 ESLint enforces the boundary through Nx tags. In an app or in `core`, importing `@spartan-ng/*`, `@ng-icons/*` or `@tiptap/*` fails with "A project tagged with "type:app" is not allowed to import …", and importing a Helm component fails because only `type:ui` may depend on `type:helm` (see [Architecture](architecture.md#how-it-is-enforced)).
 
-The Spartan Helm components themselves are generated into `packages/shared/helm-vega` and reached through the alias `@spartan-ng/helm/*`. Treat that folder as vendor code: Prettier and ESLint skip it.
+The Spartan Helm components themselves are generated into `packages/shared/helm-vega` and reached through the alias `@spartan-ng/helm/*`. Treat that folder as vendor code: Prettier and ESLint skip it. Spartan updates merge the newly generated components into it and keep local changes, see [helm](../libs/helm.md#updating-spartan).
 
 ## Spartan styles
 
