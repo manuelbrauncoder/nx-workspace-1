@@ -108,7 +108,7 @@
     "drizzle-kit": "^0.31.11",
     "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.0.0",
-    "eslint-plugin-playwright": "^1.6.2",
+    "eslint-plugin-playwright": "^2.12.2",
     "husky": "^9.1.7",
     "jiti": "2.7.0",
     "jsdom": "^31.0.1",
