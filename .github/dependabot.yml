@@ -39,6 +39,9 @@ updates:
         update-types: [version-update:semver-major]
       - dependency-name: '@nx/*'
         update-types: [version-update:semver-major]
+      # Brain and CLI move together with the generated helm components, through
+      # tools/scripts/update-spartan.mjs (docs/libs/helm.md)
+      - dependency-name: '@spartan-ng/*'
     commit-message:
       prefix: chore
       prefix-development: chore

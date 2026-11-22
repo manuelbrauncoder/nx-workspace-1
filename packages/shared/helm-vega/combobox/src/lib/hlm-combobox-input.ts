@@ -12,34 +12,35 @@ import { classes } from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-combobox-input',
+  exportAs: 'hlmComboboxInput',
   imports: [HlmInputGroupImports, NgIcon, BrnComboboxImports, BrnComboboxPopoverTrigger],
   providers: [provideIcons({ lucideChevronDown, lucideX })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [BrnComboboxAnchor, HlmInputGroup],
   template: `
     <input
-      brnComboboxInput
       #comboboxInput="brnComboboxInput"
-      brnComboboxPopoverTrigger
       [closeOnTriggerClick]="false"
-      hlmInputGroupInput
       [id]="inputId()"
       [placeholder]="placeholder()"
       [forceInvalid]="forceInvalid()"
       [aria-invalid]="ariaInvalidInput()"
+      brnComboboxInput
+      brnComboboxPopoverTrigger
+      hlmInputGroupInput
     />
 
     <hlm-input-group-addon align="inline-end">
       @if (showTrigger()) {
         <button
+          class="group-has-data-[slot=combobox-clear]/input-group:hidden data-pressed:bg-transparent"
+          [disabled]="comboboxInput.disabled()"
+          [attr.aria-label]="triggerAriaLabel()"
           brnComboboxPopoverTrigger
           hlmInputGroupButton
           data-slot="input-group-button"
-          [disabled]="comboboxInput.disabled()"
-          [attr.aria-label]="triggerAriaLabel()"
           size="icon-xs"
           variant="ghost"
-          class="group-has-data-[slot=combobox-clear]/input-group:hidden data-pressed:bg-transparent"
         >
           <ng-icon name="lucideChevronDown" />
         </button>
@@ -48,10 +49,10 @@ import { classes } from '@spartan-ng/helm/utils';
       @if (showClear()) {
         <button
           *brnComboboxClear
-          hlmInputGroupButton
-          data-slot="combobox-clear"
           [disabled]="comboboxInput.disabled()"
           [attr.aria-label]="clearAriaLabel()"
+          hlmInputGroupButton
+          data-slot="combobox-clear"
           size="icon-xs"
           variant="ghost"
         >

@@ -13,6 +13,7 @@ import { HlmSelectScrollUp } from './hlm-select-scroll-up';
 
 @Component({
   selector: 'hlm-select-content',
+  exportAs: 'hlmSelectContent',
   imports: [HlmSelectScrollUp, HlmSelectScrollDown, BrnSelectList],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [BrnSelectContent],
@@ -21,7 +22,7 @@ import { HlmSelectScrollUp } from './hlm-select-scroll-up';
       <hlm-select-scroll-up />
     }
 
-    <div brnSelectList [class]="_computedListboxClasses()">
+    <div [class]="_computedListboxClasses()" brnSelectList>
       <ng-content />
     </div>
 

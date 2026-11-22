@@ -10,6 +10,7 @@ import { classes, hlm } from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-calendar',
+  exportAs: 'hlmCalendar',
   imports: [BrnCalendarImports, NgIcon, HlmSelectImports, NgTemplateOutlet, HlmButtonImports],
   viewProviders: [provideIcons({ lucideChevronLeft, lucideChevronRight })],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,11 +36,11 @@ import { classes, hlm } from '@spartan-ng/helm/utils';
       <!-- Header -->
       <div class="flex w-full items-center justify-between gap-1.5">
         <ng-template #month>
-          <hlm-select brnCalendarMonthSelect class="order-1">
-            <hlm-select-trigger size="sm" [class]="_selectClass">
+          <hlm-select class="order-1" brnCalendarMonthSelect>
+            <hlm-select-trigger [class]="_selectClass" size="sm">
               <hlm-select-value />
             </hlm-select-trigger>
-            <hlm-select-content *hlmSelectPortal class="max-h-80">
+            <hlm-select-content class="max-h-80" *hlmSelectPortal>
               <hlm-select-group>
                 @for (month of _i18n.config().months(); track month) {
                   <hlm-select-item [value]="month">{{ month }}</hlm-select-item>
@@ -49,11 +50,11 @@ import { classes, hlm } from '@spartan-ng/helm/utils';
           </hlm-select>
         </ng-template>
         <ng-template #year>
-          <hlm-select brnCalendarYearSelect class="order-3">
-            <hlm-select-trigger size="sm" [class]="_selectClass">
+          <hlm-select class="order-3" brnCalendarYearSelect>
+            <hlm-select-trigger [class]="_selectClass" size="sm">
               <hlm-select-value />
             </hlm-select-trigger>
-            <hlm-select-content *hlmSelectPortal class="max-h-80">
+            <hlm-select-content class="max-h-80" *hlmSelectPortal>
               <hlm-select-group>
                 @for (year of _i18n.config().years(); track year) {
                   <hlm-select-item [value]="year">{{ year }}</hlm-select-item>
@@ -65,12 +66,12 @@ import { classes, hlm } from '@spartan-ng/helm/utils';
         @let heading = _heading();
 
         <button
+          class="order-first size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
           brnCalendarPreviousButton
           variant="ghost"
           hlmBtn
-          class="order-first size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
         >
-          <ng-icon name="lucideChevronLeft" class="rtl:rotate-180" />
+          <ng-icon class="rtl:rotate-180" name="lucideChevronLeft" />
         </button>
 
         @switch (captionLayout()) {
@@ -80,24 +81,24 @@ import { classes, hlm } from '@spartan-ng/helm/utils';
           }
           @case ('dropdown-months') {
             <ng-container [ngTemplateOutlet]="month" />
-            <div brnCalendarHeader class="order-4 text-sm font-medium">{{ heading.year }}</div>
+            <div class="order-4 text-sm font-medium" brnCalendarHeader>{{ heading.year }}</div>
           }
           @case ('dropdown-years') {
-            <div brnCalendarHeader class="order-2 text-sm font-medium">{{ heading.month }}</div>
+            <div class="order-2 text-sm font-medium" brnCalendarHeader>{{ heading.month }}</div>
             <ng-container [ngTemplateOutlet]="year" />
           }
           @case ('label') {
-            <div brnCalendarHeader class="order-5 text-sm font-medium">{{ heading.header }}</div>
+            <div class="order-5 text-sm font-medium" brnCalendarHeader>{{ heading.header }}</div>
           }
         }
 
         <button
+          class="order-last size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
           brnCalendarNextButton
           hlmBtn
           variant="ghost"
-          class="order-last size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
         >
-          <ng-icon name="lucideChevronRight" class="rtl:rotate-180" />
+          <ng-icon class="rtl:rotate-180" name="lucideChevronRight" />
         </button>
       </div>
 
@@ -105,10 +106,10 @@ import { classes, hlm } from '@spartan-ng/helm/utils';
         <thead aria-hidden="true">
           <tr class="flex">
             <th
-              *brnCalendarWeekday="let weekday"
-              scope="col"
               class="text-muted-foreground flex-1 rounded-(--cell-radius) text-[0.8rem] font-normal select-none"
+              *brnCalendarWeekday="let weekday"
               [attr.aria-label]="_i18n.config().labelWeekday(weekday)"
+              scope="col"
             >
               {{ _i18n.config().formatWeekdayName(weekday) }}
             </th>
@@ -116,13 +117,13 @@ import { classes, hlm } from '@spartan-ng/helm/utils';
         </thead>
 
         <tbody role="rowgroup">
-          <tr *brnCalendarWeek="let week" class="mt-2 flex w-full">
+          <tr class="mt-2 flex w-full" *brnCalendarWeek="let week">
             @for (date of week; track _dateAdapter.getTime(date)) {
               <td
-                brnCalendarCell
                 class="group/day relative aspect-square h-full w-full rounded-(--cell-radius) p-0 text-center select-none [&:first-child[data-selected=true]_button]:rounded-s-(--cell-radius) [&:last-child[data-selected=true]_button]:rounded-e-(--cell-radius)"
+                brnCalendarCell
               >
-                <button brnCalendarCellButton [date]="date" [class]="_btnClass">
+                <button [date]="date" [class]="_btnClass" brnCalendarCellButton>
                   {{ _dateAdapter.getDate(date) }}
                 </button>
               </td>

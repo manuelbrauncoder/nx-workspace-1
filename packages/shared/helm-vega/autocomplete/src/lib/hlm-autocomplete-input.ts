@@ -12,25 +12,26 @@ import { classes } from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-autocomplete-input',
+  exportAs: 'hlmAutocompleteInput',
   imports: [HlmInputGroupImports, NgIcon, BrnAutocompleteClear, BrnAutocompleteInput],
   providers: [provideIcons({ lucideSearch, lucideX })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [BrnAutocompleteAnchor, HlmInputGroup],
   template: `
     <input
-      brnAutocompleteInput
       #autocompleteInput="brnAutocompleteInput"
-      hlmInputGroupInput
       [id]="inputId()"
       [placeholder]="placeholder()"
       [autocomplete]="autocomplete()"
       [aria-invalid]="ariaInvalidInput()"
       [forceInvalid]="forceInvalid()"
+      brnAutocompleteInput
+      hlmInputGroupInput
     />
 
     @if (showSearch()) {
       <hlm-input-group-addon>
-        <ng-icon name="lucideSearch" [class.opacity-50]="autocompleteInput.disabled()" />
+        <ng-icon [class.opacity-50]="autocompleteInput.disabled()" name="lucideSearch" />
       </hlm-input-group-addon>
     }
 
@@ -38,9 +39,9 @@ import { classes } from '@spartan-ng/helm/utils';
       <hlm-input-group-addon align="inline-end">
         <button
           *brnAutocompleteClear
+          [disabled]="autocompleteInput.disabled()"
           hlmInputGroupButton
           data-slot="autocomplete-clear"
-          [disabled]="autocompleteInput.disabled()"
           size="icon-xs"
           variant="ghost"
         >

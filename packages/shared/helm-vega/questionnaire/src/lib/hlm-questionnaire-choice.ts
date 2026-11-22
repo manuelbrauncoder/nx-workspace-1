@@ -33,41 +33,41 @@ import { classes } from '@spartan-ng/helm/utils';
   },
   template: `
     <input
+      class="absolute inset-0 z-10 size-full cursor-pointer opacity-0"
       brnQuestionnaireChoiceInput
       data-slot="questionnaire-choice-input"
-      class="absolute inset-0 z-10 size-full cursor-pointer opacity-0"
     />
     <span
+      class="border-input group-data-checked/questionnaire-choice:border-primary group-data-checked/questionnaire-choice:bg-primary group-data-checked/questionnaire-choice:text-primary-foreground dark:bg-input/30 dark:group-data-checked/questionnaire-choice:bg-primary pointer-events-none relative flex size-4 shrink-0 translate-y-[--spacing(0.45)] items-center justify-center rounded-[4px] border group-has-data-[slot=questionnaire-choice-description]/questionnaire-choice:translate-y-0.5 group-data-[type=radio]/questionnaire-choice:rounded-full"
       aria-hidden="true"
       data-slot="questionnaire-choice-indicator"
-      class="border-input group-data-checked/questionnaire-choice:border-primary group-data-checked/questionnaire-choice:bg-primary group-data-checked/questionnaire-choice:text-primary-foreground dark:bg-input/30 dark:group-data-checked/questionnaire-choice:bg-primary pointer-events-none relative flex size-4 shrink-0 translate-y-[--spacing(0.45)] items-center justify-center rounded-[4px] border group-has-data-[slot=questionnaire-choice-description]/questionnaire-choice:translate-y-0.5 group-data-[type=radio]/questionnaire-choice:rounded-full"
     >
       @if (_choice.checked() && _choice.type() === 'radio') {
         <span
-          data-slot="questionnaire-choice-indicator-dot"
           class="bg-primary-foreground size-2 rounded-full"
+          data-slot="questionnaire-choice-indicator-dot"
         ></span>
       }
       @if (_choice.checked() && _choice.type() === 'checkbox') {
         <ng-icon
+          class="text-[length:--spacing(3.5)]"
           name="lucideCheck"
           data-slot="questionnaire-choice-indicator-check"
-          class="text-[length:--spacing(3.5)]"
         />
       }
     </span>
     <span
+      class="flex min-w-0 flex-1 flex-col gap-1 leading-snug"
       brnQuestionnaireChoiceLabel
       data-slot="questionnaire-choice-label"
-      class="gap-1 flex min-w-0 flex-1 flex-col leading-snug"
     >
       <ng-content />
     </span>
     @if (_choice.shortcut(); as shortcut) {
       <span
+        class="border-input bg-background text-muted-foreground pointer-events-none ms-auto inline-flex size-5 shrink-0 translate-y-[--spacing(0.45)] items-center justify-center rounded-md border font-mono text-[0.625rem] leading-none font-medium shadow-xs group-has-data-[slot=questionnaire-choice-description]/questionnaire-choice:translate-y-0.5"
         brnQuestionnaireChoiceShortcut
         data-slot="questionnaire-choice-shortcut"
-        class="border-input bg-background text-muted-foreground pointer-events-none ms-auto inline-flex size-5 shrink-0 translate-y-[--spacing(0.45)] items-center justify-center rounded-md border font-mono text-[0.625rem] leading-none font-medium shadow-xs group-has-data-[slot=questionnaire-choice-description]/questionnaire-choice:translate-y-0.5"
       >
         {{ shortcut }}
       </span>

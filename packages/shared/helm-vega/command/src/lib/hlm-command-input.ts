@@ -7,6 +7,7 @@ import { classes } from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-command-input',
+  exportAs: 'hlmCommandInput',
   imports: [HlmInputGroupImports, NgIcon, BrnCommandInput],
   providers: [provideIcons({ lucideSearch })],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,15 +19,15 @@ import { classes } from '@spartan-ng/helm/utils';
       class="bg-input/30 border-input/30 h-8! rounded-lg! shadow-none! *:data-[slot=input-group-addon]:pl-2!"
     >
       <input
-        brnCommandInput
-        data-slot="command-input"
         class="w-full text-sm outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
         [id]="inputId()"
         [placeholder]="placeholder()"
+        brnCommandInput
+        data-slot="command-input"
       />
 
       <hlm-input-group-addon>
-        <ng-icon name="lucideSearch" class="shrink-0 text-[length:--spacing(4)] opacity-50" />
+        <ng-icon class="shrink-0 text-[length:--spacing(4)] opacity-50" name="lucideSearch" />
       </hlm-input-group-addon>
     </hlm-input-group>
   `,

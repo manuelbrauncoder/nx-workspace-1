@@ -54,7 +54,7 @@ After the checks, the job `publish` derives the app from the release tag (`nx1-<
 [Dependabot](../.github/dependabot.yml) opens pull requests every Monday:
 
 - **GitHub Actions:** one grouped pull request (`ci(deps): …`). Every action in the workflow is pinned to a commit SHA with its version as a comment, `uses: actions/checkout@<sha> # v7.0.1`, so a moved tag cannot change what runs. Dependabot updates the SHA and the comment together. A new action is added the same way, never with a bare tag
-- **npm:** minor and patch updates of the root `package.json` as one grouped pull request (`chore(deps): …` or `chore(deps-dev): …`), majors one by one. Majors of Angular and Nx are left out, they go through `pnpm nx migrate`
+- **npm:** minor and patch updates of the root `package.json` as one grouped pull request (`chore(deps): …` or `chore(deps-dev): …`), majors one by one. Majors of Angular and Nx are left out, they go through `pnpm nx migrate`. `@spartan-ng/*` is left out completely, brain and CLI move together with the generated helm components through `tools/scripts/update-spartan.mjs` ([helm](libs/helm.md#updating-spartan)). The skill `update-deps` (`.claude/skills/update-deps/`) walks through both
 - commitlint accepts these commits: the scopes `deps` and `deps-dev` are known, and commits signed off by Dependabot are not checked further because their body carries the release notes with long lines
 
 Two limits:

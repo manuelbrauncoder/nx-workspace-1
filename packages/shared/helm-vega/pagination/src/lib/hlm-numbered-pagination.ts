@@ -2,8 +2,14 @@ import type { BooleanInput, NumberInput } from '@angular/cdk/coercion';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
+  ElementRef,
+  Renderer2,
+  type Signal,
+  afterRenderEffect,
   booleanAttribute,
   computed,
+  inject,
   input,
   model,
   numberAttribute,
@@ -17,9 +23,13 @@ import { HlmPaginationItem } from './hlm-pagination-item';
 import { HlmPaginationLink } from './hlm-pagination-link';
 import { HlmPaginationNext } from './hlm-pagination-next';
 import { HlmPaginationPrevious } from './hlm-pagination-previous';
+import { injectHlmPaginationConfig } from './hlm-pagination.token';
+
+let nextId = 0;
 
 @Component({
   selector: 'hlm-numbered-pagination',
+  exportAs: 'hlmNumberedPagination',
   imports: [
     HlmPagination,
     HlmPaginationContent,
@@ -33,18 +43,22 @@ import { HlmPaginationPrevious } from './hlm-pagination-previous';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="flex items-center justify-between gap-2 px-4 py-2">
-      <div class="flex items-center gap-1 text-sm text-nowrap text-gray-600">
+      <div class="text-muted-foreground flex items-center gap-1 text-sm text-nowrap">
         <b>{{ totalItems() }}</b>
-        total items |
+        {{ totalItemsLabel() }} |
         <b>{{ _lastPageNumber() }}</b>
-        pages
+        {{ pagesLabel() }}
       </div>
 
       <nav hlmPagination>
         <ul hlmPaginationContent>
           @if (showEdges() && !_isFirstPageActive()) {
-            <li hlmPaginationItem (click)="goToPrevious()">
-              <hlm-pagination-previous />
+            <li hlmPaginationItem>
+              <hlm-pagination-previous
+                [aria-label]="previousAriaLabel()"
+                [text]="previousLabel()"
+                (click)="goToPrevious()"
+              />
             </li>
           }
 
@@ -53,28 +67,34 @@ import { HlmPaginationPrevious } from './hlm-pagination-previous';
               @if (page === '...') {
                 <hlm-pagination-ellipsis />
               } @else {
-                <a
-                  hlmPaginationLink
+                <button
                   [isActive]="currentPage() === page"
                   (click)="currentPage.set(page)"
+                  type="button"
+                  hlmPaginationLink
                 >
                   {{ page }}
-                </a>
+                </button>
               }
             </li>
           }
 
           @if (showEdges() && !_isLastPageActive()) {
-            <li hlmPaginationItem (click)="goToNext()">
-              <hlm-pagination-next />
+            <li hlmPaginationItem>
+              <hlm-pagination-next
+                [aria-label]="nextAriaLabel()"
+                [text]="nextLabel()"
+                (click)="goToNext()"
+              />
             </li>
           }
         </ul>
       </nav>
 
       <!-- Show Page Size selector -->
-      <hlm-select [(value)]="itemsPerPage" class="ml-auto">
-        <hlm-select-trigger class="w-fit">
+      <label class="sr-only" [for]="_pageSizeTriggerId">{{ pageSizeAriaLabel() }}</label>
+      <hlm-select class="ml-auto" [(value)]="itemsPerPage">
+        <hlm-select-trigger class="w-fit" [buttonId]="_pageSizeTriggerId">
           <hlm-select-value />
         </hlm-select-trigger>
         <hlm-select-content *hlmSelectPortal>
@@ -89,6 +109,8 @@ import { HlmPaginationPrevious } from './hlm-pagination-previous';
   `,
 })
 export class HlmNumberedPagination {
+  private readonly _config = injectHlmPaginationConfig();
+
   /**
    * The current (active) page.
    */
@@ -127,6 +149,50 @@ export class HlmNumberedPagination {
    * Defaults to [10, 20, 50, 100]
    */
   public readonly pageSizes = input<number[]>([10, 20, 50, 100]);
+
+  /**
+   * The label for total items or pages to show
+   * Defaults to config's totalItemsLabel
+   */
+  public readonly totalItemsLabel = input<string>(this._config.totalItemsLabel);
+
+  /**
+   * The label for pages to show
+   * Defaults to config's pagesLabel
+   */
+  public readonly pagesLabel = input<string>(this._config.pagesLabel);
+
+  /**
+   * The label to show on the next button
+   * Defaults to config's nextLabel
+   */
+  public readonly nextLabel = input<string>(this._config.nextLabel);
+
+  /**
+   * The aria-label to show on the next button
+   * Defaults to config's nextAriaLabel
+   */
+  public readonly nextAriaLabel = input<string>(this._config.nextAriaLabel);
+
+  /**
+   * The label to show on the previous button
+   * Defaults to config's previousLabel
+   */
+  public readonly previousLabel = input<string>(this._config.previousLabel);
+
+  /**
+   * The aria-label to show on the previous button
+   * Defaults to config's previousAriaLabel
+   */
+  public readonly previousAriaLabel = input<string>(this._config.previousAriaLabel);
+
+  /**
+   * The accessible label of the page size selector
+   * Defaults to config's pageSizeAriaLabel
+   */
+  public readonly pageSizeAriaLabel = input<string>(this._config.pageSizeAriaLabel);
+
+  protected readonly _pageSizeTriggerId = `hlm-numbered-pagination-page-size-${nextId++}`;
 
   protected readonly _pageSizesWithCurrent = computed(() => {
     const pageSizes = this.pageSizes();
@@ -169,6 +235,10 @@ export class HlmNumberedPagination {
     );
   });
 
+  constructor() {
+    keepPaginationFocus(this._pages, this.showEdges);
+  }
+
   protected goToPrevious(): void {
     this.currentPage.set(this.currentPage() - 1);
   }
@@ -187,6 +257,48 @@ export class HlmNumberedPagination {
 }
 
 type Page = number | '...';
+
+/**
+ * Previous / Next are removed on the first / last page, and page buttons can scroll out of the
+ * range. When the focused control is removed, move focus to the current page (or the first
+ * remaining control) so keyboard users keep their place.
+ */
+export function keepPaginationFocus(...watched: Signal<unknown>[]): void {
+  const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+  const renderer = inject(Renderer2);
+  let lastFocused: Element | null = null;
+
+  const unlistenIn = renderer.listen(host, 'focusin', (event: FocusEvent) => {
+    lastFocused = event.target as Element | null;
+  });
+  // Forget the control once focus moves to an element outside this pagination (e.g. another
+  // pagination on the page). Removing the focused control moves focus to the body without a
+  // focusin, so that case still restores focus after the render.
+  const unlistenOut = renderer.listen('document', 'focusin', (event: FocusEvent) => {
+    // the composed path is not retargeted, so it also works when the pagination is in a shadow root
+    if (!event.composedPath().includes(host)) lastFocused = null;
+  });
+  inject(DestroyRef).onDestroy(() => {
+    unlistenIn();
+    unlistenOut();
+  });
+
+  afterRenderEffect(() => {
+    // re-check after any render that can remove a focused control
+    watched.forEach((signal) => signal());
+    if (!lastFocused || lastFocused.isConnected) return;
+    lastFocused = null;
+
+    const doc = host.ownerDocument;
+    if (doc.activeElement && doc.activeElement !== doc.body) return;
+
+    const nav = host.querySelector('nav') ?? host;
+    const current = nav.querySelector<HTMLElement>('[aria-current="page"]');
+    current?.focus();
+    if (current && doc.activeElement === current) return;
+    nav.querySelector<HTMLElement>('a[href], button:not([disabled])')?.focus();
+  });
+}
 
 /**
  * Checks that the instance.currentPage property is within bounds for the current page range.

@@ -3,26 +3,27 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronDown, lucideChevronUp } from '@ng-icons/lucide';
 import { BrnAccordionImports } from '@spartan-ng/brain/accordion';
 import { hlm } from '@spartan-ng/helm/utils';
-import type { ClassValue } from 'clsx';
+import type { ClassValue } from 'cn';
 
 @Component({
   selector: 'hlm-accordion-trigger',
+  exportAs: 'hlmAccordionTrigger',
   imports: [BrnAccordionImports, NgIcon],
   providers: [provideIcons({ lucideChevronDown, lucideChevronUp })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h3 brnAccordionHeader class="flex">
-      <button brnAccordionTrigger data-slot="accordion-trigger" [class]="_computedTriggerClass()">
+    <h3 class="flex" brnAccordionHeader>
+      <button [class]="_computedTriggerClass()" brnAccordionTrigger data-slot="accordion-trigger">
         <ng-content />
         <ng-icon
+          class="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
           name="lucideChevronDown"
           data-slot="accordion-trigger-icon"
-          class="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
         />
         <ng-icon
+          class="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:inline group-aria-[expanded=false]/accordion-trigger:hidden"
           name="lucideChevronUp"
           data-slot="accordion-trigger-icon"
-          class="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:inline group-aria-[expanded=false]/accordion-trigger:hidden"
         />
       </button>
     </h3>

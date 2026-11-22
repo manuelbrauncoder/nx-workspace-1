@@ -35,6 +35,7 @@ export const HLM_DATE_PICKER_MULTI_VALUE_ACCESSOR = {
 
 @Component({
   selector: 'hlm-date-picker-multi',
+  exportAs: 'hlmDatePickerMulti',
   imports: [HlmPopoverImports, HlmCalendarMulti],
   providers: [
     HLM_DATE_PICKER_MULTI_VALUE_ACCESSOR,
@@ -47,9 +48,9 @@ export const HLM_DATE_PICKER_MULTI_VALUE_ACCESSOR = {
   template: `
     <hlm-popover
       [align]="align()"
-      sideOffset="5"
       [state]="_popoverState()"
       (stateChanged)="_onStateChange($event)"
+      sideOffset="5"
     >
       <ng-content />
 

@@ -18,10 +18,11 @@ import {
 import { BrnSonnerImports, type ToasterProps } from '@spartan-ng/brain/sonner';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { hlm } from '@spartan-ng/helm/utils';
-import type { ClassValue } from 'clsx';
+import type { ClassValue } from 'cn';
 
 @Component({
   selector: 'hlm-toaster',
+  exportAs: 'hlmToaster',
   imports: [BrnSonnerImports, HlmButtonImports, NgIcon],
   providers: [
     provideIcons({
@@ -51,38 +52,38 @@ import type { ClassValue } from 'clsx';
     >
       <ng-template #loadingIcon>
         <ng-icon
-          name="lucideLoader2"
           class="overflow-visible! text-base [&>svg]:motion-safe:animate-spin"
+          name="lucideLoader2"
         />
       </ng-template>
       <ng-template #successIcon>
-        <ng-icon name="lucideCircleCheck" class="overflow-visible! text-base" />
+        <ng-icon class="overflow-visible! text-base" name="lucideCircleCheck" />
       </ng-template>
       <ng-template #errorIcon>
-        <ng-icon name="lucideOctagonX" class="overflow-visible! text-base" />
+        <ng-icon class="overflow-visible! text-base" name="lucideOctagonX" />
       </ng-template>
       <ng-template #infoIcon>
-        <ng-icon name="lucideInfo" class="overflow-visible! text-base" />
+        <ng-icon class="overflow-visible! text-base" name="lucideInfo" />
       </ng-template>
       <ng-template #warningIcon>
-        <ng-icon name="lucideTriangleAlert" class="overflow-visible! text-base" />
+        <ng-icon class="overflow-visible! text-base" name="lucideTriangleAlert" />
       </ng-template>
       <button
         *brnToastAction="let action; let toast = toast"
         [style]="toast.actionButtonStyle"
+        (click)="action.onClick($event)"
         hlmBtn
         size="sm"
-        (click)="action.onClick($event)"
       >
         {{ action.label }}
       </button>
       <button
         *brnToastCancelAction="let cancel; let toast = toast"
         [style]="toast.cancelButtonStyle"
+        (click)="cancel.onClick($event)"
         hlmBtn
         size="sm"
         variant="secondary"
-        (click)="cancel.onClick($event)"
       >
         {{ cancel.label }}
       </button>

@@ -4,6 +4,7 @@ import { classes } from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-accordion-content',
+  exportAs: 'hlmAccordionContent',
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [{ directive: BrnAccordionContent, inputs: ['style'] }],
   host: {
@@ -11,7 +12,7 @@ import { classes } from '@spartan-ng/helm/utils';
   },
   template: `
     <div
-      class="pt-0 pb-4 [&_a]:hover:text-foreground [&_a]:underline [&_a]:underline-offset-3 [&_p:not(:last-child)]:mb-4"
+      class="[&_a]:hover:text-foreground pt-0 pb-4 [&_a]:underline [&_a]:underline-offset-3 [&_p:not(:last-child)]:mb-4"
     >
       <ng-content />
     </div>

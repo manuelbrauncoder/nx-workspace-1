@@ -16,7 +16,7 @@ import { lucideChevronDown } from '@ng-icons/lucide';
 import { BrnFieldControl, provideBrnLabelable } from '@spartan-ng/brain/field';
 import { type ChangeFn, type TouchFn } from '@spartan-ng/brain/forms';
 import { classes, hlm } from '@spartan-ng/helm/utils';
-import type { ClassValue } from 'clsx';
+import type { ClassValue } from 'cn';
 
 export const HLM_NATIVE_SELECT_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
@@ -26,6 +26,7 @@ export const HLM_NATIVE_SELECT_VALUE_ACCESSOR = {
 
 @Component({
   selector: 'hlm-native-select',
+  exportAs: 'hlmNativeSelect',
   imports: [NgIcon],
   providers: [
     HLM_NATIVE_SELECT_VALUE_ACCESSOR,
@@ -40,12 +41,11 @@ export const HLM_NATIVE_SELECT_VALUE_ACCESSOR = {
   },
   template: `
     <select
-      data-slot="native-select"
       [id]="selectId()"
       [class]="_computedSelectClass()"
       [attr.data-size]="size()"
       [attr.aria-invalid]="_ariaInvalid() ? 'true' : null"
-      [attr.data-invalid]="_ariaInvalid() ? 'true' : null"
+      [attr.data-invalid]="_invalid?.() ? 'true' : null"
       [attr.data-dirty]="_dirty?.() ? 'true' : null"
       [attr.data-touched]="_touched?.() ? 'true' : null"
       [attr.data-matches-spartan-invalid]="_spartanInvalid() ? 'true' : null"
@@ -53,13 +53,14 @@ export const HLM_NATIVE_SELECT_VALUE_ACCESSOR = {
       [disabled]="_disabled()"
       (change)="_valueChanged($event)"
       (blur)="_blur()"
+      data-slot="native-select"
     >
       <ng-content />
     </select>
 
     <ng-icon
-      name="lucideChevronDown"
       [class]="_computedSelectIconClass()"
+      name="lucideChevronDown"
       aria-hidden="true"
       data-slot="native-select-icon"
     />
@@ -107,7 +108,9 @@ export class HlmNativeSelect implements ControlValueAccessor {
     alias: 'aria-invalid',
   });
 
-  protected readonly _ariaInvalid = computed(() => this.ariaInvalidInput() ?? this._invalid?.());
+  protected readonly _ariaInvalid = computed(
+    () => this.ariaInvalidInput() ?? !!this._spartanInvalid(),
+  );
 
   public readonly valueInput = input<string | undefined | null>('', { alias: 'value' });
   public readonly value = linkedSignal(this.valueInput);
