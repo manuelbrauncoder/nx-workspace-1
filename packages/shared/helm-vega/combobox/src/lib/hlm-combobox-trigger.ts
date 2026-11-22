@@ -16,10 +16,11 @@ import {
 import { BrnFieldControlDescribedBy } from '@spartan-ng/brain/field';
 import { ButtonVariants, HlmButton } from '@spartan-ng/helm/button';
 import { hlm } from '@spartan-ng/helm/utils';
-import type { ClassValue } from 'clsx';
+import type { ClassValue } from 'cn';
 
 @Component({
   selector: 'hlm-combobox-trigger',
+  exportAs: 'hlmComboboxTrigger',
   imports: [
     NgIcon,
     HlmButton,
@@ -32,19 +33,19 @@ import type { ClassValue } from 'clsx';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <button
+      [id]="buttonId()"
+      [class]="_computedClass()"
+      [variant]="variant()"
+      [forceInvalid]="forceInvalid()"
       brnComboboxTrigger
       brnComboboxAnchor
       brnComboboxPopoverTrigger
       brnFieldControlDescribedBy
       hlmBtn
       data-slot="combobox-trigger"
-      [id]="buttonId()"
-      [class]="_computedClass()"
-      [variant]="variant()"
-      [forceInvalid]="forceInvalid()"
     >
       <ng-content />
-      <ng-icon name="lucideChevronDown" class="text-muted-foreground text-[length:--spacing(4)]" />
+      <ng-icon class="text-muted-foreground text-[length:--spacing(4)]" name="lucideChevronDown" />
     </button>
   `,
 })

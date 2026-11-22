@@ -12,6 +12,7 @@ import { classes, hlm } from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-month-year-calendar',
+  exportAs: 'hlmMonthYearCalendar',
   imports: [BrnCalendarImports, NgIcon, HlmButtonImports],
   viewProviders: [provideIcons({ lucideChevronLeft, lucideChevronRight })],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,48 +29,48 @@ import { classes, hlm } from '@spartan-ng/helm/utils';
       <!-- Header -->
       <div class="flex w-full items-center justify-between gap-1.5">
         <button
+          class="order-first size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
           brnMonthYearCalendarPreviousButton
           hlmBtn
           variant="ghost"
-          class="order-first size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
         >
-          <ng-icon name="lucideChevronLeft" class="rtl:rotate-180" />
+          <ng-icon class="rtl:rotate-180" name="lucideChevronLeft" />
         </button>
 
         <button
+          class="h-(--cell-size) py-0 select-none aria-disabled:opacity-50"
           hlmBtn
           variant="ghost"
-          class="h-(--cell-size) py-0 select-none aria-disabled:opacity-50"
           brnMonthYearCalendarHeader
         >
           {{ _heading() }}
         </button>
 
         <button
+          class="order-last size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
           brnMonthYearCalendarNextButton
           hlmBtn
           variant="ghost"
-          class="order-last size-(--cell-size) p-0 select-none aria-disabled:opacity-50"
         >
-          <ng-icon name="lucideChevronRight" class="rtl:rotate-180" />
+          <ng-icon class="rtl:rotate-180" name="lucideChevronRight" />
         </button>
       </div>
 
       <!-- Grid -->
       @switch (_picker.view()) {
         @case ('year') {
-          <div brnMonthYearCalendarGrid class="grid grid-cols-4 gap-2">
+          <div class="grid grid-cols-4 gap-2" brnMonthYearCalendarGrid>
             @for (year of _picker.years(); track _dateAdapter.getYear(year)) {
-              <button brnMonthYearCalendarYearButton [date]="year" [class]="_btnClass">
+              <button [date]="year" [class]="_btnClass" brnMonthYearCalendarYearButton>
                 {{ _i18n.config().formatYear(_dateAdapter.getYear(year)) }}
               </button>
             }
           </div>
         }
         @case ('month') {
-          <div brnMonthYearCalendarGrid class="grid grid-cols-4 gap-2">
+          <div class="grid grid-cols-4 gap-2" brnMonthYearCalendarGrid>
             @for (month of _picker.months(); track _dateAdapter.getMonth(month)) {
-              <button brnMonthYearCalendarMonthButton [date]="month" [class]="_btnClass">
+              <button [date]="month" [class]="_btnClass" brnMonthYearCalendarMonthButton>
                 {{ _i18n.config().months()[_dateAdapter.getMonth(month)] }}
               </button>
             }

@@ -6,6 +6,7 @@ import { classes } from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-combobox-item',
+  exportAs: 'hlmComboboxItem',
   imports: [NgIcon],
   providers: [provideIcons({ lucideCheck })],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,8 +16,8 @@ import { classes } from '@spartan-ng/helm/utils';
     <ng-content />
     @if (_active()) {
       <ng-icon
-        name="lucideCheck"
         class="absolute end-2 flex items-center justify-center text-[length:--spacing(4)]"
+        name="lucideCheck"
         aria-hidden="true"
       />
     }

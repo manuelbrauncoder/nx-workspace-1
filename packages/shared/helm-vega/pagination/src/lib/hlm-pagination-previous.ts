@@ -11,30 +11,48 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideChevronLeft } from '@ng-icons/lucide';
 import type { ButtonVariants } from '@spartan-ng/helm/button';
 import { hlm } from '@spartan-ng/helm/utils';
-import type { ClassValue } from 'clsx';
+import type { ClassValue } from 'cn';
 import { HlmPaginationLink } from './hlm-pagination-link';
+import { injectHlmPaginationConfig } from './hlm-pagination.token';
 
 @Component({
   selector: 'hlm-pagination-previous',
+  exportAs: 'hlmPaginationPrevious',
   imports: [HlmPaginationLink, NgIcon],
   providers: [provideIcons({ lucideChevronLeft })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <a
-      hlmPaginationLink
-      [class]="_computedClass()"
-      [link]="link()"
-      [queryParams]="queryParams()"
-      [queryParamsHandling]="queryParamsHandling()"
-      [size]="_size()"
-      [attr.aria-label]="ariaLabel()"
-    >
-      <ng-icon name="lucideChevronLeft" class="rtl:rotate-180" />
-      <span [class]="_labelClass()">{{ text() }}</span>
-    </a>
+    @if (link() === undefined) {
+      <!-- Without a link this is an action, so render a focusable button instead of an anchor without href. -->
+      <button
+        [class]="_computedClass()"
+        [size]="_size()"
+        [attr.aria-label]="ariaLabel()"
+        type="button"
+        hlmPaginationLink
+      >
+        <ng-icon class="rtl:rotate-180" name="lucideChevronLeft" />
+        <span [class]="_labelClass()">{{ text() }}</span>
+      </button>
+    } @else {
+      <a
+        [class]="_computedClass()"
+        [link]="link()"
+        [queryParams]="queryParams()"
+        [queryParamsHandling]="queryParamsHandling()"
+        [size]="_size()"
+        [attr.aria-label]="ariaLabel()"
+        hlmPaginationLink
+      >
+        <ng-icon class="" name="lucideChevronLeft" />
+        <span [class]="_labelClass()">{{ text() }}</span>
+      </a>
+    }
   `,
 })
 export class HlmPaginationPrevious {
+  private readonly _config = injectHlmPaginationConfig();
+
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   /** The link to navigate to the previous page. */
   public readonly link = input<RouterLink['routerLink']>();
@@ -44,9 +62,11 @@ export class HlmPaginationPrevious {
   public readonly queryParamsHandling = input<RouterLink['queryParamsHandling']>();
 
   /** The aria-label for the previous page link. */
-  public readonly ariaLabel = input<string>('Go to previous page', { alias: 'aria-label' });
+  public readonly ariaLabel = input<string>(this._config.previousAriaLabel, {
+    alias: 'aria-label',
+  });
   /** The text to display for the previous page link. */
-  public readonly text = input<string>('Previous');
+  public readonly text = input<string>(this._config.previousLabel);
   /** Whether the button should only display the icon. */
   public readonly iconOnly = input<boolean, BooleanInput>(false, {
     transform: booleanAttribute,

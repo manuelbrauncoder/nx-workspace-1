@@ -14,6 +14,7 @@ import { HlmCarousel } from './hlm-carousel';
 
 @Component({
   selector: 'button[hlm-carousel-next], button[hlmCarouselNext]',
+  exportAs: 'hlmCarouselNext',
   imports: [NgIcon],
   providers: [
     provideIcons({ lucideArrowRight }),
@@ -27,7 +28,7 @@ import { HlmCarousel } from './hlm-carousel';
     '(click)': '_carousel.scrollNext()',
   },
   template: `
-    <ng-icon name="lucideArrowRight" class="rtl:rotate-180" />
+    <ng-icon class="rtl:rotate-180" name="lucideArrowRight" />
     <span class="sr-only">Next slide</span>
   `,
 })

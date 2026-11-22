@@ -18,10 +18,11 @@ import { BrnFieldControl, BrnFieldControlDescribedBy } from '@spartan-ng/brain/f
 import { ButtonVariants, HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmPopoverTrigger } from '@spartan-ng/helm/popover';
 import { hlm } from '@spartan-ng/helm/utils';
-import { ClassValue } from 'clsx';
+import { ClassValue } from 'cn';
 
 @Component({
   selector: 'hlm-date-picker-trigger',
+  exportAs: 'hlmDatePickerTrigger',
   imports: [HlmButtonImports, HlmPopoverTrigger, NgIcon, BrnFieldControlDescribedBy],
   providers: [
     provideIcons({ lucideChevronDown }),
@@ -32,20 +33,20 @@ import { ClassValue } from 'clsx';
   template: `
     <button
       [id]="buttonId()"
-      type="button"
       [class]="_computedClass()"
       [disabled]="_disabled()"
-      [attr.aria-invalid]="_ariaInvalid()"
-      [attr.data-invalid]="_ariaInvalid()"
+      [attr.aria-invalid]="_spartanInvalid() ? 'true' : null"
+      [attr.data-invalid]="_invalid?.() ? 'true' : null"
       [attr.data-touched]="_touched?.() ? 'true' : null"
       [attr.data-dirty]="_dirty?.() ? 'true' : null"
       [attr.data-matches-spartan-invalid]="_spartanInvalid() ? 'true' : null"
-      hlmBtn
       [variant]="variant()"
-      hlmPopoverTrigger
       [hlmPopoverTriggerFor]="_popover()"
-      brnFieldControlDescribedBy
       [attr.data-placeholder]="_isPlaceholder() ? '' : null"
+      type="button"
+      hlmBtn
+      hlmPopoverTrigger
+      brnFieldControlDescribedBy
     >
       <span class="truncate">
         @if (_formattedDate(); as formattedDate) {
@@ -67,14 +68,12 @@ export class HlmDatePickerTrigger implements BrnDatePickerTriggerBase {
   private readonly _fieldControl = inject(BrnFieldControl, { optional: true });
   private readonly _datePicker = injectBrnDatePicker();
 
-  private readonly _invalid = this._fieldControl?.invalid;
+  protected readonly _invalid = this._fieldControl?.invalid;
   protected readonly _spartanInvalid = computed(
     () => this.forceInvalid() || this._fieldControl?.spartanInvalid(),
   );
   protected readonly _dirty = this._fieldControl?.dirty;
   protected readonly _touched = this._fieldControl?.touched;
-
-  protected readonly _ariaInvalid = computed(() => (this._invalid?.() ? 'true' : null));
 
   public readonly userClass = input<ClassValue>('', { alias: 'class' });
   protected readonly _computedClass = computed(() =>

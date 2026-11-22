@@ -2,10 +2,11 @@ import { Directive, computed, effect, input, untracked } from '@angular/core';
 import { BrnAlertDialogOverlay } from '@spartan-ng/brain/alert-dialog';
 import { injectCustomClassSettable } from '@spartan-ng/brain/core';
 import { hlm } from '@spartan-ng/helm/utils';
-import type { ClassValue } from 'clsx';
+import type { ClassValue } from 'cn';
 
 @Directive({
   selector: '[hlmAlertDialogOverlay],hlm-alert-dialog-overlay',
+  exportAs: 'hlmAlertDialogOverlay',
   hostDirectives: [BrnAlertDialogOverlay],
 })
 export class HlmAlertDialogOverlay {

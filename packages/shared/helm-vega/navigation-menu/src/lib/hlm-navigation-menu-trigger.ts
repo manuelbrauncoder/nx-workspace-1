@@ -7,6 +7,7 @@ import { classes } from '@spartan-ng/helm/utils';
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'button[hlmNavigationMenuTrigger]',
+  exportAs: 'hlmNavigationMenuTrigger',
   imports: [NgIcon],
   providers: [provideIcons({ lucideChevronDown })],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,8 +16,8 @@ import { classes } from '@spartan-ng/helm/utils';
   template: `
     <ng-content />
     <ng-icon
-      name="lucideChevronDown"
       class="relative top-px ml-1 size-3 transition duration-300 group-data-open/navigation-menu-trigger:rotate-180 group-data-popup-open/navigation-menu-trigger:rotate-180"
+      name="lucideChevronDown"
     />
   `,
 })

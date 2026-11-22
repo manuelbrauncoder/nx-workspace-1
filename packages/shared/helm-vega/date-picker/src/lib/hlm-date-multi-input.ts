@@ -12,6 +12,7 @@ import { injectHlmDatePickerMultiConfig } from './hlm-date-picker-multi.token';
 
 @Component({
   selector: 'hlm-date-multi-input',
+  exportAs: 'hlmDateMultiInput',
   imports: [HlmInputGroupImports, NgIcon],
   providers: [
     provideIcons({ lucideCalendar, lucideX }),
@@ -19,17 +20,26 @@ import { injectHlmDatePickerMultiConfig } from './hlm-date-picker-multi.token';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [HlmInputGroup],
+  host: {
+    // ARIA attributes belong on the inner <input>, the host has no role.
+    '[attr.aria-label]': 'null',
+    '[attr.aria-labelledby]': 'null',
+    '[attr.aria-describedby]': 'null',
+    '[attr.aria-invalid]': 'null',
+  },
   template: `
     <input
       #input
-      hlmInputGroupInput
       [value]="_inputValue()"
       [id]="inputId()"
       [placeholder]="placeholder()"
       [disabled]="_disabled()"
       [forceInvalid]="forceInvalid()"
-      [attr.aria-invalid]="_ariaInvalid()"
-      [attr.data-invalid]="_ariaInvalid()"
+      [attr.aria-label]="ariaLabel()"
+      [attr.aria-labelledby]="ariaLabelledby()"
+      [aria-describedby]="ariaDescribedby()"
+      [aria-invalid]="_ariaInvalid()"
+      [attr.data-invalid]="_invalid?.() ? 'true' : null"
       [attr.data-touched]="_touched?.() ? 'true' : null"
       [attr.data-dirty]="_dirty?.() ? 'true' : null"
       [attr.data-matches-spartan-invalid]="_spartanInvalid() ? 'true' : null"
@@ -39,26 +49,27 @@ import { injectHlmDatePickerMultiConfig } from './hlm-date-picker-multi.token';
       (input)="_handleInputChange($event)"
       (focus)="_handleFocus()"
       (blur)="_handleBlur()"
+      hlmInputGroupInput
     />
     <hlm-input-group-addon align="inline-end">
       @if (_showClearButton()) {
         <button
+          [attr.aria-label]="clearAriaLabel()"
+          [disabled]="_disabled()"
+          (click)="_clear()"
           hlmInputGroupButton
           size="icon-xs"
           variant="ghost"
-          [attr.aria-label]="clearAriaLabel()"
-          (click)="_clear()"
-          [disabled]="_disabled()"
         >
           <ng-icon name="lucideX" />
         </button>
       }
       <button
+        [attr.aria-label]="calendarAriaLabel()"
+        [disabled]="_disabled()"
+        (click)="_popover().open()"
         hlmInputGroupButton
         size="icon-xs"
-        [attr.aria-label]="calendarAriaLabel()"
-        (click)="_popover().open()"
-        [disabled]="_disabled()"
       >
         <ng-icon name="lucideCalendar" />
       </button>
@@ -69,14 +80,17 @@ export class HlmDateMultiInput<T> extends BrnDateInput<T[]> implements BrnDatePi
   private readonly _config = injectHlmDatePickerMultiConfig<T>();
   private readonly _fieldControl = inject(BrnFieldControl, { optional: true });
 
-  private readonly _invalid = this._fieldControl?.invalid;
+  protected readonly _invalid = this._fieldControl?.invalid;
   protected readonly _spartanInvalid = computed(
     () => this.forceInvalid() || this._fieldControl?.spartanInvalid(),
   );
   protected readonly _dirty = this._fieldControl?.dirty;
   protected readonly _touched = this._fieldControl?.touched;
 
-  protected readonly _ariaInvalid = computed(() => (this._invalid?.() ? 'true' : null));
+  /** Passed to the inner input's aria-invalid input: the consumer override, else the matcher result. */
+  protected readonly _ariaInvalid = computed(
+    () => this.ariaInvalidInput() ?? !!this._spartanInvalid(),
+  );
   /**
    * Parses input text into dates. Return `null` for invalid input - the
    * picker's dates are cleared while the text is preserved so the user can

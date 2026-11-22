@@ -206,8 +206,8 @@ importers:
         specifier: ^35.1.0
         version: 35.1.0
       '@spartan-ng/brain':
-        specifier: 1.9.0
-        version: 1.9.0(0cc5a5a34b28cc1a03332903810134f7)
+        specifier: 1.10.0
+        version: 1.10.0(bd7b7cd4abc7a35cee3d457d49e7c8dc)
       '@tanstack/angular-charts':
         specifier: 1.5.0
         version: 1.5.0(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))
@@ -229,9 +229,9 @@ importers:
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
+      cn:
+        specifier: ^0.5.2
+        version: 0.5.2
       connect-pg-simple:
         specifier: ^10.0.0
         version: 10.0.0
@@ -292,9 +292,6 @@ importers:
       swagger-ui-express:
         specifier: ^5.0.1
         version: 5.0.1(express@5.3.0(supports-color@8.1.1))
-      tailwind-merge:
-        specifier: ^3.5.0
-        version: 3.7.0
       tslib:
         specifier: ^2.9.1
         version: 2.9.1
@@ -381,8 +378,8 @@ importers:
         specifier: ~22.2.7
         version: 22.2.7(chokidar@5.0.0)
       '@spartan-ng/cli':
-        specifier: 1.9.0
-        version: 1.9.0(09afbf57f730dbb597f22b4654fda3b5)
+        specifier: 1.10.0
+        version: 1.10.0(09afbf57f730dbb597f22b4654fda3b5)
       '@swc-node/register':
         specifier: 1.12.1
         version: 1.12.1(@swc/core@1.16.22(@swc/helpers@0.5.24))(@swc/types@0.1.28)(supports-color@8.1.1)(typescript@6.0.3)
@@ -3936,14 +3933,13 @@ packages:
   '@sinonjs/fake-timers@15.4.0':
     resolution: {integrity: sha512-DsG+8/LscQIQg68J6Ef3dv10u6nVyetYn923s3/sus5eaGfTo1of5WMZSLf0UJc9KDuKPilPH0UDJCjvNbDNCA==}
 
-  '@spartan-ng/brain@1.9.0':
-    resolution: {integrity: sha512-vPULFnCRk0B4RD3gB2ks5hA/AOfXX5J4vD5wrsxHyAElhkwmY6vvyVL/3BcJ7w3LszhUVUsag8ORPqtvRCEJ0w==}
+  '@spartan-ng/brain@1.10.0':
+    resolution: {integrity: sha512-BPN2IDPfZrn4lquaZ0Twx9aFPc+x0VNiFcRIHeukZQtZFTRheXPyyTvug1f8W0IN4gLcvc8wqzy3KPudM/nRwA==}
     peerDependencies:
       '@angular/cdk': '>=21.0.0 <23.0.0'
       '@angular/common': '>=21.0.0 <23.0.0'
       '@angular/core': '>=21.0.0 <23.0.0'
       '@angular/forms': '>=21.0.0 <23.0.0'
-      clsx: '>=2.0.0'
       luxon: '>=3.0.0'
       rxjs: '>=6.6.0'
       tailwindcss: '>=4.0.0'
@@ -3952,8 +3948,8 @@ packages:
       luxon:
         optional: true
 
-  '@spartan-ng/cli@1.9.0':
-    resolution: {integrity: sha512-a8t4F4l8AamfBXpiB5gqBAt8Dux6ARw+pcVBZXyyNNGTkJpNxx2RKthm6pJ7eRN05c+ZWdx1G6WCymdgu+z7Ww==}
+  '@spartan-ng/cli@1.10.0':
+    resolution: {integrity: sha512-hLBXoXypF8IO7vNtqINW/gvO+WTRwpIKGjAWmX3nnIXvTFz9xzH1pgw+jd0NjPAhlGDCKBoXevmBYLh0WqAy+w==}
     peerDependencies:
       tslib: ^2.3.0
 
@@ -5220,6 +5216,11 @@ packages:
   clsx@2.1.1:
     resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
+
+  cn@0.5.2:
+    resolution: {integrity: sha512-wm10E6iuJ37rALOw3D+3cfaXXZSLNMh2uxpQn3dNICqfJM59yXqgbA9/9Iiz155j5kYNLdK6WreNdW3NQtx3OQ==}
+    engines: {node: '>=22'}
+    hasBin: true
 
   co@4.6.0:
     resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}
@@ -7907,9 +7908,6 @@ packages:
   synckit@0.11.13:
     resolution: {integrity: sha512-eNRKgb3z66Yp3D2CixVujOUvXLFUTij/zVnV8KRyvFdQwpz7I5DS8UfRkTeLzb64u+dkzDSdelE24izu+zSSUg==}
     engines: {node: ^14.18.0 || >=16.0.0}
-
-  tailwind-merge@3.7.0:
-    resolution: {integrity: sha512-XPPUyAc+cvspz3lHTcR/QgPfW2A0lv/xQNIjX3HGhLR+Nq2lHaLq5MtTesHn8GUr3W3DguT2KT5x3NVgRtYwmA==}
 
   tailwindcss@4.3.5:
     resolution: {integrity: sha512-FcQk9BuffmEHJP2G0XmB2SplU1aLTI7j07Kunk+U74Ny+XiWOtzXz9aujFZ/avntw1e2cOv/3PkgzflQ7gX2vQ==}
@@ -11672,19 +11670,18 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@spartan-ng/brain@1.9.0(0cc5a5a34b28cc1a03332903810134f7)':
+  '@spartan-ng/brain@1.10.0(bd7b7cd4abc7a35cee3d457d49e7c8dc)':
     dependencies:
       '@angular/cdk': 22.2.7(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/forms@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/common': 22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)
       '@angular/forms': 22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(@angular/platform-browser@22.2.6(@angular/common@22.2.6(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)))(rxjs@7.8.2)
-      clsx: 2.1.1
       rxjs: 7.8.2
       tailwindcss: 4.3.5
       tslib: 2.9.1
       tw-animate-css: 1.4.0
 
-  '@spartan-ng/cli@1.9.0(09afbf57f730dbb597f22b4654fda3b5)':
+  '@spartan-ng/cli@1.10.0(09afbf57f730dbb597f22b4654fda3b5)':
     dependencies:
       '@angular/core': 22.2.6(@angular/compiler@22.2.6)(rxjs@7.8.2)
       '@nx/angular': 24.0.6(3fb7d04f76a7b7a67308c2468e4092d0)
@@ -11693,6 +11690,7 @@ snapshots:
       '@nx/workspace': 24.0.6(@swc-node/register@1.12.1(@swc/core@1.16.22(@swc/helpers@0.5.24))(@swc/types@0.1.28)(supports-color@8.1.1)(typescript@6.0.3))(@swc/core@1.16.22(@swc/helpers@0.5.24))
       '@phenomnomnominal/tsquery': 6.2.0(typescript@6.0.3)
       '@schematics/angular': 21.2.14(chokidar@5.0.0)
+      cn: 0.5.2
       enquirer: 2.3.6
       jsonc-eslint-parser: 2.4.2
       node-html-parser: 7.1.0
@@ -11701,7 +11699,6 @@ snapshots:
       postcss: 8.5.33
       postcss-selector-parser: 7.1.7
       semver: 7.5.4
-      tailwind-merge: 3.7.0
       ts-morph: 25.0.1
       tslib: 2.9.1
       typescript: 6.0.3
@@ -13024,6 +13021,8 @@ snapshots:
   clone@1.0.4: {}
 
   clsx@2.1.1: {}
+
+  cn@0.5.2: {}
 
   co@4.6.0: {}
 
@@ -15990,8 +15989,6 @@ snapshots:
   synckit@0.11.13:
     dependencies:
       '@pkgr/core': 0.3.6
-
-  tailwind-merge@3.7.0: {}
 
   tailwindcss@4.3.5: {}
 

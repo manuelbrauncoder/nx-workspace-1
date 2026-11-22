@@ -5,6 +5,7 @@ import { classes } from '@spartan-ng/helm/utils';
 
 @Component({
   selector: 'hlm-sidebar-menu-skeleton,div[hlmSidebarMenuSkeleton]',
+  exportAs: 'hlmSidebarMenuSkeleton',
   imports: [HlmSkeletonImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -13,12 +14,12 @@ import { classes } from '@spartan-ng/helm/utils';
   },
   template: `
     @if (showIcon()) {
-      <hlm-skeleton data-sidebar="menu-skeleton-icon" class="size-4 rounded-md" />
+      <hlm-skeleton class="size-4 rounded-md" data-sidebar="menu-skeleton-icon" />
     } @else {
       <hlm-skeleton
-        data-sidebar="menu-skeleton-text"
         class="h-4 max-w-(--skeleton-width) flex-1"
         [style.--skeleton-width]="_width"
+        data-sidebar="menu-skeleton-text"
       />
     }
   `,

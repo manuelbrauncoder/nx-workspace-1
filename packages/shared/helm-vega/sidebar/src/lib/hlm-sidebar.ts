@@ -2,12 +2,13 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { HlmSheetImports } from '@spartan-ng/helm/sheet';
 import { classes, hlm } from '@spartan-ng/helm/utils';
-import type { ClassValue } from 'clsx';
+import type { ClassValue } from 'cn';
 import { HlmSidebarService, type SidebarVariant } from './hlm-sidebar.service';
 import { injectHlmSidebarConfig } from './hlm-sidebar.token';
 
 @Component({
   selector: 'hlm-sidebar',
+  exportAs: 'hlmSidebar',
   imports: [NgTemplateOutlet, HlmSheetImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -31,12 +32,12 @@ import { injectHlmSidebarConfig } from './hlm-sidebar.token';
         (stateChanged)="_sidebarService.setOpenMobile($event === 'open')"
       >
         <hlm-sheet-content
+          class="bg-sidebar text-sidebar-foreground h-svh w-(--sidebar-width) p-0 [&>button]:hidden"
           *hlmSheetPortal="let ctx"
+          [style.--sidebar-width]="sidebarWidthMobile()"
           data-slot="sidebar"
           data-sidebar="sidebar"
           data-mobile="true"
-          class="bg-sidebar text-sidebar-foreground h-svh w-(--sidebar-width) p-0 [&>button]:hidden"
-          [style.--sidebar-width]="sidebarWidthMobile()"
         >
           <hlm-sheet-header class="sr-only">
             <h2 hlmSheetTitle>{{ srOnlySheetTitle() }}</h2>
@@ -49,16 +50,16 @@ import { injectHlmSidebarConfig } from './hlm-sidebar.token';
       </hlm-sheet>
     } @else {
       <!-- Sidebar gap on desktop -->
-      <div data-slot="sidebar-gap" [class]="_sidebarGapComputedClass()"></div>
+      <div [class]="_sidebarGapComputedClass()" data-slot="sidebar-gap"></div>
       <div
-        data-slot="sidebar-container"
         [attr.data-side]="_dataSide()"
         [class]="_sidebarContainerComputedClass()"
+        data-slot="sidebar-container"
       >
         <div
+          class="bg-sidebar group-data-[variant=floating]:ring-sidebar-border flex size-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:ring-1"
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          class="bg-sidebar group-data-[variant=floating]:ring-sidebar-border group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:ring-1 flex size-full flex-col"
         >
           <ng-container *ngTemplateOutlet="contentContainer" />
         </div>

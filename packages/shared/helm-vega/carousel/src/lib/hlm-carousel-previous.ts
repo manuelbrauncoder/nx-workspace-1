@@ -14,6 +14,7 @@ import { HlmCarousel } from './hlm-carousel';
 
 @Component({
   selector: 'button[hlm-carousel-previous], button[hlmCarouselPrevious]',
+  exportAs: 'hlmCarouselPrevious',
   imports: [NgIcon],
   providers: [
     provideIcons({ lucideArrowLeft }),
@@ -27,7 +28,7 @@ import { HlmCarousel } from './hlm-carousel';
     '(click)': '_carousel.scrollPrev()',
   },
   template: `
-    <ng-icon name="lucideArrowLeft" class="rtl:rotate-180" />
+    <ng-icon class="rtl:rotate-180" name="lucideArrowLeft" />
     <span class="sr-only">Previous slide</span>
   `,
 })

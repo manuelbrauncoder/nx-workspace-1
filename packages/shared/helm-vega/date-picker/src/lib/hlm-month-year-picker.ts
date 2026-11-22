@@ -33,6 +33,7 @@ export const HLM_MONTH_YEAR_PICKER_VALUE_ACCESSOR = {
 };
 @Component({
   selector: 'hlm-month-year-picker',
+  exportAs: 'hlmMonthYearPicker',
   imports: [HlmPopoverImports, HlmCalendarImports],
   providers: [
     HLM_MONTH_YEAR_PICKER_VALUE_ACCESSOR,
@@ -45,9 +46,9 @@ export const HLM_MONTH_YEAR_PICKER_VALUE_ACCESSOR = {
   template: `
     <hlm-popover
       [align]="align()"
-      sideOffset="5"
       [state]="_popoverState()"
       (stateChanged)="_onStateChange($event)"
+      sideOffset="5"
     >
       <ng-content />
 

@@ -16,6 +16,7 @@ import { EmblaCarouselDirective } from 'embla-carousel-angular';
 
 @Component({
   selector: 'hlm-carousel',
+  exportAs: 'hlmCarousel',
   imports: [EmblaCarouselDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -26,12 +27,12 @@ import { EmblaCarouselDirective } from 'embla-carousel-angular';
   },
   template: `
     <div
-      emblaCarousel
       class="overflow-hidden"
       [plugins]="plugins()"
       [options]="_emblaOptions()"
       [subscribeToEvents]="['init', 'select', 'reInit']"
       (emblaChange)="onEmblaEvent($event)"
+      emblaCarousel
     >
       <ng-content select="[hlmCarouselContent],hlm-carousel-content" />
     </div>

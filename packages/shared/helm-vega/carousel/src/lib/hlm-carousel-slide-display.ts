@@ -1,16 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import type { ClassValue } from 'clsx';
+import type { ClassValue } from 'cn';
 import { HlmCarousel } from './hlm-carousel';
 
 @Component({
   selector: 'hlm-carousel-slide-display',
+  exportAs: 'hlmCarouselSlideDisplay',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     'data-slot': 'carousel-slide-display',
   },
   template: `
     <span class="sr-only">{{ _labelContent() }}</span>
-    <div aria-hidden="true" [class]="slideClass()">
+    <div [class]="slideClass()" aria-hidden="true">
       {{ _currentSlide() }} / {{ _carousel.slideCount() }}
     </div>
   `,

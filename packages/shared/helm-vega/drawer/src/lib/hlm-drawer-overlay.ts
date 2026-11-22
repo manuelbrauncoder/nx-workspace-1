@@ -2,10 +2,11 @@ import { Directive, computed, effect, input, untracked } from '@angular/core';
 import { injectCustomClassSettable } from '@spartan-ng/brain/core';
 import { BrnDrawerOverlay } from '@spartan-ng/brain/drawer';
 import { hlm } from '@spartan-ng/helm/utils';
-import type { ClassValue } from 'clsx';
+import type { ClassValue } from 'cn';
 
 @Directive({
   selector: '[hlmDrawerOverlay],hlm-drawer-overlay',
+  exportAs: 'hlmDrawerOverlay',
   hostDirectives: [BrnDrawerOverlay],
 })
 export class HlmDrawerOverlay {
