@@ -1,3 +1,7 @@
+## 2.6.1 (2026-11-24)
+
+No changes in this app itself, only in the shared libs it uses.
+
 ## 2.6.0 (2026-11-21)
 
 ### 🩹 Fixes
