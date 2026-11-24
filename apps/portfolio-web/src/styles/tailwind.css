@@ -31,4 +31,16 @@
   --color-link: var(--link);
   --color-glass: var(--glass);
   --color-glass-strong: var(--glass-strong);
+  --color-tag-neutral-background: var(--tag-neutral-background);
+  --color-tag-neutral-foreground: var(--tag-neutral-foreground);
+  --color-tag-amber-background: var(--tag-amber-background);
+  --color-tag-amber-foreground: var(--tag-amber-foreground);
+  --color-tag-blue-background: var(--tag-blue-background);
+  --color-tag-blue-foreground: var(--tag-blue-foreground);
+  --color-tag-green-background: var(--tag-green-background);
+  --color-tag-green-foreground: var(--tag-green-foreground);
+  --color-tag-rose-background: var(--tag-rose-background);
+  --color-tag-rose-foreground: var(--tag-rose-foreground);
+  --color-tag-violet-background: var(--tag-violet-background);
+  --color-tag-violet-foreground: var(--tag-violet-foreground);
 }

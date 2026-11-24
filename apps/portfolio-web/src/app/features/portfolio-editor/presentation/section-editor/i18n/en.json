@@ -89,7 +89,25 @@
     "removeHeading": "Remove project {{ number }}?",
     "images": "Screenshots",
     "imagesDescription": "They appear in the carousel in this order, the first one is the cover.",
-    "descriptionHint": "Bold, italic, lists and links. No headings, the project name already is one."
+    "descriptionHint": "Bold, italic, lists and links. No headings, the project name already is one.",
+    "tags": "Tags",
+    "tagsDescription": "Short notes below the project name, e.g. “Work project” or the name of the company. Optional, at most 5.",
+    "tag": "Tag {{ number }}",
+    "tagOfProject": "Tag {{ number }} of project {{ project }}",
+    "tagLabel": "Text",
+    "tagColor": "Colour",
+    "tagPreview": "Preview",
+    "tagPlaceholder": "Tag",
+    "addTag": "Add tag",
+    "addTagTo": "Add tag to project {{ project }}",
+    "tagColors": {
+      "neutral": "Grey",
+      "amber": "Amber",
+      "blue": "Blue",
+      "green": "Green",
+      "rose": "Rose",
+      "violet": "Violet"
+    }
   },
   "skills": {
     "heading": "Signposts",

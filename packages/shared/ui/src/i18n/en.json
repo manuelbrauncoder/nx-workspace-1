@@ -34,6 +34,7 @@
     "unknown": "An unknown error occurred."
   },
   "form": {
+    "showPassword": "Show password",
     "datePlaceholder": "Pick a date",
     "nextMonth": "Next month",
     "previousMonth": "Previous month",

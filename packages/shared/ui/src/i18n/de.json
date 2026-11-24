@@ -34,6 +34,7 @@
     "unknown": "Es ist ein unbekannter Fehler aufgetreten."
   },
   "form": {
+    "showPassword": "Passwort anzeigen",
     "datePlaceholder": "Datum wählen",
     "nextMonth": "Nächster Monat",
     "previousMonth": "Vorheriger Monat",

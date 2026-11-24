@@ -151,8 +151,9 @@
     "label": "Sections of the example"
   },
   "badge": {
-    "description": "appUiBadge on a span: a short label next to a name, e.g. a role or a state.",
+    "description": "appUiBadge on a span: a short label next to a name, e.g. a role or a state. With variant=\"tinted\" the app sets the colours through --badge-background, --badge-foreground and --badge-border.",
     "outline": "Editor",
-    "secondary": "Admin"
+    "secondary": "Admin",
+    "tinted": "Work project"
   }
 }

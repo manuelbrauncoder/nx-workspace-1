@@ -152,6 +152,8 @@ A field whose text is in a language other than the page, such as the English ver
 
 `type` is one of `text`, `email`, `password`, `search`, `tel`, `url`, `time`. `time` is the native time input, on a phone the system picker; its value is `'HH:MM'` or `''`. Combine it with `app-form-date` for a date and a time, as the event form of vyte-web does.
 
+A `password` field has a toggle at its end (eye icon, 44px target) that shows the password as plain text and hides it again. It is a `type="button"`, so Enter in the field still submits the form. The name stays "Passwort anzeigen" / "Show password" (`form.showPassword`), the state is `aria-pressed`, and `aria-controls` points at the input. The toggle is disabled with the field. A password field also gets `spellcheck="false"` and `autocapitalize="off"`, so the plain text is neither underlined nor sent to a spell checker.
+
 ### `FormTextarea`
 
 ```html

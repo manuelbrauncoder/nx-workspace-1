@@ -1,3 +1,47 @@
 :host {
   display: block;
 }
+
+.form-text__field {
+  position: relative;
+}
+
+// Room for the toggle, so the password never runs under it.
+.form-text__field--password input {
+  padding-inline-end: 2.75rem;
+}
+
+// 44px touch target at the end of the field, centred on it. Only the icon is drawn, so the
+// target may reach a little past the 36px field without showing.
+.form-text__toggle {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--foreground);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}

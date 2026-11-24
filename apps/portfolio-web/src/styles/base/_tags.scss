@@ -1,0 +1,39 @@
+// Colours of the project tags, one class per colour of `PROJECT_TAG_COLORS`. They only set the
+// custom properties of `appUiBadge variant="tinted"`, so the page and the editor share them.
+@layer components {
+  .project-tag--neutral {
+    --badge-background: var(--tag-neutral-background);
+    --badge-foreground: var(--tag-neutral-foreground);
+    --badge-border: color-mix(in oklab, var(--tag-neutral-foreground) 18%, transparent);
+  }
+
+  .project-tag--amber {
+    --badge-background: var(--tag-amber-background);
+    --badge-foreground: var(--tag-amber-foreground);
+    --badge-border: color-mix(in oklab, var(--tag-amber-foreground) 18%, transparent);
+  }
+
+  .project-tag--blue {
+    --badge-background: var(--tag-blue-background);
+    --badge-foreground: var(--tag-blue-foreground);
+    --badge-border: color-mix(in oklab, var(--tag-blue-foreground) 18%, transparent);
+  }
+
+  .project-tag--green {
+    --badge-background: var(--tag-green-background);
+    --badge-foreground: var(--tag-green-foreground);
+    --badge-border: color-mix(in oklab, var(--tag-green-foreground) 18%, transparent);
+  }
+
+  .project-tag--rose {
+    --badge-background: var(--tag-rose-background);
+    --badge-foreground: var(--tag-rose-foreground);
+    --badge-border: color-mix(in oklab, var(--tag-rose-foreground) 18%, transparent);
+  }
+
+  .project-tag--violet {
+    --badge-background: var(--tag-violet-background);
+    --badge-foreground: var(--tag-violet-foreground);
+    --badge-border: color-mix(in oklab, var(--tag-violet-foreground) 18%, transparent);
+  }
+}

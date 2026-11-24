@@ -45,6 +45,7 @@ const PORTFOLIO: Portfolio = {
         testUrl: 'https://cooking-world.example.com',
         images: [image('kochwelt'), image('kochwelt-2')],
         published: true,
+        tags: [],
       },
       {
         title: 'Join',
@@ -53,6 +54,7 @@ const PORTFOLIO: Portfolio = {
         githubUrl: 'https://github.com/manuelbrauncoder/Join-2.0',
         images: [image('join')],
         published: true,
+        tags: [],
       },
     ],
   },

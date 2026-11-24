@@ -113,4 +113,57 @@ describe('FormText', () => {
       hint.remove();
     }
   });
+
+  describe('password', () => {
+    it('hides the password and shows it while the toggle is pressed', async () => {
+      const { fixture, element, input } = await render({ type: 'password' });
+      const toggle = element.querySelector<HTMLButtonElement>('button')!;
+
+      expect(input.type).toBe('password');
+      expect(toggle.type).toBe('button');
+      expect(toggle.getAttribute('aria-label')).toBe('Passwort anzeigen');
+      expect(toggle.getAttribute('aria-pressed')).toBe('false');
+      expect(toggle.getAttribute('aria-controls')).toBe(input.id);
+
+      toggle.click();
+      await fixture.whenStable();
+      expect(input.type).toBe('text');
+      expect(toggle.getAttribute('aria-pressed')).toBe('true');
+
+      toggle.click();
+      await fixture.whenStable();
+      expect(input.type).toBe('password');
+      expect(toggle.getAttribute('aria-pressed')).toBe('false');
+    });
+
+    it('keeps the value while switching', async () => {
+      const { fixture, element, input } = await render({ type: 'password' });
+      input.value = 'geheim';
+      input.dispatchEvent(new Event('input'));
+
+      element.querySelector<HTMLButtonElement>('button')!.click();
+      await fixture.whenStable();
+
+      expect(input.value).toBe('geheim');
+      expect(fixture.componentInstance.value()).toBe('geheim');
+    });
+
+    it('turns the toggle off together with the field', async () => {
+      const { element } = await render({ type: 'password', disabled: true });
+
+      expect(element.querySelector<HTMLButtonElement>('button')!.disabled).toBe(true);
+    });
+
+    it('has no toggle for other types', async () => {
+      const { element } = await render({ type: 'email' });
+
+      expect(element.querySelector('button')).toBeNull();
+    });
+
+    it('is accessible with the toggle', async () => {
+      const { element } = await render({ type: 'password' });
+
+      await expect(element).toBeAccessible();
+    });
+  });
 });

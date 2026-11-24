@@ -1,4 +1,5 @@
 import { Localized } from '@core/i18n/localized';
+import type { ProjectTagColor } from '@portfolio/contracts/portfolio-limits';
 
 // Without `?lang` the backend answers every localized value as `{ de, en }`, the shape of
 // `Localized`. Optional fields are left out when they are not set.
@@ -30,6 +31,11 @@ export interface AboutDto {
   image: PortfolioImageDto;
 }
 
+export interface ProjectTagDto {
+  label: Localized<string>;
+  color: ProjectTagColor;
+}
+
 export interface ProjectDto {
   title: string;
   /** Sanitized rich-text HTML. */
@@ -44,6 +50,8 @@ export interface ProjectDto {
    * yet, which means published.
    */
   published?: boolean;
+  /** Missing from an API that does not know tags yet, which means none. */
+  tags?: ProjectTagDto[];
 }
 
 export interface ProjectsSectionDto {
@@ -122,6 +130,7 @@ export interface ProjectWriteDto {
   testUrl?: string;
   images: PortfolioImageRefDto[];
   published: boolean;
+  tags: ProjectTagDto[];
 }
 
 export interface ProjectsSectionWriteDto {

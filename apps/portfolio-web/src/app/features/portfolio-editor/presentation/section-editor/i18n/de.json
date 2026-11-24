@@ -89,7 +89,25 @@
     "removeHeading": "Projekt {{ number }} entfernen?",
     "images": "Screenshots",
     "imagesDescription": "In dieser Reihenfolge erscheinen sie im Karussell, der erste ist das Titelbild.",
-    "descriptionHint": "Fett, kursiv, Listen und Links. Keine Überschriften, der Projektname ist schon eine."
+    "descriptionHint": "Fett, kursiv, Listen und Links. Keine Überschriften, der Projektname ist schon eine.",
+    "tags": "Tags",
+    "tagsDescription": "Kurze Hinweise unter dem Projektnamen, z. B. „Berufsprojekt“ oder der Name der Firma. Optional, höchstens 5.",
+    "tag": "Tag {{ number }}",
+    "tagOfProject": "Tag {{ number }} von Projekt {{ project }}",
+    "tagLabel": "Text",
+    "tagColor": "Farbe",
+    "tagPreview": "Vorschau",
+    "tagPlaceholder": "Tag",
+    "addTag": "Tag hinzufügen",
+    "addTagTo": "Tag hinzufügen zu Projekt {{ project }}",
+    "tagColors": {
+      "neutral": "Grau",
+      "amber": "Bernstein",
+      "blue": "Blau",
+      "green": "Grün",
+      "rose": "Rosa",
+      "violet": "Violett"
+    }
   },
   "skills": {
     "heading": "Wegweiser",

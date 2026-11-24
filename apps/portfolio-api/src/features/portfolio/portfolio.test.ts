@@ -1,6 +1,8 @@
 import {
   PROJECT_DESCRIPTION_MAX,
   PROJECT_IMAGES_MAX,
+  PROJECT_TAG_MAX,
+  PROJECT_TAGS_MAX,
   sectionKeys,
 } from '@portfolio/contracts/portfolio';
 import { users } from '@server/auth/users.table';
@@ -518,6 +520,114 @@ describe('portfolio drafts', () => {
       ['Old two', true],
       ['Hidden', false],
     ]);
+  });
+});
+
+describe('portfolio project tags', () => {
+  const work = { label: l('Berufsprojekt', 'Work project'), color: 'amber' };
+  const company = { label: l('Firma X', 'Company X'), color: 'blue' };
+
+  it('stores the tags in the sent order and reduces their label to one language', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+    const created = await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([{ ...project([id]), tags: [work, company] }]))
+      .expect(201);
+    expect(created.body.projects.items[0].tags).toEqual([work, company]);
+
+    const both = await request(app).get('/api/v1/portfolio').expect(200);
+    expect(both.body.projects.items[0].tags).toEqual([work, company]);
+
+    const en = await request(app).get('/api/v1/portfolio?lang=en').expect(200);
+    expect(en.body.projects.items[0].tags).toEqual([
+      { label: 'Work project', color: 'amber' },
+      { label: 'Company X', color: 'blue' },
+    ]);
+  });
+
+  it('gives a project without tags an empty list', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+    const created = await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([project([id])]))
+      .expect(201);
+    expect(created.body.projects.items[0].tags).toEqual([]);
+  });
+
+  it('replaces the tags with the project on PATCH', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+    await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([{ ...project([id]), tags: [work, company] }]))
+      .expect(201);
+
+    const patched = await admin
+      .patch('/api/v1/portfolio/projects')
+      .send({ items: [{ ...project([id]), tags: [company] }] })
+      .expect(200);
+    expect(patched.body.projects.items[0].tags).toEqual([company]);
+  });
+
+  it('keeps projects stored before tags existed readable', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+    // stored the way the API saved projects before `tags` existed
+    await db.insert(portfolioSections).values({
+      key: 'projects',
+      content: projectsSection([{ ...project([id]), published: true }]),
+    });
+
+    // the stored content is answered as it is: without the key, which clients read as no tags
+    const page = await request(app).get('/api/v1/portfolio?lang=de').expect(200);
+    expect(page.body.projects.items[0].title).toBe('Kochwelt');
+    expect(page.body.projects.items[0]).not.toHaveProperty('tags');
+  });
+
+  it('accepts the maximum number of tags with labels at the length limit', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+    const longest = { ...work, label: l('x'.repeat(PROJECT_TAG_MAX), 'y'.repeat(PROJECT_TAG_MAX)) };
+    const tags = Array.from({ length: PROJECT_TAGS_MAX }, () => longest);
+    const created = await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([{ ...project([id]), tags }]))
+      .expect(201);
+    expect(created.body.projects.items[0].tags).toEqual(tags);
+  });
+
+  it('clears the tags when a PATCH sends the project without them', async () => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+    await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([{ ...project([id]), tags: [work] }]))
+      .expect(201);
+
+    // a project is replaced as a whole, like every array item
+    const patched = await admin
+      .patch('/api/v1/portfolio/projects')
+      .send({ items: [project([id])] })
+      .expect(200);
+    expect(patched.body.projects.items[0].tags).toEqual([]);
+  });
+
+  it.each([
+    ['an unknown colour', [{ ...work, color: 'red' }]],
+    ['a missing colour', [{ label: work.label }]],
+    ['an empty label', [{ ...work, label: l(' ', 'Work') }]],
+    ['a label in one language only', [{ ...work, label: { de: 'Beruf' } }]],
+    ['a label over the limit', [{ ...work, label: l('x'.repeat(PROJECT_TAG_MAX + 1), 'Work') }]],
+    ['too many tags', Array.from({ length: PROJECT_TAGS_MAX + 1 }, () => work)],
+  ])('rejects %s', async (_case, tags) => {
+    const admin = await adminAgent();
+    const id = await uploadedMediaId(admin);
+    await admin
+      .post('/api/v1/portfolio/projects')
+      .send(projectsSection([{ ...project([id]), tags }]))
+      .expect(400);
   });
 });
 

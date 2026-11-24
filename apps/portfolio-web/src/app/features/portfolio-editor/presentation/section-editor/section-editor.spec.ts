@@ -57,6 +57,7 @@ const PROJECTS: ProjectsSection = {
         },
       ],
       published: true,
+      tags: [],
     },
   ],
 };

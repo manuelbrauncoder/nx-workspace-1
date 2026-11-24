@@ -55,6 +55,12 @@ interface Project {
   testUrl?: string; // without one there is no live demo
   images: Image[]; // 1 to 10, in page order, the first one is the cover
   published: boolean; // false: a draft, only admins get it, see "Drafts"
+  tags: Tag[]; // 0 to 5, in page order, see "Tags"
+}
+
+interface Tag {
+  label: L; // 1 to 40 characters per language, e.g. "Work project" or a company
+  color: 'neutral' | 'amber' | 'blue' | 'green' | 'rose' | 'violet';
 }
 
 interface Projects {
@@ -146,6 +152,12 @@ A project has `images`, one to `PROJECT_IMAGES_MAX` (10, from [`@portfolio/contr
 A project has `published`, `true` by default. A project with `published: false` is a draft: `GET /portfolio` leaves it out unless the request has an admin session, so visitors never see it. A write without the key publishes the project, like the default of the schema. Sections other than projects have no drafts.
 
 Admin check: `GET /portfolio` reads the session with `isAdmin(req)` from [`server-auth`](../../libs/server-auth.md), which reads the role from the database on every request. A guest gets the page without drafts, it does not get an error.
+
+### Tags
+
+A project has `tags`, short labels next to its title such as "Work project" or the name of a company. Each tag is `{ label, color }`: the label is localized like every text, the colour one of `PROJECT_TAG_COLORS` (`neutral`, `amber`, `blue`, `green`, `rose`, `violet`, from [`@portfolio/contracts/portfolio-limits`](../../../packages/portfolio/contracts/src/portfolio-limits.ts)). The names are fixed, each frontend maps them to its own colours. Up to `PROJECT_TAGS_MAX` (5) tags with up to `PROJECT_TAG_MAX` (40) characters per language, more is a 400, as is an unknown colour.
+
+A write without the key stores `tags: []`. Projects stored before tags existed have no key and are read as having none, so no migration is needed. `?lang=` reduces the label to that language like any other localized value.
 
 ### Project descriptions
 

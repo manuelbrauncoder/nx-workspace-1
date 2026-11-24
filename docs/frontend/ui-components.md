@@ -556,9 +556,11 @@ A short label next to a name: a role, a state, a count. Text, not a control.
 ```html
 <span appUiBadge>Mitplaner</span>
 <span appUiBadge variant="secondary"><app-ui-icon name="shieldCheck" /> Admin</span>
+<span class="project-tag--amber" appUiBadge variant="tinted">Berufsprojekt</span>
 ```
 
 - `outline` (default) is a thin border, `secondary` the soft secondary ground of the theme
+- `tinted` takes its colours from `--badge-background`, `--badge-foreground` and `--badge-border`, which the app sets, e.g. with one class per colour (portfolio-web: `project-tag--<color>`). Without them it looks like `secondary`. The app checks the contrast of its colours
 - The Spartan badge has no variant this quiet, so the wrapper sets its own classes from theme tokens
 
 ### Separator

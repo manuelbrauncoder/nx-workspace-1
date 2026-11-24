@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { PortfolioImage } from './portfolio';
 import { PortfolioDtoMapper } from './portfolio-dto.mapper';
-import { PortfolioDto } from './portfolio.dto';
+import { PortfolioDto, ProjectTagDto } from './portfolio.dto';
 
 const IMAGE: PortfolioImage = {
   id: 'm1',
@@ -125,6 +125,7 @@ describe('PortfolioDtoMapper', () => {
             testUrl: 'https://join.example.com',
             images: [IMAGE, { ...IMAGE, id: 'second' }],
             published: true,
+            tags: [],
           },
         ],
       },
@@ -170,6 +171,51 @@ describe('PortfolioDtoMapper', () => {
 
       for (const mode of ['create', 'update'] as const) {
         expect(mapper.toSectionDto('projects', section, mode).items[0].published).toBe(published);
+      }
+    });
+  });
+
+  describe('tags of a project', () => {
+    const work: ProjectTagDto = {
+      label: { de: 'Berufsprojekt', en: 'Work project' },
+      color: 'amber',
+    };
+    const company: ProjectTagDto = { label: { de: 'Firma X', en: 'Company X' }, color: 'blue' };
+    const projectDto = (tags?: ProjectTagDto[]): PortfolioDto => ({
+      ...DTO,
+      projects: {
+        headline: { de: 'Projekte', en: 'Projects' },
+        description: { de: 'Text', en: 'Text' },
+        items: [
+          {
+            title: 'Join',
+            description: { de: 'Text', en: 'Text' },
+            stack: ['Angular'],
+            images: [IMAGE],
+            ...(tags === undefined ? {} : { tags }),
+          },
+        ],
+      },
+    });
+
+    it('reads the tags in their order', () => {
+      expect(mapper.toModel(projectDto([work, company])).projects?.items[0].tags).toEqual([
+        work,
+        company,
+      ]);
+    });
+
+    it('treats a project without the field as one without tags', () => {
+      expect(mapper.toModel(projectDto()).projects?.items[0].tags).toEqual([]);
+    });
+
+    it('writes the tags with trimmed labels', () => {
+      const section = mapper.toModel(
+        projectDto([{ label: { de: ' Berufsprojekt ', en: 'Work project ' }, color: 'amber' }]),
+      ).projects!;
+
+      for (const mode of ['create', 'update'] as const) {
+        expect(mapper.toSectionDto('projects', section, mode).items[0].tags).toEqual([work]);
       }
     });
   });

@@ -7,6 +7,7 @@ export type {
   Portfolio,
   PortfolioImage,
   Project,
+  ProjectTag,
   ProjectsSection,
   Seo,
   Settings,

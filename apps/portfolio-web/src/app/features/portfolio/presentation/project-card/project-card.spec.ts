@@ -29,6 +29,7 @@ const PROJECT: Project = {
     },
   ],
   published: true,
+  tags: [],
 };
 
 describe('ProjectCard', () => {
@@ -103,5 +104,40 @@ describe('ProjectCard', () => {
     const element = await render({ ...PROJECT, published: false });
 
     await expect(element).toBeAccessible();
+  });
+
+  describe('tags', () => {
+    const TAGS: Project['tags'] = [
+      { label: { de: 'Berufsprojekt', en: 'Work project' }, color: 'amber' },
+      { label: { de: 'Firma X', en: 'Company X' }, color: 'blue' },
+    ];
+
+    it('lists the tags in their order with the class of their colour', async () => {
+      const element = await render({ ...PROJECT, tags: TAGS });
+
+      const list = element.querySelector('.project-card__labels')!;
+      expect(list.tagName).toBe('UL');
+      expect(list.getAttribute('aria-label')).toBe('Kennzeichnung');
+      const badges = Array.from(list.querySelectorAll('li > [appUiBadge]'));
+      expect(badges.map((badge) => badge.textContent?.trim())).toEqual([
+        'Berufsprojekt',
+        'Firma X',
+      ]);
+      expect(badges[0].classList).toContain('project-tag--amber');
+      expect(badges[1].classList).toContain('project-tag--blue');
+    });
+
+    it('shows no list without tags', async () => {
+      const element = await render(PROJECT);
+
+      expect(element.querySelector('.project-card__labels')).toBeNull();
+      expect(element.querySelector('.project-card__meta')).toBeNull();
+    });
+
+    it('is accessible with tags and as a draft', async () => {
+      const element = await render({ ...PROJECT, tags: TAGS, published: false });
+
+      await expect(element).toBeAccessible();
+    });
   });
 });

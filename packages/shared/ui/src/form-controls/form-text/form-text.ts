@@ -7,21 +7,27 @@ import {
   input,
   model,
   output,
+  signal,
   viewChild,
 } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
 import { AppLanguage } from '@core/i18n/languages';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { HlmInputImports } from '@spartan-ng/helm/input';
+import { UiIcon } from '../../ui/icon/icon';
 import { FormControlErrors, visibleErrorMessages } from '../form-control-shell/form-control-errors';
 import { FormControlShell } from '../form-control-shell/form-control-shell';
 
 /** `time` is the native time input, its value is `'HH:MM'` (or `''`). */
 export type FormTextType = 'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'time';
 
-/** Single-line text field for Signal Forms: `<app-form-text [formField]="form.title" label="Titel" />`. */
+/**
+ * Single-line text field for Signal Forms: `<app-form-text [formField]="form.title" label="Titel" />`.
+ * A `password` field has a toggle at its end that shows the password as plain text and hides it again.
+ */
 @Component({
   selector: 'app-form-text',
-  imports: [FormControlShell, HlmInputImports],
+  imports: [FormControlShell, HlmInputImports, TranslatePipe, UiIcon],
   styleUrl: './form-text.scss',
   templateUrl: './form-text.html',
 })
@@ -60,6 +66,17 @@ export class FormText implements FormValueControl<string> {
   );
 
   private readonly _control = viewChild.required<ElementRef<HTMLInputElement>>('control');
+
+  private readonly _isPassword = computed(() => this.type() === 'password');
+  /** Whether a password field shows its text, switched by the toggle. */
+  private readonly _passwordVisible = signal(false);
+  private readonly _inputType = computed(() =>
+    this._isPassword() && this._passwordVisible() ? 'text' : this.type(),
+  );
+
+  private _togglePassword(): void {
+    this._passwordVisible.update((visible) => !visible);
+  }
 
   focus(options?: FocusOptions): void {
     this._control().nativeElement.focus(options);

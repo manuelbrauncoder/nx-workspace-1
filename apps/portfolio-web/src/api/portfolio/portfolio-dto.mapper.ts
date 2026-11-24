@@ -79,6 +79,7 @@ const toProject = (dto: ProjectDto): Project => ({
   testUrl: dto.testUrl,
   images: dto.images.map(toImage),
   published: dto.published ?? true,
+  tags: (dto.tags ?? []).map((tag) => ({ label: copy(tag.label), color: tag.color })),
 });
 
 const READERS: Readers = {
@@ -144,6 +145,7 @@ const WRITERS: Writers = {
       testUrl: project.testUrl?.trim() || undefined,
       images: project.images.map(toImageRef),
       published: project.published,
+      tags: project.tags.map((tag) => ({ label: trim(tag.label), color: tag.color })),
     })),
   }),
   skills: (skills) => ({
