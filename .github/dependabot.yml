@@ -39,6 +39,15 @@ updates:
         update-types: [version-update:semver-major]
       - dependency-name: '@nx/*'
         update-types: [version-update:semver-major]
+      # Temporary: Angular 22.3 breaks every Angular builder under Nx 24.0.6. The fix
+      # (nrwl/nx#37951) is not in a stable 24.x release yet. Remove these three once it is, then
+      # update Nx and Angular together through the skill update-deps.
+      - dependency-name: '@angular/*'
+        versions: ['>=22.3.0']
+      - dependency-name: '@angular-devkit/*'
+        versions: ['>=22.3.0']
+      - dependency-name: '@schematics/angular'
+        versions: ['>=22.3.0']
       # Brain and CLI move together with the generated helm components, through
       # tools/scripts/update-spartan.mjs (docs/libs/helm.md)
       - dependency-name: '@spartan-ng/*'
