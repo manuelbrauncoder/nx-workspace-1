@@ -1,3 +1,9 @@
+## 2.6.2 (2026-11-24)
+
+### 🩹 Fixes
+
+- **portfolio-web:** closer facts in the about section, without hairlines ([8954b7b](https://github.com/manuelbrauncoder/nx-workspace-1/commit/8954b7b))
+
 ## 2.6.1 (2026-11-24)
 
 No changes in this app itself, only in the shared libs it uses.
