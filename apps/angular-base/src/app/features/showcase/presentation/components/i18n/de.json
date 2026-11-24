@@ -151,8 +151,9 @@
     "label": "Bereiche des Beispiels"
   },
   "badge": {
-    "description": "appUiBadge auf einem span: kurzes Etikett neben einem Namen, z. B. eine Rolle oder ein Zustand.",
+    "description": "appUiBadge auf einem span: kurzes Etikett neben einem Namen, z. B. eine Rolle oder ein Zustand. Mit variant=\"tinted\" setzt die App die Farben über --badge-background, --badge-foreground und --badge-border.",
     "outline": "Mitplaner",
-    "secondary": "Admin"
+    "secondary": "Admin",
+    "tinted": "Berufsprojekt"
   }
 }

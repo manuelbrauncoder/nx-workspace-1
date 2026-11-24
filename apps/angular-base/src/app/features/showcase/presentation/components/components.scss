@@ -51,3 +51,10 @@
 .showcase-qr-code {
   width: 10rem;
 }
+
+// `variant="tinted"` takes its colours from the custom properties, here a soft primary tint.
+.demo-badge-tinted {
+  --badge-background: color-mix(in oklab, var(--primary) 10%, transparent);
+  --badge-border: color-mix(in oklab, var(--primary) 25%, transparent);
+  --badge-foreground: var(--foreground);
+}
