@@ -5,6 +5,7 @@ export type { Media } from '@api/media/media';
 export {
   PORTFOLIO_LIMITS,
   PORTFOLIO_SECTIONS,
+  PROJECT_TAG_COLORS,
   isPortfolioSectionName,
 } from '@api/portfolio/portfolio';
 export type {
@@ -16,6 +17,8 @@ export type {
   PortfolioSectionName,
   PortfolioSections,
   Project,
+  ProjectTag,
+  ProjectTagColor,
   ProjectsSection,
   Seo,
   Settings,

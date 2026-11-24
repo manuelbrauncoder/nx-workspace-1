@@ -42,6 +42,34 @@
   gap: 1.25rem;
 }
 
+// Tags and the draft badge sit close together under the title, as one block of the body.
+.project-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.project-card__labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+// A long free-text label wraps instead of running out of the card on a phone.
+.project-card__label {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 // Only the admin sees drafts, the badge says why the project is not public yet.
 .project-card__draft {
   display: flex;

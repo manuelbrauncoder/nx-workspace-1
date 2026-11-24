@@ -16,6 +16,7 @@
       track item;
       let index = $index, first = $first, last = $last
     ) {
+      @let projectIndex = index;
       <fieldset class="projects-form__item">
         <legend class="projects-form__legend">
           {{ 'sectionEditor.projects.item' | t: { number: index + 1 } }}
@@ -44,6 +45,79 @@
           [label]="'sectionEditor.projects.published' | t"
           [description]="'sectionEditor.projects.publishedDescription' | t"
         />
+        <fieldset
+          class="projects-form__tags"
+          [attr.aria-describedby]="'project-' + projectIndex + '-tags-hint'"
+        >
+          <legend class="projects-form__tags-legend">
+            {{ 'sectionEditor.projects.tags' | t }}
+          </legend>
+          <p
+            class="projects-form__hint"
+            [id]="'project-' + projectIndex + '-tags-hint'"
+            appUiText="muted"
+          >
+            {{ 'sectionEditor.projects.tagsDescription' | t }}
+          </p>
+          @for (
+            tag of item.tags;
+            track tag;
+            let tagIndex = $index, firstTag = $first, lastTag = $last
+          ) {
+            @let tagName =
+              'sectionEditor.projects.tagOfProject'
+                | t: { number: tagIndex + 1, project: projectIndex + 1 };
+            <fieldset class="projects-form__tag">
+              <legend class="projects-form__tag-legend">
+                {{ 'sectionEditor.projects.tag' | t: { number: tagIndex + 1 } }}
+              </legend>
+              <app-list-item-actions
+                class="projects-form__actions"
+                [name]="tagName"
+                [first]="firstTag"
+                [last]="lastTag"
+                (moveUp)="_moveTag(projectIndex, tagIndex, -1)"
+                (moveDown)="_moveTag(projectIndex, tagIndex, 1)"
+                (remove)="_removeTag(projectIndex, tagIndex)"
+              />
+              <app-localized-field
+                [field]="tag.label"
+                [label]="'sectionEditor.projects.tagLabel' | t"
+              />
+              <app-form-select
+                [formField]="tag.color"
+                [label]="'sectionEditor.projects.tagColor' | t"
+                [options]="_tagColors()"
+              />
+              <p class="projects-form__preview">
+                <span appUiText="muted">{{ 'sectionEditor.projects.tagPreview' | t }}</span>
+                <span
+                  class="projects-form__tag-badge"
+                  [class]="'project-tag--' + tag.color().value()"
+                  appUiBadge
+                  variant="tinted"
+                  >{{
+                    (tag.label().value() | localized) ||
+                      ('sectionEditor.projects.tagPlaceholder' | t)
+                  }}</span
+                >
+              </p>
+            </fieldset>
+          }
+          <button
+            class="self-start"
+            #addTag
+            [attr.aria-label]="'sectionEditor.projects.addTagTo' | t: { project: projectIndex + 1 }"
+            [disabled]="item.tags.length >= _maxTags"
+            (click)="_addTag(projectIndex)"
+            appUiButton
+            variant="outline"
+            type="button"
+          >
+            <app-ui-icon name="plus" />
+            {{ 'sectionEditor.projects.addTag' | t }}
+          </button>
+        </fieldset>
         <app-localized-field
           [field]="item.description"
           [label]="'sectionEditor.fields.description' | t"

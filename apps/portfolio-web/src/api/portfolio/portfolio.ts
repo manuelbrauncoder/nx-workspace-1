@@ -4,7 +4,16 @@ import {
   HERO_ROLE_MAX,
   PROJECT_DESCRIPTION_MAX,
   PROJECT_IMAGES_MAX,
+  PROJECT_TAG_COLORS,
+  PROJECT_TAG_MAX,
+  PROJECT_TAGS_MAX,
+  ProjectTagColor,
 } from '@portfolio/contracts/portfolio-limits';
+
+export type { ProjectTagColor };
+
+/** The colours a project tag can have, in the order the editor offers them. */
+export { PROJECT_TAG_COLORS };
 
 /** An uploaded image as part of the content, with its alternative text in every language. */
 export interface PortfolioImage {
@@ -33,6 +42,13 @@ export interface About {
   image: PortfolioImage;
 }
 
+/** A short label next to the title of a project, e.g. "Work project" or a company. */
+export interface ProjectTag {
+  label: Localized<string>;
+  /** One of the fixed colours, the page maps it to the class `project-tag--<color>`. */
+  color: ProjectTagColor;
+}
+
 export interface Project {
   title: string;
   /** Rich-text HTML, shown with `app-ui-rich-text`. */
@@ -45,6 +61,8 @@ export interface Project {
   images: PortfolioImage[];
   /** `false`: a draft. The backend only delivers drafts to the admin, who sees them on the site. */
   published: boolean;
+  /** In the order they are shown, empty for none. */
+  tags: ProjectTag[];
 }
 
 export interface ProjectsSection {
@@ -142,6 +160,10 @@ export const PORTFOLIO_LIMITS = {
   /** Images of one project, at least one. */
   projectImages: PROJECT_IMAGES_MAX,
   projects: 50,
+  /** Tags of one project. */
+  projectTags: PROJECT_TAGS_MAX,
+  /** Text of one project tag. */
+  projectTag: PROJECT_TAG_MAX,
   /** One technology of a project. */
   stackItem: 50,
   stack: 50,

@@ -17,7 +17,8 @@
     "previousScreenshot": "Previous screenshot",
     "nextScreenshot": "Next screenshot",
     "draft": "Draft",
-    "draftHint": "Only visible to you"
+    "draftHint": "Only visible to you",
+    "tags": "Labels"
   },
   "contact": {
     "newTab": "(opens in a new tab)",

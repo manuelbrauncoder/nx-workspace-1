@@ -90,8 +90,8 @@ describe('PortfolioRepository', () => {
       headline: { de: 'Projekte', en: 'Projects' },
       description: { de: 'Text', en: 'Text' },
       items: [
-        { ...item, published: true },
-        { ...item, title: 'Draft', published: false },
+        { ...item, published: true, tags: [] },
+        { ...item, title: 'Draft', published: false, tags: [] },
       ],
     };
     const saved = firstValueFrom(repository.update('projects', projects));
@@ -103,5 +103,37 @@ describe('PortfolioRepository', () => {
       false,
     ]);
     expect((await saved).items[1].published).toBe(false);
+  });
+
+  it('sends the tags of a project with PATCH', async () => {
+    const tags = [{ label: { de: 'Berufsprojekt', en: 'Work project' }, color: 'amber' as const }];
+    const projects = {
+      headline: { de: 'Projekte', en: 'Projects' },
+      description: { de: 'Text', en: 'Text' },
+      items: [
+        {
+          title: 'Join',
+          description: { de: 'T', en: 'T' },
+          stack: ['Angular'],
+          images: [
+            {
+              id: 'm1',
+              url: 'https://api.example.com/media/m1',
+              width: 8,
+              height: 6,
+              alt: { de: 'a', en: 'a' },
+            },
+          ],
+          published: true,
+          tags,
+        },
+      ],
+    };
+    const saved = firstValueFrom(repository.update('projects', projects));
+    const request = backend.expectOne('https://api.example.com/portfolio/projects');
+    request.flush({ projects });
+
+    expect(request.request.body.items[0].tags).toEqual(tags);
+    expect((await saved).items[0].tags).toEqual(tags);
   });
 });

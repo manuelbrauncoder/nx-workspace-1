@@ -22,12 +22,31 @@
   <div class="project-card__body">
     <h3 class="project-card__title" appUiText="title">{{ item.title }}</h3>
     <!-- After the heading, so it belongs to this project when moving through the headings. -->
-    @if (!item.published) {
-      <p class="project-card__draft">
-        <span appUiBadge variant="secondary">{{ 'portfolioHome.projects.draft' | t }}</span>
-        <span class="sr-only">: </span>
-        <span appUiText="muted">{{ 'portfolioHome.projects.draftHint' | t }}</span>
-      </p>
+    @if (item.tags.length || !item.published) {
+      <div class="project-card__meta">
+        @if (item.tags.length) {
+          <ul class="project-card__labels" [attr.aria-label]="'portfolioHome.projects.tags' | t">
+            @for (tag of item.tags; track $index) {
+              <li>
+                <span
+                  class="project-card__label"
+                  [class]="'project-tag--' + tag.color"
+                  appUiBadge
+                  variant="tinted"
+                  >{{ tag.label | localized }}</span
+                >
+              </li>
+            }
+          </ul>
+        }
+        @if (!item.published) {
+          <p class="project-card__draft">
+            <span appUiBadge variant="secondary">{{ 'portfolioHome.projects.draft' | t }}</span>
+            <span class="sr-only">: </span>
+            <span appUiText="muted">{{ 'portfolioHome.projects.draftHint' | t }}</span>
+          </p>
+        }
+      </div>
     }
     <app-ui-rich-text class="project-card__description" [html]="item.description | localized" />
     @if (item.stack.length) {

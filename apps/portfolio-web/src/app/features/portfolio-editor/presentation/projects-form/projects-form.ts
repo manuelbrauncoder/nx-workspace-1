@@ -1,8 +1,21 @@
-import { Component, computed, ElementRef, inject, linkedSignal, viewChild } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  Injector,
+  linkedSignal,
+  viewChild,
+  viewChildren,
+} from '@angular/core';
 import { applyEach, form, FormField, FormRoot, validate } from '@angular/forms/signals';
 import { I18nService } from '@core/i18n/i18n.service';
 import { Localized, localizedOf } from '@core/i18n/localized';
+import { LocalizedPipe } from '@core/i18n/localized.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { TranslationKey } from '@core/i18n/translation-key';
+import { FormSelect } from '@shared/form-controls/form-select/form-select';
 import { FormSwitch } from '@shared/form-controls/form-switch/form-switch';
 import { FormText } from '@shared/form-controls/form-text/form-text';
 import { FormTextarea } from '@shared/form-controls/form-textarea/form-textarea';
@@ -12,7 +25,14 @@ import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiText } from '@shared/ui/text/text';
 import { PortfolioEditorStore } from '../../application/portfolio-editor.store';
-import { PORTFOLIO_LIMITS, Project, ProjectsSection } from '../../domain/portfolio';
+import {
+  PORTFOLIO_LIMITS,
+  Project,
+  PROJECT_TAG_COLORS,
+  ProjectsSection,
+  ProjectTag,
+  ProjectTagColor,
+} from '../../domain/portfolio';
 import { fromImageForm, ImageForm, imageRules, toImageForm } from '../image-field/image-form';
 import { ImagesField } from '../images-field/images-field';
 import { ListItemActions } from '../list-item-actions/list-item-actions';
@@ -31,7 +51,7 @@ import { injectSectionSave, moveItem } from '../section-form/section-save';
 /**
  * The stack is a textarea with one technology per line, an unset link is empty. The description
  * is rich-text HTML, the images are in the order they are shown. An unpublished project is a draft
- * that only the admin sees on the site.
+ * that only the admin sees on the site. Tags are short labels next to the title, e.g. "Work project".
  */
 interface ProjectFormModel {
   title: string;
@@ -41,7 +61,20 @@ interface ProjectFormModel {
   testUrl: string;
   images: ImageForm[];
   published: boolean;
+  tags: ProjectTag[];
 }
+
+/** The name of every tag colour in the colour select. */
+const TAG_COLOR_KEYS: Record<ProjectTagColor, TranslationKey> = {
+  neutral: 'sectionEditor.projects.tagColors.neutral',
+  amber: 'sectionEditor.projects.tagColors.amber',
+  blue: 'sectionEditor.projects.tagColors.blue',
+  green: 'sectionEditor.projects.tagColors.green',
+  rose: 'sectionEditor.projects.tagColors.rose',
+  violet: 'sectionEditor.projects.tagColors.violet',
+};
+
+const newTag = (): ProjectTag => ({ label: localizedOf(''), color: 'neutral' });
 
 interface ProjectsFormModel {
   headline: Localized<string>;
@@ -59,6 +92,7 @@ const toProjectModel = (project: Project | undefined): ProjectFormModel => ({
   images: project ? project.images.map(toImageForm) : [toImageForm(undefined)],
   // A new project is a draft, so it can be checked on the site before everyone sees it.
   published: project?.published ?? false,
+  tags: (project?.tags ?? []).map((tag) => ({ label: { ...tag.label }, color: tag.color })),
 });
 
 const toModel = (projects: ProjectsSection | undefined): ProjectsFormModel => ({
@@ -79,6 +113,7 @@ const fromModel = (model: ProjectsFormModel): ProjectsSection => ({
     testUrl: item.testUrl,
     images: item.images.flatMap((image) => fromImageForm(image) ?? []),
     published: item.published,
+    tags: item.tags,
   })),
 });
 
@@ -88,7 +123,9 @@ const fromModel = (model: ProjectsFormModel): ProjectsSection => ({
   imports: [
     FormField,
     FormRoot,
+    LocalizedPipe,
     TranslatePipe,
+    FormSelect,
     FormSwitch,
     FormText,
     FormTextarea,
@@ -106,16 +143,26 @@ const fromModel = (model: ProjectsFormModel): ProjectsSection => ({
 })
 export class ProjectsForm {
   private readonly _store = inject(PortfolioEditorStore);
+  private readonly _injector = inject(Injector);
   private readonly _i18n = inject(I18nService);
   private readonly _confirmDialog = inject(UiConfirmDialogService);
   private readonly _save = injectSectionSave('projects');
 
   private readonly _maxProjects = PORTFOLIO_LIMITS.projects;
   private readonly _maxImages = PORTFOLIO_LIMITS.projectImages;
+  private readonly _maxTags = PORTFOLIO_LIMITS.projectTags;
+  private readonly _tagColors = computed(() =>
+    PROJECT_TAG_COLORS.map((color) => ({
+      value: color,
+      label: this._i18n.translate(TAG_COLOR_KEYS[color]),
+    })),
+  );
   // The button carries `UiButton`, so the element has to be asked for.
   private readonly _addButton = viewChild.required('addButton', {
     read: ElementRef<HTMLButtonElement>,
   });
+  /** The "add tag" button of every project, in project order. */
+  private readonly _addTagButtons = viewChildren('addTag', { read: ElementRef<HTMLButtonElement> });
 
   private readonly _section = computed(() => this._store.portfolio()?.projects);
   /** Starts from the stored section and follows it after a save. */
@@ -146,6 +193,9 @@ export class ProjectsForm {
             : undefined,
         );
         applyEach(item.images, (image) => imageRules(image, this._i18n));
+        applyEach(item.tags, (tag) => {
+          localizedRules(tag.label, this._i18n, { max: PORTFOLIO_LIMITS.projectTag });
+        });
       });
     },
     { submission: { action: () => this._save(fromModel(this._model())) } },
@@ -179,5 +229,32 @@ export class ProjectsForm {
     }));
     // The removed project took the focus with it.
     this._addButton().nativeElement.focus();
+  }
+
+  private _addTag(projectIndex: number): void {
+    this._updateTags(projectIndex, (tags) => [...tags, newTag()]);
+  }
+
+  private _moveTag(projectIndex: number, index: number, offset: -1 | 1): void {
+    this._updateTags(projectIndex, (tags) => moveItem(tags, index, offset));
+  }
+
+  /** A tag is quickly typed again, so it goes without asking. */
+  private _removeTag(projectIndex: number, index: number): void {
+    this._updateTags(projectIndex, (tags) => tags.filter((_tag, position) => position !== index));
+    // The removed tag took the focus with it. After the render, because at the limit the add
+    // button is still disabled until then.
+    afterNextRender(() => this._addTagButtons()[projectIndex]?.nativeElement.focus(), {
+      injector: this._injector,
+    });
+  }
+
+  private _updateTags(projectIndex: number, change: (tags: ProjectTag[]) => ProjectTag[]): void {
+    this._model.update((model) => ({
+      ...model,
+      items: model.items.map((item, position) =>
+        position === projectIndex ? { ...item, tags: change(item.tags) } : item,
+      ),
+    }));
   }
 }

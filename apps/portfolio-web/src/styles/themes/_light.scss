@@ -113,4 +113,19 @@
   );
   // The shade below the bottom edge of the viewport, under the bars of iOS Safari.
   --backdrop-shade-end: rgb(243 240 234 / 0.55);
+
+  // Project tags (`PROJECT_TAG_COLORS`): a soft tint with dark text, 6.5:1 or more. Solid, so the
+  // contrast does not depend on the backdrop behind it.
+  --tag-neutral-background: var(--secondary);
+  --tag-neutral-foreground: var(--secondary-foreground);
+  --tag-amber-background: #f5e4cf;
+  --tag-amber-foreground: #7a3905;
+  --tag-blue-background: #e2e7f8;
+  --tag-blue-foreground: #2b3f94;
+  --tag-green-background: #dcefe5;
+  --tag-green-foreground: #1d5b3b;
+  --tag-rose-background: #f7e0e7;
+  --tag-rose-foreground: #8c2348;
+  --tag-violet-background: #ebe3f6;
+  --tag-violet-foreground: #57348f;
 }

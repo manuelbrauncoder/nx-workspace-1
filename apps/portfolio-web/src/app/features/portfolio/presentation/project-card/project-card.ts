@@ -11,7 +11,8 @@ import { Project } from '../../domain/portfolio';
 
 /**
  * One project: its screenshots, one at a time in a carousel with the arrows over the image, next
- * to name, description, stack and the links to try it. A draft carries a badge; only the signed-in admin ever gets one.
+ * to name, description, stack and the links to try it. Its tags (e.g. "Work project") sit under
+ * the name, each in its colour. A draft carries a badge; only the signed-in admin ever gets one.
  */
 @Component({
   selector: 'app-project-card',
