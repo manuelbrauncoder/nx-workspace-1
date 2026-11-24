@@ -1,3 +1,9 @@
+## 2.7.0 (2026-11-24)
+
+### 🚀 Features
+
+- **portfolio-web:** show and edit project tags ([8626ea7](https://github.com/manuelbrauncoder/nx-workspace-1/commit/8626ea7))
+
 ## 2.6.2 (2026-11-24)
 
 ### 🩹 Fixes

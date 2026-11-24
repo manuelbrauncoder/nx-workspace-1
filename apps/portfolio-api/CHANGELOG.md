@@ -1,3 +1,9 @@
+## 3.3.0 (2026-11-24)
+
+### 🚀 Features
+
+- **portfolio-api:** add tags to projects ([6e99aeb](https://github.com/manuelbrauncoder/nx-workspace-1/commit/6e99aeb))
+
 ## 3.2.0 (2026-11-21)
 
 ### 🚀 Features
