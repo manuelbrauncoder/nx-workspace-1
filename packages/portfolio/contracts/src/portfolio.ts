@@ -4,6 +4,9 @@ import {
   HERO_ROLE_MAX,
   PROJECT_DESCRIPTION_MAX,
   PROJECT_IMAGES_MAX,
+  PROJECT_TAG_COLORS,
+  PROJECT_TAG_MAX,
+  PROJECT_TAGS_MAX,
 } from './portfolio-limits';
 
 export {
@@ -11,6 +14,10 @@ export {
   HERO_ROLE_MAX,
   PROJECT_DESCRIPTION_MAX,
   PROJECT_IMAGES_MAX,
+  PROJECT_TAG_COLORS,
+  PROJECT_TAG_MAX,
+  PROJECT_TAGS_MAX,
+  type ProjectTagColor,
 } from './portfolio-limits';
 
 /** The sections of the start page, in page order. Each one is a singleton. */
@@ -46,6 +53,8 @@ const list = (item: z.ZodType, max = 50) => z.array(item).max(max);
  * Arrays keep their order: the order in the array is the order on the page.
  */
 function buildSections(l: Localize, image: z.ZodType) {
+  // a short label next to the title, e.g. "Work project" or a company, in one of the fixed colours
+  const tag = z.object({ label: l(text(PROJECT_TAG_MAX)), color: z.enum(PROJECT_TAG_COLORS) });
   const project = z.object({
     title: short,
     description: l(richText),
@@ -59,6 +68,8 @@ function buildSections(l: Localize, image: z.ZodType) {
     // false: a draft, only returned to admins. Missing means published, so a client that does
     // not know drafts yet keeps every project public.
     published: z.boolean().default(true),
+    // in the order they are shown. Missing means none, so stored projects stay valid.
+    tags: list(tag, PROJECT_TAGS_MAX).default([]),
   });
   const skill = z.object({ name: l(short), points: l(list(text(500), 20)) });
   const skillSet = z.object({ title: l(short), skills: list(skill) });

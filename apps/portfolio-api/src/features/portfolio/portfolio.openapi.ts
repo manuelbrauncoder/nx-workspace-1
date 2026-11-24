@@ -46,7 +46,10 @@ export function registerPortfolioDocs(registry: OpenAPIRegistry) {
         '10 `images` in page order, the first one is the cover; its `description` is HTML in ' +
         'the formats of the rich-text editor and is sanitized before it is stored. ' +
         '`published: false` saves a project as a draft that only admins see; without the ' +
-        'field the project is published. 409 if the section already exists.',
+        'field the project is published. `tags` are up to 5 short labels of a project, ' +
+        'e.g. "Work project" or a company, each `{ label, color }` with a localized label ' +
+        'and one of the fixed colours; without the field a project has none. 409 if the ' +
+        'section already exists.',
       request: { body: jsonContent(sectionInputSchemas[key]) },
       responses: {
         201: jsonResponse('Section created', response),
