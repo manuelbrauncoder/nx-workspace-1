@@ -15,6 +15,12 @@
       margin-top: 0.15em;
     }
 
+    // Enter twice leaves an empty paragraph, which is a blank line. Stored as `<p></p>` it would
+    // have no height. In the editor it holds a `<br>` and is not `:empty`.
+    p:empty {
+      min-height: 1lh;
+    }
+
     h2,
     h3 {
       font-weight: 600;
