@@ -7,20 +7,38 @@
   [label]="label()"
   [required]="required()"
 >
-  <input
-    #control
-    [id]="_id"
-    [attr.autocomplete]="autocomplete() ?? null"
-    [attr.lang]="contentLang() ?? null"
-    [attr.name]="name() || null"
-    [attr.placeholder]="placeholder() ?? null"
-    [disabled]="disabled()"
-    [readOnly]="readonly()"
-    [required]="required()"
-    [type]="type()"
-    [value]="value()"
-    (blur)="touch.emit()"
-    (input)="value.set(control.value)"
-    hlmInput
-  />
+  <div class="form-text__field" [class.form-text__field--password]="_isPassword()">
+    <input
+      #control
+      [id]="_id"
+      [attr.autocomplete]="autocomplete() ?? null"
+      [attr.lang]="contentLang() ?? null"
+      [attr.name]="name() || null"
+      [attr.placeholder]="placeholder() ?? null"
+      [disabled]="disabled()"
+      [readOnly]="readonly()"
+      [required]="required()"
+      [attr.spellcheck]="_isPassword() ? 'false' : null"
+      [attr.autocapitalize]="_isPassword() ? 'off' : null"
+      [type]="_inputType()"
+      [value]="value()"
+      (blur)="touch.emit()"
+      (input)="value.set(control.value)"
+      hlmInput
+    />
+    @if (_isPassword()) {
+      <!-- One fixed name, the state is aria-pressed: "Passwort anzeigen, gedrückt" -->
+      <button
+        class="form-text__toggle"
+        [attr.aria-controls]="_id"
+        [attr.aria-pressed]="_passwordVisible()"
+        [attr.aria-label]="'form.showPassword' | t"
+        [disabled]="disabled()"
+        (click)="_togglePassword()"
+        type="button"
+      >
+        <app-ui-icon [name]="_passwordVisible() ? 'eyeOff' : 'eye'" />
+      </button>
+    }
+  </div>
 </app-form-control-shell>
