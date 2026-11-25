@@ -44,7 +44,7 @@
     },
     "send": "Send message",
     "sending": "Sending message",
-    "sent": "Thank you for your message! I’ll get back to you as soon as possible.",
+    "sent": "Thank you for your message. I’ll get back to you as soon as possible.",
     "failed": "The message was not sent"
   }
 }

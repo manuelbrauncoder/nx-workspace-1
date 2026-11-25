@@ -9,7 +9,7 @@ import {
   numberAttribute,
 } from '@angular/core';
 
-const HIDDEN = { opacity: '0', transform: 'translateY(26px)' };
+const HIDDEN = { opacity: '0', transform: 'translateY(12px)' };
 const EASE = 'cubic-bezier(0.2, 0.8, 0.2, 1)';
 
 /**
@@ -43,7 +43,7 @@ export class Reveal {
       const show = (delay: number): void => {
         observer.disconnect();
         element.removeEventListener('focusin', onFocus);
-        element.style.transition = `opacity 0.9s ${EASE} ${delay}s, transform 0.9s ${EASE} ${delay}s`;
+        element.style.transition = `opacity 0.6s ${EASE} ${delay}s, transform 0.6s ${EASE} ${delay}s`;
         element.style.opacity = '';
         element.style.transform = '';
       };

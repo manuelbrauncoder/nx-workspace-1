@@ -4,7 +4,7 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { SITE_OWNER } from '../../site-owner';
 
 /**
- * The logo as a link to the start page: an amber tile with a code sign `</>`, next to it the name
+ * The logo as a link to the start page: a flat amber tile with a code sign `</>`, next to it the name
  * and the job title. Shown in the header and the footer, the tile is the favicon too.
  */
 @Component({

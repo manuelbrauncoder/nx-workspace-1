@@ -34,7 +34,7 @@
 .skills__cards {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1rem;
+  gap: 3rem 2.5rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -48,29 +48,15 @@
   }
 }
 
-// Frosted glass over the backdrop. On hover the edge lights up a little.
+// A column per area under a rule in the colour of the text, no card around it.
 .skills__card {
-  padding: 2rem 1.75rem 2.25rem;
-  border: 1px solid var(--border);
-  border-radius: 1.25rem;
-  background-color: var(--glass);
-  backdrop-filter: blur(14px);
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--foreground);
 }
 
-@media (hover: hover) {
-  .skills__card:hover {
-    border-color: var(--glass-edge);
-    box-shadow: 0 0 0 1px var(--glass-tint-strong);
-  }
-}
-
-// The serif in italics, large enough for the amber to stay readable on the light paper too.
+// The serif in italics, like the accent word of the hero, but in the colour of the text.
 .skills__card-title {
-  margin: 0 0 1.25rem;
-  color: var(--brand);
+  margin: 0 0 1rem;
   font-family: var(--font-serif);
   font-size: 1.75rem;
   font-style: italic;
@@ -85,7 +71,7 @@
 }
 
 .skills__skill {
-  padding-block: 0.65rem;
+  padding-block: 0.75rem;
   border-top: 1px solid var(--border);
 }
 
@@ -103,7 +89,9 @@
   color: var(--muted-foreground);
   font-size: 0.9375rem;
 
+  // The same room on both sides of the dot, screen readers skip it.
   li:not(:last-child)::after {
-    content: ' ·';
+    margin-inline-start: 0.5rem;
+    content: '·' / '';
   }
 }

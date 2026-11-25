@@ -30,13 +30,7 @@ export const COLOR_GROUPS: ColorGroup[] = [
   {
     titleKey: 'showcaseColors.groups.brand.title',
     descriptionKey: 'showcaseColors.groups.brand.description',
-    tokens: [
-      pair('brand'),
-      { name: 'brand-strong' },
-      { name: 'link' },
-      { name: 'glass' },
-      { name: 'glass-strong' },
-    ],
+    tokens: [pair('brand'), { name: 'link' }],
   },
   {
     titleKey: 'showcaseColors.groups.actions.title',
