@@ -1,3 +1,15 @@
+## 2.8.0 (2026-11-25)
+
+### 🚀 Features
+
+- **portfolio-web:** projects open with their name, form without card on phones ([da988e6](https://github.com/manuelbrauncoder/nx-workspace-1/commit/da988e6))
+- **portfolio-web:** calm surfaces instead of the gradient backdrop ([e2127e5](https://github.com/manuelbrauncoder/nx-workspace-1/commit/e2127e5))
+
+### 🩹 Fixes
+
+- **portfolio-web:** screenshots and portrait keep their size when the content changes ([55afc00](https://github.com/manuelbrauncoder/nx-workspace-1/commit/55afc00))
+- **portfolio-web:** keep the scroll position when the drawer closes ([b8bd60b](https://github.com/manuelbrauncoder/nx-workspace-1/commit/b8bd60b))
+
 ## 2.7.0 (2026-11-24)
 
 ### 🚀 Features
