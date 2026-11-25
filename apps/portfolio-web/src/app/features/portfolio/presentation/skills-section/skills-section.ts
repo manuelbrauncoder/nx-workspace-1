@@ -4,7 +4,7 @@ import { UiText } from '@shared/ui/text/text';
 import { SkillsSection as Skills } from '../../domain/portfolio';
 import { Reveal } from '../reveal/reveal';
 
-/** The skill set as glass cards, one per area: one column, two from `md`, four on a wide screen. */
+/** The skill set as columns, one per area: one column, two from `md`, four on a wide screen. */
 @Component({
   selector: 'app-skills-section',
   imports: [LocalizedPipe, UiText, Reveal],

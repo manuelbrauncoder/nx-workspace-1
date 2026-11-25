@@ -221,7 +221,9 @@ describe('PortfolioHome', () => {
     await fixture.whenStable();
 
     expect(element.querySelector('#about-heading')?.textContent?.trim()).toBe('About me');
-    expect(element.querySelector('.about__portrait')?.getAttribute('alt')).toBe('Image portrait');
+    expect(element.querySelector('.about__portrait-image')?.getAttribute('alt')).toBe(
+      'Image portrait',
+    );
     // the role of the hero comes from the CMS in both languages
     expect(element.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim()).toBe(
       'Manuel Braun Frontend Developer',

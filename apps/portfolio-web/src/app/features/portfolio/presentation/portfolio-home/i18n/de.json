@@ -44,7 +44,7 @@
     },
     "send": "Nachricht senden",
     "sending": "Nachricht wird gesendet",
-    "sent": "Danke für deine Nachricht! Ich melde mich so bald wie möglich.",
+    "sent": "Danke für deine Nachricht. Ich melde mich so bald wie möglich.",
     "failed": "Die Nachricht wurde nicht gesendet"
   }
 }

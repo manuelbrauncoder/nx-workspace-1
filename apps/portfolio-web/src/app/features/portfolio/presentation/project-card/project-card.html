@@ -1,25 +1,7 @@
 @let item = project();
 <article class="project-card">
-  <app-ui-carousel
-    class="project-card__media"
-    [items]="item.images"
-    [label]="'portfolioHome.projects.screenshots' | t: { name: item.title }"
-    [nextLabel]="'portfolioHome.projects.nextScreenshot' | t"
-    [previousLabel]="'portfolioHome.projects.previousScreenshot' | t"
-    controls="overlay"
-  >
-    <ng-template let-image let-index="index">
-      <img
-        class="project-card__image"
-        [alt]="image.alt | localized"
-        [height]="image.height"
-        [ngSrc]="image.url"
-        [priority]="priority() && index === 0"
-        [width]="image.width"
-      />
-    </ng-template>
-  </app-ui-carousel>
-  <div class="project-card__body">
+  <!-- Name and tags first, so a project opens with its name, also before the screenshots. -->
+  <header class="project-card__header">
     <h3 class="project-card__title" appUiText="title">{{ item.title }}</h3>
     <!-- After the heading, so it belongs to this project when moving through the headings. -->
     @if (item.tags.length || !item.published) {
@@ -48,6 +30,30 @@
         }
       </div>
     }
+  </header>
+  <app-ui-carousel
+    class="project-card__media"
+    [items]="item.images"
+    [label]="'portfolioHome.projects.screenshots' | t: { name: item.title }"
+    [nextLabel]="'portfolioHome.projects.nextScreenshot' | t"
+    [previousLabel]="'portfolioHome.projects.previousScreenshot' | t"
+    controls="overlay"
+  >
+    <!-- The frame sets the size, the image fills it (`fill`): another screenshot in the same slide
+         only changes the source, and Angular does not take the 16:10 frame for a distortion. -->
+    <ng-template let-image let-index="index">
+      <div class="project-card__frame">
+        <img
+          class="project-card__image"
+          [alt]="image.alt | localized"
+          [ngSrc]="image.url"
+          [priority]="priority() && index === 0"
+          fill
+        />
+      </div>
+    </ng-template>
+  </app-ui-carousel>
+  <div class="project-card__body">
     <app-ui-rich-text class="project-card__description" [html]="item.description | localized" />
     @if (item.stack.length) {
       <ul class="project-card__stack" [attr.aria-label]="'portfolioHome.projects.builtWith' | t">

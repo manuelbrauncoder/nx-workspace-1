@@ -1,7 +1,4 @@
-// Night palette, selectable: warm white on near black, amber to orange as the accent. The
-// gradient backdrop of the public pages shines through. Measured over its brightest spot (with
-// the shade on top) the soft text keeps 5:1 and the muted text 4.9:1, keep that when changing
-// the blobs, the shade or the text colours.
+// Night palette, selectable: warm white on near black, amber as the accent.
 :root.dark {
   color-scheme: dark;
 
@@ -39,23 +36,15 @@
   --sidebar-border: #2a2b31;
   --sidebar-ring: #f6c76b;
 
+  // Raised panels, e.g. the contact form and the footer of the work pages.
   --surface: #0e0f18;
-  // Amber, the accent: the logo tile, dots, focus and the main call to action.
+  // Amber, the accent: the dots, focus, the accent word of the hero and the main call to action.
   --brand: #f6c76b;
   --brand-foreground: #14151c;
-  // End of the accent gradient (`--brand` → `--brand-strong`), e.g. "Frontend" in the hero.
-  --brand-strong: #ff9a5c;
   --link: #f6c76b;
-  // The logo tile, the same in both themes: amber to orange with a dark sign.
-  --logo-from: #f6c76b;
-  --logo-to: #ff9a5c;
+  // The logo tile, the same in both themes: flat amber with a dark sign, like the favicon.
+  --logo-tile: #f6c76b;
   --logo-ink: #14151c;
-  // Frosted panels over the backdrop: cards, the contact form, the header once scrolled.
-  --glass: rgb(10 11 20 / 0.42);
-  --glass-strong: rgb(7 8 13 / 0.6);
-  --glass-tint: rgb(255 255 255 / 0.05);
-  --glass-tint-strong: rgb(255 255 255 / 0.12);
-  --glass-edge: rgb(255 255 255 / 0.4);
   // The magnifying glass over the hero headline: clear glass that blurs the text behind it,
   // a rim of light and a soft reflection. The magnified copy uses the text colours of the theme.
   --lens-glass: radial-gradient(
@@ -74,37 +63,6 @@
   // Colour fringes of the glass at the edges of the magnified letters.
   --lens-fringe-start: rgb(255 50 110 / 0.45);
   --lens-fringe-end: rgb(50 200 255 / 0.45);
-  // Gradient backdrop (`app-backdrop`): blob opacity, grain and the shade that keeps text readable.
-  // Colour stops of the four blobs (blue, rose, amber, teal), soft to the edge without a blur
-  // filter, which costs too much on phones.
-  --backdrop-blob-1:
-    #2c4fd8, color-mix(in srgb, #2c4fd8 50%, rgb(26 42 122)) 26%, rgb(26 42 122 / 0.9) 46%,
-    rgb(26 42 122 / 0.68) 58%, rgb(26 42 122 / 0.44) 69%, rgb(26 42 122 / 0.24) 79%,
-    rgb(26 42 122 / 0.1) 88%, rgb(26 42 122 / 0.03) 95%, transparent;
-  --backdrop-blob-2:
-    #e0457b, color-mix(in srgb, #e0457b 50%, rgb(123 42 140)) 26%, rgb(123 42 140 / 0.9) 46%,
-    rgb(123 42 140 / 0.68) 58%, rgb(123 42 140 / 0.44) 69%, rgb(123 42 140 / 0.24) 79%,
-    rgb(123 42 140 / 0.1) 88%, rgb(123 42 140 / 0.03) 95%, transparent;
-  --backdrop-blob-3:
-    #f6a94b, color-mix(in srgb, #f6a94b 50%, rgb(217 98 46)) 26%, rgb(217 98 46 / 0.9) 46%,
-    rgb(217 98 46 / 0.68) 58%, rgb(217 98 46 / 0.44) 69%, rgb(217 98 46 / 0.24) 79%,
-    rgb(217 98 46 / 0.1) 88%, rgb(217 98 46 / 0.03) 95%, transparent;
-  --backdrop-blob-4:
-    #1fb5a8, color-mix(in srgb, #1fb5a8 50%, rgb(18 106 143)) 26%, rgb(18 106 143 / 0.9) 46%,
-    rgb(18 106 143 / 0.68) 58%, rgb(18 106 143 / 0.44) 69%, rgb(18 106 143 / 0.24) 79%,
-    rgb(18 106 143 / 0.1) 88%, rgb(18 106 143 / 0.03) 95%, transparent;
-  --backdrop-blob-opacity: 1;
-  // Noise without a blend mode, a blend over the whole screen is slow in Safari.
-  --backdrop-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  --backdrop-grain-opacity: 0.28;
-  --backdrop-shade: linear-gradient(
-    180deg,
-    rgb(7 8 13 / 0.5),
-    rgb(7 8 13 / 0.5) 35%,
-    var(--backdrop-shade-end)
-  );
-  // The shade below the bottom edge of the viewport, under the bars of iOS Safari.
-  --backdrop-shade-end: rgb(7 8 13 / 0.65);
 
   // Project tags (`PROJECT_TAG_COLORS`): a dark tint with light text, 8:1 or more.
   --tag-neutral-background: var(--secondary);

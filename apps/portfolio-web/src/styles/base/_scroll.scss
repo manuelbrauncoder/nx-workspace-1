@@ -1,7 +1,25 @@
 // The header sticks to the top. Whatever the browser scrolls into view, e.g. the element that
-// gets the keyboard focus, stops below it instead of behind it.
+// gets the keyboard focus or the section of a fragment link, stops below it instead of behind it.
+// A margin on the elements instead of `scroll-padding` on the page: the padding counts for the
+// header itself too, so when the drawer closed and gave the focus back to the menu button, the
+// browser scrolled the page up to get the button out from under the header.
 @layer base {
-  html {
-    scroll-padding-top: 5.5rem;
+  * {
+    scroll-margin-top: 5.5rem;
+  }
+
+  // A field stops lower, so its label above it stays in view too.
+  input,
+  textarea,
+  select {
+    scroll-margin-top: 7.5rem;
+  }
+
+  // Always in view: the header and the overlays (menus, the drawer).
+  app-header,
+  app-header *,
+  .cdk-overlay-container,
+  .cdk-overlay-container * {
+    scroll-margin-top: 0;
   }
 }

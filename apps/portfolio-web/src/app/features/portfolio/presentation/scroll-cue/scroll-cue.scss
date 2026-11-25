@@ -2,19 +2,18 @@
   display: inline-flex;
 }
 
-// 56px: a large touch target, round glass from 56rem up, on a phone only the arrow.
+// 56px: a large touch target, an outlined circle from 56rem up, on a phone only the arrow.
 .scroll-cue {
   display: grid;
   place-items: center;
   width: 3.5rem;
   height: 3.5rem;
-  overflow: hidden;
   border: 1px solid transparent;
   border-radius: 50%;
   color: var(--foreground);
   transition:
-    background-color 0.25s ease,
-    border-color 0.25s ease;
+    background-color 0.15s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
 
   &:focus-visible {
     outline: 2px solid var(--ring);
@@ -23,37 +22,23 @@
 
   @media (min-width: 56rem) {
     border-color: var(--border);
-    background-color: var(--glass-tint);
-    backdrop-filter: blur(8px);
   }
 }
 
+.scroll-cue__arrow {
+  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+// On hover the circle fills a step and the arrow points a little further down.
 @media (hover: hover) and (min-width: 56rem) {
   .scroll-cue:hover {
-    border-color: var(--glass-edge);
-    background-color: var(--glass-tint-strong);
+    border-color: var(--input);
+    background-color: var(--accent);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .scroll-cue__arrow {
-    animation: scroll-cue-bob 1.8s cubic-bezier(0.5, 0, 0.3, 1) infinite;
-  }
-}
-
-@keyframes scroll-cue-bob {
-  0% {
-    transform: translateY(-120%);
-    opacity: 0;
-  }
-
-  30%,
-  70% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(120%);
-    opacity: 0;
+@media (hover: hover) {
+  .scroll-cue:hover .scroll-cue__arrow {
+    transform: translateY(2px);
   }
 }

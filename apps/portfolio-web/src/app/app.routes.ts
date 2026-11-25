@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { routeSeo } from '@core/seo/route-seo';
 import { adminGuard, authGuard } from '@features/auth/public-api';
-import { withBackdrop } from './layout/app-backdrop/backdrop-route';
 import { AppShell } from './layout/app-shell/app-shell';
 
 export const routes: Routes = [
@@ -13,8 +12,6 @@ export const routes: Routes = [
         // The portfolio on the start page.
         path: '',
         pathMatch: 'full',
-        // The public pages show the gradient backdrop, the work pages stay plain.
-        data: withBackdrop(),
         loadChildren: () =>
           import('./features/portfolio/portfolio.routes').then((m) => m.portfolioRoutes),
       },
@@ -63,14 +60,13 @@ export const routes: Routes = [
       {
         // Legal pages sit at the top level, e.g. `/impressum`.
         path: '',
-        data: withBackdrop(),
         loadChildren: () => import('./features/legal/legal.routes').then((m) => m.legalRoutes),
       },
       {
         // Last, so it only takes what no other route matched. The page answers with status 404.
         path: '**',
         title: 'notFound.title',
-        data: { ...routeSeo({ index: false }), ...withBackdrop() },
+        data: routeSeo({ index: false }),
         loadComponent: () => import('./layout/not-found/not-found').then((m) => m.NotFound),
       },
     ],

@@ -4,7 +4,6 @@ import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { shellLayout } from '@core/layout/shell-layout';
 import { AuthStore } from '@features/auth/public-api';
-import { withBackdrop } from '../app-backdrop/backdrop-route';
 import { AppShell } from './app-shell';
 
 @Component({ template: `<h1>Seite</h1>` })
@@ -24,7 +23,7 @@ describe('AppShell', () => {
               {
                 path: 'home',
                 component: Page,
-                data: { ...shellLayout('full-bleed'), ...withBackdrop() },
+                data: shellLayout('full-bleed'),
               },
             ],
           },
@@ -86,17 +85,6 @@ describe('AppShell', () => {
     await harness.navigateByUrl('/home');
 
     expect(main.classList.contains('page-container')).toBe(false);
-  });
-
-  it('shows the gradient backdrop only on the pages that ask for it', async () => {
-    const { harness, element } = await render();
-    expect(element.querySelector('app-backdrop')).toBeNull();
-
-    await harness.navigateByUrl('/home');
-
-    const backdrop = element.querySelector('app-backdrop');
-    expect(backdrop).not.toBeNull();
-    expect(backdrop?.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('focuses the main area after a navigation', async () => {

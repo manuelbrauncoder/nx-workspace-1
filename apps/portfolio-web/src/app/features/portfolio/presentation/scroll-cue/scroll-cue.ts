@@ -4,9 +4,8 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { UiIcon } from '@shared/ui/icon/icon';
 
 /**
- * Tells a visitor of the hero that the page goes on: an arrow that keeps sliding down in a round
- * glass button, on a phone without the circle. It is a real link to the next section, so it also
- * works by keyboard. With reduced motion the arrow stands still.
+ * Tells a visitor of the hero that the page goes on: an arrow down in a round outlined button, on
+ * a phone without the circle. It is a real link to the next section, so it also works by keyboard.
  */
 @Component({
   selector: 'app-scroll-cue',

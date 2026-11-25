@@ -127,7 +127,7 @@ describe('ContactSection', () => {
 
     expect(send).toHaveBeenCalledWith({ name: 'Ada', email: 'ada@example.com', message: 'Hallo!' });
     expect(toast.success).toHaveBeenCalledWith(
-      'Danke für deine Nachricht! Ich melde mich so bald wie möglich.',
+      'Danke für deine Nachricht. Ich melde mich so bald wie möglich.',
     );
     // The emptied fields count as untouched again, so they do not complain right away.
     expect(element.textContent).not.toContain('Bitte gib deinen Namen ein.');

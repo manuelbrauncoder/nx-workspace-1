@@ -1,6 +1,5 @@
 @use 'styles/abstracts' as *;
 
-// Transparent like every section of the start page, the backdrop runs behind them all.
 .about {
   padding-block: clamp(5rem, 12vw, 10rem);
   border-top: 1px solid var(--border);
@@ -37,18 +36,22 @@
 }
 
 .about__portrait {
+  position: relative;
   width: 100%;
   max-width: 28rem;
-  height: auto;
   aspect-ratio: 4 / 5;
-  object-fit: cover;
-  object-position: top;
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 1.25rem;
 
   @include up(md) {
     grid-area: portrait;
   }
+}
+
+.about__portrait-image {
+  object-fit: cover;
+  object-position: top;
 }
 
 .about__text {
@@ -90,9 +93,10 @@
     flex: none;
     width: 0.5rem;
     height: 0.5rem;
-    margin-top: 0.55rem;
+    // Centered on the first line.
+    margin-top: calc((1lh - 0.5rem) / 2);
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--brand), var(--brand-strong));
+    background-color: var(--brand);
     content: '';
   }
 }

@@ -1,7 +1,7 @@
 @use 'styles/abstracts' as *;
 
 // Stays at the top while the long start page scrolls. On the host, its parent is the whole shell.
-// Transparent over the top of the page, so the backdrop runs behind it.
+// Transparent over the top of the page, it blends into the hero.
 :host {
   position: sticky;
   top: 0;
@@ -12,16 +12,15 @@
 .app-header {
   border-bottom: 1px solid transparent;
   transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease,
-    backdrop-filter 0.3s ease;
+    background-color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-// Frosted once the page scrolls, so the content below stays out of the way of the links.
+// Solid with a hairline once the page scrolls, so the content below stays out of the way of the
+// links.
 :host(.app-header--scrolled) .app-header {
   border-bottom-color: var(--border);
-  background-color: var(--glass-strong);
-  backdrop-filter: blur(14px);
+  background-color: var(--background);
 }
 
 // Logo and menu button at the edges on a phone. From `md` three columns: the logo on the left,
