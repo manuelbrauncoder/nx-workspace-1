@@ -9,8 +9,9 @@
     </div>
     <ul class="projects__list">
       @for (project of section.items; track $index; let odd = $odd) {
-        <li class="projects__item" appReveal>
-          <app-project-card [project]="project" [reversed]="odd" />
+        <!-- The card rises into view, the hairline between the projects stays where it is. -->
+        <li class="projects__item">
+          <app-project-card [project]="project" [reversed]="odd" appReveal />
         </li>
       }
     </ul>

@@ -124,16 +124,20 @@
   }
 }
 
-// A raised panel with a hairline. The form controls inside stay as they are.
+// Stacked below the text, the form sits right on the page. From `lg`, next to the text, it is a
+// raised panel with a hairline. The form controls inside stay as they are.
 .contact__form {
   display: flex;
   flex-direction: column;
   align-self: start;
   gap: 1.5rem;
-  padding: clamp(1.5rem, 3vw, 2.5rem);
-  border: 1px solid var(--border);
-  border-radius: 1.25rem;
-  background-color: var(--surface);
+
+  @include up(lg) {
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border: 1px solid var(--border);
+    border-radius: 1.25rem;
+    background-color: var(--surface);
+  }
 }
 
 .contact__row {

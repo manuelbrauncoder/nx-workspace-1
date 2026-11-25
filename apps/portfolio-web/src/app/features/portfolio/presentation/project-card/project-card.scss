@@ -4,23 +4,51 @@
   display: block;
 }
 
-// Stacked on a phone. From `md` screenshots and text share the width half and half; every
-// other project puts the screenshots on the right.
+// Stacked on a phone: name and tags, the screenshots, then the text. From `md` screenshots and
+// text share the width half and half, the text centered next to the screenshots by the two
+// empty rows around it; every other project puts the screenshots on the right.
 .project-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1.75rem;
+  gap: 1.5rem;
 
   @include up(md) {
+    grid-template-areas:
+      'media .'
+      'media header'
+      'media body'
+      'media .';
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: center;
-    gap: clamp(3rem, 6vw, 5rem);
+    grid-template-rows: 1fr auto auto 1fr;
+    gap: 1.5rem clamp(3rem, 6vw, 5rem);
   }
 }
 
-:host(.project-card--reversed) .project-card__media {
+:host(.project-card--reversed) .project-card {
   @include up(md) {
-    order: 2;
+    grid-template-areas:
+      '. media'
+      'header media'
+      'body media'
+      '. media';
+  }
+}
+
+.project-card__header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+
+  @include up(md) {
+    grid-area: header;
+  }
+}
+
+.project-card__media {
+  @include up(md) {
+    grid-area: media;
+    align-self: center;
   }
 }
 
@@ -40,9 +68,13 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 1.25rem;
+
+  @include up(md) {
+    grid-area: body;
+  }
 }
 
-// Tags and the draft badge sit close together under the title, as one block of the body.
+// Tags and the draft badge sit close together under the title.
 .project-card__meta {
   display: flex;
   flex-direction: column;
