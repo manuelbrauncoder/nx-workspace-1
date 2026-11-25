@@ -5,14 +5,16 @@
     <h2 class="about__heading" id="about-heading" appReveal appUiText="section">
       {{ item.headline | localized }}
     </h2>
-    <img
-      class="about__portrait"
-      [alt]="item.image.alt | localized"
-      [ngSrc]="item.image.url"
-      [width]="item.image.width"
-      [height]="item.image.height"
-      appReveal
-    />
+    <!-- The frame sets the size, the image fills it (`fill`): a new portrait from the editor only
+         changes the source, and Angular does not take the cropped 4:5 frame for a distortion. -->
+    <div class="about__portrait" appReveal>
+      <img
+        class="about__portrait-image"
+        [alt]="item.image.alt | localized"
+        [ngSrc]="item.image.url"
+        fill
+      />
+    </div>
     <div class="about__text">
       <p class="about__intro" appReveal>{{ item.description | localized }}</p>
       <ul class="about__facts">

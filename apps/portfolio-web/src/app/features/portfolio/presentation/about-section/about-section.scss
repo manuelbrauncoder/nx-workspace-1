@@ -36,18 +36,22 @@
 }
 
 .about__portrait {
+  position: relative;
   width: 100%;
   max-width: 28rem;
-  height: auto;
   aspect-ratio: 4 / 5;
-  object-fit: cover;
-  object-position: top;
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 1.25rem;
 
   @include up(md) {
     grid-area: portrait;
   }
+}
+
+.about__portrait-image {
+  object-fit: cover;
+  object-position: top;
 }
 
 .about__text {

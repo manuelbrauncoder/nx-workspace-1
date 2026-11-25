@@ -39,15 +39,18 @@
     [previousLabel]="'portfolioHome.projects.previousScreenshot' | t"
     controls="overlay"
   >
+    <!-- The frame sets the size, the image fills it (`fill`): another screenshot in the same slide
+         only changes the source, and Angular does not take the 16:10 frame for a distortion. -->
     <ng-template let-image let-index="index">
-      <img
-        class="project-card__image"
-        [alt]="image.alt | localized"
-        [height]="image.height"
-        [ngSrc]="image.url"
-        [priority]="priority() && index === 0"
-        [width]="image.width"
-      />
+      <div class="project-card__frame">
+        <img
+          class="project-card__image"
+          [alt]="image.alt | localized"
+          [ngSrc]="image.url"
+          [priority]="priority() && index === 0"
+          fill
+        />
+      </div>
     </ng-template>
   </app-ui-carousel>
   <div class="project-card__body">

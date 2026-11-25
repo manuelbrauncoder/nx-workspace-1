@@ -54,11 +54,12 @@
 
 // Screenshots come in any format, also upright phone shots: the whole image stays visible in
 // the same 16:10 frame, centered, so the carousel never changes its size.
-.project-card__image {
-  display: block;
-  width: 100%;
-  height: auto;
+.project-card__frame {
+  position: relative;
   aspect-ratio: 16 / 10;
+}
+
+.project-card__image {
   object-fit: contain;
   border-radius: 1rem;
 }
