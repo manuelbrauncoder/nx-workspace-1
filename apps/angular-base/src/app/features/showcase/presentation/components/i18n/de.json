@@ -122,6 +122,13 @@
     "description": "app-ui-qr-code zeichnet einen QR-Code als SVG, scharf im Druck und gleich auf Server und Browser. So groß wie sein Container, braucht ein label.",
     "label": "QR-Code einer Beispiel-Adresse"
   },
+  "stackedBar": {
+    "description": "app-ui-stacked-bar: wie sich ein Ganzes aufteilt, als ein Balken mit Legende darunter. Der Balken ist Dekoration, die Legende nennt jeden Teil in Worten. Die Farben gibt die App als Token mit.",
+    "accepted": "Zusagen",
+    "declined": "Absagen",
+    "pending": "Offen",
+    "label": "Gäste nach Antwort"
+  },
   "separator": {
     "description": "appUiSeparator: eine dünne Linie zwischen zwei Teilen einer Seite, mit orientation=\"vertical\" auch zwischen Elementen nebeneinander. Rein dekorativ.",
     "above": "Beschreibung des Events",
