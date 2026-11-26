@@ -26,7 +26,8 @@
   padding: 0.5rem 0.25rem 0;
 }
 
-.rsvp__intro--past {
+// Only text on the page (event over, unknown link), as `Vorbei.html`: in the middle of the screen.
+.rsvp__intro--alone {
   justify-content: center;
   min-height: 50dvh;
 }
@@ -277,10 +278,12 @@
   gap: 0.5rem;
   text-align: center;
 
+  // Second to the main action, but not smaller than the text around it.
   button {
     min-height: 3.25rem;
     border: var(--card-border);
     border-radius: 1rem;
+    font-size: 1rem;
     font-weight: 700;
   }
 }

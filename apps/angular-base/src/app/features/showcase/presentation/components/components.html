@@ -221,6 +221,17 @@
   </app-showcase-section>
 
   <app-showcase-section
+    [description]="'showcaseComponents.stackedBar.description' | t"
+    heading="Stacked bar"
+  >
+    <app-ui-stacked-bar
+      class="block max-w-md"
+      [segments]="_answers()"
+      [label]="'showcaseComponents.stackedBar.label' | t"
+    />
+  </app-showcase-section>
+
+  <app-showcase-section
     [description]="'showcaseComponents.separator.description' | t"
     heading="Separator"
   >

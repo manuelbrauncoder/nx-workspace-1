@@ -75,4 +75,20 @@ export function registerRsvpDocs(registry: OpenAPIRegistry) {
       ...errorResponses(404),
     },
   });
+
+  registry.registerPath({
+    ...base,
+    method: 'get',
+    path: '/rsvp/{token}/preview',
+    summary: 'Preview image of a shared invitation',
+    description: `The cover cut to 1200 × 630 as JPEG, for \`og:image\`. 404 without an image and once the event is over. ${notFoundNote}`,
+    request: { params: rsvpParamsSchema },
+    responses: {
+      200: {
+        description: 'The image',
+        content: { 'image/jpeg': { schema: { type: 'string', format: 'binary' } } },
+      },
+      ...errorResponses(404),
+    },
+  });
 }

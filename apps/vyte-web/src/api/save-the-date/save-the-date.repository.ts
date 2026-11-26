@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { AppConfigService } from '@core/config/app-config';
 import { map, Observable } from 'rxjs';
+import { PreviewImage, previewImage } from '../preview-image';
 import { SaveTheDate } from './save-the-date';
 import { SaveTheDateDtoMapper } from './save-the-date-dto.mapper';
 import { SaveTheDateResponseDto } from './save-the-date.dto';
@@ -26,6 +27,11 @@ export class SaveTheDateRepository {
   /** Address of the cover, for an `<img>`. Only there while `cover` is set. */
   coverUrl(token: string): string {
     return `${this._url(token)}/cover`;
+  }
+
+  /** Preview image of the shared link, cut from the cover. Only there while the event has one. */
+  previewImage(token: string): PreviewImage {
+    return previewImage(`${this._url(token)}/preview`);
   }
 
   /** Address of the event as a calendar file (`.ics`), for a link. */

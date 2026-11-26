@@ -26,6 +26,7 @@ import { UiSeparator } from '@shared/ui/separator/separator';
 import { UiSheet } from '@shared/ui/sheet/sheet';
 import { UiSkeleton } from '@shared/ui/skeleton/skeleton';
 import { UiSpinner } from '@shared/ui/spinner/spinner';
+import { UiStackedBar, UiStackedBarSegment } from '@shared/ui/stacked-bar/stacked-bar';
 import { UiTabNav, UiTabNavItem } from '@shared/ui/tab-nav/tab-nav';
 import { UiText } from '@shared/ui/text/text';
 import { UiToastService } from '@shared/ui/toast/toast.service';
@@ -53,6 +54,7 @@ interface Message {
     UiAttachmentImports,
     UiBadge,
     UiSeparator,
+    UiStackedBar,
     UiBreadcrumb,
     UiButton,
     UiCardImports,
@@ -142,6 +144,24 @@ export class Components {
     {
       value: 'month' as const,
       label: this._i18n.translate('showcaseComponents.toggleGroup.month'),
+    },
+  ]);
+  /** Computed, so the labels follow the language. */
+  private readonly _answers = computed((): UiStackedBarSegment[] => [
+    {
+      label: this._i18n.translate('showcaseComponents.stackedBar.accepted'),
+      value: 12,
+      color: 'var(--chart-2)',
+    },
+    {
+      label: this._i18n.translate('showcaseComponents.stackedBar.declined'),
+      value: 3,
+      color: 'var(--chart-1)',
+    },
+    {
+      label: this._i18n.translate('showcaseComponents.stackedBar.pending'),
+      value: 7,
+      color: 'var(--muted-foreground)',
     },
   ]);
   private readonly _attachmentRemoved = signal(false);

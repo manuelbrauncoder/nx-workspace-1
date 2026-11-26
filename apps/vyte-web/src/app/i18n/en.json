@@ -41,7 +41,7 @@
   },
   "seo": {
     "defaultDescription": "Vyte: invitations with a personal link, answers without an account and the photos of the party in one place.",
-    "imageAlt": "Logo of Vyte"
+    "imageAlt": "Vyte: an invitation to Anna’s 30th birthday on a phone, next to it “Einladungen, die ankommen”"
   },
   "events": {
     "breadcrumb": "Events",
@@ -72,6 +72,8 @@
       "tabs": "Sections of the event",
       "overview": "Overview",
       "guests": "Guests",
+      "saveTheDate": "Save the date",
+      "photoStand": "Photo stand",
       "team": "Team",
       "photos": "Photos",
       "past": "Over",

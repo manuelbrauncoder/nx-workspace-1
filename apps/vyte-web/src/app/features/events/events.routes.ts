@@ -5,6 +5,8 @@ import { EventsStore } from './application/events.store';
 import { EventsUseCase } from './domain/events.usecase';
 import { eventDetailI18n } from './presentation/event-detail/event-detail.i18n';
 import { eventEditorI18n } from './presentation/event-editor/event-editor.i18n';
+import { eventPhotoStandI18n } from './presentation/event-photo-stand/event-photo-stand.i18n';
+import { eventSaveTheDateI18n } from './presentation/event-save-the-date/event-save-the-date.i18n';
 import { eventsListI18n } from './presentation/events-list/events-list.i18n';
 
 // `/events`, `/events/new` and `/events/:id/edit`. An event itself opens in `EventFrame`, see
@@ -55,5 +57,31 @@ export const eventOverviewRoutes: Routes = [
     canActivate: [loadI18nScope(eventDetailI18n)],
     loadComponent: () =>
       import('./presentation/event-detail/event-detail').then((m) => m.EventDetail),
+  },
+];
+
+/** The save the date of one event, a tab below `EventFrame` on `/events/:id/save-the-date`. */
+export const eventSaveTheDateRoutes: Routes = [
+  {
+    path: '',
+    title: 'eventSaveTheDate.title',
+    // The title of the loaded event joins this one, see `EventSaveTheDate`.
+    canActivate: [loadI18nScope(eventSaveTheDateI18n)],
+    loadComponent: () =>
+      import('./presentation/event-save-the-date/event-save-the-date').then(
+        (m) => m.EventSaveTheDate,
+      ),
+  },
+];
+
+/** The photo stand of one event, a tab below `EventFrame` on `/events/:id/photo-stand`. */
+export const eventPhotoStandRoutes: Routes = [
+  {
+    path: '',
+    title: 'eventPhotoStand.title',
+    // The title of the loaded event joins this one, see `EventPhotoStand`.
+    canActivate: [loadI18nScope(eventPhotoStandI18n)],
+    loadComponent: () =>
+      import('./presentation/event-photo-stand/event-photo-stand').then((m) => m.EventPhotoStand),
   },
 ];

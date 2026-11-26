@@ -8,6 +8,7 @@ describe('RsvpUseCase', () => {
     getByToken: vi.fn(),
     answer: vi.fn(),
     imageUrl: vi.fn(),
+    previewImage: vi.fn(),
     calendarUrl: vi.fn(),
   };
   let useCase: RsvpUseCase;
@@ -45,5 +46,13 @@ describe('RsvpUseCase', () => {
     expect(repository.imageUrl).toHaveBeenCalledWith('tok', 'i1');
     expect(useCase.calendarUrl('tok')).toBe('calendar-url');
     expect(repository.calendarUrl).toHaveBeenCalledWith('tok');
+  });
+
+  it('passes the preview image through', () => {
+    const preview = { url: 'preview-url', width: 1200, height: 630 };
+    repository.previewImage.mockReturnValue(preview);
+
+    expect(useCase.previewImage('tok')).toBe(preview);
+    expect(repository.previewImage).toHaveBeenCalledWith('tok');
   });
 });

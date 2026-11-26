@@ -52,5 +52,8 @@
   },
   "consent": "The hosts see all photos, other guests do not. Please ask before you take pictures of people.",
   "titleFor": "Photos · {{ title }}",
-  "progressFailed": "Uploaded: {{ done }} of {{ total }}, {{ failed }} did not work."
+  "progressFailed": "Uploaded: {{ done }} of {{ total }}, {{ failed }} did not work.",
+  "seo": {
+    "description": "Upload your photos of {{ title }} here. Only the hosts can see them."
+  }
 }

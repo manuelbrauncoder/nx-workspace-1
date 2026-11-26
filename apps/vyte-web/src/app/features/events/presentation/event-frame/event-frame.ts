@@ -17,7 +17,7 @@ import { EventWhen } from '../event-when/event-when';
 
 /**
  * The frame of one event on `/events/:id` and its tabs: title, when and where, editing, printing
- * and deleting, and the tabs overview, guests, team and photos. The page of the tab renders
+ * and deleting, and the tabs overview, guests, save the date, photo stand, photos and team. The page of the tab renders
  * below. Use case and store live as long as the frame, the overview shares them.
  */
 @Component({
@@ -61,8 +61,10 @@ export class EventFrame {
     return [
       { labelKey: 'events.frame.overview', path: base, exact: true },
       { labelKey: 'events.frame.guests', path: `${base}/guests` },
-      { labelKey: 'events.frame.team', path: `${base}/team` },
+      { labelKey: 'events.frame.saveTheDate', path: `${base}/save-the-date` },
+      { labelKey: 'events.frame.photoStand', path: `${base}/photo-stand` },
       { labelKey: 'events.frame.photos', path: `${base}/photos` },
+      { labelKey: 'events.frame.team', path: `${base}/team` },
     ];
   });
 

@@ -8,7 +8,7 @@ import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog
 import { UiToastService } from '@shared/ui/toast/toast.service';
 import { EventsStore } from '../../application/events.store';
 import { VyteEvent } from '../../domain/event';
-import { eventDetailI18n } from '../event-detail/event-detail.i18n';
+import { eventSaveTheDateI18n } from '../event-save-the-date/event-save-the-date.i18n';
 import { SaveTheDatePanel } from './save-the-date-panel';
 
 const EVENT = {
@@ -27,7 +27,7 @@ const ON = { token: 'tok en', note: 'Einladung folgt' };
   selector: 'app-host',
   imports: [SaveTheDatePanel],
   template: `
-    <h2 id="event-detail-save-the-date" tabindex="-1">Save the date</h2>
+    <h2 id="event-save-the-date-heading" tabindex="-1">Save the date</h2>
     <app-save-the-date-panel [event]="event()" />
   `,
 })
@@ -60,7 +60,7 @@ describe('SaveTheDatePanel', () => {
         { provide: UiToastService, useValue: toast },
       ],
     });
-    await loadI18nScopes(eventDetailI18n);
+    await loadI18nScopes(eventSaveTheDateI18n);
     const fixture = TestBed.createComponent(Host);
     fixture.componentInstance.event.set({ ...EVENT, ...event });
     await fixture.whenStable();
@@ -305,7 +305,7 @@ describe('SaveTheDatePanel', () => {
       fixture.componentInstance.event.set({ ...EVENT, saveTheDate: null });
       await fixture.whenStable();
 
-      expect(document.activeElement).toBe(element.querySelector('#event-detail-save-the-date'));
+      expect(document.activeElement).toBe(element.querySelector('#event-save-the-date-heading'));
     });
 
     it('turns it off even while the note field holds too much text', async () => {

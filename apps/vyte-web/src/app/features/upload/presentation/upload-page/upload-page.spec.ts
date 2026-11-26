@@ -3,6 +3,7 @@ import { RESPONSE_INIT, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Failure } from '@core/failure/failure';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
+import { SeoService } from '@core/seo/seo.service';
 import { AsyncState, failed, idle, loading, success } from '@core/state/async-state';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
 import { QueuedPhoto, UploadStore } from '../../application/upload.store';
@@ -52,6 +53,7 @@ describe('UploadPage', () => {
     deletePhoto: vi.fn(),
   };
   const confirm = vi.fn();
+  const setPage = vi.fn();
 
   beforeEach(() => {
     vi.resetAllMocks();
@@ -72,13 +74,14 @@ describe('UploadPage', () => {
   ) {
     const response: ResponseInit = {};
     const upload = options.upload === null ? undefined : { ...UPLOAD, ...options.upload };
+    const uploadSignal = signal<Upload | undefined>(upload);
     TestBed.configureTestingModule({
       providers: [
         {
           provide: UploadStore,
           useValue: {
             ...store,
-            upload: signal(upload),
+            upload: uploadSignal,
             uploadState: signal(options.state ?? (upload ? success() : loading())),
             queue: signal(options.queue ?? []),
             failedCount: signal((options.queue ?? []).filter((i) => i.state === 'failed').length),
@@ -87,6 +90,7 @@ describe('UploadPage', () => {
             deleteState: signal(options.deleteState ?? idle()),
           },
         },
+        { provide: SeoService, useValue: { setPage } },
         { provide: UiConfirmDialogService, useValue: { confirm } },
         { provide: RESPONSE_INIT, useValue: response },
         { provide: PRECONNECT_CHECK_BLOCKLIST, useValue: 'https://api.example.com' },
@@ -97,7 +101,7 @@ describe('UploadPage', () => {
     fixture.componentRef.setInput('token', 'tok');
     fixture.componentRef.setInput('kind', options.kind ?? 'guest');
     await fixture.whenStable();
-    return { fixture, element: fixture.nativeElement as HTMLElement, response };
+    return { fixture, element: fixture.nativeElement as HTMLElement, response, uploadSignal };
   }
 
   const text = (element: HTMLElement, selector: string) =>
@@ -132,6 +136,15 @@ describe('UploadPage', () => {
     await render({ kind: 'stand' });
 
     expect(store.select).toHaveBeenCalledWith({ kind: 'stand', token: 'tok' });
+  });
+
+  it('sets title and description of the page from the event', async () => {
+    await render();
+
+    expect(setPage).toHaveBeenLastCalledWith({
+      title: 'Fotos · Sommerfest',
+      description: 'Lade hier deine Fotos von Sommerfest hoch. Sehen können sie nur die Gastgeber.',
+    });
   });
 
   describe('headings', () => {
@@ -185,6 +198,22 @@ describe('UploadPage', () => {
       expect(element.querySelector('[role="alert"]')).toBeNull();
       expect(response.status).toBe(404);
       await expect(element).toBeAccessible();
+    });
+
+    it('marks the intro as alone only for an unknown link', async () => {
+      const notFound = await render({
+        upload: null,
+        state: failed(new Failure('not-found', 'Nope')),
+      });
+      expect(notFound.element.querySelector('.upload-page__intro--alone')).not.toBeNull();
+      TestBed.resetTestingModule();
+
+      const serverFailure = await render({
+        upload: null,
+        state: failed(new Failure('server', 'Down')),
+      });
+      expect(serverFailure.element.querySelector('.upload-page__intro')).not.toBeNull();
+      expect(serverFailure.element.querySelector('.upload-page__intro--alone')).toBeNull();
     });
 
     it('does not answer 404 for other failures', async () => {
@@ -387,6 +416,52 @@ describe('UploadPage', () => {
       await expect(element).toBeAccessible();
     });
 
+    it('has no own-photos section before the window without photos', async () => {
+      const { element } = await render({
+        upload: {
+          open: false,
+          photos: [],
+          opensAt: new Date('2099-01-01T08:00:00.000Z'),
+          closesAt: new Date('2099-01-02T08:00:00.000Z'),
+        },
+      });
+
+      expect(element.querySelector('#upload-page-own')).toBeNull();
+    });
+
+    it('shows the own-photos section before the window when photos exist', async () => {
+      const { element } = await render({
+        upload: {
+          open: false,
+          photos: [own('p1')],
+          opensAt: new Date('2099-01-01T08:00:00.000Z'),
+          closesAt: new Date('2099-01-02T08:00:00.000Z'),
+        },
+      });
+
+      expect(element.querySelector('#upload-page-own')).not.toBeNull();
+      expect(element.querySelectorAll('.upload-page__tile')).toHaveLength(1);
+    });
+
+    it('shows the own-photos section while the window is open, also without photos', async () => {
+      const { element } = await render({ upload: { open: true, photos: [] } });
+
+      expect(element.querySelector('#upload-page-own')).not.toBeNull();
+    });
+
+    it('shows the own-photos section after the window', async () => {
+      const { element } = await render({
+        upload: {
+          open: false,
+          photos: [],
+          opensAt: new Date('2020-01-01T08:00:00.000Z'),
+          closesAt: new Date('2020-01-02T08:00:00.000Z'),
+        },
+      });
+
+      expect(element.querySelector('#upload-page-own')).not.toBeNull();
+    });
+
     it('says the upload is over after the window', async () => {
       const { element } = await render({
         upload: {
@@ -541,6 +616,38 @@ describe('UploadPage', () => {
       await fixture.whenStable();
 
       expect(document.activeElement).toBe(element.querySelector('#upload-page-own'));
+    });
+
+    it('focuses main when deleting the last photo removes the section before the window', async () => {
+      const main = document.createElement('main');
+      main.id = 'main';
+      main.tabIndex = -1;
+      document.body.appendChild(main);
+      try {
+        const { fixture, element, uploadSignal } = await render({
+          upload: {
+            open: false,
+            photos: [own('p1')],
+            opensAt: new Date('2099-01-01T08:00:00.000Z'),
+            closesAt: new Date('2099-01-02T08:00:00.000Z'),
+          },
+        });
+        store.deletePhoto.mockImplementation(async () => {
+          uploadSignal.update((current) => current && { ...current, photos: [] });
+          return true;
+        });
+        confirm.mockResolvedValue(true);
+
+        buttonLabelled(element, 'Foto 1 löschen')!.click();
+        await vi.waitFor(() => expect(store.deletePhoto).toHaveBeenCalledWith('p1'));
+        await vi.waitFor(() => expect(document.activeElement).toBe(main));
+        await fixture.whenStable();
+
+        expect(element.querySelector('#upload-page-own')).toBeNull();
+        expect(document.activeElement).toBe(main);
+      } finally {
+        main.remove();
+      }
     });
 
     it('says nothing and keeps the focus when deleting fails', async () => {

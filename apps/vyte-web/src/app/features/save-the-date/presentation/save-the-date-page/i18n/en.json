@@ -14,5 +14,10 @@
   "when": "Date and place",
   "time": "{{ time }}",
   "defaultNote": "Keep the date free, the invitation will follow.",
-  "calendar": "Add to calendar"
+  "calendar": "Add to calendar",
+  "seo": {
+    "description": "Save the date: {{ date }}. {{ note }}",
+    "descriptionAt": "Save the date: {{ date }}, {{ place }}. {{ note }}",
+    "imageAlt": "Cover: {{ title }}"
+  }
 }

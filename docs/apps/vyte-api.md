@@ -118,19 +118,20 @@ Rules in short:
 
 Code in [src/features/rsvp](../../apps/vyte-api/src/features/rsvp): `rsvp.routes.ts` (mounted at `/rsvp`), `rsvp.service.ts`, `rsvp.openapi.ts`. The guest's page is the web app's, the API serves what it reads and writes. Public, no session.
 
-| Method and path                      | Content                                                                                |
-| ------------------------------------ | -------------------------------------------------------------------------------------- |
-| `GET /rsvp/{token}`                  | `{ invitation }`, see below                                                            |
-| `PUT /rsvp/{token}`                  | `{ response, companions, message }` of the guest, `{ invitation }` with the new answer |
-| `GET /rsvp/{token}/images/{imageId}` | an image of the event, the WebP file                                                   |
-| `GET /rsvp/{token}/calendar`         | the `.ics` file of the event with place name and address, 404 once the event is past   |
+| Method and path                      | Content                                                                                                                                                                                                                 |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /rsvp/{token}`                  | `{ invitation }`, see below                                                                                                                                                                                             |
+| `PUT /rsvp/{token}`                  | `{ response, companions, message }` of the guest, `{ invitation }` with the new answer                                                                                                                                  |
+| `GET /rsvp/{token}/images/{imageId}` | an image of the event, the WebP file                                                                                                                                                                                    |
+| `GET /rsvp/{token}/preview`          | the cover cut to 1200 × 630 as JPEG for `og:image` (`PREVIEW_IMAGE` in `@vyte/contracts/preview-image`, `previewImage()` in `@server/core/images`), `private, no-cache`; 404 without an image or once the event is past |
+| `GET /rsvp/{token}/calendar`         | the `.ics` file of the event with place name and address, 404 once the event is past                                                                                                                                    |
 
 Rules in short:
 
 - **Two shapes of `invitation`**: `past: false` carries `open` (whether answers are open), the event without guest list (host names only, never an email, no tokens) and the guest's own answer. `past: true` carries the title only, and the images stop too (404).
 - **Open until**: the `rsvpDeadline`, or the start of the event without one. Not after that and not once the event is past, `PUT` answers 409 `Answers are closed`. Companions are checked against the allowance (400). A decline counts no companions. The message is stored trimmed, an empty one means none.
 - **Same 404 for every bad link**: unknown, renewed, removed, malformed. The body is the same.
-- **Rate limit**: only `PUT` is limited, per client IP, with `rateLimit.rsvpWindowMinutes` and `rateLimit.rsvpMaxRequests` (429 when exceeded). `GET` has no limit, because the web app renders the page on the server and every guest arrives from the same IP. A token of 32 random bytes cannot be guessed.
+- **Rate limit**: `PUT` is limited, per client IP, with `rateLimit.rsvpWindowMinutes` and `rateLimit.rsvpMaxRequests` (429 when exceeded). The other `GET`s have no limit, because the web app renders the page on the server and every guest arrives from the same IP. `GET /rsvp/{token}/preview` (and the one of the save the date) is the exception: messengers fetch it from their own IPs, so it has its own generous limit, `rateLimit.previewWindowMinutes` (15) and `rateLimit.previewMaxRequests` (300). Its render is cached in memory per image (`previewImage()` in `@server/core/images`, at most 100 entries, dropped by `removeImages()`), parallel requests share one render A token of 32 random bytes cannot be guessed.
 - **Caching**: the invitation answers, `PUT` and the calendar file send `Cache-Control: no-store`. Images send `private, no-cache`, so a renewed link or the end of the event takes effect at once.
 - **Calendar**: the same 404 as a bad link once the event is past. The file is described in [Calendar files](#calendar-files).
 
@@ -175,6 +176,7 @@ Code in [src/features/save-the-date](../../apps/vyte-api/src/features/save-the-d
 | `GET /save-the-date/{token}`            | public        | `{ saveTheDate }`: title, date, `allDay`, `timeZone`, place name, note, cover size; after the event only `past` and the title |
 | `GET /save-the-date/{token}/calendar`   | public        | the `.ics` file with the place name only, 404 once the event is past                                                          |
 | `GET /save-the-date/{token}/cover`      | public        | the image at position 0, `private, no-cache`; 404 without an image or once the event is past                                  |
+| `GET /save-the-date/{token}/preview`    | public        | the cover cut to 1200 × 630 as JPEG for `og:image`, `private, no-cache`; 404 without an image or once the event is past       |
 
 Rules in short:
 
@@ -263,4 +265,4 @@ Code in [src/features/events/events.calendar.ts](../../apps/vyte-api/src/feature
 - **Uploads**: the events and the guest photos store their files in the `uploads` folder of the base config, the Dockerfile and the stack provide it
 - **Legal pages**: not built into the web app as in `angular-base`. The texts are rows of `legal_pages`, edited by admins, the seed in [seed/legal](../../apps/vyte-api/seed/legal) only supplies the start content, see [Legal pages](#legal-pages)
 - **Cookie**: the photo stand sets its own cookie `vyte_stand_device`, see [Photos](#photos). It is not the session
-- **Config**: own keys in [src/config/index.ts](../../apps/vyte-api/src/config/index.ts), merged into the shared `rateLimit`: `rateLimit.rsvpWindowMinutes` (default 15) and `rateLimit.rsvpMaxRequests` (default 60); the development and production files set these values, `test.json` uses 1000 for the tests. `rateLimit.uploadWindowMinutes` (default 15) and `rateLimit.uploadMaxRequests` (default 200) have defaults too. Every key of this app's own config has a default, so an older config stays valid. The `photos.*` keys (limits of the guest photos) have defaults too, the values are in [section 3](../vyte/spec.md#3-domain-model) of the spec and in [Photos](#photos)
+- **Config**: own keys in [src/config/index.ts](../../apps/vyte-api/src/config/index.ts), merged into the shared `rateLimit`: `rateLimit.rsvpWindowMinutes` (default 15) and `rateLimit.rsvpMaxRequests` (default 60); the development and production files set these values, `test.json` uses 1000 for the tests. `rateLimit.uploadWindowMinutes` (default 15) and `rateLimit.uploadMaxRequests` (default 200) have defaults too, as have `rateLimit.previewWindowMinutes` (15) and `rateLimit.previewMaxRequests` (300; `test.json` 10000). Every key of this app's own config has a default, so an older config stays valid. The `photos.*` keys (limits of the guest photos) have defaults too, the values are in [section 3](../vyte/spec.md#3-domain-model) of the spec and in [Photos](#photos)

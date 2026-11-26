@@ -68,5 +68,10 @@
     "heading": "Answers are closed",
     "lead": "The deadline has passed. Please contact the hosts directly.",
     "answerKept": "The deadline has passed, your answer stays as it is."
+  },
+  "seo": {
+    "description": "{{ date }}. Accept or decline through this link.",
+    "descriptionAt": "{{ date }}, {{ place }}. Accept or decline through this link.",
+    "imageAlt": "Cover: {{ title }}"
   }
 }

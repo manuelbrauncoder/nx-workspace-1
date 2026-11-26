@@ -20,18 +20,42 @@
         </h2>
         <div class="guest-list__actions">
           @if (!_readonly()) {
-            <button (click)="_add()" appUiButton size="sm" type="button">
+            <!-- One main action, pasting a list and the export in the menu next to it. -->
+            <button (click)="_add()" appUiButton type="button">
               <app-ui-icon name="userPlus" />
               {{ 'guestList.add' | t }}
             </button>
-            <button (click)="_addMany()" appUiButton variant="outline" size="sm" type="button">
-              <app-ui-icon name="listPlus" />
-              {{ 'guestList.addMany' | t }}
+            <button
+              [appUiMenuTrigger]="more"
+              [attr.aria-label]="'guestList.more' | t"
+              appUiButton
+              variant="outline"
+              size="icon"
+              type="button"
+              align="end"
+            >
+              <app-ui-icon name="ellipsis" />
             </button>
-          }
-          @if (_exportUrl(); as exportUrl) {
-            <!-- The backend names the file; the browser sends the session cookie. -->
-            <a [href]="exportUrl" appUiButton variant="outline" size="sm" download>
+            <ng-template #more>
+              <app-ui-menu class="w-60">
+                <app-ui-menu-group>
+                  <button (triggered)="_addMany()" appUiMenuItem type="button">
+                    <app-ui-icon name="listPlus" />
+                    {{ 'guestList.addMany' | t }}
+                  </button>
+                  @if (_exportUrl()) {
+                    <button (triggered)="_export()" appUiMenuItem type="button">
+                      <app-ui-icon name="download" />
+                      {{ 'guestList.export' | t }}
+                    </button>
+                  }
+                </app-ui-menu-group>
+              </app-ui-menu>
+            </ng-template>
+          } @else if (_exportUrl(); as exportUrl) {
+            <!-- After the event the export is the only action. The backend names the file; the
+                 browser sends the session cookie. -->
+            <a [href]="exportUrl" appUiButton variant="outline" download>
               <app-ui-icon name="download" />
               {{ 'guestList.export' | t }}
             </a>
@@ -39,33 +63,28 @@
         </div>
       </div>
 
-      <!-- The numbers as one quiet line of labelled values. -->
+      <!-- People in one quiet line, the guests by answer as a bar, both in one frame. -->
       @let counts = _store.counts();
-      <dl class="guest-list__counts">
-        <div class="guest-list__count">
-          <dt>{{ 'guestList.counts.invited' | t }}</dt>
-          <dd>{{ counts.invited }}</dd>
-        </div>
-        <div class="guest-list__count">
-          <dt>{{ 'guestList.counts.coming' | t }}</dt>
-          <dd>{{ counts.coming }}</dd>
-        </div>
-        <div class="guest-list__count">
-          <dt>{{ 'guestList.counts.declined' | t }}</dt>
-          <dd>{{ counts.declined }}</dd>
-        </div>
-        <div class="guest-list__count">
-          <dt>{{ 'guestList.counts.pending' | t }}</dt>
-          <dd>{{ counts.pending }}</dd>
-        </div>
-        <div class="guest-list__count">
-          <dt>{{ 'guestList.counts.atMost' | t }}</dt>
-          <dd>{{ counts.atMost }}</dd>
-        </div>
-      </dl>
-      <p class="guest-list__counts-note" id="guest-list-counts-note" appUiText="muted">
-        {{ 'guestList.counts.description' | t }}
-      </p>
+      <div class="guest-list__summary">
+        <dl class="guest-list__counts">
+          <div class="guest-list__count">
+            <dt>{{ 'guestList.counts.coming' | t }}</dt>
+            <dd>{{ counts.coming }}</dd>
+          </div>
+          <div class="guest-list__count">
+            <dt>{{ 'guestList.counts.invited' | t }}</dt>
+            <dd>{{ counts.invited }}</dd>
+          </div>
+          <div class="guest-list__count">
+            <dt>{{ 'guestList.counts.atMost' | t }}</dt>
+            <dd>{{ counts.atMost }}</dd>
+          </div>
+        </dl>
+        <app-ui-stacked-bar [segments]="_answers()" [label]="'guestList.counts.byAnswer' | t" />
+        <p class="guest-list__counts-note" id="guest-list-counts-note" appUiText="muted">
+          {{ 'guestList.counts.description' | t }}
+        </p>
+      </div>
 
       @if (_store.mutationState().failure; as failure) {
         <app-failure-alert
@@ -85,32 +104,20 @@
           type="search"
           autocomplete="off"
         />
-        <div class="guest-list__tool">
-          <span class="guest-list__tool-label" id="guest-list-filter" appUiText="small">
-            {{ 'guestList.list.filter' | t }}
-          </span>
-          <app-ui-toggle-group
-            [value]="_filter()"
-            [options]="_filterOptions()"
-            (valueChange)="_setFilter($event)"
-            ariaLabelledby="guest-list-filter"
-            variant="outline"
-            size="sm"
-          />
-        </div>
-        <div class="guest-list__tool">
-          <span class="guest-list__tool-label" id="guest-list-sort" appUiText="small">
-            {{ 'guestList.list.sort' | t }}
-          </span>
-          <app-ui-toggle-group
-            [value]="_sort()"
-            [options]="_sortOptions()"
-            (valueChange)="_setSort($event)"
-            ariaLabelledby="guest-list-sort"
-            variant="outline"
-            size="sm"
-          />
-        </div>
+        <app-form-select
+          class="guest-list__tool"
+          [value]="_filter()"
+          [options]="_filterOptions()"
+          [label]="'guestList.list.filter' | t"
+          (valueChange)="_setFilter($event)"
+        />
+        <app-form-select
+          class="guest-list__tool"
+          [value]="_sort()"
+          [options]="_sortOptions()"
+          [label]="'guestList.list.sort' | t"
+          (valueChange)="_setSort($event)"
+        />
       </div>
 
       <app-async-content

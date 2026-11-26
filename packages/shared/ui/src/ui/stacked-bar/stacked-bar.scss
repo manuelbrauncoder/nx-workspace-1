@@ -1,0 +1,46 @@
+// A thin bar on the muted ground, the parts apart by a 2px gap, the legend in one wrapping line.
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ui-stacked-bar__track {
+  display: flex;
+  gap: 2px;
+  height: 0.75rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--muted);
+}
+
+.ui-stacked-bar__part {
+  flex-basis: 0;
+  min-width: 0.25rem;
+}
+
+.ui-stacked-bar__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+}
+
+.ui-stacked-bar__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted-foreground);
+}
+
+.ui-stacked-bar__dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+}
+
+.ui-stacked-bar__value {
+  color: var(--foreground);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}

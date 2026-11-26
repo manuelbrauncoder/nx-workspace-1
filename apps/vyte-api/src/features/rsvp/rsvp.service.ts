@@ -1,8 +1,9 @@
 import { users } from '@server/auth/users.table';
 import { db } from '@server/core/db/db';
 import { badRequest, conflict, notFound } from '@server/core/errors';
-import { imagePath } from '@server/core/images';
+import { imagePath, previewImage } from '@server/core/images';
 import type { RsvpInput } from '@vyte/contracts/guests';
+import { PREVIEW_IMAGE } from '@vyte/contracts/preview-image';
 import { and, asc, eq, isNotNull, sql } from 'drizzle-orm';
 import { calendarFile, fullLocation } from '../events/events.calendar.js';
 import { eventImages, eventMembers, events } from '../events/events.table.js';
@@ -135,6 +136,22 @@ export async function getImageFile(token: string, imageId: string) {
     .where(and(eq(eventImages.id, imageId), eq(eventImages.eventId, event.id)));
   if (!image) throw notFound('Image not found');
   return imagePath(image.filename);
+}
+
+/**
+ * The cover (the first image) as the JPEG preview of the invitation link; 404 without one and
+ * once the event is over.
+ */
+export async function getPreviewImage(token: string) {
+  const { event } = await invitationOf(token);
+  if (isPast(event)) throw notFound('Image not found');
+
+  const [cover] = await db
+    .select({ filename: eventImages.filename })
+    .from(eventImages)
+    .where(and(eq(eventImages.eventId, event.id), eq(eventImages.position, 0)));
+  if (!cover) throw notFound('Image not found');
+  return previewImage(cover.filename, PREVIEW_IMAGE);
 }
 
 /** The calendar file of the invitation, with the full address; 404 once the event is over. */

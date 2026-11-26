@@ -1,15 +1,19 @@
+import { NgOptimizedImage } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { APP_NAME } from '@core/app-name';
 
-/** The wordmark as a link to the start page, shown in the header and in the mobile drawer. */
+/**
+ * The logo (the app icon next to the wordmark, `public/logo-full.svg`) as a link to the start
+ * page, shown in the header and in the mobile drawer.
+ */
 @Component({
   selector: 'app-logo',
-  imports: [RouterLink],
+  imports: [NgOptimizedImage, RouterLink],
   styleUrl: './app-logo.scss',
   templateUrl: './app-logo.html',
 })
 export class AppLogo {
-  /** Written in lower case, the name of the app stays `Vyte` everywhere else. */
-  private readonly _wordmark = inject(APP_NAME).toLowerCase();
+  /** The logo writes it in lower case, the name of the app stays `Vyte` for screen readers. */
+  private readonly _appName = inject(APP_NAME);
 }

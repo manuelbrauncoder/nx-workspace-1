@@ -48,6 +48,7 @@ class FakeRsvpUseCase {
           guest: { ...INVITATION.guest, ...answer, respondedAt: new Date('2026-11-12T10:00:00Z') },
         });
   imageUrl = (token: string, imageId: string) => `images/${token}/${imageId}`;
+  previewImage = (token: string) => ({ url: `preview/${token}`, width: 1200, height: 630 });
   calendarUrl = (token: string) => `calendar/${token}`;
 }
 
@@ -70,6 +71,7 @@ describe('RsvpStore', () => {
     expect(useCase.loaded).toEqual([]);
     expect(store.invitation()).toBeUndefined();
     expect(store.imageUrl('i1')).toBeUndefined();
+    expect(store.previewImage()).toBeUndefined();
     expect(store.calendarUrl()).toBeUndefined();
     expect(
       await store.answer({ response: 'declined', companions: 0, message: '' }),
@@ -154,5 +156,11 @@ describe('RsvpStore', () => {
 
     expect(store.imageUrl('i1')).toBe('images/tok/i1');
     expect(store.calendarUrl()).toBe('calendar/tok');
+  });
+
+  it('gives the preview image of the token', () => {
+    store.select('tok');
+
+    expect(store.previewImage()).toEqual({ url: 'preview/tok', width: 1200, height: 630 });
   });
 });

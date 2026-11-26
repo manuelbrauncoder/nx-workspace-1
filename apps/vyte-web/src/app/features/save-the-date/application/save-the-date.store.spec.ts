@@ -27,6 +27,7 @@ class FakeSaveTheDateUseCase {
     return this.failWith ? throwError(() => this.failWith) : of(SAVE_THE_DATE);
   };
   coverUrl = (token: string) => `cover/${token}`;
+  previewImage = (token: string) => ({ url: `preview/${token}`, width: 1200, height: 630 });
   calendarUrl = (token: string) => `calendar/${token}`;
 }
 
@@ -49,6 +50,7 @@ describe('SaveTheDateStore', () => {
     expect(useCase.loaded).toEqual([]);
     expect(store.saveTheDate()).toBeUndefined();
     expect(store.coverUrl()).toBeUndefined();
+    expect(store.previewImage()).toBeUndefined();
     expect(store.calendarUrl()).toBeUndefined();
   });
 
@@ -85,5 +87,11 @@ describe('SaveTheDateStore', () => {
 
     expect(store.coverUrl()).toBe('cover/tok');
     expect(store.calendarUrl()).toBe('calendar/tok');
+  });
+
+  it('gives the preview image of the token', () => {
+    store.select('tok');
+
+    expect(store.previewImage()).toEqual({ url: 'preview/tok', width: 1200, height: 630 });
   });
 });

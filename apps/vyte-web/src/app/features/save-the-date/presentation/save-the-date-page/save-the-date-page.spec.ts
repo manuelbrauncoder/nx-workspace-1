@@ -3,6 +3,7 @@ import { RESPONSE_INIT, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Failure } from '@core/failure/failure';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
+import { SeoService } from '@core/seo/seo.service';
 import { AsyncState, failed, loading, success } from '@core/state/async-state';
 import { SaveTheDateStore } from '../../application/save-the-date.store';
 import { SaveTheDate, UpcomingSaveTheDate } from '../../domain/save-the-date';
@@ -21,6 +22,12 @@ const UPCOMING: UpcomingSaveTheDate = {
   cover: { width: 1600, height: 900 },
 };
 
+const PREVIEW = {
+  url: 'https://api.example.com/save-the-date/tok/preview',
+  width: 1200,
+  height: 630,
+};
+
 const upcoming = (overrides: Partial<UpcomingSaveTheDate> = {}): UpcomingSaveTheDate => ({
   ...UPCOMING,
   ...overrides,
@@ -29,6 +36,7 @@ const upcoming = (overrides: Partial<UpcomingSaveTheDate> = {}): UpcomingSaveThe
 describe('SaveTheDatePage', () => {
   const select = vi.fn();
   const reload = vi.fn();
+  const setPage = vi.fn();
 
   beforeEach(() => vi.resetAllMocks());
 
@@ -43,10 +51,12 @@ describe('SaveTheDatePage', () => {
             reload,
             saveTheDate: signal(current),
             saveTheDateState: signal(state ?? (current ? success() : loading())),
+            previewImage: () => PREVIEW,
             coverUrl: () => 'https://api.example.com/save-the-date/tok/cover',
             calendarUrl: () => 'https://api.example.com/save-the-date/tok/calendar',
           },
         },
+        { provide: SeoService, useValue: { setPage } },
         { provide: RESPONSE_INIT, useValue: response },
         // The cover comes from the API, the app sets no preconnect for a test host.
         { provide: PRECONNECT_CHECK_BLOCKLIST, useValue: 'https://api.example.com' },
@@ -144,6 +154,47 @@ describe('SaveTheDatePage', () => {
     });
   });
 
+  describe('link preview', () => {
+    it('names title, date, place, note and the cover of an upcoming event', async () => {
+      await render(upcoming());
+
+      expect(setPage).toHaveBeenLastCalledWith({
+        title: 'Anna wird 30',
+        description: expect.stringMatching(
+          /^Save the date: .*2027.*, Gartenhaus am See\. Haltet euch den Abend frei!$/,
+        ),
+        image: { ...PREVIEW, alt: 'Titelbild: Anna wird 30' },
+      });
+    });
+
+    it('uses the default note and leaves out the place without one', async () => {
+      await render(upcoming({ note: null, locationName: null }));
+
+      const page = setPage.mock.lastCall![0];
+      expect(page.description).toMatch(/^Save the date: .*2027\. Halte dir den Termin frei/);
+      expect(page.description).not.toContain(',  ');
+      expect(page.description).not.toContain('Gartenhaus');
+    });
+
+    it('has no image without a cover', async () => {
+      await render(upcoming({ cover: null }));
+
+      expect(setPage.mock.lastCall![0].image).toBeUndefined();
+    });
+
+    it('sets the title only for a past event', async () => {
+      await render({ past: true, title: 'Anna wird 30' });
+
+      expect(setPage).toHaveBeenLastCalledWith({ title: 'Anna wird 30' });
+    });
+
+    it('sets nothing while loading', async () => {
+      await render(undefined);
+
+      expect(setPage).toHaveBeenLastCalledWith(undefined);
+    });
+  });
+
   describe('past event', () => {
     it('shows only the title and that the event is over', async () => {
       const { element } = await render({ past: true, title: 'Anna wird 30' });
@@ -177,6 +228,16 @@ describe('SaveTheDatePage', () => {
       expect(element.querySelector('[role="alert"]')).toBeNull();
       expect(buttonWith(element, 'Erneut versuchen')).toBeUndefined();
       expect(response.status).toBe(404);
+    });
+
+    it('marks the intro as alone only when the page was not found', async () => {
+      const notFound = await render(undefined, failed(new Failure('not-found', 'Unknown token')));
+      expect(notFound.element.querySelector('.save-the-date__intro--alone')).not.toBeNull();
+      TestBed.resetTestingModule();
+
+      const serverFailure = await render(undefined, failed(new Failure('server', 'Down')));
+      expect(serverFailure.element.querySelector('.save-the-date__intro')).not.toBeNull();
+      expect(serverFailure.element.querySelector('.save-the-date__intro--alone')).toBeNull();
     });
 
     it('offers a retry for another failure that reloads', async () => {

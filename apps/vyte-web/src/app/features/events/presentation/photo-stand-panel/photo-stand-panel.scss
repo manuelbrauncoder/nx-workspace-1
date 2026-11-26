@@ -1,4 +1,4 @@
-// Inside the section of the event page: 1rem between its blocks, as the save-the-date panel.
+// Inside its tab below the heading and the lead: 1rem between its blocks, as the save-the-date panel.
 
 :host {
   display: flex;
@@ -17,7 +17,7 @@
   display: block;
 }
 
-// The live link on a quiet ground inside the panel of the overview.
+// The live link on a quiet ground.
 .photo-stand__link {
   display: flex;
   flex-direction: column;

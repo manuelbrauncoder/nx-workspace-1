@@ -53,4 +53,12 @@ describe('SaveTheDateRepository', () => {
     expect(repository.coverUrl('t/1')).toBe(`${PAGE}/cover`);
     expect(repository.calendarUrl('t/1')).toBe(`${PAGE}/calendar`);
   });
+
+  it('builds the preview image with the fixed size', () => {
+    expect(repository.previewImage('t/1')).toEqual({
+      url: `${PAGE}/preview`,
+      width: 1200,
+      height: 630,
+    });
+  });
 });

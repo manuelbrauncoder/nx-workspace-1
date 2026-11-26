@@ -1,0 +1,19 @@
+<app-async-content
+  [state]="_store.detailState()"
+  [failureHeading]="'events.loadFailed' | t"
+  [loadingLabel]="'events.loading' | t"
+>
+  <ng-template>
+    @if (_store.selected(); as event) {
+      <section class="event-save-the-date" aria-labelledby="event-save-the-date-heading">
+        <h2 id="event-save-the-date-heading" appUiText="heading" tabindex="-1">
+          {{ 'eventSaveTheDate.heading' | t }}
+        </h2>
+        <p class="event-save-the-date__lead" appUiText="muted">
+          {{ 'eventSaveTheDate.description' | t }}
+        </p>
+        <app-save-the-date-panel [event]="event" />
+      </section>
+    }
+  </ng-template>
+</app-async-content>

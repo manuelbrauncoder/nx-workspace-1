@@ -1,0 +1,19 @@
+// A tab below the frame of the event, which brings title and spacing above. One column at the
+// width of reading text, the panel below its heading and explanation.
+
+:host {
+  display: block;
+}
+
+.event-save-the-date {
+  max-width: 40rem;
+
+  // Takes the focus when the part changes, it is no control.
+  h2:focus {
+    outline: none;
+  }
+}
+
+.event-save-the-date__lead {
+  margin-top: 0.25rem;
+}

@@ -7,79 +7,108 @@
   <ng-template>
     @if (_store.selected(); as event) {
       <div class="event-detail__columns">
-        <div class="event-detail__main">
-          <!-- What hosts open the page for: the numbers, then where and until when. -->
-          <section class="event-detail__glance" aria-labelledby="event-detail-glance">
-            <div class="event-detail__glance-head">
-              <h2 id="event-detail-glance" appUiText="heading">
-                {{ 'eventDetail.glance' | t }}
-              </h2>
-              <a [routerLink]="['/events', event.id, 'guests']" appUiButton variant="outline">
-                {{ 'eventDetail.guests.manage' | t }}
-                <app-ui-icon name="arrowRight" />
-              </a>
+        <!-- What hosts open the page for: the numbers, where and until when, what is on. On top
+             on a phone, in the side column from `lg`. -->
+        <section class="event-detail__glance" aria-labelledby="event-detail-glance">
+          <h2 id="event-detail-glance" appUiText="heading">
+            {{ 'eventDetail.glance' | t }}
+          </h2>
+          <!-- One number leads: the people who come. The bar splits the guests by answer, the
+               other two numbers stay small below. -->
+          <dl class="event-detail__counts">
+            <div class="event-detail__coming">
+              <dt>{{ 'eventDetail.guests.coming' | t }}</dt>
+              <dd>{{ event.counts.coming }}</dd>
             </div>
-            <dl class="event-detail__counts">
-              <div class="event-detail__count">
-                <dt>{{ 'eventDetail.guests.invited' | t }}</dt>
-                <dd>{{ event.counts.invited }}</dd>
-              </div>
-              <div class="event-detail__count">
-                <dt>{{ 'eventDetail.guests.coming' | t }}</dt>
-                <dd>{{ event.counts.coming }}</dd>
-              </div>
-              <div class="event-detail__count">
-                <dt>{{ 'eventDetail.guests.declined' | t }}</dt>
-                <dd>{{ event.counts.declined }}</dd>
-              </div>
-              <div class="event-detail__count">
-                <dt>{{ 'eventDetail.guests.pending' | t }}</dt>
-                <dd>{{ event.counts.pending }}</dd>
-              </div>
-              <div class="event-detail__count">
-                <dt>{{ 'eventDetail.guests.atMost' | t }}</dt>
-                <dd>{{ event.counts.atMost }}</dd>
-              </div>
+            <div class="event-detail__count">
+              <dt>{{ 'eventDetail.guests.invited' | t }}</dt>
+              <dd>{{ event.counts.invited }}</dd>
+            </div>
+            <div class="event-detail__count">
+              <dt>{{ 'eventDetail.guests.atMost' | t }}</dt>
+              <dd>{{ event.counts.atMost }}</dd>
+            </div>
+          </dl>
+          <app-ui-stacked-bar
+            class="event-detail__answers"
+            [segments]="_answers()"
+            [label]="'eventDetail.guests.byAnswer' | t"
+          />
+          <p class="event-detail__note" appUiText="muted">
+            {{ 'eventDetail.guests.description' | t }}
+          </p>
+
+          @if (event.address || event.rsvpDeadline) {
+            <div class="event-detail__glance-separator" appUiSeparator></div>
+            <dl class="event-detail__facts">
+              @if (event.address; as address) {
+                <div class="event-detail__fact">
+                  <dt>{{ 'eventDetail.facts.address' | t }}</dt>
+                  <dd>
+                    <span class="event-detail__address">{{ address }}</span>
+                    <a
+                      class="event-detail__map"
+                      [href]="_mapUrl()"
+                      [attr.aria-label]="'eventDetail.mapNamed' | t: { address }"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {{ 'eventDetail.map' | t }}
+                      <app-ui-icon name="externalLink" />
+                    </a>
+                  </dd>
+                </div>
+              }
+              @if (event.rsvpDeadline; as deadline) {
+                <div class="event-detail__fact">
+                  <dt>{{ 'eventDetail.facts.deadline' | t }}</dt>
+                  <dd>
+                    <time [attr.datetime]="deadline.toISOString()">{{
+                      deadline | localDate: 'weekdayDate' : event.timeZone
+                    }}</time>
+                  </dd>
+                </div>
+              }
             </dl>
-            <p class="event-detail__note" appUiText="muted">
-              {{ 'eventDetail.guests.description' | t }}
-            </p>
+          }
 
-            @if (event.address || event.rsvpDeadline) {
-              <div class="event-detail__glance-separator" appUiSeparator></div>
-              <dl class="event-detail__facts">
-                @if (event.address; as address) {
-                  <div class="event-detail__fact">
-                    <dt>{{ 'eventDetail.facts.address' | t }}</dt>
-                    <dd>
-                      <span class="event-detail__address">{{ address }}</span>
-                      <a
-                        class="event-detail__map"
-                        [href]="_mapUrl()"
-                        [attr.aria-label]="'eventDetail.mapNamed' | t: { address }"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {{ 'eventDetail.map' | t }}
-                        <app-ui-icon name="externalLink" />
-                      </a>
-                    </dd>
-                  </div>
-                }
-                @if (event.rsvpDeadline; as deadline) {
-                  <div class="event-detail__fact">
-                    <dt>{{ 'eventDetail.facts.deadline' | t }}</dt>
-                    <dd>
-                      <time [attr.datetime]="deadline.toISOString()">{{
-                        deadline | localDate: 'weekdayDate' : event.timeZone
-                      }}</time>
-                    </dd>
-                  </div>
-                }
-              </dl>
-            }
-          </section>
+          <!-- The public links have their own tabs, here only whether they are on. -->
+          <div class="event-detail__glance-separator" appUiSeparator></div>
+          <dl class="event-detail__facts">
+            <div class="event-detail__fact">
+              <dt>{{ 'eventDetail.links.saveTheDate' | t }}</dt>
+              <dd>
+                <span>{{
+                  (event.saveTheDate ? 'eventDetail.links.on' : 'eventDetail.links.off') | t
+                }}</span>
+                <a
+                  class="event-detail__map"
+                  [routerLink]="['/events', event.id, 'save-the-date']"
+                  [attr.aria-label]="'eventDetail.links.manageSaveTheDate' | t"
+                >
+                  {{ 'eventDetail.links.manage' | t }}
+                </a>
+              </dd>
+            </div>
+            <div class="event-detail__fact">
+              <dt>{{ 'eventDetail.links.photoStand' | t }}</dt>
+              <dd>
+                <span>{{
+                  (event.photoStand ? 'eventDetail.links.on' : 'eventDetail.links.off') | t
+                }}</span>
+                <a
+                  class="event-detail__map"
+                  [routerLink]="['/events', event.id, 'photo-stand']"
+                  [attr.aria-label]="'eventDetail.links.managePhotoStand' | t"
+                >
+                  {{ 'eventDetail.links.manage' | t }}
+                </a>
+              </dd>
+            </div>
+          </dl>
+        </section>
 
+        <div class="event-detail__main">
           <section class="event-detail__section" aria-labelledby="event-detail-description">
             <h2 id="event-detail-description" appUiText="heading">
               {{ 'eventDetail.description' | t }}
@@ -89,6 +118,11 @@
             } @else {
               <p class="event-detail__description event-detail__description--empty">
                 {{ 'eventDetail.noDescription' | t }}
+                @if (!event.past) {
+                  <a class="event-detail__map" [routerLink]="['/events', event.id, 'edit']">
+                    {{ 'eventDetail.addDescription' | t }}
+                  </a>
+                }
               </p>
             }
           </section>
@@ -114,31 +148,6 @@
             </section>
           }
         </div>
-
-        <!-- The public links of the event: what hosts set up once and then hand around. -->
-        <section class="event-detail__share" aria-labelledby="event-detail-share">
-          <h2 id="event-detail-share" appUiText="heading">{{ 'eventDetail.share' | t }}</h2>
-
-          <section class="event-detail__panel" aria-labelledby="event-detail-save-the-date">
-            <h3 id="event-detail-save-the-date" appUiText="item" tabindex="-1">
-              {{ 'eventDetail.saveTheDate.heading' | t }}
-            </h3>
-            <p class="event-detail__panel-lead" appUiText="muted">
-              {{ 'eventDetail.saveTheDate.description' | t }}
-            </p>
-            <app-save-the-date-panel [event]="event" />
-          </section>
-
-          <section class="event-detail__panel" aria-labelledby="event-detail-photo-stand">
-            <h3 id="event-detail-photo-stand" appUiText="item" tabindex="-1">
-              {{ 'eventDetail.photoStand.heading' | t }}
-            </h3>
-            <p class="event-detail__panel-lead" appUiText="muted">
-              {{ 'eventDetail.photoStand.description' | t }}
-            </p>
-            <app-photo-stand-panel [event]="event" />
-          </section>
-        </section>
       </div>
     }
   </ng-template>

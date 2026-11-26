@@ -1,3 +1,35 @@
+// The action sits in the flow, never on top of the text: below it in a narrow alert, in its own
+// column next to heading and description once the alert has room. Measured on the alert itself,
+// so it also holds in a narrow card on a wide screen.
 :host {
   display: block;
+  // Inline-size containment takes the width from the parent, not the content: a parent that
+  // sizes to its children (flex with `align-items: start`) would squeeze the alert to its padding.
+  width: 100%;
+  container-type: inline-size;
+}
+
+.ui-alert__action {
+  // The whole row, also if the helm grid ever gets an icon column.
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin-top: 0.5rem;
+
+  &:empty {
+    display: none;
+  }
+}
+
+@container (min-width: 32rem) {
+  .ui-alert:has(> .ui-alert__action:not(:empty)) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 1rem;
+  }
+
+  .ui-alert__action {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+    align-self: center;
+    margin-top: 0;
+  }
 }

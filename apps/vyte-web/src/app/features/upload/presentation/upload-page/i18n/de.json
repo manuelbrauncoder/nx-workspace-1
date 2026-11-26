@@ -52,5 +52,8 @@
   },
   "consent": "Die Gastgeber sehen alle Fotos, andere Gäste nicht. Frag bitte kurz, bevor du Leute fotografierst.",
   "titleFor": "Fotos · {{ title }}",
-  "progressFailed": "Hochgeladen: {{ done }} von {{ total }}, {{ failed }} hat nicht geklappt."
+  "progressFailed": "Hochgeladen: {{ done }} von {{ total }}, {{ failed }} hat nicht geklappt.",
+  "seo": {
+    "description": "Lade hier deine Fotos von {{ title }} hoch. Sehen können sie nur die Gastgeber."
+  }
 }

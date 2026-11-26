@@ -104,4 +104,20 @@ export function registerSaveTheDateDocs(registry: OpenAPIRegistry) {
       ...errorResponses(404),
     },
   });
+
+  registry.registerPath({
+    ...link,
+    method: 'get',
+    path: '/save-the-date/{token}/preview',
+    summary: 'Preview image of a shared save the date',
+    description: `The cover cut to 1200 × 630 as JPEG, for \`og:image\`. 404 without an image and once the event is over. ${notFoundNote}`,
+    request: { params: saveTheDateParamsSchema },
+    responses: {
+      200: {
+        description: 'The image',
+        content: { 'image/jpeg': { schema: { type: 'string', format: 'binary' } } },
+      },
+      ...errorResponses(404),
+    },
+  });
 }

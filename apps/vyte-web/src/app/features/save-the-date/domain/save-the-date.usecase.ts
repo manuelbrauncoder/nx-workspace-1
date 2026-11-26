@@ -1,4 +1,5 @@
 import { inject, Service } from '@angular/core';
+import type { PreviewImage } from '@api/preview-image';
 import { SaveTheDateRepository } from '@api/save-the-date/save-the-date.repository';
 import { Observable } from 'rxjs';
 import { SaveTheDate } from './save-the-date';
@@ -17,6 +18,10 @@ export class SaveTheDateUseCase {
 
   coverUrl(token: string): string {
     return this._repository.coverUrl(token);
+  }
+
+  previewImage(token: string): PreviewImage {
+    return this._repository.previewImage(token);
   }
 
   calendarUrl(token: string): string {

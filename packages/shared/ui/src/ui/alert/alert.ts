@@ -1,5 +1,5 @@
 import { Component, Directive, input } from '@angular/core';
-import { HlmAlertAction, HlmAlertImports } from '@spartan-ng/helm/alert';
+import { HlmAlertImports } from '@spartan-ng/helm/alert';
 
 export type UiAlertVariant = 'default' | 'destructive';
 
@@ -8,10 +8,10 @@ export type UiHeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
  * Inline message with a heading, announced to screen readers as soon as it appears. The
- * projected content is the description. An optional `appUiAlertAction` button sits in the top
- * corner. To show a `Failure`, use `app-failure-alert` instead. Inside a section of a page, set
- * `headingLevel` one below the heading of that section, so the alert does not read as a section
- * of its own.
+ * projected content is the description. An optional `appUiAlertAction` button sits below the
+ * text, or next to it once the alert is wide enough, never on top of it. To show a `Failure`,
+ * use `app-failure-alert` instead. Inside a section of a page, set `headingLevel` one below the
+ * heading of that section, so the alert does not read as a section of its own.
  *
  * @example
  * <app-ui-alert heading="Speichern fehlgeschlagen" variant="destructive">
@@ -34,9 +34,11 @@ export class UiAlert {
   readonly headingLevel = input<UiHeadingLevel>(2);
 }
 
-/** Marks the action button of an `app-ui-alert`. */
+/**
+ * Marks the action button of an `app-ui-alert`. The alert places it, the absolutely positioned
+ * `HlmAlertAction` is left out on purpose: a longer label (`Erneut versuchen`) ran over the text.
+ */
 @Directive({
   selector: '[appUiAlertAction]',
-  hostDirectives: [HlmAlertAction],
 })
 export class UiAlertAction {}

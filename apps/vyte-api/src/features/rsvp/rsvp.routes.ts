@@ -5,7 +5,13 @@ import { Router } from 'express';
 import { config } from '../../config/index.js';
 import { noStore } from '../../shared/no-store.js';
 import { tokenParams } from '../../shared/token-params.js';
-import { answer, getCalendar, getImageFile, getInvitation } from './rsvp.service.js';
+import {
+  answer,
+  getCalendar,
+  getImageFile,
+  getInvitation,
+  getPreviewImage,
+} from './rsvp.service.js';
 
 /**
  * The guest page's side of a personal link, public, mounted at `/rsvp`. Reading has no rate
@@ -15,6 +21,12 @@ import { answer, getCalendar, getImageFile, getInvitation } from './rsvp.service
 export const rsvpRouter = Router();
 
 const NOT_INVITED = 'Invitation not found';
+
+const previewRateLimit = createRateLimit({
+  windowMinutes: config.rateLimit.previewWindowMinutes,
+  maxRequests: config.rateLimit.previewMaxRequests,
+  message: 'Too many requests, please try again later',
+});
 
 const answerRateLimit = createRateLimit({
   windowMinutes: config.rateLimit.rsvpWindowMinutes,
@@ -45,4 +57,13 @@ rsvpRouter.get('/:token/images/:imageId', async (req, res) => {
   // revalidated on every use, so a renewed link, a removed guest or the end of the event
   // take effect at once; the ETag keeps that cheap
   res.sendFile(file, { headers: { 'Cache-Control': 'private, no-cache' } });
+});
+
+// The only limited read: messengers fetch it from their own IPs, never the server rendering.
+rsvpRouter.get('/:token/preview', previewRateLimit, async (req, res) => {
+  const { token } = tokenParams(rsvpParamsSchema, req, NOT_INVITED);
+  const image = await getPreviewImage(token);
+  // revalidated on every use like the images, so a renewed link or the end of the event take
+  // effect at once; the render itself is cached in `previewImage()`
+  res.type('image/jpeg').set('Cache-Control', 'private, no-cache').send(image);
 });

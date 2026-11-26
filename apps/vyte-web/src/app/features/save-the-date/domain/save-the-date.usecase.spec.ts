@@ -7,6 +7,7 @@ describe('SaveTheDateUseCase', () => {
   const repository = {
     getByToken: vi.fn(),
     coverUrl: vi.fn(),
+    previewImage: vi.fn(),
     calendarUrl: vi.fn(),
   };
   let useCase: SaveTheDateUseCase;
@@ -35,5 +36,13 @@ describe('SaveTheDateUseCase', () => {
     expect(repository.coverUrl).toHaveBeenCalledWith('tok');
     expect(useCase.calendarUrl('tok')).toBe('calendar-url');
     expect(repository.calendarUrl).toHaveBeenCalledWith('tok');
+  });
+
+  it('passes the preview image through', () => {
+    const preview = { url: 'preview-url', width: 1200, height: 630 };
+    repository.previewImage.mockReturnValue(preview);
+
+    expect(useCase.previewImage('tok')).toBe(preview);
+    expect(repository.previewImage).toHaveBeenCalledWith('tok');
   });
 });

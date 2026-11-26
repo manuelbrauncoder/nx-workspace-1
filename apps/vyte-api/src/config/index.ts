@@ -12,6 +12,10 @@ export const config = extendConfig({
     uploadWindowMinutes: z.number().positive().default(15),
     // a venue shares one IP over its Wi-Fi; parallel uploads are capped separately
     uploadMaxRequests: z.number().int().positive().default(200),
+    // preview images of shared links, per client IP; fetched by messengers and their apps, not by
+    // the server rendering, so this one read is limited. Generous: a 429 only loses a preview
+    previewWindowMinutes: z.number().positive().default(15),
+    previewMaxRequests: z.number().int().positive().default(300),
   }),
   // guest photos, see docs/vyte/spec.md section 3; defaults so a config without them stays valid
   photos: z

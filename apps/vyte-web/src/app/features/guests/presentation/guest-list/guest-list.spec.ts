@@ -75,8 +75,20 @@ describe('GuestList', () => {
   const toast = { success: vi.fn(), error: vi.fn() };
   const settle = () => TestBed.inject(ApplicationRef).whenStable();
 
+  afterEach(() => vi.unstubAllGlobals());
+
   beforeEach(() => {
     vi.resetAllMocks();
+    // jsdom has no ResizeObserver, the select trigger measures itself with one.
+    Element.prototype.scrollIntoView = vi.fn();
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe = vi.fn();
+        unobserve = vi.fn();
+        disconnect = vi.fn();
+      },
+    );
     store.exportUrl.mockImplementation(
       (language: string) => `https://api.example.com/events/e1/guests/export?lang=${language}`,
     );
@@ -147,8 +159,19 @@ describe('GuestList', () => {
     await settle();
   }
 
-  async function choose(element: HTMLElement, text: string): Promise<void> {
-    buttonWith(element, text)!.click();
+  /** Opens the filter or the sort dropdown and picks the option, which sits in an overlay. */
+  async function choose(
+    element: HTMLElement,
+    select: 'filter' | 'sort',
+    text: string,
+  ): Promise<void> {
+    const index = select === 'filter' ? 0 : 1;
+    element.querySelectorAll('app-form-select')[index]!.querySelector('button')!.click();
+    await settle();
+    const option = Array.from(document.querySelectorAll<HTMLElement>('[role="option"]')).find(
+      (candidate) => candidate.textContent?.trim() === text,
+    )!;
+    option.click();
     await settle();
   }
 
@@ -206,32 +229,61 @@ describe('GuestList', () => {
   it('shows the counts', async () => {
     const { element } = await render();
 
-    const counts = Array.from(element.querySelectorAll('.guest-list__count'), (count) => [
-      count.querySelector('dt')?.textContent?.trim(),
-      count.querySelector('dd')?.textContent?.trim(),
-    ]);
+    const counts = Array.from(
+      element.querySelectorAll('.guest-list__summary dl.guest-list__counts .guest-list__count'),
+      (count) => [
+        count.querySelector('dt')?.textContent?.trim(),
+        count.querySelector('dd')?.textContent?.trim(),
+      ],
+    );
     expect(counts).toEqual([
-      ['Eingeladen', '3'],
       ['Kommen', '2'],
-      ['Abgesagt', '1'],
-      ['Offen', '1'],
+      ['Eingeladen', '3'],
       ['Höchstens', '5'],
     ]);
   });
+
+  it('splits the guests by answer in the bar next to the counts', async () => {
+    const { element } = await render();
+
+    const legend = Array.from(
+      element.querySelectorAll('.guest-list__summary app-ui-stacked-bar .ui-stacked-bar__item'),
+      (item) => item.textContent?.replace(/\s+/g, ' ').trim(),
+    );
+    expect(legend).toEqual(['Zusagen 1', 'Absagen 1', 'Offen 1']);
+  });
+
+  /** Opens the menu behind "Weitere Aktionen" and returns its items. */
+  async function openMore(element: HTMLElement) {
+    // Last button of the head actions, its label follows the language.
+    element.querySelector<HTMLButtonElement>('.guest-list__actions button:last-of-type')!.click();
+    await settle();
+    return Array.from(document.querySelectorAll<HTMLElement>('[role="menuitem"]'));
+  }
+  const itemWith = (items: HTMLElement[], text: string) =>
+    items.find((item) => item.textContent?.trim() === text);
 
   it('offers adding for an upcoming event and no past alert', async () => {
     const { element } = await render();
 
     expect(buttonWith(element, 'Gast hinzufügen')).toBeDefined();
-    expect(buttonWith(element, 'Liste einfügen')).toBeDefined();
     expect(element.querySelector('.guest-list__past')).toBeNull();
+    const items = await openMore(element);
+    expect(items.map((item) => item.textContent?.trim())).toEqual([
+      'Liste einfügen',
+      'Als CSV exportieren',
+    ]);
+    // The export is a menu item now, not a link.
+    expect(element.querySelector('a[download]')).toBeNull();
   });
 
   it('hides adding for a past event and says why', async () => {
     const { element } = await render({ event: { ...EVENT, past: true } });
 
     expect(buttonWith(element, 'Gast hinzufügen')).toBeUndefined();
-    expect(buttonWith(element, 'Liste einfügen')).toBeUndefined();
+    expect(
+      element.querySelector('button[aria-label="Weitere Aktionen der Gästeliste"]'),
+    ).toBeNull();
     expect(element.querySelector('.guest-list__past')?.textContent).toContain(
       'Das Event ist vorbei',
     );
@@ -240,8 +292,35 @@ describe('GuestList', () => {
     expect(element.querySelector('app-guest-row button')).toBeNull();
   });
 
-  it('links the CSV export in the language of the page', async () => {
-    const { element, fixture } = await render();
+  it('exports the CSV from the menu in the language of the page', async () => {
+    // The page clicks a link with `download`; jsdom would try to navigate, so only record it.
+    const downloads: string[] = [];
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (
+      this: HTMLAnchorElement,
+    ) {
+      if (this.hasAttribute('download')) {
+        downloads.push(this.href);
+      }
+    });
+    try {
+      const { element, fixture } = await render();
+
+      (itemWith(await openMore(element), 'Als CSV exportieren') as HTMLElement).click();
+      await settle();
+      expect(downloads.at(-1)).toBe('https://api.example.com/events/e1/guests/export?lang=de');
+
+      await TestBed.inject(I18nService).setLanguage('en');
+      await fixture.whenStable();
+      (itemWith(await openMore(element), 'Export as CSV') as HTMLElement).click();
+      await settle();
+      expect(downloads.at(-1)).toBe('https://api.example.com/events/e1/guests/export?lang=en');
+    } finally {
+      click.mockRestore();
+    }
+  });
+
+  it('links the CSV export of a past event as a download in the language of the page', async () => {
+    const { element, fixture } = await render({ event: { ...EVENT, past: true } });
     const link = () => element.querySelector('a[download]')!;
 
     expect(link().getAttribute('href')).toBe(
@@ -265,24 +344,39 @@ describe('GuestList', () => {
     expect(element.querySelector('.guest-list__result')?.getAttribute('aria-live')).toBe('polite');
   });
 
-  it('offers the filter and the sort as toggles', async () => {
+  it('offers the filter and the sort as two dropdowns with their labels', async () => {
     const { element } = await render();
 
-    const labels = Array.from(element.querySelectorAll('.ui-toggle-group__item'), (item) =>
-      item.textContent?.trim(),
+    const selects = Array.from(element.querySelectorAll('app-form-select'));
+    expect(selects).toHaveLength(2);
+    expect(selects.map((select) => select.querySelector('label')?.textContent?.trim())).toEqual([
+      'Antwort',
+      'Sortierung',
+    ]);
+    expect(element.querySelector('.ui-toggle-group__item')).toBeNull();
+  });
+
+  it('counts the guests in the options of the filter', async () => {
+    const { element } = await render();
+
+    element.querySelectorAll('app-form-select')[0]!.querySelector('button')!.click();
+    await settle();
+
+    const labels = Array.from(document.querySelectorAll('[role="option"]'), (option) =>
+      option.textContent?.trim(),
     );
-    expect(labels).toEqual(['Alle', 'Zusagen', 'Absagen', 'Offen', 'Name', 'Neueste Antworten']);
+    expect(labels).toEqual(['Alle (3)', 'Zusagen (1)', 'Absagen (1)', 'Offen (1)']);
   });
 
   it('narrows the list with the filter and tells the result', async () => {
     const { element } = await render();
 
-    await choose(element, 'Absagen');
+    await choose(element, 'filter', 'Absagen (1)');
 
     expect(cardNames(element)).toEqual(['Ben Müller']);
     expect(result(element)).toBe('1 von 3 Gästen');
 
-    await choose(element, 'Alle');
+    await choose(element, 'filter', 'Alle (3)');
     expect(cardNames(element)).toHaveLength(3);
   });
 
@@ -320,11 +414,11 @@ describe('GuestList', () => {
     });
     expect(cardNames(element)).toEqual(['Aaron', 'Zoe']);
 
-    await choose(element, 'Neueste Antworten');
+    await choose(element, 'sort', 'Neueste Antworten');
 
     expect(cardNames(element)).toEqual(['Zoe', 'Aaron']);
 
-    await choose(element, 'Name');
+    await choose(element, 'sort', 'Name');
     expect(cardNames(element)).toEqual(['Aaron', 'Zoe']);
   });
 
@@ -408,7 +502,7 @@ describe('GuestList', () => {
       open.mockReturnValue({ closed: Promise.resolve([guest('n1', 'A'), guest('n2', 'B')]) });
       const { element } = await render();
 
-      buttonWith(element, 'Liste einfügen')!.click();
+      itemWith(await openMore(element), 'Liste einfügen')!.click();
       await settle();
 
       const data = open.mock.calls[0]![1].data;
@@ -706,7 +800,7 @@ describe('GuestList', () => {
       });
       const navigate = vi.spyOn(router, 'navigate');
 
-      await choose(element, 'Offen');
+      await choose(element, 'filter', 'Offen (40)');
 
       expect(navigate).toHaveBeenCalledWith(
         [],
@@ -722,7 +816,7 @@ describe('GuestList', () => {
     it('removes the filter from the address when all is chosen', async () => {
       const { element, router } = await render({ query: '?filter=declined' });
 
-      await choose(element, 'Alle');
+      await choose(element, 'filter', 'Alle (3)');
 
       expect(router.url).toBe('/events/e1/guests');
     });
@@ -731,7 +825,7 @@ describe('GuestList', () => {
       const { element, router } = await render({ guests: many, query: '?page=2' });
       const navigate = vi.spyOn(router, 'navigate');
 
-      await choose(element, 'Neueste Antworten');
+      await choose(element, 'sort', 'Neueste Antworten');
       expect(navigate).toHaveBeenLastCalledWith(
         [],
         expect.objectContaining({
@@ -742,7 +836,7 @@ describe('GuestList', () => {
       );
       expect(router.url).toBe('/events/e1/guests?sort=answered');
 
-      await choose(element, 'Name');
+      await choose(element, 'sort', 'Name');
       expect(router.url).toBe('/events/e1/guests');
     });
 

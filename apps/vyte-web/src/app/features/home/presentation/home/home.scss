@@ -1,35 +1,307 @@
 @use 'styles/abstracts' as *;
 
-.home {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.5rem;
-  max-width: 44rem;
-  padding-block: 2rem;
+// The start page in the Konfetti look of the guest pages (`docs/vyte/design`): a yellow hero with
+// the text on one side and the invitation in a phone on the other, the steps below on white.
 
-  @include up(md) {
+// --- Hero
+
+.home-hero {
+  overflow: hidden;
+  background: var(--brand);
+  color: var(--brand-foreground);
+}
+
+// Phone: text first, then the phone, cut off by the bottom edge so the page invites a scroll.
+// From `lg` side by side, the text centred against the phone.
+.home-hero__inner {
+  display: grid;
+  // Never wider than the screen, also when the heading has a long word.
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+  padding-top: 3rem;
+
+  @include up(lg) {
+    // The text gets the wider side, so the heading keeps its words whole.
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 4rem;
+    align-items: center;
+    min-height: min(calc(100dvh - 3.5rem), 44rem);
     padding-block: 4rem;
   }
 }
 
-// A Konfetti chip on the brand colour.
-.home__eyebrow {
-  padding: 0.25rem 0.75rem;
-  border: var(--chip-border);
-  border-radius: 999px;
-  background: var(--brand);
-  color: var(--brand-foreground);
-  font-family: var(--font-heading);
+.home-hero__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  max-width: 40rem;
 }
 
-.home__lead {
-  color: var(--muted-foreground);
-}
-
-// The heading font runs wide: a long word must be able to break on a narrow phone.
-.home__heading {
+// The heading font runs wide: on a 320px phone "Einladungen," does not fit and is hyphenated.
+// No `text-wrap: balance`, it would hyphenate even where the word fits.
+.home-hero__heading {
   max-width: 100%;
   overflow-wrap: break-word;
   hyphens: auto;
+}
+
+// Ink on yellow instead of the grey lead of the work pages, the text of the guest pages.
+.home-hero__lead {
+  color: var(--brand-foreground);
+  text-wrap: pretty;
+}
+
+// The main action as on the guest pages: blue with an ink border and the offset shadow.
+.home-hero__action {
+  border: var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: 2px 2px 0 var(--foreground);
+  font-family: var(--font-heading);
+  font-weight: 600;
+
+  // The focus ring of the helm button is a box-shadow, which the offset shadow above replaces.
+  &:focus-visible {
+    outline: 3px solid var(--foreground);
+    outline-offset: 3px;
+  }
+}
+
+.home-hero__visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  // Only the top of the phone on a phone, the rest runs past the bottom edge.
+  height: 26rem;
+
+  @include up(lg) {
+    height: auto;
+    padding-block: 1rem;
+  }
+}
+
+// The two flat shapes of the guest pages, behind the phone and never behind text.
+.home-hero__shape {
+  position: absolute;
+}
+
+.home-hero__shape--circle {
+  top: -1.5rem;
+  // Next to the phone, on a narrow phone at most 1rem past the edge.
+  right: max(-1rem, calc(50% - 12rem));
+  width: 9rem;
+  height: 9rem;
+  border-radius: 50%;
+  background: var(--decor);
+}
+
+.home-hero__shape--half {
+  bottom: 0;
+  left: max(-1rem, calc(50% - 13rem));
+  width: 8rem;
+  height: 4rem;
+  border-radius: 8rem 8rem 0 0;
+  background: var(--primary);
+
+  @include up(lg) {
+    bottom: 3rem;
+  }
+}
+
+// --- The invitation in a phone. Smaller than the real page, the same shapes and colours. The
+// small text sizes are on purpose: it is a scaled-down picture of the page (aria-hidden, inert),
+// not text to read.
+
+.home-phone {
+  position: relative;
+  align-self: flex-start;
+  // Leaves room for the tilt and the shadow on a 320px phone.
+  width: min(18.5rem, calc(100% - 1rem));
+  padding: 0.625rem;
+  border-radius: 2.75rem;
+  background: var(--foreground);
+  box-shadow: 6px 6px 0 var(--foreground);
+  transform: rotate(2deg);
+
+  @include up(lg) {
+    align-self: center;
+  }
+}
+
+.home-phone__screen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem 1rem 1.5rem;
+  border-radius: 2.125rem;
+  background: var(--brand);
+  color: var(--brand-foreground);
+}
+
+.home-phone__logo {
+  // Left, as in the header of the real guest page.
+  align-self: flex-start;
+  width: auto;
+  height: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.home-phone__greeting {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.home-phone__title {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.home-phone__hosts {
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.home-phone__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-block: 0.25rem;
+}
+
+.home-phone__chip {
+  padding: 0.25rem 0.625rem;
+  border: var(--chip-border);
+  border-radius: 999px;
+  background: var(--card);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.home-phone__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+  padding: 1rem 0.875rem;
+  border: var(--card-border);
+  border-radius: 1.25rem;
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--card-shadow);
+}
+
+.home-phone__question {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.home-phone__choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.home-phone__choice {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem;
+  border: var(--chip-border);
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.home-phone__choice--chosen {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.home-phone__radio {
+  flex: 0 0 auto;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+
+  .home-phone__choice--chosen & {
+    box-shadow: inset 0 0 0 2px var(--primary);
+    background: var(--primary-foreground);
+  }
+}
+
+.home-phone__submit {
+  padding: 0.625rem;
+  border: var(--chip-border);
+  border-radius: 0.75rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 2px 2px 0 var(--foreground);
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+// --- Steps
+
+.home-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-block: 4rem;
+
+  @include up(md) {
+    padding-block: 6rem;
+  }
+}
+
+.home-steps__heading {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  text-wrap: balance;
+}
+
+.home-steps__list {
+  display: grid;
+  gap: 2rem;
+
+  @include up(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem;
+  }
+}
+
+.home-steps__step {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+// The number as a Konfetti chip, the yellow of the guest pages.
+.home-steps__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: var(--chip-border);
+  border-radius: 50%;
+  background: var(--brand);
+  color: var(--brand-foreground);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.home-steps__text {
+  color: var(--muted-foreground);
+  text-wrap: pretty;
 }

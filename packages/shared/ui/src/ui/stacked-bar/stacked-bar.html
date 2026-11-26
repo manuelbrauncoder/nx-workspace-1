@@ -1,0 +1,26 @@
+<!-- The legend below says the same in words. -->
+<div class="ui-stacked-bar__track" aria-hidden="true">
+  @for (part of _parts(); track part.label) {
+    <span
+      class="ui-stacked-bar__part"
+      [style.background-color]="part.color"
+      [style.flex-grow]="part.share"
+    ></span>
+  }
+</div>
+<!-- `role="list"`: without a list style Safari drops the list role. -->
+<ul class="ui-stacked-bar__legend" [attr.aria-label]="label()" role="list">
+  @for (segment of segments(); track segment.label) {
+    <li class="ui-stacked-bar__item">
+      <span
+        class="ui-stacked-bar__dot"
+        [style.background-color]="segment.color"
+        aria-hidden="true"
+      ></span>
+      <!-- `&ngsp;` keeps the space Angular would drop, so it reads "Zusagen 12", not "Zusagen12". -->
+      <span>{{ segment.label }}</span>&ngsp;<span class="ui-stacked-bar__value">{{
+        segment.value
+      }}</span>
+    </li>
+  }
+</ul>

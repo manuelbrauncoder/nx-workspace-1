@@ -1,1 +1,4 @@
-<a class="app-logo" routerLink="/">{{ _wordmark }}</a>
+<a class="app-logo" routerLink="/">
+  <!-- The name of the app as its text: the logo is the only content of the link. -->
+  <img [alt]="_appName" height="28" ngSrc="/logo-full.svg" priority width="116" />
+</a>

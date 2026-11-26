@@ -31,15 +31,23 @@
   gap: 0.5rem;
 }
 
-// One line of labelled numbers in a quiet frame.
+// People in one line of labelled numbers, the answers as a bar below, in one quiet frame.
+.guest-list__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  // The same quiet frame as "Auf einen Blick" on the overview.
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
 .guest-list__counts {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem 2rem;
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
 }
 
 .guest-list__count {
@@ -57,44 +65,41 @@
   }
 }
 
-.guest-list__counts-note {
-  margin-top: 0.5rem;
-}
-
 .guest-list__failure {
   display: block;
   margin-top: 1rem;
 }
 
-// Search, answer and sort in one row from `lg` on, the search above the toggles below.
+// Search, answer and sort: below each other on a phone, the two dropdowns side by side from
+// `sm`, all three in one row from `md` with the search taking the most room.
 .guest-list__tools {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 1rem 1.5rem;
+  display: grid;
+  gap: 1rem;
+  align-items: end;
   margin-top: 1rem;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up(md) {
+    grid-template-columns: minmax(0, 1fr) repeat(2, minmax(0, 13rem));
+  }
 }
 
 .guest-list__search {
-  flex: 1 1 100%;
+  @include up(sm) {
+    grid-column: 1 / -1;
+  }
 
-  // Next to the toggles only where they fit beside it.
-  @include up(lg) {
-    flex: 1 1 16rem;
-    max-width: 24rem;
+  @include up(md) {
+    grid-column: auto;
   }
 }
 
 .guest-list__tool {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  display: block;
   min-width: 0;
-  max-width: 100%;
-}
-
-.guest-list__tool-label {
-  font-weight: 500;
 }
 
 .guest-list__body {

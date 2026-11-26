@@ -41,7 +41,7 @@
   },
   "seo": {
     "defaultDescription": "Vyte: Einladungen mit persönlichem Link, Zusagen ohne Konto und Fotos vom Fest an einem Ort.",
-    "imageAlt": "Logo von Vyte"
+    "imageAlt": "Vyte: eine Einladung zu Annas 30. Geburtstag auf dem Handy, daneben „Einladungen, die ankommen“"
   },
   "events": {
     "breadcrumb": "Events",
@@ -72,6 +72,8 @@
       "tabs": "Bereiche des Events",
       "overview": "Übersicht",
       "guests": "Gäste",
+      "saveTheDate": "Save the date",
+      "photoStand": "Fotostation",
       "team": "Team",
       "photos": "Fotos",
       "past": "Vorbei",

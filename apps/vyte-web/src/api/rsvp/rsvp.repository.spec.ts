@@ -86,4 +86,12 @@ describe('RsvpRepository', () => {
     expect(repository.imageUrl('t/1', 'i/1')).toBe(`${RSVP}/images/i%2F1`);
     expect(repository.calendarUrl('t/1')).toBe(`${RSVP}/calendar`);
   });
+
+  it('builds the preview image with the fixed size', () => {
+    expect(repository.previewImage('t/1')).toEqual({
+      url: `${RSVP}/preview`,
+      width: 1200,
+      height: 630,
+    });
+  });
 });

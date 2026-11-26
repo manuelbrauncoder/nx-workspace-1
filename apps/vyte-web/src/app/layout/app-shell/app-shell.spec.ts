@@ -42,7 +42,11 @@ describe('AppShell', () => {
   it('renders header, routed page and footer', async () => {
     const { element, main } = await render();
 
-    expect(element.querySelector('header a[href="/"]')?.textContent?.trim()).toBe('vyte');
+    const home = element.querySelector('header a[href="/"]');
+    expect(home?.textContent?.trim()).toBe('');
+    const logo = home?.querySelector('img');
+    expect(logo?.getAttribute('alt')).toBe('Vyte');
+    expect(logo?.getAttribute('src')).toBe('/logo-full.svg');
     expect(main.querySelector('h1')?.textContent).toBe('Seite');
     expect(element.querySelector('footer')?.textContent).toContain('Vyte');
   });

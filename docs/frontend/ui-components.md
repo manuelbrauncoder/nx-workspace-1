@@ -84,6 +84,7 @@ Wrappers with several parts export an imports array, e.g. `UiCardImports` and `U
 | `UiTabNav`               | `app-ui-tab-nav`                              | `@shared/ui/tab-nav/tab-nav`                       |
 | `UiBadge`                | `span[appUiBadge]`                            | `@shared/ui/badge/badge`                           |
 | `UiSeparator`            | `[appUiSeparator]`                            | `@shared/ui/separator/separator`                   |
+| `UiStackedBar`           | `app-ui-stacked-bar`                          | `@shared/ui/stacked-bar/stacked-bar`               |
 | `UiCarousel`             | `app-ui-carousel`                             | `@shared/ui/carousel/carousel`                     |
 | `UiDialogService`        | `open()`                                      | `@shared/ui/dialog/dialog.service`                 |
 | `UiConfirmDialogService` | `confirm()`                                   | `@shared/ui/confirm-dialog/confirm-dialog.service` |
@@ -202,7 +203,7 @@ Import all parts through `UiCardImports`. The card works on any element. Put `ap
 </app-ui-alert>
 ```
 
-`variant` is `default` or `destructive`. The projected content is the description, an optional `appUiAlertAction` button sits in the corner (import `UiAlertAction` for it).
+`variant` is `default` or `destructive`. The projected content is the description, an optional `appUiAlertAction` button sits below the text, or in its own column next to it once the alert is at least 32rem wide, never on top of the text (import `UiAlertAction` for it). The wrapper places it itself and leaves out the absolutely positioned `HlmAlertAction`, whose corner position ran over a longer label. The alert takes the full width of its parent (`width: 100%`, needed for the container query).
 
 The heading of an alert is a heading of level 2 in the page outline (`role="heading"`, `aria-level`). Inside a section with an `h2`, set `[headingLevel]="3"`, so the alert does not read as a section of its own. `app-failure-alert` passes `headingLevel` on, `app-async-content` has `failureHeadingLevel` for its failure.
 
@@ -575,6 +576,19 @@ A thin line between two parts of a page, or between items side by side.
 - Decorative (`role="none"`): the headings carry the structure, screen readers skip the line
 - It brings no margin, the page sets the spacing around it
 - Built from `BrnSeparator` and `hlmSeparatorClass`, because `HlmSeparator` does not pass `orientation` on to a host
+
+### Stacked bar
+
+How a whole splits into parts, as one thin bar with a legend below, e.g. the guests of an event by answer.
+
+```html
+<app-ui-stacked-bar [segments]="_answers()" label="Gäste nach Antwort" />
+```
+
+- `segments` are `{ label, value, color }`, `color` a colour token of the app (`var(--status-yes)`), the wrapper knows no app colours
+- The bar is hidden from screen readers, the legend names every part with its value in words, so the colour never carries the meaning alone. `label` (required) names the legend, which keeps `role="list"` also without a list style
+- A part with value 0 stays in the legend but not in the bar, all zero gives an empty bar
+- No Spartan counterpart, built from theme tokens only
 
 ### Tab nav
 

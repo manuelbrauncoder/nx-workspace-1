@@ -60,8 +60,9 @@ export const routes: Routes = [
         loadChildren: () => import('./features/events/events.routes').then((m) => m.eventsRoutes),
       },
       {
-        // One event: its frame with title, actions and tabs, the tab pages below it. Guests,
-        // team and photos are features of their own, the frame only links to them.
+        // One event: its frame with title, actions and tabs, the tab pages below it. Overview,
+        // save the date and photo stand share the store of the frame. Guests, team and photos
+        // are features of their own, the frame only links to them.
         path: 'events/:id',
         canActivate: [authGuard],
         // Events are private.
@@ -81,6 +82,16 @@ export const routes: Routes = [
             path: 'guests',
             loadChildren: () =>
               import('./features/guests/guests.routes').then((m) => m.guestsRoutes),
+          },
+          {
+            path: 'save-the-date',
+            loadChildren: () =>
+              import('./features/events/events.routes').then((m) => m.eventSaveTheDateRoutes),
+          },
+          {
+            path: 'photo-stand',
+            loadChildren: () =>
+              import('./features/events/events.routes').then((m) => m.eventPhotoStandRoutes),
           },
           {
             path: 'team',
