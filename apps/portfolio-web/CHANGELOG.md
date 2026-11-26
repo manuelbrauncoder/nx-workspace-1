@@ -1,3 +1,10 @@
+## 2.9.0 (2026-11-26)
+
+### 🩹 Fixes
+
+- **portfolio-web:** preview image for shared links in the current look ([9027b46](https://github.com/manuelbrauncoder/nx-workspace-1/commit/9027b46))
+- **portfolio-web:** logo tile and favicon in the accent of the theme ([ef60680](https://github.com/manuelbrauncoder/nx-workspace-1/commit/ef60680))
+
 ## 2.8.0 (2026-11-25)
 
 ### 🚀 Features

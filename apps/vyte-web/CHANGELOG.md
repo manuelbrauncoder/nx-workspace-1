@@ -1,3 +1,17 @@
+## 0.0.5 (2026-11-26)
+
+### 🚀 Features
+
+- **vyte-web:** shared links show the event in their preview ([a833be7](https://github.com/manuelbrauncoder/nx-workspace-1/commit/a833be7))
+- **vyte-web:** logo and a new preview image for shared links ([6869e55](https://github.com/manuelbrauncoder/nx-workspace-1/commit/6869e55))
+- **vyte-web:** own tabs for save the date and photo stand, answers at a glance ([e4e2cda](https://github.com/manuelbrauncoder/nx-workspace-1/commit/e4e2cda))
+- **vyte-web:** start page shows the invitation a guest gets ([61d2050](https://github.com/manuelbrauncoder/nx-workspace-1/commit/61d2050))
+
+### 🩹 Fixes
+
+- **vyte-web:** buttons of the event pages are 44px touch targets ([7bff3b7](https://github.com/manuelbrauncoder/nx-workspace-1/commit/7bff3b7))
+- **vyte-web:** polish of the guest pages and the sign-in ([73ad6d1](https://github.com/manuelbrauncoder/nx-workspace-1/commit/73ad6d1))
+
 ## 0.0.4 (2026-11-19)
 
 ### 🩹 Fixes

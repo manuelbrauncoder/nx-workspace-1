@@ -1,3 +1,9 @@
+## 0.0.4 (2026-11-26)
+
+### 🚀 Features
+
+- **vyte-api:** preview image of shared invitations and save the dates ([f2fba18](https://github.com/manuelbrauncoder/nx-workspace-1/commit/f2fba18))
+
 ## 0.0.3 (2026-11-19)
 
 ### 🩹 Fixes
