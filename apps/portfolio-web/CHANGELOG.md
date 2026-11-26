@@ -1,3 +1,13 @@
+## 2.10.0 (2026-11-26)
+
+### 🚀 Features
+
+- **portfolio-web:** projects in the editor as an accordion ([36dc4e4](https://github.com/manuelbrauncoder/nx-workspace-1/commit/36dc4e4))
+
+### 🩹 Fixes
+
+- **portfolio-web:** software developer in logo and link preview ([0f2dbe2](https://github.com/manuelbrauncoder/nx-workspace-1/commit/0f2dbe2))
+
 ## 2.9.0 (2026-11-26)
 
 ### 🩹 Fixes
