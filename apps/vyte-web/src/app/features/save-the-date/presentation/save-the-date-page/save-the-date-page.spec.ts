@@ -179,6 +179,16 @@ describe('SaveTheDatePage', () => {
       expect(response.status).toBe(404);
     });
 
+    it('marks the intro as alone only when the page was not found', async () => {
+      const notFound = await render(undefined, failed(new Failure('not-found', 'Unknown token')));
+      expect(notFound.element.querySelector('.save-the-date__intro--alone')).not.toBeNull();
+      TestBed.resetTestingModule();
+
+      const serverFailure = await render(undefined, failed(new Failure('server', 'Down')));
+      expect(serverFailure.element.querySelector('.save-the-date__intro')).not.toBeNull();
+      expect(serverFailure.element.querySelector('.save-the-date__intro--alone')).toBeNull();
+    });
+
     it('offers a retry for another failure that reloads', async () => {
       const { element, response } = await render(undefined, failed(new Failure('server', 'Down')));
 

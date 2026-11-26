@@ -169,10 +169,18 @@ export class UploadPage {
     this._focusOwnPhotos();
   }
 
+  /**
+   * Focus on the heading of the own photos. Deleting the last photo before the upload opens
+   * removes that section, then the focus goes to `main` instead of falling to the body.
+   */
   private _focusOwnPhotos(): void {
-    afterNextRender(() => this._document.getElementById('upload-page-own')?.focus(), {
-      injector: this._injector,
-    });
+    afterNextRender(
+      () =>
+        (
+          this._document.getElementById('upload-page-own') ?? this._document.getElementById('main')
+        )?.focus(),
+      { injector: this._injector },
+    );
   }
 
   private _photoUrl(photo: OwnPhoto): string {

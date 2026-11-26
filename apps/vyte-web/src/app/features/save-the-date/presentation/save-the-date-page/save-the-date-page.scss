@@ -21,8 +21,8 @@
   padding: 0.5rem 0.25rem 0;
 }
 
-// After the event, as `Vorbei.html`: the text in the middle of the screen.
-.save-the-date__intro--past {
+// Only text on the page (event over, unknown link), as `Vorbei.html`: in the middle of the screen.
+.save-the-date__intro--alone {
   justify-content: center;
   min-height: 50dvh;
 }

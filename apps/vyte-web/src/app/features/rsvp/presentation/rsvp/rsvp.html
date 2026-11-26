@@ -1,7 +1,7 @@
 @let state = _store.invitationState();
 @if (!_store.invitation()) {
   <!-- While loading and after a failure the page still has its heading. -->
-  <div class="rsvp__intro">
+  <div class="rsvp__intro" [class.rsvp__intro--alone]="state.failure?.kind === 'not-found'">
     <h1 class="rsvp__title" appUiText="section">
       {{ (state.failure?.kind === 'not-found' ? 'rsvp.notFound.heading' : 'rsvp.title') | t }}
     </h1>
@@ -24,7 +24,7 @@
     <ng-template>
       @if (_store.invitation(); as invitation) {
         @if (invitation.past) {
-          <div class="rsvp__intro rsvp__intro--past">
+          <div class="rsvp__intro rsvp__intro--alone">
             <p class="rsvp__kicker">{{ invitation.event.title }}</p>
             <h1 class="rsvp__title" #heading appUiText="section" tabindex="-1">
               {{ 'rsvp.past.heading' | t }}

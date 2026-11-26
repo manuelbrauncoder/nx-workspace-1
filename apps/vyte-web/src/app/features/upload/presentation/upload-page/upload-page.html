@@ -1,7 +1,7 @@
 @let state = _store.uploadState();
 @if (!_store.upload()) {
   <!-- While loading and after a failure the page still has its heading. -->
-  <div class="upload-page__intro">
+  <div class="upload-page__intro" [class.upload-page__intro--alone]="_notFound()">
     <h1 class="upload-page__title" appUiText="section">
       {{ (_notFound() ? 'uploadPage.notFound.heading' : 'uploadPage.title') | t }}
     </h1>
@@ -128,105 +128,110 @@
           }
         </section>
 
-        <section class="upload-page__section" aria-labelledby="upload-page-own">
-          <h2
-            class="upload-page__section-heading"
-            id="upload-page-own"
-            appUiText="h3"
-            tabindex="-1"
-          >
-            {{ 'uploadPage.own.heading' | t }}
-          </h2>
-          @if (_store.deleteState().failure; as failure) {
-            <app-failure-alert
-              [failure]="failure"
-              [heading]="'uploadPage.delete.failed' | t"
-              [headingLevel]="3"
-            />
-          }
-          @if (upload.photos.length === 0 && _store.queue().length === 0) {
-            <p class="upload-page__empty">
-              {{ (kind() === 'stand' ? 'uploadPage.own.emptyStand' : 'uploadPage.own.empty') | t }}
-            </p>
-          } @else {
-            <ul class="upload-page__grid">
-              @for (photo of upload.photos; track photo.id; let index = $index) {
-                <li class="upload-page__tile">
-                  <img
-                    [alt]="'uploadPage.own.photo' | t: { number: index + 1 }"
-                    [height]="photo.height"
-                    [ngSrc]="_photoUrl(photo)"
-                    [width]="photo.width"
-                  />
-                  <button
-                    class="upload-page__delete"
-                    [attr.aria-label]="'uploadPage.own.delete' | t: { number: index + 1 }"
-                    (click)="_delete(photo, index + 1)"
-                    type="button"
+        <!-- Before the upload opens there can be no photos yet, an empty list would say nothing. -->
+        @if (!_beforeWindow() || upload.photos.length > 0) {
+          <section class="upload-page__section" aria-labelledby="upload-page-own">
+            <h2
+              class="upload-page__section-heading"
+              id="upload-page-own"
+              appUiText="h3"
+              tabindex="-1"
+            >
+              {{ 'uploadPage.own.heading' | t }}
+            </h2>
+            @if (_store.deleteState().failure; as failure) {
+              <app-failure-alert
+                [failure]="failure"
+                [heading]="'uploadPage.delete.failed' | t"
+                [headingLevel]="3"
+              />
+            }
+            @if (upload.photos.length === 0 && _store.queue().length === 0) {
+              <p class="upload-page__empty">
+                {{
+                  (kind() === 'stand' ? 'uploadPage.own.emptyStand' : 'uploadPage.own.empty') | t
+                }}
+              </p>
+            } @else {
+              <ul class="upload-page__grid">
+                @for (photo of upload.photos; track photo.id; let index = $index) {
+                  <li class="upload-page__tile">
+                    <img
+                      [alt]="'uploadPage.own.photo' | t: { number: index + 1 }"
+                      [height]="photo.height"
+                      [ngSrc]="_photoUrl(photo)"
+                      [width]="photo.width"
+                    />
+                    <button
+                      class="upload-page__delete"
+                      [attr.aria-label]="'uploadPage.own.delete' | t: { number: index + 1 }"
+                      (click)="_delete(photo, index + 1)"
+                      type="button"
+                    >
+                      <app-ui-icon name="trash" />
+                    </button>
+                  </li>
+                }
+                @for (item of _store.queue(); track item.id) {
+                  <li
+                    class="upload-page__tile upload-page__tile--queued"
+                    [attr.data-state]="item.state"
                   >
-                    <app-ui-icon name="trash" />
-                  </button>
-                </li>
-              }
-              @for (item of _store.queue(); track item.id) {
-                <li
-                  class="upload-page__tile upload-page__tile--queued"
-                  [attr.data-state]="item.state"
-                >
-                  <!-- A local preview of the chosen file, not yet a photo of the event. -->
-                  <img [src]="item.preview" alt="" />
-                  <div class="upload-page__status">
-                    <span class="sr-only">{{ item.file.name }}:</span>
-                    @switch (item.state) {
-                      @case ('uploading') {
-                        <app-ui-spinner [announce]="false" />
-                        <span>{{ 'uploadPage.queue.uploading' | t }}</span>
+                    <!-- A local preview of the chosen file, not yet a photo of the event. -->
+                    <img [src]="item.preview" alt="" />
+                    <div class="upload-page__status">
+                      <span class="sr-only">{{ item.file.name }}:</span>
+                      @switch (item.state) {
+                        @case ('uploading') {
+                          <app-ui-spinner [announce]="false" />
+                          <span>{{ 'uploadPage.queue.uploading' | t }}</span>
+                        }
+                        @case ('waiting') {
+                          <span>{{ 'uploadPage.queue.waiting' | t }}</span>
+                        }
+                        @case ('failed') {
+                          <span>
+                            {{
+                              (item.failure?.kind === 'conflict'
+                                ? 'uploadPage.queue.refused'
+                                : 'uploadPage.queue.failed'
+                              ) | t
+                            }}
+                          </span>
+                          <span class="upload-page__queue-actions">
+                            <button
+                              [attr.aria-label]="
+                                'uploadPage.queue.retryNamed' | t: { name: item.file.name }
+                              "
+                              (click)="_retry(item)"
+                              appUiButton
+                              size="sm"
+                              type="button"
+                            >
+                              {{ 'uploadPage.queue.retry' | t }}
+                            </button>
+                            <button
+                              [attr.aria-label]="
+                                'uploadPage.queue.discardNamed' | t: { name: item.file.name }
+                              "
+                              (click)="_discard(item)"
+                              appUiButton
+                              size="sm"
+                              type="button"
+                              variant="outline"
+                            >
+                              {{ 'uploadPage.queue.discard' | t }}
+                            </button>
+                          </span>
+                        }
                       }
-                      @case ('waiting') {
-                        <span>{{ 'uploadPage.queue.waiting' | t }}</span>
-                      }
-                      @case ('failed') {
-                        <span>
-                          {{
-                            (item.failure?.kind === 'conflict'
-                              ? 'uploadPage.queue.refused'
-                              : 'uploadPage.queue.failed'
-                            ) | t
-                          }}
-                        </span>
-                        <span class="upload-page__queue-actions">
-                          <button
-                            [attr.aria-label]="
-                              'uploadPage.queue.retryNamed' | t: { name: item.file.name }
-                            "
-                            (click)="_retry(item)"
-                            appUiButton
-                            size="sm"
-                            type="button"
-                          >
-                            {{ 'uploadPage.queue.retry' | t }}
-                          </button>
-                          <button
-                            [attr.aria-label]="
-                              'uploadPage.queue.discardNamed' | t: { name: item.file.name }
-                            "
-                            (click)="_discard(item)"
-                            appUiButton
-                            size="sm"
-                            type="button"
-                            variant="outline"
-                          >
-                            {{ 'uploadPage.queue.discard' | t }}
-                          </button>
-                        </span>
-                      }
-                    }
-                  </div>
-                </li>
-              }
-            </ul>
-          }
-        </section>
+                    </div>
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+        }
 
         <p class="upload-page__note">{{ 'uploadPage.consent' | t }}</p>
       }

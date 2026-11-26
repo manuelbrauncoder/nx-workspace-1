@@ -1,6 +1,20 @@
+@use 'styles/abstracts' as *;
+
+// The threshold between the guest pages and the work pages: the form in a white Konfetti card
+// (ink border, large radius, offset shadow), the fields stay the thin ones of the work pages.
 .sign-in {
   margin-inline: auto;
-  max-width: 24rem;
+  max-width: 28rem;
+  padding: 1.5rem 1.25rem;
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--card-shadow);
+
+  @include up(sm) {
+    padding: 2rem;
+  }
 }
 
 .sign-in__form {

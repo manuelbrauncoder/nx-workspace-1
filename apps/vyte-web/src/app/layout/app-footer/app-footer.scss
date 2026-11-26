@@ -1,3 +1,5 @@
+@use 'styles/abstracts' as *;
+
 .app-footer {
   padding-block: 1.5rem;
   border-top: 1px solid var(--border);
@@ -13,10 +15,16 @@
   gap: 0.75rem 1.5rem;
 }
 
+// Four links do not fit one line of a phone: two by two there, so none is left alone.
 .app-footer__links {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
   gap: 0 1.5rem;
+
+  @include up(sm) {
+    display: flex;
+    flex-wrap: wrap;
+  }
 }
 
 .app-footer__link {

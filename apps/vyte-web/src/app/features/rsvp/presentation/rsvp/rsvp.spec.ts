@@ -611,6 +611,20 @@ describe('Rsvp', () => {
       expect(buttonWith(element, 'Erneut versuchen')).toBeUndefined();
     });
 
+    it('marks the intro as alone only when the invitation was not found', async () => {
+      const notFound = await render(undefined, {
+        state: failed(new Failure('not-found', 'Unknown token')),
+      });
+      expect(notFound.element.querySelector('.rsvp__intro--alone')).not.toBeNull();
+      TestBed.resetTestingModule();
+
+      const serverFailure = await render(undefined, {
+        state: failed(new Failure('server', 'Down')),
+      });
+      expect(serverFailure.element.querySelector('.rsvp__intro')).not.toBeNull();
+      expect(serverFailure.element.querySelector('.rsvp__intro--alone')).toBeNull();
+    });
+
     it('offers a retry for another failure that reloads', async () => {
       const { element } = await render(undefined, {
         state: failed(new Failure('server', 'Down')),

@@ -1,7 +1,10 @@
 @let state = _store.saveTheDateState();
 @if (!_store.saveTheDate()) {
   <!-- While loading and after a failure the page still has its heading. -->
-  <div class="save-the-date__intro">
+  <div
+    class="save-the-date__intro"
+    [class.save-the-date__intro--alone]="state.failure?.kind === 'not-found'"
+  >
     <h1 class="save-the-date__title" appUiText="section">
       {{
         (state.failure?.kind === 'not-found'
@@ -30,7 +33,7 @@
     <ng-template>
       @if (_store.saveTheDate(); as saveTheDate) {
         @if (saveTheDate.past) {
-          <div class="save-the-date__intro save-the-date__intro--past">
+          <div class="save-the-date__intro save-the-date__intro--alone">
             <p class="save-the-date__kicker">{{ saveTheDate.title }}</p>
             <h1 class="save-the-date__title" appUiText="section">
               {{ 'saveTheDatePage.past.heading' | t }}
