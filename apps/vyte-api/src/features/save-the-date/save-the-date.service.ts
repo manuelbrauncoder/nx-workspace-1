@@ -1,7 +1,8 @@
 import { db } from '@server/core/db/db';
 import { notFound } from '@server/core/errors';
-import { imagePath } from '@server/core/images';
+import { imagePath, previewImage } from '@server/core/images';
 import type { SaveTheDateSettingsInput } from '@vyte/contracts/events';
+import { PREVIEW_IMAGE } from '@vyte/contracts/preview-image';
 import { and, eq } from 'drizzle-orm';
 import { newToken } from '../../shared/token.js';
 import { calendarFile } from '../events/events.calendar.js';
@@ -105,6 +106,14 @@ export async function getCoverFile(token: string) {
   const cover = isPast(event) ? undefined : await coverOf(event.id);
   if (!cover) throw notFound('Image not found');
   return imagePath(cover.filename);
+}
+
+/** The cover as the JPEG preview of the shared link; 404 without one and once the event is over. */
+export async function getPreviewImage(token: string) {
+  const event = await eventOfLink(token);
+  const cover = isPast(event) ? undefined : await coverOf(event.id);
+  if (!cover) throw notFound('Image not found');
+  return previewImage(cover.filename, PREVIEW_IMAGE);
 }
 
 /** The calendar file, with the place name only; 404 once the event is over. */

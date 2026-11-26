@@ -16,7 +16,9 @@
     "rsvpWindowMinutes": 15,
     "rsvpMaxRequests": 60,
     "uploadWindowMinutes": 15,
-    "uploadMaxRequests": 200
+    "uploadMaxRequests": 200,
+    "previewWindowMinutes": 15,
+    "previewMaxRequests": 300
   },
   "auth": {
     "signUpEnabled": false

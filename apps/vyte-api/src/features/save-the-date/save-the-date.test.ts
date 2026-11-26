@@ -1,9 +1,12 @@
 import { db } from '@server/core/db/db';
 import { saveTheDateSchema } from '@vyte/contracts/events';
 import { eq } from 'drizzle-orm';
+import { readdir, rm } from 'node:fs/promises';
+import path from 'node:path';
 import sharp from 'sharp';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
+import { config } from '../../config/index.js';
 import { apiPrefix } from '../../shared/api.js';
 import { app, signedUpAgent } from '../../test/helpers.js';
 import { eventMembers, events } from '../events/events.table.js';
@@ -496,6 +499,162 @@ describe('save the date', () => {
       await request(app).get(`${link}/${imageLink.token}/cover`).expect(200);
       await makePast(withImage.id);
       await request(app).get(`${link}/${imageLink.token}/cover`).expect(404);
+    });
+  });
+
+  describe('GET /save-the-date/:token/preview', () => {
+    const binary = (
+      response: request.Response,
+      done: (error: Error | null, body: Buffer) => void,
+    ) => {
+      const chunks: Buffer[] = [];
+      response.on('data', (chunk: Buffer) => chunks.push(chunk));
+      response.on('end', () => done(null, Buffer.concat(chunks)));
+    };
+
+    const linkToken = async (agent: Agent, eventId: string) => (await turnOn(agent, eventId)).token;
+
+    async function upload(
+      agent: Agent,
+      eventId: string,
+      width = 400,
+      height = 200,
+      background = 'blue',
+    ) {
+      const file = await sharp({ create: { width, height, channels: 3, background } })
+        .png()
+        .toBuffer();
+      await agent.post(`${base}/${eventId}/images`).attach('images', file, 'a.png').expect(201);
+    }
+
+    async function expectPreview(token: string) {
+      const res = await request(app)
+        .get(`${link}/${token}/preview`)
+        .buffer(true)
+        .parse((response, done) => {
+          const chunks: Buffer[] = [];
+          response.on('data', (chunk: Buffer) => chunks.push(chunk));
+          response.on('end', () => done(null, Buffer.concat(chunks)));
+        })
+        .expect(200);
+      expect(res.headers['content-type']).toBe('image/jpeg');
+      expect(res.headers['cache-control']).toBe('private, no-cache');
+      const meta = await sharp(res.body as Buffer).metadata();
+      expect(meta).toMatchObject({ format: 'jpeg', width: 1200, height: 630 });
+    }
+
+    it('serves the cover as a 1200x630 JPEG without a session', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const event = await createEvent(ada);
+      await upload(ada, event.id);
+      const on = await turnOn(ada, event.id);
+      await expectPreview(on.token);
+    });
+
+    it('cuts a small and a portrait image to the same size', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const small = await createEvent(ada);
+      const portrait = await createEvent(ada);
+      await upload(ada, small.id, 50, 30);
+      await upload(ada, portrait.id, 200, 600);
+      await expectPreview((await turnOn(ada, small.id)).token);
+      await expectPreview((await turnOn(ada, portrait.id)).token);
+    });
+
+    it('answers 404 without an image', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const event = await createEvent(ada);
+      const on = await turnOn(ada, event.id);
+      await request(app).get(`${link}/${on.token}/preview`).expect(404);
+    });
+
+    it('answers 404 for unknown, malformed, renewed and turned-off links', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const renewedEvent = await createEvent(ada);
+      const offEvent = await createEvent(ada);
+      await upload(ada, renewedEvent.id);
+      await upload(ada, offEvent.id);
+      const renewed = await turnOn(ada, renewedEvent.id);
+      const off = await turnOn(ada, offEvent.id);
+      await ada.post(`${base}/${renewedEvent.id}/save-the-date/token`).expect(200);
+      await ada.delete(`${base}/${offEvent.id}/save-the-date`).expect(200);
+
+      for (const token of ['a'.repeat(43), 'abc', renewed.token, off.token]) {
+        await request(app).get(`${link}/${token}/preview`).expect(404);
+      }
+    });
+
+    it('answers 404 once the event is over', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const event = await createEvent(ada);
+      await upload(ada, event.id);
+      const on = await turnOn(ada, event.id);
+      await expectPreview(on.token);
+      await makePast(event.id);
+      await request(app).get(`${link}/${on.token}/preview`).expect(404);
+    });
+
+    it('answers 404 with the common message for bad tokens', async () => {
+      for (const token of ['a'.repeat(43), 'abc']) {
+        const res = await request(app).get(`${link}/${token}/preview`).expect(404);
+        expect(res.body).toEqual({ error: { message: 'Save the date not found' } });
+      }
+    });
+
+    it('answers two parallel requests with the same image', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const event = await createEvent(ada);
+      await upload(ada, event.id);
+      const token = await linkToken(ada, event.id);
+      const [one, two] = await Promise.all(
+        [1, 2].map(() => request(app).get(`${link}/${token}/preview`).buffer(true).parse(binary)),
+      );
+      expect(one!.status).toBe(200);
+      expect(two!.status).toBe(200);
+      expect((one!.body as Buffer).equals(two!.body as Buffer)).toBe(true);
+    });
+
+    it('answers 404, not 500, when the file is gone but the row is still there', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const event = await createEvent(ada);
+      await upload(ada, event.id);
+      const token = await linkToken(ada, event.id);
+      for (const file of await readdir(config.uploads.dir)) {
+        await rm(path.join(config.uploads.dir, file));
+      }
+      await request(app).get(`${link}/${token}/preview`).expect(404);
+    });
+
+    it('follows the cover when it is reordered or deleted, never a stale render', async () => {
+      const ada = await signedUpAgent('ada@example.com');
+      const event = await createEvent(ada);
+      await upload(ada, event.id, 400, 200, 'red');
+      await upload(ada, event.id, 400, 200, 'blue');
+      const token = await linkToken(ada, event.id);
+      const ids = (await ada.get(`${base}/${event.id}`)).body.event.images.map(
+        (image: { id: string }) => image.id,
+      ) as string[];
+      const fetchPreview = async () =>
+        (await request(app).get(`${link}/${token}/preview`).buffer(true).parse(binary).expect(200))
+          .body as Buffer;
+      const dominant = async (data: Buffer) => (await sharp(data).stats()).dominant;
+
+      const first = await fetchPreview();
+      expect((await dominant(first)).r).toBeGreaterThan(200);
+
+      await ada
+        .put(`${base}/${event.id}/images/order`)
+        .send({ ids: [ids[1], ids[0]] })
+        .expect(200);
+      const second = await fetchPreview();
+      expect((await dominant(second)).b).toBeGreaterThan(200);
+
+      await ada.delete(`${base}/${event.id}/images/${ids[1]}`).expect(200);
+      const third = await fetchPreview();
+      expect((await dominant(third)).r).toBeGreaterThan(200);
+
+      await ada.delete(`${base}/${event.id}/images/${ids[0]}`).expect(200);
+      await request(app).get(`${link}/${token}/preview`).expect(404);
     });
   });
 
