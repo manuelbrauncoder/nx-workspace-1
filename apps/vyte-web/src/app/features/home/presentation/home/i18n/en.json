@@ -1,8 +1,34 @@
 {
   "title": "Invitations that arrive",
   "description": "With Vyte you invite to your party: every guest gets a personal link, accepts or declines without an account and uploads their photos on the day itself.",
-  "eyebrow": "Vyte",
   "heading": "Invitations that arrive",
   "lead": "Create your event, send every guest a personal link and see at once who is coming. Your guests need no account for it.",
-  "signIn": "Sign in"
+  "signIn": "Sign in",
+  "preview": {
+    "greeting": "Hey Weber family!",
+    "title": "Anna turns 30",
+    "hosts": "Anna & Jonas want to celebrate with you.",
+    "date": "Sat, 14 March",
+    "time": "7 pm to 2 am",
+    "place": "Lake house",
+    "question": "Are you in?",
+    "accept": "I'm in",
+    "decline": "Can't make it",
+    "submit": "Send answer"
+  },
+  "steps": {
+    "heading": "From the announcement to the photos",
+    "saveTheDate": {
+      "heading": "Save the date",
+      "text": "Announce the date early. Your guests add it to their calendar with one tap."
+    },
+    "invitation": {
+      "heading": "Invitation with an answer",
+      "text": "Every guest accepts or declines through their own link and says whom they bring. You see the answers in the guest list."
+    },
+    "photos": {
+      "heading": "Photos of the evening",
+      "text": "Guests upload their photos through the QR code on their place card or at the photo stand. Only the hosts can see them."
+    }
+  }
 }

@@ -429,28 +429,28 @@ Schemas live in `vyte-contracts` (`legal.ts`). The start content comes from `app
 
 Built like `angular-base`: SSR, app shell with header and footer, sign-in of the `auth` feature, legal pages. No sign-up page.
 
-| Route                                                | Feature         | Guard        | Content                                                                     |
-| ---------------------------------------------------- | --------------- | ------------ | --------------------------------------------------------------------------- |
-| `/`                                                  | `home`          | –            | What vyte is and sign-in. Signed in: redirect to `/events`                  |
-| `/events`                                            | `events`        | `authGuard`  | Own events, upcoming and past, "Neues Event"                                |
-| `/events/new`                                        | `events`        | `authGuard`  | Form of a new event                                                         |
-| `/events/:id`                                        | `events`        | `authGuard`  | Event details, counts, links to guests and team                             |
-| `/events/:id/edit`                                   | `events`        | `authGuard`  | Form of the event, images                                                   |
-| `/events/:id/guests`                                 | `guests`        | `authGuard`  | Guest list with filter, add one or a list, edit, record answers, links, CSV |
-| `/events/:id/team`                                   | `team`          | `authGuard`  | Members, invite links and handover (owner), leave (editor)                  |
-| `/events/:id/photos`                                 | `photos`        | `authGuard`  | All photos, hide, delete, ZIP download                                      |
-| `/events/:id/print`                                  | `print`         | `authGuard`  | Place cards and the stand card, print layout without app shell              |
-| `/invite/:token`                                     | `invite`        | –            | Accept an invite: sign in or create an account right there                  |
-| `/rsvp/:token`                                       | `rsvp`          | –            | The guest page, without app shell, mobile first                             |
-| `/save-the-date/:token`                              | `save-the-date` | –            | Save the date, without app shell                                            |
-| `/photos/:token`                                     | `upload`        | –            | Upload page of a guest (place card)                                         |
-| `/stand/:token`                                      | `upload`        | –            | Upload page of the photo stand                                              |
-| `/welcome/:token`                                    | `auth`          | `guestGuard` | Create an account from an admin link                                        |
-| `/admin/users`                                       | `admin`         | `adminGuard` | Accounts, open account links, "Konto anlegen", tabs to the legal pages      |
-| `/admin/legal`                                       | `legal-editor`  | `adminGuard` | Legal pages with the time of the last change, edit or create each one       |
-| `/admin/legal/:page`                                 | `legal-editor`  | `adminGuard` | Editor of one legal page: German and English as rich text, save, view       |
-| `/sign-in`                                           | `auth`          | `guestGuard` | from `angular-base`                                                         |
-| `/imprint`, `/privacy`, `/accessibility`, `/cookies` | `legal`         | –            | The legal pages from the API, in the language of the page                   |
+| Route                                                | Feature         | Guard        | Content                                                                                                                                                                     |
+| ---------------------------------------------------- | --------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                                                  | `home`          | –            | What vyte is (the invitation in a phone, the steps from save the date to the photos) and sign-in, on the yellow ground of the guest pages. Signed in: redirect to `/events` |
+| `/events`                                            | `events`        | `authGuard`  | Own events, upcoming and past, "Neues Event"                                                                                                                                |
+| `/events/new`                                        | `events`        | `authGuard`  | Form of a new event                                                                                                                                                         |
+| `/events/:id`                                        | `events`        | `authGuard`  | Event details, counts, links to guests and team                                                                                                                             |
+| `/events/:id/edit`                                   | `events`        | `authGuard`  | Form of the event, images                                                                                                                                                   |
+| `/events/:id/guests`                                 | `guests`        | `authGuard`  | Guest list with filter, add one or a list, edit, record answers, links, CSV                                                                                                 |
+| `/events/:id/team`                                   | `team`          | `authGuard`  | Members, invite links and handover (owner), leave (editor)                                                                                                                  |
+| `/events/:id/photos`                                 | `photos`        | `authGuard`  | All photos, hide, delete, ZIP download                                                                                                                                      |
+| `/events/:id/print`                                  | `print`         | `authGuard`  | Place cards and the stand card, print layout without app shell                                                                                                              |
+| `/invite/:token`                                     | `invite`        | –            | Accept an invite: sign in or create an account right there                                                                                                                  |
+| `/rsvp/:token`                                       | `rsvp`          | –            | The guest page, without app shell, mobile first                                                                                                                             |
+| `/save-the-date/:token`                              | `save-the-date` | –            | Save the date, without app shell                                                                                                                                            |
+| `/photos/:token`                                     | `upload`        | –            | Upload page of a guest (place card)                                                                                                                                         |
+| `/stand/:token`                                      | `upload`        | –            | Upload page of the photo stand                                                                                                                                              |
+| `/welcome/:token`                                    | `auth`          | `guestGuard` | Create an account from an admin link                                                                                                                                        |
+| `/admin/users`                                       | `admin`         | `adminGuard` | Accounts, open account links, "Konto anlegen", tabs to the legal pages                                                                                                      |
+| `/admin/legal`                                       | `legal-editor`  | `adminGuard` | Legal pages with the time of the last change, edit or create each one                                                                                                       |
+| `/admin/legal/:page`                                 | `legal-editor`  | `adminGuard` | Editor of one legal page: German and English as rich text, save, view                                                                                                       |
+| `/sign-in`                                           | `auth`          | `guestGuard` | from `angular-base`                                                                                                                                                         |
+| `/imprint`, `/privacy`, `/accessibility`, `/cookies` | `legal`         | –            | The legal pages from the API, in the language of the page                                                                                                                   |
 
 - `/` is the only page in the sitemap; every other route has `index: false`
 - Dates through `localDate`, but in the event's `timeZone`, not the one of the browser (needs an option in `LocalDatePipe`); all-day events show dates only

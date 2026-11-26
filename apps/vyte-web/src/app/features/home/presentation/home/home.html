@@ -1,6 +1,63 @@
-<section class="home">
-  <p class="home__eyebrow" appUiText="small">{{ 'home.eyebrow' | t }}</p>
-  <h1 class="home__heading" appUiText="section">{{ 'home.heading' | t }}</h1>
-  <p class="home__lead" appUiText="lead">{{ 'home.lead' | t }}</p>
-  <a appUiButton variant="brand" size="lg" routerLink="/sign-in">{{ 'home.signIn' | t }}</a>
+<!-- The yellow ground and the shapes of the guest pages, so a guest knows where they are. -->
+<section class="home-hero" aria-labelledby="home-heading">
+  <div class="page-container home-hero__inner">
+    <div class="home-hero__text">
+      <h1 class="home-hero__heading" id="home-heading" appUiText="section">
+        {{ 'home.heading' | t }}
+      </h1>
+      <p class="home-hero__lead" appUiText="lead">{{ 'home.lead' | t }}</p>
+      <a class="home-hero__action" appUiButton size="lg" routerLink="/sign-in">
+        {{ 'home.signIn' | t }}
+      </a>
+    </div>
+
+    <!-- What a guest sees: the invitation in a phone. Decoration, the text says the same. -->
+    <div class="home-hero__visual" aria-hidden="true" inert>
+      <div class="home-hero__shape home-hero__shape--circle"></div>
+      <div class="home-hero__shape home-hero__shape--half"></div>
+      <div class="home-phone">
+        <div class="home-phone__screen">
+          <span class="home-phone__wordmark">vyte</span>
+          <p class="home-phone__greeting">{{ 'home.preview.greeting' | t }}</p>
+          <p class="home-phone__title">{{ 'home.preview.title' | t }}</p>
+          <p class="home-phone__hosts">{{ 'home.preview.hosts' | t }}</p>
+          <ul class="home-phone__chips">
+            <li class="home-phone__chip">{{ 'home.preview.date' | t }}</li>
+            <li class="home-phone__chip">{{ 'home.preview.time' | t }}</li>
+            <li class="home-phone__chip">{{ 'home.preview.place' | t }}</li>
+          </ul>
+          <div class="home-phone__card">
+            <p class="home-phone__question">{{ 'home.preview.question' | t }}</p>
+            <div class="home-phone__choices">
+              <span class="home-phone__choice home-phone__choice--chosen">
+                <span class="home-phone__radio"></span>
+                {{ 'home.preview.accept' | t }}
+              </span>
+              <span class="home-phone__choice">
+                <span class="home-phone__radio"></span>
+                {{ 'home.preview.decline' | t }}
+              </span>
+            </div>
+            <span class="home-phone__submit">{{ 'home.preview.submit' | t }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page-container home-steps" aria-labelledby="home-steps-heading">
+  <h2 class="home-steps__heading" id="home-steps-heading" appUiText="title">
+    {{ 'home.steps.heading' | t }}
+  </h2>
+  <!-- `role="list"`: without a list style Safari drops the list role. -->
+  <ol class="home-steps__list" role="list">
+    @for (step of _steps; track step.heading; let index = $index) {
+      <li class="home-steps__step">
+        <span class="home-steps__number" aria-hidden="true">{{ index + 1 }}</span>
+        <h3 class="home-steps__step-heading" appUiText="heading">{{ step.heading | t }}</h3>
+        <p class="home-steps__text">{{ step.text | t }}</p>
+      </li>
+    }
+  </ol>
 </section>

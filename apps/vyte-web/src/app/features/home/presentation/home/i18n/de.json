@@ -1,8 +1,34 @@
 {
   "title": "Einladungen, die ankommen",
   "description": "Mit Vyte lädst du zu deinem Fest ein: jeder Gast bekommt einen persönlichen Link, sagt ohne Konto zu oder ab und lädt am Tag selbst seine Fotos hoch.",
-  "eyebrow": "Vyte",
   "heading": "Einladungen, die ankommen",
   "lead": "Lege dein Event an, schick jedem Gast einen persönlichen Link und sieh sofort, wer kommt. Ein Konto brauchen deine Gäste dafür nicht.",
-  "signIn": "Anmelden"
+  "signIn": "Anmelden",
+  "preview": {
+    "greeting": "Hey Familie Weber!",
+    "title": "Anna wird 30",
+    "hosts": "Anna & Jonas wollen mit euch feiern.",
+    "date": "Sa., 14. März",
+    "time": "19 bis 2 Uhr",
+    "place": "Gartenhaus am See",
+    "question": "Seid ihr dabei?",
+    "accept": "Bin dabei",
+    "decline": "Klappt nicht",
+    "submit": "Antwort senden"
+  },
+  "steps": {
+    "heading": "Von der Ankündigung bis zu den Fotos",
+    "saveTheDate": {
+      "heading": "Save the Date",
+      "text": "Kündige den Termin früh an. Deine Gäste legen ihn mit einem Tipp in ihren Kalender."
+    },
+    "invitation": {
+      "heading": "Einladung mit Antwort",
+      "text": "Jeder Gast sagt über seinen eigenen Link zu oder ab und sagt, wen er mitbringt. Du siehst die Antworten in der Gästeliste."
+    },
+    "photos": {
+      "heading": "Fotos vom Abend",
+      "text": "Über den QR-Code auf der Platzkarte oder am Fotoaufsteller laden Gäste ihre Fotos hoch. Sehen können sie nur die Gastgeber."
+    }
+  }
 }
