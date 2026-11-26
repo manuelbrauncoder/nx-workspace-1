@@ -6,7 +6,15 @@
   </div>
 
   <header class="guest-shell__header">
-    <span class="guest-shell__wordmark">{{ _wordmark }}</span>
+    <!-- The ink variant of the logo, the yellow tile would vanish on the yellow ground. -->
+    <img
+      class="guest-shell__logo"
+      [alt]="_appName"
+      height="28"
+      ngSrc="/logo-full-on-brand.svg"
+      priority
+      width="116"
+    />
   </header>
 
   <main class="guest-shell__main" id="main" tabindex="-1">

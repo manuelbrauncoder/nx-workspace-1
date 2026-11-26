@@ -1,3 +1,4 @@
+import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -17,7 +18,7 @@ interface HomeStep {
  */
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, TranslatePipe, UiButton, UiText],
+  imports: [NgOptimizedImage, RouterLink, TranslatePipe, UiButton, UiText],
   styleUrl: './home.scss',
   templateUrl: './home.html',
 })

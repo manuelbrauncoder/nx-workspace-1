@@ -5,12 +5,12 @@
 .app-logo {
   display: inline-flex;
   border-radius: calc(var(--radius) - 2px);
-  color: var(--foreground);
-  font-family: var(--font-heading);
-  font-size: 1.375rem;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
+
+  img {
+    display: block;
+    width: auto;
+    height: 1.75rem;
+  }
 
   &:focus-visible {
     outline: 2px solid var(--primary);

@@ -85,12 +85,10 @@
   padding-inline: 0.25rem;
 }
 
-.guest-shell__wordmark {
-  font-family: var(--font-heading);
-  font-size: 1.375rem;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
+.guest-shell__logo {
+  display: block;
+  width: auto;
+  height: 1.75rem;
 }
 
 .guest-shell__main {

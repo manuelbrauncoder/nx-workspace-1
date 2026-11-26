@@ -21,13 +21,15 @@ describe('GuestShell', () => {
     return { element };
   }
 
-  it('shows the wordmark in lower case, and it is no link', async () => {
+  it('shows the logo with the name of the app as its text, and it is no link', async () => {
     const { element } = await render();
 
-    const wordmark = element.querySelector('header .guest-shell__wordmark');
-    expect(wordmark?.textContent?.trim()).toBe('vyte');
+    const logo = element.querySelector('header img.guest-shell__logo');
+    expect(logo?.getAttribute('alt')).toBe('Vyte');
+    expect(logo?.getAttribute('src')).toBe('/logo-full-on-brand.svg');
     expect(element.querySelector('header a')).toBeNull();
-    expect(wordmark?.closest('a')).toBeNull();
+    expect(logo?.closest('a')).toBeNull();
+    expect(element.querySelector('header')?.textContent?.trim()).toBe('');
   });
 
   it('has no navigation and no sign-in apart from the legal links', async () => {

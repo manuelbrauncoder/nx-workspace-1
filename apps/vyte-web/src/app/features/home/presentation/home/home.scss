@@ -138,12 +138,12 @@
   color: var(--brand-foreground);
 }
 
-.home-phone__wordmark {
+.home-phone__logo {
+  // Left, as in the header of the real guest page.
+  align-self: flex-start;
+  width: auto;
+  height: 1rem;
   margin-bottom: 0.5rem;
-  font-family: var(--font-heading);
-  font-size: 1rem;
-  font-weight: 800;
-  line-height: 1;
 }
 
 .home-phone__greeting {
