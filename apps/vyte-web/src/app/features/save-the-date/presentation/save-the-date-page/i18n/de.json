@@ -14,5 +14,10 @@
   "when": "Datum und Ort",
   "time": "{{ time }} Uhr",
   "defaultNote": "Halte dir den Termin frei, die Einladung folgt.",
-  "calendar": "Zum Kalender hinzufügen"
+  "calendar": "Zum Kalender hinzufügen",
+  "seo": {
+    "description": "Save the date: {{ date }}. {{ note }}",
+    "descriptionAt": "Save the date: {{ date }}, {{ place }}. {{ note }}",
+    "imageAlt": "Titelbild: {{ title }}"
+  }
 }

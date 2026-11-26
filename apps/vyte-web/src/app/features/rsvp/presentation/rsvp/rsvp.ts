@@ -14,6 +14,7 @@ import {
 import { form, FormField, FormRoot, max, maxLength, min, required } from '@angular/forms/signals';
 import { injectResponseStatus } from '@core/http/response-status';
 import { I18nService } from '@core/i18n/i18n.service';
+import { formatLocalDate } from '@core/i18n/local-date';
 import { LocalDatePipe } from '@core/i18n/local-date.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { injectPageSeo } from '@core/seo/inject-page-seo';
@@ -173,9 +174,31 @@ export class Rsvp {
         this._setResponseStatus(404);
       }
     });
+    // The preview of the shared link: date and place, never the name of the guest or the
+    // address, and the cover when the event has one.
     injectPageSeo(() => {
       const invitation = this._store.invitation();
-      return invitation && { title: invitation.event.title };
+      if (!invitation || invitation.past) {
+        return invitation && { title: invitation.event.title };
+      }
+      const { event } = invitation;
+      const date = formatLocalDate(
+        event.startsAt,
+        this._i18n.locale(),
+        'weekdayDate',
+        event.timeZone,
+      );
+      const preview = event.images.length > 0 ? this._store.previewImage() : undefined;
+      return {
+        title: event.title,
+        description: event.locationName
+          ? this._i18n.translate('rsvp.seo.descriptionAt', { date, place: event.locationName })
+          : this._i18n.translate('rsvp.seo.description', { date }),
+        image: preview && {
+          ...preview,
+          alt: this._i18n.translate('rsvp.seo.imageAlt', { title: event.title }),
+        },
+      };
     });
   }
 

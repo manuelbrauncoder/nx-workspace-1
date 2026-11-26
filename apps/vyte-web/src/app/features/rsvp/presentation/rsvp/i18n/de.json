@@ -68,5 +68,10 @@
     "heading": "Antworten ist nicht mehr möglich",
     "lead": "Die Frist ist abgelaufen. Melde dich direkt bei den Gastgebern.",
     "answerKept": "Die Frist ist abgelaufen, deine Antwort bleibt so stehen."
+  },
+  "seo": {
+    "description": "{{ date }}. Über diesen Link sagst du zu oder ab.",
+    "descriptionAt": "{{ date }}, {{ place }}. Über diesen Link sagst du zu oder ab.",
+    "imageAlt": "Titelbild: {{ title }}"
   }
 }

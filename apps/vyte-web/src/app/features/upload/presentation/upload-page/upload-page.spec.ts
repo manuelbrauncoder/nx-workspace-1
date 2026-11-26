@@ -3,6 +3,7 @@ import { RESPONSE_INIT, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Failure } from '@core/failure/failure';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
+import { SeoService } from '@core/seo/seo.service';
 import { AsyncState, failed, idle, loading, success } from '@core/state/async-state';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
 import { QueuedPhoto, UploadStore } from '../../application/upload.store';
@@ -52,6 +53,7 @@ describe('UploadPage', () => {
     deletePhoto: vi.fn(),
   };
   const confirm = vi.fn();
+  const setPage = vi.fn();
 
   beforeEach(() => {
     vi.resetAllMocks();
@@ -88,6 +90,7 @@ describe('UploadPage', () => {
             deleteState: signal(options.deleteState ?? idle()),
           },
         },
+        { provide: SeoService, useValue: { setPage } },
         { provide: UiConfirmDialogService, useValue: { confirm } },
         { provide: RESPONSE_INIT, useValue: response },
         { provide: PRECONNECT_CHECK_BLOCKLIST, useValue: 'https://api.example.com' },
@@ -133,6 +136,15 @@ describe('UploadPage', () => {
     await render({ kind: 'stand' });
 
     expect(store.select).toHaveBeenCalledWith({ kind: 'stand', token: 'tok' });
+  });
+
+  it('sets title and description of the page from the event', async () => {
+    await render();
+
+    expect(setPage).toHaveBeenLastCalledWith({
+      title: 'Fotos · Sommerfest',
+      description: 'Lade hier deine Fotos von Sommerfest hoch. Sehen können sie nur die Gastgeber.',
+    });
   });
 
   describe('headings', () => {

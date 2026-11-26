@@ -1,6 +1,7 @@
 import { computed, inject, Service, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { asyncState } from '@core/state/async-state';
+import type { PreviewImage } from '../domain/save-the-date';
 import { SaveTheDateUseCase } from '../domain/save-the-date.usecase';
 
 /**
@@ -35,6 +36,12 @@ export class SaveTheDateStore {
   coverUrl(): string | undefined {
     const token = this._token();
     return token ? this._useCase.coverUrl(token) : undefined;
+  }
+
+  /** Preview image of the shared link; the page names it only while the event has a cover. */
+  previewImage(): PreviewImage | undefined {
+    const token = this._token();
+    return token ? this._useCase.previewImage(token) : undefined;
   }
 
   calendarUrl(): string | undefined {

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { AppConfigService } from '@core/config/app-config';
 import { map, Observable } from 'rxjs';
+import { PreviewImage, previewImage } from '../preview-image';
 import { Invitation, RsvpAnswer } from './invitation';
 import { InvitationDtoMapper } from './invitation-dto.mapper';
 import { InvitationResponseDto } from './invitation.dto';
@@ -33,6 +34,11 @@ export class RsvpRepository {
   /** Address of an image of the event, for an `<img>`. */
   imageUrl(token: string, imageId: string): string {
     return `${this._url(token)}/images/${encodeURIComponent(imageId)}`;
+  }
+
+  /** Preview image of the shared link, cut from the cover. Only there while the event has one. */
+  previewImage(token: string): PreviewImage {
+    return previewImage(`${this._url(token)}/preview`);
   }
 
   /** Address of the event as a calendar file (`.ics`), for a link. */

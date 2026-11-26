@@ -109,6 +109,9 @@ export class UploadPage {
       return (
         upload && {
           title: this._i18n.translate('uploadPage.titleFor', { title: upload.eventTitle }),
+          description: this._i18n.translate('uploadPage.seo.description', {
+            title: upload.eventTitle,
+          }),
         }
       );
     });

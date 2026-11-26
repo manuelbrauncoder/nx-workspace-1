@@ -2,6 +2,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { Component, computed, effect, inject, input } from '@angular/core';
 import { injectResponseStatus } from '@core/http/response-status';
 import { I18nService } from '@core/i18n/i18n.service';
+import { formatLocalDate } from '@core/i18n/local-date';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { injectPageSeo } from '@core/seo/inject-page-seo';
 import { AsyncContent } from '@shared/async-content/async-content';
@@ -58,9 +59,35 @@ export class SaveTheDatePage {
         this._setResponseStatus(404);
       }
     });
+    // The preview of the shared link: date, place name and note, never the address, and the
+    // cover when the event has one.
     injectPageSeo(() => {
       const saveTheDate = this._store.saveTheDate();
-      return saveTheDate && { title: saveTheDate.title };
+      if (!saveTheDate || saveTheDate.past) {
+        return saveTheDate && { title: saveTheDate.title };
+      }
+      const date = formatLocalDate(
+        saveTheDate.startsAt,
+        this._i18n.locale(),
+        'weekdayDate',
+        saveTheDate.timeZone,
+      );
+      const note = saveTheDate.note ?? this._i18n.translate('saveTheDatePage.defaultNote');
+      const preview = saveTheDate.cover ? this._store.previewImage() : undefined;
+      return {
+        title: saveTheDate.title,
+        description: saveTheDate.locationName
+          ? this._i18n.translate('saveTheDatePage.seo.descriptionAt', {
+              date,
+              place: saveTheDate.locationName,
+              note,
+            })
+          : this._i18n.translate('saveTheDatePage.seo.description', { date, note }),
+        image: preview && {
+          ...preview,
+          alt: this._i18n.translate('saveTheDatePage.seo.imageAlt', { title: saveTheDate.title }),
+        },
+      };
     });
   }
 }

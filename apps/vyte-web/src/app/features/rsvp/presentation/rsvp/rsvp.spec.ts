@@ -2,6 +2,7 @@ import { ApplicationRef, signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Failure } from '@core/failure/failure';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
+import { SeoService } from '@core/seo/seo.service';
 import { AsyncState, failed, idle, loading, success } from '@core/state/async-state';
 import { UiDialogService } from '@shared/ui/dialog/dialog.service';
 import { RsvpStore } from '../../application/rsvp.store';
@@ -49,6 +50,8 @@ const invitation = (
   guest: { ...GUEST, ...guest },
 });
 
+const PREVIEW = { url: 'https://api.example.com/rsvp/tok/preview', width: 1200, height: 630 };
+
 const IMAGES = [
   { id: 'i1', width: 1600, height: 900, position: 0 },
   { id: 'i2', width: 800, height: 600, position: 1 },
@@ -60,6 +63,7 @@ describe('Rsvp', () => {
   const reload = vi.fn();
   const resetAnswer = vi.fn();
   const answer = vi.fn();
+  const setPage = vi.fn();
   const open = vi.fn();
   const settle = () => TestBed.inject(ApplicationRef).whenStable();
 
@@ -82,10 +86,12 @@ describe('Rsvp', () => {
             invitation: invitationSignal,
             invitationState: signal(options.state ?? (current ? success() : loading())),
             answerState: signal(options.answerState ?? idle()),
+            previewImage: () => PREVIEW,
             imageUrl: (id: string) => `https://api.example.com/rsvp/tok/images/${id}`,
             calendarUrl: () => 'https://api.example.com/rsvp/tok/calendar',
           },
         },
+        { provide: SeoService, useValue: { setPage } },
         { provide: UiDialogService, useValue: { open } },
       ],
     });
@@ -135,6 +141,41 @@ describe('Rsvp', () => {
     await render(undefined);
 
     expect(select).toHaveBeenCalledWith('tok');
+  });
+
+  describe('link preview', () => {
+    it('names title, date, place and the cover of an upcoming event with images', async () => {
+      await render(invitation({ images: IMAGES }));
+
+      expect(setPage).toHaveBeenLastCalledWith({
+        title: 'Sommerfest',
+        description: expect.stringMatching(
+          /^.*2027.*, Alte Mühle\. Über diesen Link sagst du zu oder ab\.$/,
+        ),
+        image: { ...PREVIEW, alt: 'Titelbild: Sommerfest' },
+      });
+    });
+
+    it('leaves out the place without one, and never names guest or address', async () => {
+      await render(invitation({ locationName: null }));
+
+      const page = setPage.mock.lastCall![0];
+      expect(page.description).toMatch(/2027\. Über diesen Link sagst du zu oder ab\.$/);
+      expect(page.description).not.toContain('Mühlweg');
+      expect(page.description).not.toContain('Ada');
+    });
+
+    it('has no image when the event has none', async () => {
+      await render(invitation({ images: [] }));
+
+      expect(setPage.mock.lastCall![0].image).toBeUndefined();
+    });
+
+    it('sets the title only for a past event', async () => {
+      await render({ past: true, event: { title: 'Sommerfest' } });
+
+      expect(setPage).toHaveBeenLastCalledWith({ title: 'Sommerfest' });
+    });
   });
 
   describe('invitation without an answer', () => {

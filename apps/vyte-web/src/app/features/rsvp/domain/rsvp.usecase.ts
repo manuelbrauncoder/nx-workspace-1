@@ -1,4 +1,5 @@
 import { inject, Service } from '@angular/core';
+import type { PreviewImage } from '@api/preview-image';
 import { RsvpRepository } from '@api/rsvp/rsvp.repository';
 import { Observable } from 'rxjs';
 import { Invitation, RsvpAnswer } from './invitation';
@@ -22,6 +23,10 @@ export class RsvpUseCase {
 
   imageUrl(token: string, imageId: string): string {
     return this._repository.imageUrl(token, imageId);
+  }
+
+  previewImage(token: string): PreviewImage {
+    return this._repository.previewImage(token);
   }
 
   calendarUrl(token: string): string {
