@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import {
   afterNextRender,
   Component,
@@ -6,6 +7,7 @@ import {
   inject,
   Injector,
   linkedSignal,
+  signal,
   viewChild,
   viewChildren,
 } from '@angular/core';
@@ -144,6 +146,7 @@ const fromModel = (model: ProjectsFormModel): ProjectsSection => ({
 export class ProjectsForm {
   private readonly _store = inject(PortfolioEditorStore);
   private readonly _injector = inject(Injector);
+  private readonly _document = inject(DOCUMENT);
   private readonly _i18n = inject(I18nService);
   private readonly _confirmDialog = inject(UiConfirmDialogService);
   private readonly _save = injectSectionSave('projects');
@@ -161,8 +164,15 @@ export class ProjectsForm {
   private readonly _addButton = viewChild.required('addButton', {
     read: ElementRef<HTMLButtonElement>,
   });
+  /** The header button of every project, in project order. */
+  private readonly _toggles = viewChildren('toggle', { read: ElementRef<HTMLButtonElement> });
+  /** The screenshots of every project, in project order. */
+  private readonly _imagesFields = viewChildren(ImagesField);
   /** The "add tag" button of every project, in project order. */
   private readonly _addTagButtons = viewChildren('addTag', { read: ElementRef<HTMLButtonElement> });
+
+  /** The one project that is open, `null` while all are closed. */
+  private readonly _openIndex = signal<number | null>(null);
 
   private readonly _section = computed(() => this._store.portfolio()?.projects);
   /** Starts from the stored section and follows it after a save. */
@@ -198,24 +208,49 @@ export class ProjectsForm {
         });
       });
     },
-    { submission: { action: () => this._save(fromModel(this._model())) } },
+    {
+      submission: {
+        action: () => this._save(fromModel(this._model())),
+        onInvalid: () => this._showFirstError(),
+      },
+    },
   );
 
+  private _toggle(index: number): void {
+    this._openIndex.update((open) => (open === index ? null : index));
+  }
+
+  /** A new project opens right away, the cursor waits in its name. */
   private _add(): void {
+    const index = this._model().items.length;
     this._model.update((model) => ({
       ...model,
       items: [...model.items, toProjectModel(undefined)],
     }));
+    this._openIndex.set(index);
+    afterNextRender(() => this._projectsForm.items[index]?.title().focusBoundControl(), {
+      injector: this._injector,
+    });
   }
 
+  /** The open project stays open while it moves. */
   private _move(index: number, offset: -1 | 1): void {
+    const target = index + offset;
+    if (target < 0 || target >= this._model().items.length) {
+      return;
+    }
     this._model.update((model) => ({ ...model, items: moveItem(model.items, index, offset) }));
+    this._openIndex.update((open) => (open === index ? target : open === target ? index : open));
   }
 
   private async _remove(index: number): Promise<void> {
     const number = index + 1;
+    const title = this._model().items[index]?.title;
+    const name = title
+      ? this._i18n.translate('sectionEditor.projects.itemNamed', { number, title })
+      : this._i18n.translate('sectionEditor.projects.item', { number });
     const confirmed = await this._confirmDialog.confirm({
-      heading: this._i18n.translate('sectionEditor.projects.removeHeading', { number }),
+      heading: this._i18n.translate('sectionEditor.projects.removeHeading', { name }),
       description: this._i18n.translate('sectionEditor.list.removeDescription'),
       confirmLabel: this._i18n.translate('sectionEditor.list.removeConfirm'),
       variant: 'destructive',
@@ -227,8 +262,46 @@ export class ProjectsForm {
       ...model,
       items: model.items.filter((_item, position) => position !== index),
     }));
-    // The removed project took the focus with it.
-    this._addButton().nativeElement.focus();
+    this._openIndex.update((open) =>
+      open === null || open === index ? null : open > index ? open - 1 : open,
+    );
+    // The removed project took the focus with it. After the render, because at the limit the add
+    // button is still disabled until then.
+    afterNextRender(() => this._addButton().nativeElement.focus(), { injector: this._injector });
+  }
+
+  /**
+   * A closed project hides its errors, so saving with one opens the first project that has one
+   * and puts the cursor on the first wrong field. Errors of the section itself come first.
+   */
+  private _showFirstError(): void {
+    const form = this._projectsForm;
+    if (form.headline().invalid() || form.description().invalid()) {
+      form().errorSummary()[0]?.fieldTree().focusBoundControl();
+      return;
+    }
+    const index = this._model().items.findIndex((_item, position) =>
+      form.items[position]().invalid(),
+    );
+    if (index < 0) {
+      return;
+    }
+    this._openIndex.set(index);
+    afterNextRender(
+      () => {
+        const toggle = this._toggles()[index]?.nativeElement;
+        form.items[index]().errorSummary()[0]?.fieldTree().focusBoundControl();
+        // "No screenshot" has no field of its own: the button to add one names the error.
+        const item = toggle?.closest('.projects-form__item');
+        if (!item?.contains(this._document.activeElement)) {
+          this._imagesFields()[index]?.focus();
+        }
+        if (!item?.contains(this._document.activeElement)) {
+          toggle?.focus();
+        }
+      },
+      { injector: this._injector },
+    );
   }
 
   private _addTag(projectIndex: number): void {

@@ -379,5 +379,285 @@ describe('SectionEditor', () => {
       const saved = updateSection.mock.calls[0][1] as ProjectsSection;
       expect(saved.items[0].images.map((image) => image.id)).toEqual(['m2', 'm1']);
     });
+
+    describe('accordion', () => {
+      const THREE: Portfolio = {
+        ...EMPTY,
+        projects: {
+          ...PROJECTS,
+          items: ['Kochwelt', 'Wetter', 'Notizen'].map((title) => ({
+            ...PROJECTS.items[0],
+            title,
+          })),
+        },
+      };
+
+      const toggles = (element: HTMLElement) =>
+        Array.from(element.querySelectorAll<HTMLButtonElement>('.projects-form__toggle'));
+      const panels = (element: HTMLElement) =>
+        Array.from(element.querySelectorAll<HTMLElement>('.projects-form__panel'));
+      /** Which projects are open, by position. */
+      const openOnes = (element: HTMLElement) =>
+        toggles(element).flatMap((toggle, index) =>
+          toggle.getAttribute('aria-expanded') === 'true' ? [index] : [],
+        );
+      const titles = (element: HTMLElement) =>
+        toggles(element).map((toggle) =>
+          toggle.querySelector('.projects-form__title')?.textContent?.trim(),
+        );
+      const click = async (button: HTMLElement) => {
+        button.click();
+        await settle();
+      };
+
+      it('shows stored projects closed, with the title as the button text', async () => {
+        const element = await render('projects', THREE);
+
+        expect(titles(element)).toEqual(['Kochwelt', 'Wetter', 'Notizen']);
+        for (const toggle of toggles(element)) {
+          expect(toggle.getAttribute('aria-expanded')).toBe('false');
+        }
+        for (const panel of panels(element)) {
+          expect(panel.hidden).toBe(true);
+        }
+        expect(toggles(element)[0].getAttribute('aria-controls')).toBe(panels(element)[0].id);
+      });
+
+      it('falls back to "Projekt n" while a project has no title', async () => {
+        const element = await render('projects');
+
+        await addProject(element);
+
+        expect(titles(element)).toEqual(['Projekt 1']);
+      });
+
+      it('opens a project on click and closes it on a second click', async () => {
+        const element = await render('projects', THREE);
+
+        await click(toggles(element)[1]);
+        expect(openOnes(element)).toEqual([1]);
+        expect(panels(element).map((panel) => panel.hidden)).toEqual([true, false, true]);
+
+        await click(toggles(element)[1]);
+        expect(openOnes(element)).toEqual([]);
+        expect(panels(element)[1].hidden).toBe(true);
+      });
+
+      it('keeps only one project open', async () => {
+        const element = await render('projects', THREE);
+
+        await click(toggles(element)[0]);
+        await click(toggles(element)[2]);
+
+        expect(openOnes(element)).toEqual([2]);
+        expect(panels(element).map((panel) => panel.hidden)).toEqual([true, true, false]);
+      });
+
+      it('opens a new project and puts the cursor in its title', async () => {
+        const element = await render('projects', THREE);
+        await click(toggles(element)[0]);
+
+        await addProject(element);
+
+        expect(openOnes(element)).toEqual([3]);
+        expect(document.activeElement).toBe(control(panels(element)[3], 'Name des Projekts'));
+      });
+
+      it('keeps an open project open at its new position when it moves down', async () => {
+        const element = await render('projects', THREE);
+        await click(toggles(element)[0]);
+
+        await click(
+          element.querySelector<HTMLElement>(
+            'button[aria-label="Projekt 1: Kochwelt nach unten"]',
+          )!,
+        );
+
+        expect(titles(element)).toEqual(['Wetter', 'Kochwelt', 'Notizen']);
+        expect(openOnes(element)).toEqual([1]);
+      });
+
+      it('keeps an open project open at its new position when it moves up', async () => {
+        const element = await render('projects', THREE);
+        await click(toggles(element)[2]);
+
+        await click(
+          element.querySelector<HTMLElement>('button[aria-label="Projekt 3: Notizen nach oben"]')!,
+        );
+
+        expect(titles(element)).toEqual(['Kochwelt', 'Notizen', 'Wetter']);
+        expect(openOnes(element)).toEqual([1]);
+      });
+
+      it('follows the open project when another one moves past it', async () => {
+        const element = await render('projects', THREE);
+        await click(toggles(element)[1]);
+
+        await click(
+          element.querySelector<HTMLElement>(
+            'button[aria-label="Projekt 1: Kochwelt nach unten"]',
+          )!,
+        );
+
+        expect(titles(element)).toEqual(['Wetter', 'Kochwelt', 'Notizen']);
+        expect(openOnes(element)).toEqual([0]);
+      });
+
+      it('keeps the right project open when one before it is removed', async () => {
+        confirm.mockResolvedValue(true);
+        const element = await render('projects', THREE);
+        await click(toggles(element)[2]);
+
+        await click(
+          element.querySelector<HTMLElement>('button[aria-label="Projekt 1: Kochwelt entfernen"]')!,
+        );
+
+        expect(titles(element)).toEqual(['Wetter', 'Notizen']);
+        expect(openOnes(element)).toEqual([1]);
+      });
+
+      it('keeps the open project open when one after it is removed', async () => {
+        confirm.mockResolvedValue(true);
+        const element = await render('projects', THREE);
+        await click(toggles(element)[0]);
+
+        await click(
+          element.querySelector<HTMLElement>('button[aria-label="Projekt 3: Notizen entfernen"]')!,
+        );
+
+        expect(titles(element)).toEqual(['Kochwelt', 'Wetter']);
+        expect(openOnes(element)).toEqual([0]);
+      });
+
+      it('closes all projects when the open one is removed', async () => {
+        confirm.mockResolvedValue(true);
+        const element = await render('projects', THREE);
+        await click(toggles(element)[1]);
+
+        await click(
+          element.querySelector<HTMLElement>('button[aria-label="Projekt 2: Wetter entfernen"]')!,
+        );
+
+        expect(titles(element)).toEqual(['Kochwelt', 'Notizen']);
+        expect(openOnes(element)).toEqual([]);
+      });
+
+      it('keeps the open project open when removing is cancelled', async () => {
+        confirm.mockResolvedValue(false);
+        const element = await render('projects', THREE);
+        await click(toggles(element)[1]);
+
+        await click(
+          element.querySelector<HTMLElement>('button[aria-label="Projekt 1: Kochwelt entfernen"]')!,
+        );
+
+        expect(titles(element)).toEqual(['Kochwelt', 'Wetter', 'Notizen']);
+        expect(openOnes(element)).toEqual([1]);
+      });
+
+      it('opens the project with an error, marks it and does not save', async () => {
+        const element = await render('projects', THREE);
+        // The title of the second project is emptied while it is open, then it is closed again.
+        await click(toggles(element)[1]);
+        type(control(panels(element)[1], 'Name des Projekts'), '');
+        await settle();
+        await click(toggles(element)[1]);
+        expect(openOnes(element)).toEqual([]);
+
+        await submit(element);
+        await settle();
+
+        expect(updateSection).not.toHaveBeenCalled();
+        expect(openOnes(element)).toEqual([1]);
+        const invalid = element.querySelectorAll('.projects-form__invalid');
+        expect(invalid).toHaveLength(1);
+        expect(invalid[0].textContent?.trim()).toBe('Fehler');
+        expect(toggles(element)[1].contains(invalid[0])).toBe(true);
+      });
+
+      it('puts the cursor on the wrong field of the project it opens', async () => {
+        const element = await render('projects', THREE);
+        await click(toggles(element)[1]);
+        type(control(panels(element)[1], 'Name des Projekts'), '');
+        await settle();
+        await click(toggles(element)[1]);
+
+        await submit(element);
+        await settle();
+
+        expect(document.activeElement).toBe(control(panels(element)[1], 'Name des Projekts'));
+        await expect(element).toBeAccessible();
+      });
+
+      it('puts the cursor on the button to add a screenshot when the project has none', async () => {
+        const element = await render('projects', THREE);
+        await click(toggles(element)[1]);
+        const panel = panels(element)[1];
+        for (let removed = 0; removed < 2; removed++) {
+          panel
+            .querySelector<HTMLButtonElement>('button[aria-label="Screenshot 1 entfernen"]')!
+            .click();
+          await settle();
+        }
+        await click(toggles(element)[1]);
+
+        await submit(element);
+        await settle();
+
+        expect(updateSection).not.toHaveBeenCalled();
+        expect(openOnes(element)).toEqual([1]);
+        expect(panels(element)[1].contains(document.activeElement)).toBe(true);
+        expect(document.activeElement?.textContent?.trim()).toBe('Screenshot hinzufügen');
+      });
+
+      it('opens the first project with an error when several have one', async () => {
+        const element = await render('projects', THREE);
+        for (const index of [2, 1]) {
+          await click(toggles(element)[index]);
+          type(control(panels(element)[index], 'Name des Projekts'), '');
+          await settle();
+        }
+        await click(toggles(element)[1]);
+
+        await submit(element);
+        await settle();
+
+        expect(updateSection).not.toHaveBeenCalled();
+        expect(openOnes(element)).toEqual([1]);
+      });
+
+      it('shows no error marker while the projects are valid', async () => {
+        const element = await render('projects', THREE);
+
+        await submit(element);
+
+        expect(element.querySelector('.projects-form__invalid')).toBeNull();
+        expect(updateSection).toHaveBeenCalledOnce();
+      });
+
+      it('shows the draft badge in the header of a closed project', async () => {
+        const element = await render('projects', {
+          ...EMPTY,
+          projects: {
+            ...PROJECTS,
+            items: [PROJECTS.items[0], { ...PROJECTS.items[0], title: 'Wetter', published: false }],
+          },
+        });
+
+        const badges = toggles(element).map((toggle) =>
+          toggle.querySelector('.projects-form__draft')?.textContent?.trim(),
+        );
+
+        expect(badges).toEqual([undefined, 'Entwurf']);
+        expect(openOnes(element)).toEqual([]);
+      });
+
+      it('passes the accessibility check with one project open', async () => {
+        const element = await render('projects', THREE);
+        await click(toggles(element)[0]);
+
+        await expect(element).toBeAccessible();
+      });
+    });
   });
 });

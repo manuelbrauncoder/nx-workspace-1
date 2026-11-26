@@ -1,3 +1,5 @@
+@use 'styles/abstracts' as *;
+
 :host {
   display: block;
 }
@@ -8,35 +10,114 @@
   gap: 1.5rem;
 }
 
-// The actions sit in the top right corner, the legend has to stay the first child.
+// A project is a box: closed only its header row, open the fields below it.
 .projects-form__item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin: 0;
-  padding: 1.25rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background-color: var(--surface);
 }
 
-.projects-form__legend {
+// On a phone the actions drop to their own line, so the name keeps the room.
+.projects-form__header {
   display: flex;
-  float: left;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
-  // Stays clear of the actions in the corner (three 44px buttons), the draft badge wraps instead.
-  max-width: calc(100% - 10.5rem);
-  padding: 0;
-  font-weight: 700;
+  padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+}
+
+.projects-form__heading {
+  flex: 1 1 12rem;
+  min-width: 0;
+  margin: 0;
 }
 
 .projects-form__actions {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  margin-inline-start: auto;
+}
+
+// The whole row opens the project, not only the chevron.
+.projects-form__toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius);
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+
+  &:hover {
+    background-color: var(--accent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+.projects-form__chevron {
+  flex: none;
+  transition: transform 150ms ease;
+
+  &--open {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.projects-form__name {
+  display: flex;
+  flex: 1 1 8rem;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+// A long name wraps instead of pushing the badges out of the box.
+.projects-form__title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.projects-form__invalid {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--destructive);
+}
+
+.projects-form__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 1.25rem;
+  border: 0;
+  border-top: 1px solid var(--border);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+// The actions of a tag sit in its top right corner from `sm`, the legend has to stay the first
+// child. Narrower, they follow the legend in the flow, so the legend keeps the whole line.
+.projects-form__tag-actions {
+  align-self: flex-end;
+
+  @include up(sm) {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
 }
 
 // The tags of a project: a quiet group inside the project, each tag a nested box like a skill.
@@ -73,9 +154,13 @@
 
 .projects-form__tag-legend {
   float: left;
-  max-width: calc(100% - 10.5rem);
   padding: 0;
   font-weight: 700;
+
+  // Stays clear of the actions in the corner (three 44px buttons).
+  @include up(sm) {
+    max-width: calc(100% - 10.5rem);
+  }
 }
 
 .projects-form__preview {

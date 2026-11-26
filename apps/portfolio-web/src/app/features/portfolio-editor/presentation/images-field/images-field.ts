@@ -61,6 +61,11 @@ export class ImagesField {
     return ids.length > 0 ? ids.join(' ') : null;
   });
 
+  /** Focuses the button to add a screenshot, which names the error of the field. */
+  focus(): void {
+    this._addButton().nativeElement.focus();
+  }
+
   private _add(): void {
     this.field()().value.update((images) => [...images, toImageForm(undefined)]);
   }

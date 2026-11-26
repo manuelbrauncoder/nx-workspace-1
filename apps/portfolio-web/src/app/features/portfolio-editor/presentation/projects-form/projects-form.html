@@ -17,140 +17,179 @@
       let index = $index, first = $first, last = $last
     ) {
       @let projectIndex = index;
-      <fieldset class="projects-form__item">
-        <legend class="projects-form__legend">
-          {{ 'sectionEditor.projects.item' | t: { number: index + 1 } }}
-          @if (!item.published().value()) {
-            <span class="projects-form__draft" appUiBadge variant="secondary">
-              {{ 'sectionEditor.projects.draft' | t }}
-            </span>
-          }
-        </legend>
-        <app-list-item-actions
-          class="projects-form__actions"
-          [name]="'sectionEditor.projects.item' | t: { number: index + 1 }"
-          [first]="first"
-          [last]="last"
-          (moveUp)="_move(index, -1)"
-          (moveDown)="_move(index, 1)"
-          (remove)="_remove(index)"
-        />
-        <app-form-text
-          [formField]="item.title"
-          [label]="'sectionEditor.projects.title' | t"
-          autocomplete="off"
-        />
-        <app-form-switch
-          [formField]="item.published"
-          [label]="'sectionEditor.projects.published' | t"
-          [description]="'sectionEditor.projects.publishedDescription' | t"
-        />
-        <fieldset
-          class="projects-form__tags"
-          [attr.aria-describedby]="'project-' + projectIndex + '-tags-hint'"
-        >
-          <legend class="projects-form__tags-legend">
-            {{ 'sectionEditor.projects.tags' | t }}
-          </legend>
-          <p
-            class="projects-form__hint"
-            [id]="'project-' + projectIndex + '-tags-hint'"
-            appUiText="muted"
+      @let open = _openIndex() === index;
+      @let panelId = 'project-' + index + '-panel';
+      @let itemName =
+        item.title().value()
+          ? ('sectionEditor.projects.itemNamed'
+            | t: { number: index + 1, title: item.title().value() })
+          : ('sectionEditor.projects.item' | t: { number: index + 1 });
+      <div class="projects-form__item">
+        <!-- Closed, a project is one row: its name, whether it is a draft and whether it has errors. -->
+        <div class="projects-form__header">
+          <h3 class="projects-form__heading" appUiText="large">
+            <button
+              class="projects-form__toggle"
+              #toggle
+              [attr.aria-expanded]="open"
+              [attr.aria-controls]="panelId"
+              (click)="_toggle(index)"
+              type="button"
+            >
+              <!-- Chevron and name stay together, the badges may wrap below them. -->
+              <span class="projects-form__name">
+                <app-ui-icon
+                  class="projects-form__chevron"
+                  [class.projects-form__chevron--open]="open"
+                  name="chevronDown"
+                />
+                <span class="projects-form__title">{{ item.title().value() || itemName }}</span>
+              </span>
+              @if (!item.published().value()) {
+                <span class="projects-form__draft" appUiBadge variant="secondary">
+                  {{ 'sectionEditor.projects.draft' | t }}
+                </span>
+              }
+              @if (item().invalid() && item().touched()) {
+                <span class="projects-form__invalid text-sm font-semibold">
+                  <app-ui-icon name="circleX" />
+                  {{ 'sectionEditor.projects.invalid' | t }}
+                </span>
+              }
+            </button>
+          </h3>
+          <app-list-item-actions
+            class="projects-form__actions"
+            [name]="itemName"
+            [first]="first"
+            [last]="last"
+            (moveUp)="_move(index, -1)"
+            (moveDown)="_move(index, 1)"
+            (remove)="_remove(index)"
+          />
+        </div>
+        <!-- Hidden instead of removed, so the fields keep their state and the form checks them. -->
+        <fieldset class="projects-form__panel" [id]="panelId" [hidden]="!open">
+          <legend class="sr-only">{{ itemName }}</legend>
+          <app-form-text
+            [formField]="item.title"
+            [label]="'sectionEditor.projects.title' | t"
+            autocomplete="off"
+          />
+          <app-form-switch
+            [formField]="item.published"
+            [label]="'sectionEditor.projects.published' | t"
+            [description]="'sectionEditor.projects.publishedDescription' | t"
+          />
+          <fieldset
+            class="projects-form__tags"
+            [attr.aria-describedby]="'project-' + projectIndex + '-tags-hint'"
           >
-            {{ 'sectionEditor.projects.tagsDescription' | t }}
-          </p>
-          @for (
-            tag of item.tags;
-            track tag;
-            let tagIndex = $index, firstTag = $first, lastTag = $last
-          ) {
-            @let tagName =
-              'sectionEditor.projects.tagOfProject'
-                | t: { number: tagIndex + 1, project: projectIndex + 1 };
-            <fieldset class="projects-form__tag">
-              <legend class="projects-form__tag-legend">
-                {{ 'sectionEditor.projects.tag' | t: { number: tagIndex + 1 } }}
-              </legend>
-              <app-list-item-actions
-                class="projects-form__actions"
-                [name]="tagName"
-                [first]="firstTag"
-                [last]="lastTag"
-                (moveUp)="_moveTag(projectIndex, tagIndex, -1)"
-                (moveDown)="_moveTag(projectIndex, tagIndex, 1)"
-                (remove)="_removeTag(projectIndex, tagIndex)"
-              />
-              <app-localized-field
-                [field]="tag.label"
-                [label]="'sectionEditor.projects.tagLabel' | t"
-              />
-              <app-form-select
-                [formField]="tag.color"
-                [label]="'sectionEditor.projects.tagColor' | t"
-                [options]="_tagColors()"
-              />
-              <p class="projects-form__preview">
-                <span appUiText="muted">{{ 'sectionEditor.projects.tagPreview' | t }}</span>
-                <span
-                  class="projects-form__tag-badge"
-                  [class]="'project-tag--' + tag.color().value()"
-                  appUiBadge
-                  variant="tinted"
-                  >{{
-                    (tag.label().value() | localized) ||
-                      ('sectionEditor.projects.tagPlaceholder' | t)
-                  }}</span
-                >
-              </p>
-            </fieldset>
-          }
-          <button
-            class="self-start"
-            #addTag
-            [attr.aria-label]="'sectionEditor.projects.addTagTo' | t: { project: projectIndex + 1 }"
-            [disabled]="item.tags.length >= _maxTags"
-            (click)="_addTag(projectIndex)"
-            appUiButton
-            variant="outline"
-            type="button"
-          >
-            <app-ui-icon name="plus" />
-            {{ 'sectionEditor.projects.addTag' | t }}
-          </button>
+            <legend class="projects-form__tags-legend">
+              {{ 'sectionEditor.projects.tags' | t }}
+            </legend>
+            <p
+              class="projects-form__hint"
+              [id]="'project-' + projectIndex + '-tags-hint'"
+              appUiText="muted"
+            >
+              {{ 'sectionEditor.projects.tagsDescription' | t }}
+            </p>
+            @for (
+              tag of item.tags;
+              track tag;
+              let tagIndex = $index, firstTag = $first, lastTag = $last
+            ) {
+              @let tagName =
+                'sectionEditor.projects.tagOfProject'
+                  | t: { number: tagIndex + 1, project: projectIndex + 1 };
+              <fieldset class="projects-form__tag">
+                <legend class="projects-form__tag-legend">
+                  {{ 'sectionEditor.projects.tag' | t: { number: tagIndex + 1 } }}
+                </legend>
+                <app-list-item-actions
+                  class="projects-form__tag-actions"
+                  [name]="tagName"
+                  [first]="firstTag"
+                  [last]="lastTag"
+                  (moveUp)="_moveTag(projectIndex, tagIndex, -1)"
+                  (moveDown)="_moveTag(projectIndex, tagIndex, 1)"
+                  (remove)="_removeTag(projectIndex, tagIndex)"
+                />
+                <app-localized-field
+                  [field]="tag.label"
+                  [label]="'sectionEditor.projects.tagLabel' | t"
+                />
+                <app-form-select
+                  [formField]="tag.color"
+                  [label]="'sectionEditor.projects.tagColor' | t"
+                  [options]="_tagColors()"
+                />
+                <p class="projects-form__preview">
+                  <span appUiText="muted">{{ 'sectionEditor.projects.tagPreview' | t }}</span>
+                  <span
+                    class="projects-form__tag-badge"
+                    [class]="'project-tag--' + tag.color().value()"
+                    appUiBadge
+                    variant="tinted"
+                    >{{
+                      (tag.label().value() | localized) ||
+                        ('sectionEditor.projects.tagPlaceholder' | t)
+                    }}</span
+                  >
+                </p>
+              </fieldset>
+            }
+            <button
+              class="self-start"
+              #addTag
+              [attr.aria-label]="
+                'sectionEditor.projects.addTagTo' | t: { project: projectIndex + 1 }
+              "
+              [disabled]="item.tags.length >= _maxTags"
+              (click)="_addTag(projectIndex)"
+              appUiButton
+              variant="outline"
+              type="button"
+            >
+              <app-ui-icon name="plus" />
+              {{ 'sectionEditor.projects.addTag' | t }}
+            </button>
+          </fieldset>
+          <app-localized-field
+            [field]="item.description"
+            [label]="'sectionEditor.fields.description' | t"
+            [description]="'sectionEditor.projects.descriptionHint' | t"
+            richText
+          />
+          <app-form-textarea
+            [formField]="item.stack"
+            [label]="'sectionEditor.projects.stack' | t"
+            [description]="'sectionEditor.onePerLine' | t"
+            rows="4"
+          />
+          <app-form-text
+            [formField]="item.testUrl"
+            [label]="'sectionEditor.projects.testUrl' | t"
+            [description]="'sectionEditor.optional' | t"
+            type="url"
+            autocomplete="off"
+          />
+          <app-form-text
+            [formField]="item.githubUrl"
+            [label]="'sectionEditor.projects.githubUrl' | t"
+            [description]="'sectionEditor.optional' | t"
+            type="url"
+            autocomplete="off"
+          />
+          <app-images-field
+            [field]="item.images"
+            [label]="'sectionEditor.projects.images' | t"
+            [description]="'sectionEditor.projects.imagesDescription' | t"
+            [max]="_maxImages"
+          />
         </fieldset>
-        <app-localized-field
-          [field]="item.description"
-          [label]="'sectionEditor.fields.description' | t"
-          [description]="'sectionEditor.projects.descriptionHint' | t"
-          richText
-        />
-        <app-form-textarea
-          [formField]="item.stack"
-          [label]="'sectionEditor.projects.stack' | t"
-          [description]="'sectionEditor.onePerLine' | t"
-          rows="4"
-        />
-        <app-form-text
-          [formField]="item.testUrl"
-          [label]="'sectionEditor.projects.testUrl' | t"
-          [description]="'sectionEditor.optional' | t"
-          type="url"
-          autocomplete="off"
-        />
-        <app-form-text
-          [formField]="item.githubUrl"
-          [label]="'sectionEditor.projects.githubUrl' | t"
-          [description]="'sectionEditor.optional' | t"
-          type="url"
-          autocomplete="off"
-        />
-        <app-images-field
-          [field]="item.images"
-          [label]="'sectionEditor.projects.images' | t"
-          [description]="'sectionEditor.projects.imagesDescription' | t"
-          [max]="_maxImages"
-        />
-      </fieldset>
+      </div>
     } @empty {
       <p appUiText="muted">{{ 'sectionEditor.projects.empty' | t }}</p>
     }
