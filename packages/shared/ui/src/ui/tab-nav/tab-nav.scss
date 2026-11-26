@@ -9,7 +9,8 @@
 
 .ui-tab-nav__list {
   display: flex;
-  gap: 0.25rem;
+  // 8px between two touch targets.
+  gap: 0.5rem;
   margin-bottom: -1px;
   overflow-x: auto;
   // Thin but visible, so a tab that does not fit any more shows that the row scrolls.
