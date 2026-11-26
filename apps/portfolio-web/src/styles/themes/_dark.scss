@@ -42,9 +42,10 @@
   --brand: #f6c76b;
   --brand-foreground: #14151c;
   --link: #f6c76b;
-  // The logo tile, the same in both themes: flat amber with a dark sign, like the favicon.
-  --logo-tile: #f6c76b;
-  --logo-ink: #14151c;
+  // The logo tile takes the accent of the theme, so it matches the accent word of the hero.
+  // Here the bright amber with a dark sign, like the favicon.
+  --logo-tile: var(--brand);
+  --logo-ink: var(--brand-foreground);
   // The magnifying glass over the hero headline: clear glass that blurs the text behind it,
   // a rim of light and a soft reflection. The magnified copy uses the text colours of the theme.
   --lens-glass: radial-gradient(

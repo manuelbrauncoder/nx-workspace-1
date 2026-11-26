@@ -51,9 +51,10 @@
   // Width of the page container: 75rem of content plus 2 × 3rem padding from `md` up.
   --page-container-max-width: 81rem;
   --page-container-padding-md: 3rem;
-  // The logo tile, the same in both themes: flat amber with a dark sign, like the favicon.
-  --logo-tile: #f6c76b;
-  --logo-ink: #14151c;
+  // The logo tile takes the accent of the theme, so it matches the accent word of the hero.
+  // Here the deep amber with a white sign (6.3:1), the tile itself 5.5:1 on the paper.
+  --logo-tile: var(--brand);
+  --logo-ink: var(--brand-foreground);
   // The magnifying glass over the hero headline: clear glass that blurs the text behind it,
   // a rim of light and a soft reflection. The magnified copy uses the text colours of the theme.
   --lens-glass: radial-gradient(
