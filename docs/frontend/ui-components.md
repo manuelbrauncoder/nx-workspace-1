@@ -202,7 +202,7 @@ Import all parts through `UiCardImports`. The card works on any element. Put `ap
 </app-ui-alert>
 ```
 
-`variant` is `default` or `destructive`. The projected content is the description, an optional `appUiAlertAction` button sits in the corner (import `UiAlertAction` for it).
+`variant` is `default` or `destructive`. The projected content is the description, an optional `appUiAlertAction` button sits below the text, or in its own column next to it once the alert is at least 32rem wide, never on top of the text (import `UiAlertAction` for it). The wrapper places it itself and leaves out the absolutely positioned `HlmAlertAction`, whose corner position ran over a longer label. The alert takes the full width of its parent (`width: 100%`, needed for the container query).
 
 The heading of an alert is a heading of level 2 in the page outline (`role="heading"`, `aria-level`). Inside a section with an `h2`, set `[headingLevel]="3"`, so the alert does not read as a section of its own. `app-failure-alert` passes `headingLevel` on, `app-async-content` has `failureHeadingLevel` for its failure.
 
