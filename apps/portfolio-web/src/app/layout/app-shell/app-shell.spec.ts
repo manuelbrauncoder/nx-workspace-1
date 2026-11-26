@@ -46,7 +46,7 @@ describe('AppShell', () => {
     const { element, main } = await render();
 
     expect(element.querySelector('header a[href="/"]')?.getAttribute('aria-label')).toBe(
-      'Manuel Braun, Frontend Developer, zur Startseite',
+      'Manuel Braun, Software Developer, zur Startseite',
     );
     expect(main.querySelector('h1')?.textContent).toBe('Seite');
     expect(element.querySelector('footer')?.textContent).toContain('Manuel Braun');

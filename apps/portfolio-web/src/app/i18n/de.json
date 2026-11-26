@@ -24,8 +24,8 @@
       "version": "v{{ version }}"
     },
     "logo": {
-      "tagline": "Frontend Developer",
-      "homeLabel": "Manuel Braun, Frontend Developer, zur Startseite"
+      "tagline": "Software Developer",
+      "homeLabel": "Manuel Braun, Software Developer, zur Startseite"
     },
     "nav": {
       "about": "Über mich",
@@ -43,7 +43,7 @@
   },
   "seo": {
     "defaultDescription": "Manuel Braun, Frontend Developer aus dem Spessart. Ich baue Angular-Apps, die sich leicht bedienen lassen und gut aussehen.",
-    "imageAlt": "Manuel Braun, Frontend Developer, mit Logo und manuel-braun.net"
+    "imageAlt": "Manuel Braun, Software Developer, mit Logo und manuel-braun.net"
   },
   "notes": {
     "backToList": "Zurück zur Übersicht",
