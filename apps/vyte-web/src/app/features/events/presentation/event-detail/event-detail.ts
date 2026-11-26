@@ -1,25 +1,24 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { I18nService } from '@core/i18n/i18n.service';
 import { LocalDatePipe } from '@core/i18n/local-date.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { injectPageSeo } from '@core/seo/inject-page-seo';
 import { toMetaDescription } from '@core/seo/meta-description';
 import { AsyncContent } from '@shared/async-content/async-content';
 import { UiAttachmentImports } from '@shared/ui/attachment/attachment';
-import { UiButton } from '@shared/ui/button/button';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiRichText } from '@shared/ui/rich-text/rich-text';
 import { UiSeparator } from '@shared/ui/separator/separator';
+import { UiStackedBar, UiStackedBarSegment } from '@shared/ui/stacked-bar/stacked-bar';
 import { UiText } from '@shared/ui/text/text';
 import { EventsStore } from '../../application/events.store';
-import { PhotoStandPanel } from '../photo-stand-panel/photo-stand-panel';
-import { SaveTheDatePanel } from '../save-the-date-panel/save-the-date-panel';
 
 /**
- * The overview of one event, the first tab below `EventFrame` on `/events/:id`. On top a quiet
- * panel "at a glance" with the counts, address and deadline, then description and images with a
- * line between them, and the public links (save the date, photo stand) in their own column.
- * Title, date and the actions stand in the frame.
+ * The overview of one event, the first tab below `EventFrame` on `/events/:id`: a quiet panel
+ * "at a glance" with the counts, address, deadline and whether save the date and photo stand are
+ * on (each with a link to its tab), next to it description and images. Title, date and the
+ * actions stand in the frame.
  */
 @Component({
   selector: 'app-event-detail',
@@ -29,19 +28,45 @@ import { SaveTheDatePanel } from '../save-the-date-panel/save-the-date-panel';
     TranslatePipe,
     AsyncContent,
     UiAttachmentImports,
-    UiButton,
     UiIcon,
     UiRichText,
     UiSeparator,
+    UiStackedBar,
     UiText,
-    PhotoStandPanel,
-    SaveTheDatePanel,
   ],
   styleUrl: './event-detail.scss',
   templateUrl: './event-detail.html',
 })
 export class EventDetail {
   private readonly _store = inject(EventsStore);
+  private readonly _i18n = inject(I18nService);
+
+  /** The guests by answer. Computed, so the labels follow the language. */
+  private readonly _answers = computed((): UiStackedBarSegment[] => {
+    const counts = this._store.selected()?.counts;
+    if (!counts) {
+      return [];
+    }
+    // `coming` counts people, the guests who accepted are what is left of the list.
+    const accepted = counts.invited - counts.declined - counts.pending;
+    return [
+      {
+        label: this._i18n.translate('eventDetail.guests.accepted'),
+        value: accepted,
+        color: 'var(--status-yes)',
+      },
+      {
+        label: this._i18n.translate('eventDetail.guests.declined'),
+        value: counts.declined,
+        color: 'var(--status-no)',
+      },
+      {
+        label: this._i18n.translate('eventDetail.guests.pending'),
+        value: counts.pending,
+        color: 'var(--status-open)',
+      },
+    ];
+  });
 
   /** A search on OpenStreetMap. Nothing is loaded from there until the link is followed. */
   private readonly _mapUrl = computed(() => {

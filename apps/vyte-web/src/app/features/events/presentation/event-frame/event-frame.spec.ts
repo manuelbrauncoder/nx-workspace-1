@@ -127,7 +127,7 @@ describe('EventFrame', () => {
     expect(element.querySelector('a[href="/events/e1/edit"]')).toBeNull();
   });
 
-  it('links the four tabs with the label of the navigation', async () => {
+  it('links the six tabs with the label of the navigation', async () => {
     const { element } = await render(success(), EVENT);
 
     const nav = element.querySelector('nav[aria-label="Bereiche des Events"]')!;
@@ -138,8 +138,10 @@ describe('EventFrame', () => {
     expect(tabs).toEqual([
       ['Übersicht', '/events/e1'],
       ['Gäste', '/events/e1/guests'],
-      ['Team', '/events/e1/team'],
+      ['Save the date', '/events/e1/save-the-date'],
+      ['Fotostation', '/events/e1/photo-stand'],
       ['Fotos', '/events/e1/photos'],
+      ['Team', '/events/e1/team'],
     ]);
   });
 

@@ -10,12 +10,13 @@
     "description": "The list can only be viewed and exported now."
   },
   "counts": {
-    "description": "Coming and At most count people including companions.",
+    "description": "Coming and at most count people with their companions, accepted, declined and open count guests.",
     "invited": "Invited",
     "coming": "Coming",
     "declined": "Declined",
     "pending": "No answer",
-    "atMost": "At most"
+    "atMost": "At most",
+    "byAnswer": "Guests by answer"
   },
   "add": "Add guest",
   "addMany": "Paste a list",
@@ -37,7 +38,8 @@
     "all": "All",
     "accepted": "Accepted",
     "declined": "Declined",
-    "pending": "No answer"
+    "pending": "No answer",
+    "withCount": "{{ label }} ({{ count }})"
   },
   "sort": {
     "name": "Name",
@@ -145,5 +147,6 @@
     "description": "The QR code of a place card printed already stops working, print the card again. Uploaded photos stay. Only while uploads are open.",
     "confirm": "Create new photo link",
     "done": "New photo link created for {{ name }}"
-  }
+  },
+  "more": "More actions of the guest list"
 }

@@ -10,12 +10,13 @@
     "description": "Die Liste lässt sich nur noch ansehen und exportieren."
   },
   "counts": {
-    "description": "Kommen und Höchstens zählen Personen samt Begleitung.",
+    "description": "Kommen und Höchstens zählen Personen samt Begleitung, Zusagen, Absagen und Offen zählen Gäste.",
     "invited": "Eingeladen",
     "coming": "Kommen",
     "declined": "Abgesagt",
     "pending": "Offen",
-    "atMost": "Höchstens"
+    "atMost": "Höchstens",
+    "byAnswer": "Gäste nach Antwort"
   },
   "add": "Gast hinzufügen",
   "addMany": "Liste einfügen",
@@ -37,7 +38,8 @@
     "all": "Alle",
     "accepted": "Zusagen",
     "declined": "Absagen",
-    "pending": "Offen"
+    "pending": "Offen",
+    "withCount": "{{ label }} ({{ count }})"
   },
   "sort": {
     "name": "Name",
@@ -145,5 +147,6 @@
     "description": "Der QR-Code einer schon gedruckten Tischkarte funktioniert danach nicht mehr, drucke die Karte neu. Hochgeladene Fotos bleiben. Geht nur, solange Uploads offen sind.",
     "confirm": "Neuen Foto-Link erstellen",
     "done": "Neuer Foto-Link für {{ name }} erstellt"
-  }
+  },
+  "more": "Weitere Aktionen der Gästeliste"
 }

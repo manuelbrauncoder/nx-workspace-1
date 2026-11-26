@@ -57,7 +57,14 @@ describe('routes', () => {
 
     it('loads the frame lazily and hangs the tabs below it', () => {
       expect(frame.loadComponent).toBeTypeOf('function');
-      expect(frame.children!.map((route) => route.path)).toEqual(['', 'guests', 'team', 'photos']);
+      expect(frame.children!.map((route) => route.path)).toEqual([
+        '',
+        'guests',
+        'save-the-date',
+        'photo-stand',
+        'team',
+        'photos',
+      ]);
       for (const child of frame.children!) {
         expect(child.loadChildren).toBeTypeOf('function');
       }
@@ -69,9 +76,14 @@ describe('routes', () => {
     });
 
     it('resolves the overview routes of the frame without an :id of their own', async () => {
-      const { eventOverviewRoutes, eventsRoutes } = await import('./features/events/events.routes');
+      const { eventOverviewRoutes, eventPhotoStandRoutes, eventSaveTheDateRoutes, eventsRoutes } =
+        await import('./features/events/events.routes');
 
       expect(eventOverviewRoutes.map((route) => route.path)).toEqual(['']);
+      expect(eventSaveTheDateRoutes.map((route) => route.path)).toEqual(['']);
+      expect(eventPhotoStandRoutes.map((route) => route.path)).toEqual(['']);
+      expect(eventSaveTheDateRoutes[0]!.title).toBe('eventSaveTheDate.title');
+      expect(eventPhotoStandRoutes[0]!.title).toBe('eventPhotoStand.title');
       const listChildren = eventsRoutes[0]!.children!.map((route) => route.path);
       expect(listChildren).toEqual(['', 'new', ':id/edit']);
     });

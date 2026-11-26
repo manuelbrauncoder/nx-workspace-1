@@ -9,7 +9,7 @@ import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog
 import { UiToastService } from '@shared/ui/toast/toast.service';
 import { EventsStore } from '../../application/events.store';
 import { VyteEvent } from '../../domain/event';
-import { eventDetailI18n } from '../event-detail/event-detail.i18n';
+import { eventPhotoStandI18n } from '../event-photo-stand/event-photo-stand.i18n';
 import { PhotoStandPanel } from './photo-stand-panel';
 
 const EVENT = {
@@ -29,7 +29,7 @@ const ADDRESS = 'https://vyte.example.com/stand/tok%20en';
   selector: 'app-host',
   imports: [PhotoStandPanel],
   template: `
-    <h2 id="event-detail-photo-stand" tabindex="-1">Fotostation</h2>
+    <h2 id="event-photo-stand-heading" tabindex="-1">Fotostation</h2>
     <app-photo-stand-panel [event]="event()" />
   `,
 })
@@ -62,7 +62,7 @@ describe('PhotoStandPanel', () => {
         { provide: UiToastService, useValue: toast },
       ],
     });
-    await loadI18nScopes(eventDetailI18n);
+    await loadI18nScopes(eventPhotoStandI18n);
     const fixture = TestBed.createComponent(Host);
     fixture.componentInstance.event.set({ ...EVENT, ...event });
     await fixture.whenStable();
@@ -218,7 +218,7 @@ describe('PhotoStandPanel', () => {
       fixture.componentInstance.event.set({ ...EVENT, photoStand: null });
       await fixture.whenStable();
 
-      expect(document.activeElement).toBe(element.querySelector('#event-detail-photo-stand'));
+      expect(document.activeElement).toBe(element.querySelector('#event-photo-stand-heading'));
     });
 
     it('marks only the button that started the request as busy', async () => {

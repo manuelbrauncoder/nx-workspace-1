@@ -2,6 +2,7 @@ import {
   afterNextRender,
   Component,
   computed,
+  DOCUMENT,
   effect,
   ElementRef,
   inject,
@@ -21,6 +22,7 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { injectPageSeo } from '@core/seo/inject-page-seo';
 import { AsyncContent } from '@shared/async-content/async-content';
 import { FailureAlert } from '@shared/failure-alert/failure-alert';
+import { FormSelect, FormSelectOption } from '@shared/form-controls/form-select/form-select';
 import { FormText } from '@shared/form-controls/form-text/form-text';
 import { UiAlert } from '@shared/ui/alert/alert';
 import { UiButton } from '@shared/ui/button/button';
@@ -29,10 +31,11 @@ import { UiDialogService } from '@shared/ui/dialog/dialog.service';
 import { UiEmpty } from '@shared/ui/empty/empty';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiListImports } from '@shared/ui/list/list';
+import { UiMenuImports } from '@shared/ui/menu/menu';
 import { UiPagination } from '@shared/ui/pagination/pagination';
+import { UiStackedBar, UiStackedBarSegment } from '@shared/ui/stacked-bar/stacked-bar';
 import { UiText } from '@shared/ui/text/text';
 import { UiToastService } from '@shared/ui/toast/toast.service';
-import { UiToggleGroup, UiToggleGroupOption } from '@shared/ui/toggle-group/toggle-group';
 import { GuestsStore } from '../../application/guests.store';
 import { Guest } from '../../domain/guest';
 import {
@@ -67,14 +70,16 @@ import { HostAnswerDialog, HostAnswerDialogData } from '../host-answer-dialog/ho
     TranslatePipe,
     AsyncContent,
     FailureAlert,
+    FormSelect,
     FormText,
     UiAlert,
     UiButton,
     UiEmpty,
     UiIcon,
     UiText,
-    UiToggleGroup,
     UiListImports,
+    UiMenuImports,
+    UiStackedBar,
     UiPagination,
     GuestRow,
   ],
@@ -98,6 +103,7 @@ export class GuestList {
   private readonly _host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly _injector = inject(Injector);
   private readonly _router = inject(Router);
+  private readonly _document = inject(DOCUMENT);
 
   private readonly _listHeading = viewChild<ElementRef<HTMLElement>>('listHeading');
 
@@ -125,22 +131,47 @@ export class GuestList {
   private readonly _pageGuests = computed(() => pageOf(this._visible(), this._page()));
 
   /**
-   * Computed, so the labels follow the language. Without counts: they stand above the list and
-   * in the result line, and the four options have to fit side by side on a phone.
+   * Computed, so the labels follow the language. Each answer with the number of guests it shows
+   * (guests, not persons: the counts above add the companions).
    */
-  private readonly _filterOptions = computed((): UiToggleGroupOption<GuestFilter>[] =>
+  private readonly _filterOptions = computed((): FormSelectOption<GuestFilter>[] =>
     (['all', 'accepted', 'declined', 'pending'] as const).map((value) => ({
       value,
-      label: this._i18n.translate(`guestList.filter.${value}`),
+      label: this._i18n.translate('guestList.filter.withCount', {
+        label: this._i18n.translate(`guestList.filter.${value}`),
+        count: filterGuests(this._store.guests(), value, '').length,
+      }),
     })),
   );
 
-  private readonly _sortOptions = computed((): UiToggleGroupOption<GuestSort>[] => [
+  private readonly _sortOptions = computed((): FormSelectOption<GuestSort>[] => [
     { value: 'name', label: this._i18n.translate('guestList.sort.name') },
     { value: 'answered', label: this._i18n.translate('guestList.sort.answered') },
   ]);
 
   private readonly _exportUrl = computed(() => this._store.exportUrl(this._i18n.language()));
+
+  /** The guests by answer, with the words of the filter. `coming` above counts people instead. */
+  private readonly _answers = computed((): UiStackedBarSegment[] => {
+    const counts = this._store.counts();
+    return [
+      {
+        label: this._i18n.translate('guestList.filter.accepted'),
+        value: counts.invited - counts.declined - counts.pending,
+        color: 'var(--status-yes)',
+      },
+      {
+        label: this._i18n.translate('guestList.filter.declined'),
+        value: counts.declined,
+        color: 'var(--status-no)',
+      },
+      {
+        label: this._i18n.translate('guestList.filter.pending'),
+        value: counts.pending,
+        color: 'var(--status-open)',
+      },
+    ];
+  });
 
   constructor() {
     effect(() => this._store.select(this.id()));
@@ -159,6 +190,21 @@ export class GuestList {
         untracked(() => this.page() > 1 && void this._navigate({ page: null }, true));
       }
     });
+  }
+
+  /**
+   * Through a link with `download`, as a click on one: if the answer is no file (an expired
+   * session, a server error), the browser reports a failed download and the page stays.
+   * `location.assign` would replace the page with the error.
+   */
+  private _export(): void {
+    const url = this._exportUrl();
+    if (url) {
+      const link = this._document.createElement('a');
+      link.href = url;
+      link.download = '';
+      link.click();
+    }
   }
 
   private _setFilter(filter: GuestFilter | null): void {

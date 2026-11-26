@@ -55,7 +55,7 @@ export class PhotoStandPanel {
 
   private async _enable(): Promise<void> {
     if (await this._write('enable')) {
-      this._toast.success(this._i18n.translate('eventDetail.photoStand.enabled'));
+      this._toast.success(this._i18n.translate('eventPhotoStand.enabled'));
       // Copying the new link is what comes next.
       this._focusLater('.photo-stand__copy');
     }
@@ -63,26 +63,26 @@ export class PhotoStandPanel {
 
   private async _renew(): Promise<void> {
     const confirmed = await this._confirmDialog.confirm({
-      heading: this._i18n.translate('eventDetail.photoStand.renewHeading'),
-      description: this._i18n.translate('eventDetail.photoStand.renewDescription'),
-      confirmLabel: this._i18n.translate('eventDetail.photoStand.renewConfirm'),
+      heading: this._i18n.translate('eventPhotoStand.renewHeading'),
+      description: this._i18n.translate('eventPhotoStand.renewDescription'),
+      confirmLabel: this._i18n.translate('eventPhotoStand.renewConfirm'),
     });
     if (confirmed && (await this._write('renew'))) {
-      this._toast.success(this._i18n.translate('eventDetail.photoStand.renewed'));
+      this._toast.success(this._i18n.translate('eventPhotoStand.renewed'));
     }
   }
 
   private async _disable(): Promise<void> {
     const confirmed = await this._confirmDialog.confirm({
-      heading: this._i18n.translate('eventDetail.photoStand.disableHeading'),
-      description: this._i18n.translate('eventDetail.photoStand.disableDescription'),
-      confirmLabel: this._i18n.translate('eventDetail.photoStand.disableConfirm'),
+      heading: this._i18n.translate('eventPhotoStand.disableHeading'),
+      description: this._i18n.translate('eventPhotoStand.disableDescription'),
+      confirmLabel: this._i18n.translate('eventPhotoStand.disableConfirm'),
       variant: 'destructive',
     });
     if (confirmed && (await this._write('disable'))) {
-      this._toast.success(this._i18n.translate('eventDetail.photoStand.disabled'));
+      this._toast.success(this._i18n.translate('eventPhotoStand.disabled'));
       // The buttons that held the focus are gone, the heading of the part stays.
-      this._focusLater('#event-detail-photo-stand');
+      this._focusLater('#event-photo-stand-heading');
     }
   }
 
@@ -93,9 +93,9 @@ export class PhotoStandPanel {
     }
     try {
       await navigator.clipboard.writeText(url);
-      this._toast.success(this._i18n.translate('eventDetail.photoStand.copied'));
+      this._toast.success(this._i18n.translate('eventPhotoStand.copied'));
     } catch {
-      this._toast.error(this._i18n.translate('eventDetail.photoStand.copyFailed'));
+      this._toast.error(this._i18n.translate('eventPhotoStand.copyFailed'));
     }
   }
 

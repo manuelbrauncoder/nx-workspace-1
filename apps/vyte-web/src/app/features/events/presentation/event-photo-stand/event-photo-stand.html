@@ -1,0 +1,19 @@
+<app-async-content
+  [state]="_store.detailState()"
+  [failureHeading]="'events.loadFailed' | t"
+  [loadingLabel]="'events.loading' | t"
+>
+  <ng-template>
+    @if (_store.selected(); as event) {
+      <section class="event-photo-stand" aria-labelledby="event-photo-stand-heading">
+        <h2 id="event-photo-stand-heading" appUiText="heading" tabindex="-1">
+          {{ 'eventPhotoStand.heading' | t }}
+        </h2>
+        <p class="event-photo-stand__lead" appUiText="muted">
+          {{ 'eventPhotoStand.description' | t }}
+        </p>
+        <app-photo-stand-panel [event]="event" />
+      </section>
+    }
+  </ng-template>
+</app-async-content>

@@ -64,7 +64,7 @@ export class SaveTheDatePanel {
   private readonly _noteForm = form(this._model, (path) => {
     maxLength(path.note, SAVE_THE_DATE_NOTE_MAX_LENGTH, {
       message: () =>
-        this._i18n.translate('eventDetail.saveTheDate.noteTooLong', {
+        this._i18n.translate('eventSaveTheDate.noteTooLong', {
           max: SAVE_THE_DATE_NOTE_MAX_LENGTH,
         }),
     });
@@ -80,7 +80,7 @@ export class SaveTheDatePanel {
     if (!(await this._write('enable', this._model().note))) {
       return;
     }
-    this._toast.success(this._i18n.translate('eventDetail.saveTheDate.enabled'));
+    this._toast.success(this._i18n.translate('eventSaveTheDate.enabled'));
     // Copying the new link is what comes next.
     this._focusLater('.save-the-date__copy');
   }
@@ -88,32 +88,32 @@ export class SaveTheDatePanel {
   private async _saveNote(event: Event): Promise<void> {
     event.preventDefault();
     if (await this._write('note', this._model().note)) {
-      this._toast.success(this._i18n.translate('eventDetail.saveTheDate.noteSaved'));
+      this._toast.success(this._i18n.translate('eventSaveTheDate.noteSaved'));
     }
   }
 
   private async _renew(): Promise<void> {
     const confirmed = await this._confirmDialog.confirm({
-      heading: this._i18n.translate('eventDetail.saveTheDate.renewHeading'),
-      description: this._i18n.translate('eventDetail.saveTheDate.renewDescription'),
-      confirmLabel: this._i18n.translate('eventDetail.saveTheDate.renewConfirm'),
+      heading: this._i18n.translate('eventSaveTheDate.renewHeading'),
+      description: this._i18n.translate('eventSaveTheDate.renewDescription'),
+      confirmLabel: this._i18n.translate('eventSaveTheDate.renewConfirm'),
     });
     if (confirmed && (await this._write('renew'))) {
-      this._toast.success(this._i18n.translate('eventDetail.saveTheDate.renewed'));
+      this._toast.success(this._i18n.translate('eventSaveTheDate.renewed'));
     }
   }
 
   private async _disable(): Promise<void> {
     const confirmed = await this._confirmDialog.confirm({
-      heading: this._i18n.translate('eventDetail.saveTheDate.disableHeading'),
-      description: this._i18n.translate('eventDetail.saveTheDate.disableDescription'),
-      confirmLabel: this._i18n.translate('eventDetail.saveTheDate.disableConfirm'),
+      heading: this._i18n.translate('eventSaveTheDate.disableHeading'),
+      description: this._i18n.translate('eventSaveTheDate.disableDescription'),
+      confirmLabel: this._i18n.translate('eventSaveTheDate.disableConfirm'),
       variant: 'destructive',
     });
     if (confirmed && (await this._write('disable'))) {
-      this._toast.success(this._i18n.translate('eventDetail.saveTheDate.disabled'));
+      this._toast.success(this._i18n.translate('eventSaveTheDate.disabled'));
       // The buttons that held the focus are gone, the heading of the part stays.
-      this._focusLater('#event-detail-save-the-date');
+      this._focusLater('#event-save-the-date-heading');
     }
   }
 
@@ -124,9 +124,9 @@ export class SaveTheDatePanel {
     }
     try {
       await navigator.clipboard.writeText(url);
-      this._toast.success(this._i18n.translate('eventDetail.saveTheDate.copied'));
+      this._toast.success(this._i18n.translate('eventSaveTheDate.copied'));
     } catch {
-      this._toast.error(this._i18n.translate('eventDetail.saveTheDate.copyFailed'));
+      this._toast.error(this._i18n.translate('eventSaveTheDate.copyFailed'));
     }
   }
 
@@ -140,7 +140,7 @@ export class SaveTheDatePanel {
     try {
       await navigator.share({
         title: event.title,
-        text: this._i18n.translate('eventDetail.saveTheDate.shareText', {
+        text: this._i18n.translate('eventSaveTheDate.shareText', {
           title: event.title,
           date,
         }),
@@ -149,7 +149,7 @@ export class SaveTheDatePanel {
     } catch (error) {
       // Closing the share sheet is no failure.
       if (!(error instanceof DOMException && error.name === 'AbortError')) {
-        this._toast.error(this._i18n.translate('eventDetail.saveTheDate.shareFailed'));
+        this._toast.error(this._i18n.translate('eventSaveTheDate.shareFailed'));
       }
     }
   }
