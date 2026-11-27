@@ -1,6 +1,19 @@
 # nx1 workspace
 
-Nx monorepo with Angular apps, Express APIs and the libs they share. Everything needed to run it locally is on this page. Architecture, apps, libs and deployment are explained in [docs/](docs/README.md).
+A full-stack Nx monorepo that I build and run myself: Angular 22 frontends with server-side rendering, Express 5 APIs on Postgres and the libs they share. Four products live here side by side. One of them is in production: my portfolio at [manuel-braun.net](https://manuel-braun.net/), whose content comes from its own CMS API in this repo.
+
+Everything needed to run it locally is on this page. Architecture, apps, libs and deployment are explained in [docs/](docs/README.md).
+
+## Highlights
+
+- **Architecture enforced by lint**: Nx tags keep the products apart from each other and browser code apart from server code. Inside an app every feature is layered `presentation → application → domain → api`, and ESLint rejects an import against that direction. See [Workspace](docs/workspace.md) and [Frontend architecture](docs/frontend/architecture.md)
+- **One wire format**: Zod schemas in `packages/contracts` validate every request in the APIs, the Angular apps import only their types. A test per API fails when a route and its OpenAPI entry drift apart
+- **Current Angular**: standalone components without zone.js, signals for all state, Signal Forms with own form controls, SSR with a runtime config instead of build-time environments, German and English at runtime
+- **Accessible by default**: WCAG 2.2 AA is a requirement, 44 px touch targets, and 67 component specs run axe through `toBeAccessible()`
+- **UI library behind wrappers**: Spartan, Tailwind components and Tiptap are only imported in the lib `ui`. Apps use the `app-ui-*` and `app-form-*` wrappers, so a change of the UI library stays inside one lib
+- **Secure APIs**: HTTP-only session cookies, an Origin check against CSRF, rate limits, every query filtered by owner (a foreign resource is a 404), rich text sanitized against one shared allow list, uploaded images re-encoded with a pixel limit
+- **Delivery**: CI runs format, lint, typecheck, tests against a real Postgres and build for the affected projects. Each app has its own release tag, changelog and Docker image (non-root), versions come from Conventional Commits through `nx release`. Actions are pinned to commit SHAs, Dependabot keeps them current
+- **Working with AI agents**: [CLAUDE.md](CLAUDE.md) is the rule set the agents work from, `.claude/agents/` holds reviewers for accessibility, security and the API conventions. The [docs](docs/README.md) explain the reasoning behind every rule
 
 ## What is in here
 
@@ -161,3 +174,7 @@ Commit messages follow Conventional Commits (`feat(dartomat-web): …`, `fix: �
 - [docs/README.md](docs/README.md): index of all docs
 - [docs/workspace.md](docs/workspace.md): projects, boundaries, aliases, adding an app or a lib
 - [CLAUDE.md](CLAUDE.md): the short rule set for code in this repo
+
+## License
+
+[MIT](LICENSE)

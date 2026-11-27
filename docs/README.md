@@ -6,11 +6,12 @@ New here: read the [README](../README.md) and [Workspace](workspace.md), then th
 
 ## Overview
 
-| Page                        | What it covers                                                                            |
-| --------------------------- | ----------------------------------------------------------------------------------------- |
-| [Workspace](workspace.md)   | Projects, tags and scopes, path aliases, Nx commands, conventions, adding an app or a lib |
-| [Deployment](deployment.md) | Images and release tags (`nx1-*`), the pipeline, running the images, Portainer stacks     |
-| [Releasing](releasing.md)   | Commit messages, versions per app, `nx release`, changelogs, the running version          |
+| Page                                  | What it covers                                                                            |
+| ------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [Workspace](workspace.md)             | Projects, tags and scopes, path aliases, Nx commands, conventions, adding an app or a lib |
+| [Deployment](deployment.md)           | Images and release tags (`nx1-*`), the pipeline, running the images, Portainer stacks     |
+| [Releasing](releasing.md)             | Commit messages, versions per app, `nx release`, changelogs, the running version          |
+| [Pipeline review](pipeline-review.md) | Review of the CI, the images and the release flow, with the findings done and still open  |
 
 ## Apps
 
@@ -84,9 +85,9 @@ What only the portfolio apps have. The overview is on the app pages [portfolio-w
 | [CMS content](portfolio/api/cms-content.md)     | Portfolio sections, media, contact messages, legal pages, seed          |
 | [Configuration](portfolio/api/configuration.md) | The config file of `portfolio-api`, mail and `publicUrl`                |
 
-## Vyte (API complete for v1, web app in progress)
+## Vyte (complete for v1)
 
-Event planning with a guest list and a personal link per guest. The API is complete for v1: accounts, admin, events, the guest list with its CSV export, the guest links, the team, the save the date and the guest photos exist. The web app has its frame: [vyte-web](apps/vyte-web.md) runs with the app shell, the sign-in, the legal pages (edited by admins in the app), the complete API layer, the event pages and the accounts with their links. The pages for guests, the team, photos and the guest links follow.
+Event planning with a guest list and a personal link per guest. API and web app are complete for v1: accounts, admin, events, the guest list with its CSV export, the guest links, the team, the save the date and the guest photos exist in [vyte-api](apps/vyte-api.md), and every route of the web draft is built in [vyte-web](apps/vyte-web.md).
 
 | Page                            | What it covers                                                                |
 | ------------------------------- | ----------------------------------------------------------------------------- |

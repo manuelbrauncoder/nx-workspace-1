@@ -1,6 +1,6 @@
 # Pipeline review
 
-Review of `.github/workflows/ci.yml`, the six `apps/*/Dockerfile` and the release flow, checked against the skills `ci-cd-and-automation` and `github-actions-templates`. Status: November 2026. Each finding says what is missing, why it matters and what to change. The order within a section is the suggested order of work.
+Review of `.github/workflows/ci.yml`, the `apps/*/Dockerfile` and the release flow, checked against the skills `ci-cd-and-automation` and `github-actions-templates`. Status: November 2026. Each finding says what is missing, why it matters and what to change. Findings marked **Done** are implemented, the others are open. The order within a section is the suggested order of work.
 
 ## What is already good
 
@@ -9,7 +9,7 @@ These points need no change and should stay when the pipeline is reworked:
 - Every gate the skills ask for runs on each PR and push to `main`: format, lint, typecheck (including specs), unit and API tests against a real Postgres, build. Angular budgets in `project.json` cover bundle size
 - `nx affected` with `nrwl/nx-set-shas` keeps a typical run at about 1 minute. A release run takes about 7 minutes (checks 4.5, image 3)
 - `concurrency` cancels outdated runs and never a release
-- Minimal `permissions` at workflow level, `packages: write` only in the publish jobs
+- Minimal `permissions` at workflow level, `packages: write` only in the publish job
 - Node from `.nvmrc`, pnpm from `packageManager`, `--frozen-lockfile`, pnpm store cache
 - Commit messages checked with commitlint, because `nx release` derives versions from them
 - One release tag per app, `pnpm release:push` works around the three-tag limit of GitHub
@@ -105,7 +105,7 @@ Neither the dependencies nor the finished images are checked for known vulnerabi
     exit-code: '1'
 ```
 
-The push then follows as a second `build-push-action` step, which hits the layer cache and takes seconds. CodeQL and the GitHub security tab need GitHub Advanced Security on a private repository and are therefore not part of this suggestion.
+The push then follows as a second `build-push-action` step, which hits the layer cache and takes seconds. CodeQL and the GitHub security tab need GitHub Advanced Security on a private repository. Once the repository is public, both are free: CodeQL through the default setup in the repository settings, without a workflow file.
 
 ## Medium priority
 
@@ -113,7 +113,7 @@ The push then follows as a second `build-push-action` step, which hits the layer
 
 **Done:** one job `publish` derives the app from the tag, a single tag pattern `nx1-*-v*`, the summary text per app in `apps/<app>/deploy-notes.md`. Before, eight copies had already drifted apart: the one for `vyte-api` pasted expressions into its scripts and did not check the tag format.
 
-The six `publish-*` jobs differ only in the app name and the text of the step summary, about 320 lines in total. A new app means copying a job and adding a tag pattern under `on.push.tags`, and a fix (for example the Trivy step) has to be made six times.
+The `publish-*` jobs differed only in the app name and the text of the step summary. A new app meant copying a job and adding a tag pattern under `on.push.tags`, and a fix (for example the Trivy step) had to be made in every copy.
 
 **Change:** one job that derives the app from the tag, a single tag pattern, and the summary text per app in a file next to the Dockerfile:
 
@@ -239,7 +239,7 @@ Every image is kept under its version, so going back means deploying an older ta
 
 ### 12. Expressions inline in `run` scripts
 
-**Done:** the `checks` job and the six publish jobs pass every expression through `env:`. The publish jobs also check the tag format (`vX.Y.Z`), see [Deployment](deployment.md#images-and-release-tags).
+**Done:** the `checks` job and the publish job pass every expression through `env:`. The publish job also checks the tag format (`vX.Y.Z`), see [Deployment](deployment.md#images-and-release-tags).
 
 `${{ github.event.pull_request.base.sha }}`, `${{ github.ref_type }}` and `${{ github.repository_owner }}` are written directly into shell scripts. All three values are safe today (SHAs, a fixed keyword, a GitHub login), so this is not a vulnerability. The rule of thumb from the skill is still to pass every expression via `env:`, so that a later edit with a branch name or PR title does not open a script injection. Findings 5, 6 and 8 already move most of them.
 
