@@ -7,6 +7,9 @@
       [label]="'layout.mainNavigation' | t"
     />
     <div class="app-header__actions">
+      @if (_auth.isAdmin()) {
+        <app-message-bell />
+      }
       <!-- Below `md` the links and the settings move into the drawer. -->
       <app-settings-menu class="app-header__settings" />
       <button

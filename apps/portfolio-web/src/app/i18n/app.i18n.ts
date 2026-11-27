@@ -5,6 +5,7 @@ declare module '@core/i18n/translation-key' {
   interface I18nSharedTexts {
     admin: (typeof de)['admin'];
     auth: (typeof de)['auth'];
+    inbox: (typeof de)['inbox'];
     layout: (typeof de)['layout'];
     legalEditor: (typeof de)['legalEditor'];
     notFound: (typeof de)['notFound'];

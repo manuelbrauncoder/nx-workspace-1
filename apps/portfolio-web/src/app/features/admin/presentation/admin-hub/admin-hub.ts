@@ -8,6 +8,7 @@ import { UiCardImports } from '@shared/ui/card/card';
 import { UiIcon } from '@shared/ui/icon/icon';
 import { UiText } from '@shared/ui/text/text';
 import { AdminStore } from '../../application/admin.store';
+import { InboxStore } from '../../application/inbox.store';
 
 /** Start of the admin area on `/admin`: users, messages and the editor of the start page. */
 @Component({
@@ -18,10 +19,11 @@ import { AdminStore } from '../../application/admin.store';
 })
 export class AdminHub {
   private readonly _store = inject(AdminStore);
+  private readonly _inbox = inject(InboxStore);
 
   /** The counts need both lists. A failure of either one is shown, loading wins over success. */
   private readonly _state = computed(() => {
-    const states = [this._store.usersState(), this._store.messagesState()];
+    const states = [this._store.usersState(), this._inbox.messagesState()];
     return (
       states.find((state) => state.loadingState === 'failure') ??
       states.find((state) => state.loadingState === 'loading') ??
@@ -31,6 +33,6 @@ export class AdminHub {
 
   private _retry(): void {
     this._store.reloadUsers();
-    this._store.reloadMessages();
+    this._inbox.reload();
   }
 }

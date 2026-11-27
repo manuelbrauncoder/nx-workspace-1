@@ -7,7 +7,10 @@ import { AppHeader } from './app-header';
 describe('AppHeader', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), { provide: AuthStore, useValue: { me: signal(undefined) } }],
+      providers: [
+        provideRouter([]),
+        { provide: AuthStore, useValue: { me: signal(undefined), isAdmin: signal(false) } },
+      ],
     });
   });
   afterEach(() => {

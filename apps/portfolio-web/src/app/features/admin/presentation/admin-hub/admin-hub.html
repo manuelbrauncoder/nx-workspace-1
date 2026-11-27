@@ -43,7 +43,7 @@
             <p appUiCardDescription>
               {{
                 'adminHub.messages.count'
-                  | t: { count: _store.messages().length, unread: _store.unreadCount() }
+                  | t: { count: _inbox.messages().length, unread: _inbox.unreadCount() }
               }}
             </p>
           </div>

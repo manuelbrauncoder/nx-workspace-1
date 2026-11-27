@@ -1,0 +1,64 @@
+<button
+  class="message-bell__trigger"
+  [appUiMenuTrigger]="menu"
+  [attr.aria-label]="
+    _store.unreadCount()
+      ? ('inbox.bellUnread' | t: { count: _store.unreadCount() })
+      : ('inbox.bell' | t)
+  "
+  appUiButton
+  variant="ghost"
+  size="icon-lg"
+  type="button"
+  align="end"
+>
+  <app-ui-icon name="bell" size="lg" />
+  <!-- The number is part of the name of the button. -->
+  @if (_store.unreadCount()) {
+    <span class="message-bell__count" appUiBadge variant="tinted" aria-hidden="true">
+      {{ _badge() }}
+    </span>
+  }
+</button>
+
+<ng-template #menu>
+  <!-- Without messages focus goes to the link below, so the menu itself points to the status. -->
+  <app-ui-menu
+    class="message-bell__menu w-72"
+    [label]="'inbox.bell' | t"
+    [attr.aria-describedby]="_listed().length ? null : 'message-bell-status'"
+  >
+    <app-ui-menu-group [label]="'inbox.heading' | t">
+      <app-ui-menu-label>{{ 'inbox.heading' | t }}</app-ui-menu-label>
+      @for (message of _listed(); track message.id) {
+        <button class="message-bell__item" (triggered)="_open(message)" appUiMenuItem type="button">
+          <span class="message-bell__name">{{ message.name }}</span>
+          <span class="message-bell__date">{{ message.createdAt | localDate: 'dateTime' }}</span>
+          <!-- Cut here too: the whole text would be part of the name of the item. -->
+          <span class="message-bell__text">{{ message.message.slice(0, 80) }}</span>
+        </button>
+      } @empty {
+        <p class="message-bell__status" id="message-bell-status">
+          @switch (_store.messagesState().loadingState) {
+            @case ('loading') {
+              {{ 'inbox.loading' | t }}
+            }
+            @case ('failure') {
+              {{ 'inbox.loadFailed' | t }}
+            }
+            @default {
+              {{ 'inbox.empty' | t }}
+            }
+          }
+        </p>
+      }
+    </app-ui-menu-group>
+    <app-ui-menu-separator />
+    <app-ui-menu-group>
+      <button (triggered)="_openAll()" appUiMenuItem type="button">
+        <app-ui-icon name="inbox" />
+        {{ 'inbox.all' | t }}
+      </button>
+    </app-ui-menu-group>
+  </app-ui-menu>
+</ng-template>

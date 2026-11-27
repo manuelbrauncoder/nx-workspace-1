@@ -4,7 +4,7 @@
   {{ 'messageList.lead' | t: { unread: _store.unreadCount() } }}
 </p>
 
-@if (_store.messageMutationState().failure; as failure) {
+@if (_store.mutationState().failure; as failure) {
   <app-failure-alert class="mt-6" [failure]="failure" [heading]="'messageList.actionFailed' | t" />
 }
 
@@ -13,7 +13,7 @@
   [state]="_store.messagesState()"
   [failureHeading]="'messageList.loadFailed' | t"
   [loadingLabel]="'messageList.loading' | t"
-  (retry)="_store.reloadMessages()"
+  (retry)="_store.reload()"
   loadingIndicator="skeleton"
   retryable
 >

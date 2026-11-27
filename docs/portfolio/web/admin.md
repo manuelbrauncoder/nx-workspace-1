@@ -16,8 +16,10 @@ The features hang below the same parent, none imports another. The hub links to 
 
 [src/app/features/admin/](../../../apps/portfolio-web/src/app/features/admin)
 
-- `AdminUseCase` combines two API layers: [src/api/users](../../../apps/portfolio-web/src/api/users) (`GET`, `PATCH`, `DELETE /admin/users…`) and the admin part of [src/api/contact](../../../apps/portfolio-web/src/api/contact) (`/contact/messages`)
-- `AdminStore` loads users and messages as soon as the area opens, so the hub can show the counts. Users and messages each have a mutation of their own, so a failure on one page never shows up on the other. After a write the loaded list is patched, nothing is fetched again
+- `AdminUseCase` and `AdminStore` handle the accounts through [src/api/users](../../../apps/portfolio-web/src/api/users) (`GET`, `PATCH`, `DELETE /admin/users…`). The store loads them as soon as the area opens, so the hub can show the counts
+- `InboxUseCase` and `InboxStore` handle the messages through the admin part of [src/api/contact](../../../apps/portfolio-web/src/api/contact) (`/contact/messages`). Both are app-wide (`@Service()`), because the bell in the header and the pages of the area show the same list. Only an admin loads it, signing out drops it
+- Users and messages each have a mutation of their own, so a failure on one page never shows up on the other. After a write the loaded list is patched, nothing is fetched again
+- [public-api.ts](../../../apps/portfolio-web/src/app/features/admin/public-api.ts) exports `MessageBell` for the app shell and nothing else
 - The signed-in admin comes from `AuthStore` through `@features/auth/public-api`
 
 ### Users
@@ -32,6 +34,12 @@ The features hang below the same parent, none imports another. The hub links to 
 - A card per message, newest first. Unread ones carry a marker and the hidden text "Ungelesen" for screen readers
 - The text is shown as typed with its line breaks (`white-space: pre-line`), never as HTML
 - "Antworten" opens the mail program through `mailto:` with a subject and marks the message as read. Marking read or unread and deleting are buttons on the card, deleting asks first
+
+### Message bell
+
+- An admin sees a bell in the header, on every width. A badge counts the unread messages (from 10 "9+", the name of the button carries the exact number)
+- Its menu lists the five newest unread messages and always links to all of them. Choosing a message marks it as read and opens `/admin/messages`
+- The list is loaded with the first page, after each navigation and when the menu opens. There is no timer. A reload of a loaded list stays `success`, so the open message page does not flash its skeleton
 
 ### Why cards and not a table
 

@@ -186,6 +186,7 @@ Two more rules:
 
 - Features never import each other. If two features need the same thing, it moves to `shared` (UI, helpers) or to `apps/angular-base/src/api` (data)
 - The one exception is `@features/auth/public-api`. Who is signed in concerns every page, so the auth feature opens exactly that file to the app shell and to other features, see [Authentication](auth.md#public-api)
+- `portfolio-web` has a second one for the app shell only: `@features/admin/public-api` with the [message bell](../portfolio/web/admin.md#message-bell) in the header
 - Inside a feature use relative imports. Across the boundaries use the aliases `@core/*`, `@shared/*`, `@api/*`
 - Inside a lib use relative imports too. Nx reports an alias that points into the lib itself
 
