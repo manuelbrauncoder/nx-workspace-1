@@ -1,6 +1,6 @@
 # vyte-web
 
-The web app of vyte: a host plans an event, keeps its guest list and shares a personal link with every guest. So far it is the frame: app shell, sign-in, the legal pages (text from the API, edited by admins), a placeholder start page and the complete API layer for `vyte-api`. The pages of the [specification](../vyte/spec.md#7-web-draft) follow. Built like `angular-base` on the same libs, so this page only covers what differs.
+The web app of vyte: a host plans an event, keeps its guest list and shares a personal link with every guest. Every route of the [specification](../vyte/spec.md#7-web-draft) is built: the event pages of the hosts with guest list, save the date, photo stand, photos, team and print, the pages of the guests (answer, save the date, photo upload), the admin area with accounts and legal pages, and the complete API layer for `vyte-api`. Built like `angular-base` on the same libs, so this page only covers what differs.
 
 | Item    | Value                                                                                     |
 | ------- | ----------------------------------------------------------------------------------------- |

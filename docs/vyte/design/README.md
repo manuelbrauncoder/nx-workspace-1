@@ -1,6 +1,6 @@
 # vyte design
 
-A copy of the design canvas [vyte Design](https://claude.ai/artifact/L45ESAH65DizNnJ1cuw2Bg) (private), taken on 2026-11-10. The canvas is the place to change the design; this folder keeps a snapshot next to the code. The chosen direction and its tokens are described in the [spec](../spec.md#look).
+A copy of the design canvas vyte Design, taken on 2026-11-10. The canvas itself lives outside the repo and is the place to change the design; this folder keeps a snapshot next to the code. The chosen direction and its tokens are described in the [spec](../spec.md#look).
 
 | Folder                | Content                                                                                                                       |
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
