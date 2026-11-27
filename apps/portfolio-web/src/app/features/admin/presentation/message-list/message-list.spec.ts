@@ -5,7 +5,7 @@ import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
 import { idle, success } from '@core/state/async-state';
 import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog.service';
 import { UiToastService } from '@shared/ui/toast/toast.service';
-import { AdminStore } from '../../application/admin.store';
+import { InboxStore } from '../../application/inbox.store';
 import { ReceivedMessage } from '../../domain/admin';
 import { MessageList } from './message-list';
 import { messageListI18n } from './message-list.i18n';
@@ -34,10 +34,10 @@ describe('MessageList', () => {
   const store = {
     messages,
     messagesState: signal(success()),
-    messageMutationState: signal(idle()),
+    mutationState: signal(idle()),
     unreadCount: computed(() => messages().filter((message) => !message.read).length),
-    reloadMessages: vi.fn(),
-    resetMutations: vi.fn(),
+    reload: vi.fn(),
+    resetMutation: vi.fn(),
     setRead: vi.fn(),
     deleteMessage: vi.fn(),
   };
@@ -53,7 +53,7 @@ describe('MessageList', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        { provide: AdminStore, useValue: store },
+        { provide: InboxStore, useValue: store },
         { provide: UiToastService, useValue: toast },
         { provide: UiConfirmDialogService, useValue: { confirm } },
       ],

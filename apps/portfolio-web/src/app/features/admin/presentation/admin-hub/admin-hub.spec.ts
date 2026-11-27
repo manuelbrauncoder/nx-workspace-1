@@ -5,6 +5,7 @@ import { Failure } from '@core/failure/failure';
 import { loadI18nScopes } from '@core/i18n/testing/provide-i18n-testing';
 import { AsyncState, failed, success } from '@core/state/async-state';
 import { AdminStore } from '../../application/admin.store';
+import { InboxStore } from '../../application/inbox.store';
 import { AdminHub } from './admin-hub';
 import { adminHubI18n } from './admin-hub.i18n';
 
@@ -19,11 +20,16 @@ describe('AdminHub', () => {
             users: signal([{}, {}, {}]),
             adminCount: signal(1),
             usersState: signal(success()),
+            reloadUsers: vi.fn(),
+          },
+        },
+        {
+          provide: InboxStore,
+          useValue: {
             messages: signal([{}, {}]),
             unreadCount: signal(2),
             messagesState: signal(messagesState),
-            reloadUsers: vi.fn(),
-            reloadMessages: vi.fn(),
+            reload: vi.fn(),
           },
         },
       ],

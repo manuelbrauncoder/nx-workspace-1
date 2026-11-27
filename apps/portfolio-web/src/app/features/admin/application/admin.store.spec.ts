@@ -2,7 +2,7 @@ import { ApplicationRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Failure } from '@core/failure/failure';
 import { Observable, of, throwError } from 'rxjs';
-import { ReceivedMessage, User, UserRole } from '../domain/admin';
+import { User, UserRole } from '../domain/admin';
 import { AdminUseCase } from '../domain/admin.usecase';
 import { AdminStore } from './admin.store';
 
@@ -12,15 +12,6 @@ const user = (id: string, role: UserRole = 'user'): User => ({
   name: undefined,
   role,
   createdAt: new Date('2026-01-12T09:00:00.000Z'),
-});
-
-const message = (id: string, read = false): ReceivedMessage => ({
-  id,
-  name: 'Ada',
-  email: 'ada@example.com',
-  message: 'Hallo!',
-  read,
-  createdAt: new Date('2026-10-20T08:15:00.000Z'),
 });
 
 class FakeAdminUseCase {
@@ -36,18 +27,6 @@ class FakeAdminUseCase {
   }
 
   deleteUser(): Observable<void> {
-    return this._respond(() => undefined);
-  }
-
-  getMessages(): Observable<ReceivedMessage[]> {
-    return of([message('m1'), message('m2', true), message('m3')]);
-  }
-
-  setRead(id: string, read: boolean): Observable<ReceivedMessage> {
-    return this._respond(() => message(id, read));
-  }
-
-  deleteMessage(): Observable<void> {
     return this._respond(() => undefined);
   }
 
@@ -69,10 +48,9 @@ describe('AdminStore', () => {
     await TestBed.inject(ApplicationRef).whenStable();
   });
 
-  it('loads users and messages and counts admins and unread messages', () => {
+  it('loads the users and counts the admins', () => {
     expect(store.users()).toHaveLength(2);
     expect(store.adminCount()).toBe(1);
-    expect(store.unreadCount()).toBe(2);
   });
 
   it('replaces a user after a role change', async () => {
@@ -89,7 +67,6 @@ describe('AdminStore', () => {
 
     expect(store.userMutationState().failure?.kind).toBe('conflict');
     expect(store.adminCount()).toBe(1);
-    expect(store.messageMutationState().failure).toBeUndefined();
   });
 
   it('removes a deleted user from the list', async () => {
@@ -103,18 +80,5 @@ describe('AdminStore', () => {
 
     expect(useCase.revokeSessions).toHaveBeenCalledWith('2');
     expect(store.users()).toHaveLength(2);
-  });
-
-  it('updates the unread count when a message is marked as read', async () => {
-    await store.setRead('m1', true);
-
-    expect(store.unreadCount()).toBe(1);
-  });
-
-  it('removes a deleted message from the list', async () => {
-    await store.deleteMessage('m3');
-
-    expect(store.messages().map((existing) => existing.id)).toEqual(['m1', 'm2']);
-    expect(store.unreadCount()).toBe(1);
   });
 });

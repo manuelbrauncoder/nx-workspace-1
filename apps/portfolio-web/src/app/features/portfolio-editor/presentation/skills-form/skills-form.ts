@@ -65,7 +65,7 @@ const fromModel = (model: SkillsFormModel): SkillsSection => ({
   })),
 });
 
-/** The skill set: heading, introduction and the signposts with their skills. */
+/** The skill set: heading, introduction and the areas with their skills. */
 @Component({
   selector: 'app-skills-form',
   imports: [
@@ -130,7 +130,7 @@ export class SkillsForm {
   private async _removeSet(index: number): Promise<void> {
     if (await this._confirmRemove('sectionEditor.skills.removeSetHeading', index)) {
       this._updateSets((sets) => sets.filter((_set, position) => position !== index));
-      // The removed signpost took the focus with it.
+      // The removed area took the focus with it.
       this._addSetButton().nativeElement.focus();
     }
   }

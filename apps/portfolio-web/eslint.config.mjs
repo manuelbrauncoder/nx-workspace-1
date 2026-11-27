@@ -13,13 +13,15 @@ import baseConfig from '../../eslint.config.mjs';
 // Who is signed in concerns every page, so the auth feature opens exactly one file to the app
 // shell and to other features. Everything else of it stays private.
 const AUTH_PUBLIC_API = '@features/auth/public-api';
+// The message bell in the header belongs to the admin feature. Only the app shell may import it.
+const ADMIN_PUBLIC_API = '@features/admin/public-api';
 const CROSS_FEATURE = {
   regex: `^@features/(?!auth/public-api$)`,
   message: `Features must not import each other, except for ${AUTH_PUBLIC_API}. Inside a feature use relative imports.`,
 };
 const LAYOUT = {
-  regex: `^@(features/(?!auth/public-api$)|api/)`,
-  message: `The app shell must not depend on features or the API layer, except for ${AUTH_PUBLIC_API}.`,
+  regex: `^@(features/(?!(auth|admin)/public-api$)|api/)`,
+  message: `The app shell must not depend on features or the API layer, except for ${AUTH_PUBLIC_API} and ${ADMIN_PUBLIC_API}.`,
 };
 const API_LAYER = {
   regex: '^@api/',
@@ -50,8 +52,8 @@ export default defineConfig([
   ...baseConfig,
   ...angularConfig,
   restrictImports(['src/app/*.ts'], [CONTRACTS, I18N_LIBRARY]),
-  // The app shell frames every page, so it knows neither features nor the API layer. The one
-  // exception is the public API of the auth feature, for the account menu in the header.
+  // The app shell frames every page, so it knows neither features nor the API layer. The
+  // exceptions are the public APIs of the auth feature (account) and the admin feature (bell).
   restrictImports(['src/app/layout/**/*.ts'], [LAYOUT, CONTRACTS, I18N_LIBRARY]),
   restrictImports(
     ['src/api/**/*.ts'],

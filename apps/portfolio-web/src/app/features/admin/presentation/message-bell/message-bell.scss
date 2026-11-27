@@ -1,0 +1,73 @@
+:host {
+  display: block;
+}
+
+// 44px, like the settings and the menu button next to it.
+.message-bell__trigger {
+  position: relative;
+  width: 2.75rem;
+  height: 2.75rem;
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+// In the upper corner of the button, over the bell.
+.message-bell__count {
+  --badge-background: var(--primary);
+  --badge-foreground: var(--primary-foreground);
+
+  position: absolute;
+  top: 0.125rem;
+  right: 0;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding-inline: 0.25rem;
+}
+
+// On a phone the menu button stands right of the bell: 68px up to the edge, plus the page gutter.
+.message-bell__menu {
+  max-width: calc(100vw - 5.25rem);
+}
+
+// Sender, time and the start of the text below each other.
+.message-bell__item {
+  display: grid;
+  justify-items: start;
+  gap: 0.125rem;
+  text-align: start;
+}
+
+.message-bell__name {
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.message-bell__date {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+// The highlighted row switches as a whole.
+.message-bell__item:hover .message-bell__date,
+.message-bell__item:focus .message-bell__date {
+  color: var(--accent-foreground);
+}
+
+// One line, the whole message is on the page.
+.message-bell__text {
+  justify-self: stretch;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.message-bell__status {
+  padding: 0.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}

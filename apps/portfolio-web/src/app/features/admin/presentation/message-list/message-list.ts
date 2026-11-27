@@ -8,7 +8,7 @@ import { UiConfirmDialogService } from '@shared/ui/confirm-dialog/confirm-dialog
 import { UiEmpty } from '@shared/ui/empty/empty';
 import { UiText } from '@shared/ui/text/text';
 import { UiToastService } from '@shared/ui/toast/toast.service';
-import { AdminStore } from '../../application/admin.store';
+import { InboxStore } from '../../application/inbox.store';
 import { ReceivedMessage } from '../../domain/admin';
 import { MessageCard } from '../message-card/message-card';
 
@@ -20,7 +20,7 @@ import { MessageCard } from '../message-card/message-card';
   templateUrl: './message-list.html',
 })
 export class MessageList {
-  private readonly _store = inject(AdminStore);
+  private readonly _store = inject(InboxStore);
   private readonly _toast = inject(UiToastService);
   private readonly _confirmDialog = inject(UiConfirmDialogService);
   private readonly _i18n = inject(I18nService);
@@ -32,7 +32,7 @@ export class MessageList {
   private readonly _heading = viewChild.required('heading', { read: ElementRef<HTMLElement> });
 
   constructor() {
-    this._store.resetMutations();
+    this._store.resetMutation();
   }
 
   private async _toggleRead(message: ReceivedMessage): Promise<void> {

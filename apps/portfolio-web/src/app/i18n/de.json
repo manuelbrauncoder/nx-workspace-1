@@ -7,6 +7,15 @@
     "signOutFailed": "Abmelden fehlgeschlagen",
     "admin": "Administration"
   },
+  "inbox": {
+    "all": "Alle Nachrichten",
+    "bell": "Nachrichten",
+    "bellUnread": "Nachrichten, {{ count }} ungelesen",
+    "empty": "Keine neuen Nachrichten",
+    "heading": "Neue Nachrichten",
+    "loadFailed": "Die Nachrichten konnten nicht geladen werden",
+    "loading": "Nachrichten werden geladen"
+  },
   "layout": {
     "legalNavigation": "Rechtliches",
     "mainNavigation": "Hauptnavigation",

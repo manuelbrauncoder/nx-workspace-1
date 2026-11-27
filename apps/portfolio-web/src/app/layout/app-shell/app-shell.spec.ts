@@ -29,7 +29,7 @@ describe('AppShell', () => {
           },
         ]),
         // The header shows the account menu, which reads who is signed in.
-        { provide: AuthStore, useValue: { me: signal(undefined) } },
+        { provide: AuthStore, useValue: { me: signal(undefined), isAdmin: signal(false) } },
       ],
     });
     const harness = await RouterTestingHarness.create('/notes');

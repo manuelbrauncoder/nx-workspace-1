@@ -7,6 +7,15 @@
     "signOutFailed": "Signing out failed",
     "admin": "Administration"
   },
+  "inbox": {
+    "all": "All messages",
+    "bell": "Messages",
+    "bellUnread": "Messages, {{ count }} unread",
+    "empty": "No new messages",
+    "heading": "New messages",
+    "loadFailed": "The messages could not be loaded",
+    "loading": "Loading messages"
+  },
   "layout": {
     "legalNavigation": "Legal",
     "mainNavigation": "Main navigation",
