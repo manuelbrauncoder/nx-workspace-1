@@ -112,18 +112,18 @@
     }
   },
   "skills": {
-    "heading": "Signposts",
-    "set": "Signpost {{ number }}",
+    "heading": "Areas",
+    "set": "Area {{ number }}",
     "title": "Label",
     "skill": "Skill {{ number }}",
-    "skillOfSet": "Skill {{ number }} of signpost {{ set }}",
+    "skillOfSet": "Skill {{ number }} of area {{ set }}",
     "name": "Name",
     "points": "Use",
     "addSkill": "Add skill",
-    "addSkillTo": "Add skill to signpost {{ set }}",
-    "addSet": "Add signpost",
-    "empty": "No signposts yet.",
-    "removeSetHeading": "Remove signpost {{ number }}?",
+    "addSkillTo": "Add a skill to area {{ set }}",
+    "addSet": "Add area",
+    "empty": "No areas yet.",
+    "removeSetHeading": "Remove area {{ number }}?",
     "removeSkillHeading": "Remove skill {{ number }}?"
   },
   "settings": {

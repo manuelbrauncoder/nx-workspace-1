@@ -112,18 +112,18 @@
     }
   },
   "skills": {
-    "heading": "Wegweiser",
-    "set": "Wegweiser {{ number }}",
+    "heading": "Bereiche",
+    "set": "Bereich {{ number }}",
     "title": "Beschriftung",
     "skill": "Skill {{ number }}",
-    "skillOfSet": "Skill {{ number }} von Wegweiser {{ set }}",
+    "skillOfSet": "Skill {{ number }} von Bereich {{ set }}",
     "name": "Name",
     "points": "Einsatz",
     "addSkill": "Skill hinzufügen",
-    "addSkillTo": "Skill zu Wegweiser {{ set }} hinzufügen",
-    "addSet": "Wegweiser hinzufügen",
-    "empty": "Noch keine Wegweiser.",
-    "removeSetHeading": "Wegweiser {{ number }} entfernen?",
+    "addSkillTo": "Skill zu Bereich {{ set }} hinzufügen",
+    "addSet": "Bereich hinzufügen",
+    "empty": "Noch keine Bereiche.",
+    "removeSetHeading": "Bereich {{ number }} entfernen?",
     "removeSkillHeading": "Skill {{ number }} entfernen?"
   },
   "settings": {
