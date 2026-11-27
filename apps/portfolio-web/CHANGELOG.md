@@ -1,3 +1,13 @@
+## 2.11.0 (2026-11-27)
+
+### 🚀 Features
+
+- **portfolio-web:** message bell in the header ([7c72b8a](https://github.com/manuelbrauncoder/nx-workspace-1/commit/7c72b8a))
+
+### 🩹 Fixes
+
+- **portfolio-web:** areas instead of signposts in the skills editor ([5513f04](https://github.com/manuelbrauncoder/nx-workspace-1/commit/5513f04))
+
 ## 2.10.0 (2026-11-26)
 
 ### 🚀 Features
